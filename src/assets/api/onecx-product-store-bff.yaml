@@ -1,0 +1,338 @@
+---
+openapi: 3.0.3
+info:
+  title: onecx-product-store-bff
+  description: Backend-For-Frontend (BFF) service for onecx product store.
+  version: 1.0.0
+  contact:
+    email: 'tkit_dev@1000kit.org'
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: 'http://onecx-product-store-bff:8080'
+tags:
+  - name: OneCX Product Store
+paths:
+  /products:
+    post:
+      tags:
+        - Products
+      description: Create new product
+      operationId: createProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductRequest'
+      responses:
+        '201':
+          description: New product created
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /products/search:
+    post:
+      tags:
+        - Products
+      description: Search for products by search criteria
+      operationId: searchProducts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductSearchCriteria'
+      responses:
+        '200':
+          description: Corresponding products (by search criteria)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPageResult'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /products/{id}:
+    get:
+      tags:
+        - Products
+      description: Return product by ID
+      operationId: getProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        '404':
+          description: Not Found
+    put:
+      tags:
+        - Products
+      description: Update product by ID
+      operationId: updateProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductRequest'
+      responses:
+        '204':
+          description: Product updated
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        '404':
+          description: Product not found
+    delete:
+      tags:
+        - Products
+      description: Delete product by ID
+      operationId: deleteProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+components:
+  schemas:
+    ProductPageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource (counted items in resultset).
+          type: integer
+        number:
+          format: int32
+          type: integer
+          description: Number of page which has been queried (e.g. 2 of 10)
+        size:
+          format: int32
+          type: integer
+          description: correlated to the input (pagesize)), how many products should be shown on a single page.
+        totalPages:
+          format: int64
+          type: integer
+          description: representing the total amount of pages based on the size provided in the request.
+        stream:
+          type: array
+          description: result set of the given search criteria.
+          items:
+            $ref: '#/components/schemas/ProductAbstract'
+    ProductSearchCriteria:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 10
+          minimum: 1
+          exclusiveMinimum: false
+          type: integer
+    CreateProductRequest:
+      type: object
+      required:
+        - name
+        - version
+        - basePath
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        basePath:
+          type: string
+        displayName:
+          type: string
+        iconName:
+          type: string
+        classifications:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+    UpdateProductRequest:
+      type: object
+      required:
+        - name
+        - version
+        - basePath
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        basePath:
+          type: string
+        displayName:
+          type: string
+        iconName:
+          type: string
+        classifications:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+    Product:
+      type: object
+      required:
+        - id
+        - name
+        - basePath
+      properties:
+        id:
+          type: string
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        modificationCount:
+          format: int32
+          type: integer
+        name:
+          type: string
+        operator:
+          type: boolean
+        version:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        basePath:
+          type: string
+        displayName:
+          type: string
+        iconName:
+          type: string
+        classifications:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+    ProductAbstract:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+          description: technical id for a product (unique). Can be used to fetch further product details.
+        name:
+          type: string
+          description: business key for identifying product
+        description:
+          type: string
+          description: textual description for a product.
+        imageUrl:
+          type: string
+          description: product image as url.
+        displayName:
+          type: string
+          description: name of the product used for displaying to user.
+    OffsetDateTime:
+      format: date-time
+      type: string
+      example: 2022-03-10T12:15:50-04:00
+    ProblemDetailResponse:
+      type: object
+      properties:
+        errorCode:
+          type: string
+        detail:
+          type: string
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailParam'
+        invalidParams:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemDetailInvalidParam'
+    ProblemDetailParam:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    ProblemDetailInvalidParam:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: string

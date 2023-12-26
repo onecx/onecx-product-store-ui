@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "inlineSources": true,
+    "target": "ES2022"
+  },
+  "files": ["src/main.ts", "src/polyfills.ts", "src/app/product-store-remote.module.ts"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts"],
+  "exclude": [
+    "src/test-setup.ts",
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts",
+    "src/**/*.stories.ts",
+    "src/**/*.stories.js",
+    "jest.config.ts"
+  ]
+}

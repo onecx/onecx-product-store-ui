@@ -1,0 +1,95 @@
+<ocx-portal-page permission="THEME#SEARCH" helpArticleId="PAGE_THEME_SEARCH">
+  <ocx-page-header
+    [header]="'THEME.SEARCH.HEADER' | translate"
+    [subheader]="'THEME.SEARCH.SUBHEADER' | translate"
+    [actions]="actions"
+  >
+  </ocx-page-header>
+
+  <ocx-page-content>
+    <ng-container *ngIf="themes$ | async as themes">
+      <p-dataView
+        id="theme_search_dataview"
+        [value]="themes"
+        [paginator]="true"
+        [alwaysShowPaginator]="false"
+        [rowsPerPageOptions]="[10, 20, 50]"
+        [rows]="viewMode === 'grid' ? 12 : 10"
+        [layout]="viewMode"
+        filterBy="name,description"
+        [sortField]="sortField"
+        [sortOrder]="sortOrder"
+      >
+        <ng-template pTemplate="header">
+          <ocx-data-view-controls
+            [enableFiltering]="true"
+            [enableSorting]="true"
+            [supportedViews]="['grid', 'list']"
+            [initialViewMode]="viewMode"
+            [sortingOptions]="[
+              { label: 'THEME.NAME' | translate, value: 'name' },
+              { label: 'THEME.DESCRIPTION' | translate, value: 'description' }
+            ]"
+            [defaultSortOption]="sortField"
+            [defaultSortDirection]="sortOrder === 1"
+            (dataViewChange)="onLayoutChange($event)"
+            (filterChange)="onFilterChange($event)"
+            [filterColumns]="['THEME.NAME' | translate, 'THEME.DESCRIPTION' | translate]"
+            (sortChange)="onSortChange($event)"
+            (sortDirectionChange)="onSortDirChange($event)"
+            [translations]="dataViewControlsTranslations"
+          >
+          </ocx-data-view-controls
+        ></ng-template>
+        <ng-template let-theme pTemplate="listItem">
+          <div
+            class="col-12 grid grid-nogutter align-items-center row-gap-1 listview-row p-1 hover:bg-gray-200 cursor-pointer"
+            [routerLink]="['./', theme.id]"
+          >
+            <div class="col-12 md:col-2 lg:col-2 xl:col-2 text-center">
+              <div class="flex flex-column justify-content-center align-items-center gap-1 md:gap-2 h-full">
+                <app-image-container
+                  [imageUrl]="theme.logoUrl"
+                  [small]="true"
+                  [title]="'LOGO.TOOLTIPS.' + (theme.logoUrl ? 'IMAGE' : 'PLACEHOLDER') | translate"
+                ></app-image-container>
+              </div>
+            </div>
+            <div class="col-12 md:col-5 lg:col-5 xl:col-6">
+              <div class="flex flex-column justify-content-center gap-1 text-center md:text-left">
+                <div class="font-bold">{{ theme.name }}</div>
+                <div>{{ limitText(theme.description, 75) }}</div>
+              </div>
+            </div>
+            <div class="col-12 md:col-5 lg:col-5 xl:col-4 text-center">
+              <div class="flex flex-column justify-content-center align-items-center h-full">
+                <app-theme-color-box [properties]="theme.properties" styleClass="h-1rem md:h-2rem" />
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template let-theme pTemplate="gridItem">
+          <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3" [routerLink]="['./', theme.id]">
+            <div class="card p-2 flex flex-column justify-content-center hover:bg-gray-200 cursor-pointer">
+              <div
+                class="h-3rem md:h-5rem lg:h-6rem flex flex-column justify-content-center align-items-center text-center"
+              >
+                <app-image-container [imageUrl]="theme.logoUrl" [small]="false"></app-image-container>
+              </div>
+              <div class="flex flex-column justify-content-center align-items-center">
+                <app-theme-color-box [properties]="theme.properties" styleClass="h-05rem md:h-1rem" />
+              </div>
+              <div class="h-3rem flex flex-column justify-content-between gap-1 lg:gap-2 my-1 lg:my-2 text-center">
+                <div class="font-bold text-xl lg:text-2xl" [title]="'Theme: ' + limitText(theme.name, 100)">
+                  {{ limitText(theme.name, 15) }}
+                </div>
+                <div>{{ limitText(theme.description, 25) }}</div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </p-dataView>
+    </ng-container>
+  </ocx-page-content>
+  <app-theme-import [(displayThemeImport)]="themeImportDialogVisible" (uploadEmitter)="loadThemes()"></app-theme-import>
+</ocx-portal-page>

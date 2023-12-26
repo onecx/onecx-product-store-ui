@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ .Release.Name }}-apm-config"
+  annotations:
+    appId: {{ .Release.Name }}
+    filename: "permissions.csv"
+  labels:
+    app: {{ .Release.Name }}
+{{ include "angular.labels.common" .Subcharts.app | indent 4 }}
+data:
+  permissions.csv: |-
+{{ $.Files.Get "permissions.csv" | indent 4 }}
+
