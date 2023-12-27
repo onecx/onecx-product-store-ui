@@ -5,7 +5,7 @@ const config = withModuleFederationPlugin({
   name: 'product-store',
   filename: 'remoteEntry.js',
   exposes: {
-    './ProductstoreModule': 'src/app/product-store-remote.module.ts'
+    './ProductStoreModule': 'src/app/product-store-remote.module.ts'
   },
   shared: share({
     '@angular/core': { singleton: true, strictVersion: true, requiredVersion: 'auto' },

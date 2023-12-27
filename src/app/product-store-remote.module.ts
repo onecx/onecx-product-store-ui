@@ -1,24 +1,26 @@
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { HttpClient } from '@angular/common/http'
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
 import { TranslateModule, MissingTranslationHandler, TranslateLoader } from '@ngx-translate/core'
-import {
-  MyMissingTranslationHandler,
-  PortalMessageService,
-  PortalDialogService,
-  MFE_INFO,
-  createTranslateLoader,
-  PortalCoreModule
-} from '@onecx/portal-integration-angular'
 import { MessageService } from 'primeng/api'
 import { DialogService } from 'primeng/dynamicdialog'
+
+import {
+  createTranslateLoader,
+  MFE_INFO,
+  MyMissingTranslationHandler,
+  PortalCoreModule,
+  PortalDialogService,
+  PortalMessageService
+} from '@onecx/portal-integration-angular'
 import { BASE_PATH } from './generated'
-import { CanActivateGuard } from './shared/can-active-guard.service'
 import { LabelResolver } from './shared/label.resolver'
+import { CanActivateGuard } from './shared/can-active-guard.service'
 import { basePathProvider, SharedModule } from './shared/shared.module'
-//import { ProductDetailComponent } from './product-store/product-detail/product-detail.component'
 import { ProductSearchComponent } from './product-store/product-search/product-search.component'
+//import { ProductDetailComponent } from './product-store/product-detail/product-detail.component'
+
 const routes: Routes = [
   {
     path: '',
@@ -39,6 +41,7 @@ const routes: Routes = [
     }
   }, */
 ]
+
 @NgModule({
   imports: [
     CommonModule,
