@@ -1,0 +1,199 @@
+{
+  "ACTIONS": {
+    "CONFIRMATION": {
+      "NO": "No",
+      "YES": "Yes",
+      "NO.TOOLTIP": "Cancel the action",
+      "YES.TOOLTIP": "Proceed with the action"
+    },
+    "CREATE": {
+      "THEME": "Create Theme",
+      "THEME.TOOLTIP": "Create a new Theme",
+      "MESSAGE": {
+        "THEME_ALREADY_EXISTS": "A Theme with that name already exists",
+        "CREATE_OK": "The Theme was created successfully",
+        "CREATE_NOK": "An error has occurred. The Theme was not created."
+      }
+    },
+    "DELETE": {
+      "LABEL": "Delete",
+      "TOOLTIP": "Delete theme",
+      "THEME_MESSAGE": "Do you want to delete {{ITEM}}?",
+      "MESSAGE_INFO": "This action cannot be undone!",
+      "THEME_NOK": "Theme could not be deleted",
+      "THEME_OK": "Theme deleted successfully"
+    },
+    "EDIT": {
+      "LABEL": "Edit",
+      "TOOLTIP": "Edit properties",
+      "MESSAGE": {
+        "CHANGE_OK": "The Theme was changed successfully",
+        "CHANGE_NOK": "An error has occurred. The Theme was not changed."
+      }
+    },
+    "EXPORT": {
+      "LABEL": "Export",
+      "TOOLTIP": "Export definition in JSON format",
+      "THEME": "Export Theme"
+    },
+    "IMPORT": {
+      "LABEL": "Import",
+      "TOOLTIP": "Upload definition in JSON format",
+      "THEME": "Import Theme"
+    },
+    "NAVIGATION": {
+      "CLOSE": "Close",
+      "CLOSE.TOOLTIP": "Close dialog",
+      "CLOSE_WITHOUT_SAVE": "Close dialog without saving",
+      "BACK": "Back",
+      "NEXT": "Next",
+      "NEXT.TOOLTIP": "Next page",
+      "BACK.TOOLTIP": "Previous page",
+      "DETAILS.TOOLTIP": "Display details",
+      "NEW.TOOLTIP": "Create new entry"
+    },
+    "CANCEL": "Cancel",
+    "CHOOSE": "Choose",
+    "SAVE": "Save",
+    "SAVE_AS": "Save as ...",
+    "UPLOAD": "Upload",
+    "TOOLTIPS": {
+      "CANCEL_AND_CLOSE": "Cancel and close dialog",
+      "SAVE": "Save changes",
+      "SAVE_AS": "Save as new theme"
+    }
+  },
+  "BREADCRUMBS": {
+    "CREATE": "New",
+    "DETAIL": "Details",
+    "EDIT": "Edit"
+  },
+  "DETAIL": {
+    "CREATION_DATE": "Created on",
+    "CREATION_USER": "Created by",
+    "MODIFICATION_DATE": "Changed on",
+    "MODIFICATION_USER": "Changed by",
+    "TOOLTIPS": {
+      "CREATION_DATE": "Timestamp of the creation",
+      "CREATION_USER": "Name of the user of the creation",
+      "MODIFICATION_DATE": "Timestamp of the last change",
+      "MODIFICATION_USER": "Name of the user of the last change"
+    }
+  },
+  "GENERAL": {
+    "COPY_OF": "Copy of ",
+    "TOOLTIP": {
+      "VIEW_MODE_GRID": "Tile view",
+      "VIEW_MODE_LIST": "List view",
+      "VIEW_MODE_TABLE": "Table view"
+    }
+  },
+  "LOGO": {
+    "LOGO_URL": "Logo URL",
+    "TOOLTIPS": {
+      "IMAGE": "Logo",
+      "PLACEHOLDER": "Image Placeholder",
+      "UPLOAD": "Select and upload image"
+    },
+    "UPLOADED": "File uploaded"
+  },
+  "SEARCH": {
+    "FILTER": "Filter",
+    "FILTER_OF": "Filter for ",
+    "SORT_BY": "Sort By",
+    "SORT_DIRECTION_ASC": "ascending",
+    "SORT_DIRECTION_DESC": "descending"
+  },
+  "THEME": {
+    "SEARCH.HEADER": "Theme Management",
+    "SEARCH.SUBHEADER": "Creation and editing of Themes",
+    "DESIGNER.EDIT.SUBHEADER": "Change Theme Details",
+    "DESIGNER.NEW.SUBHEADER": "Create a new Theme",
+    "DETAIL.SUBHEADER": "Theme Details",
+    "DETAIL.AUTO_APPLY": "Auto apply changes",
+    "DETAIL.AUTO_APPLY.TOOLTIP": "If this option is switched on, then all changes (font, colors) are automatically applied to the current page.",
+    "DETAIL.AUTO_APPLY_CURRENT_THEME": "Changes are applied immediately when saving because it is the Theme currently in use",
+    "DETAIL.THEME_SELECTOR": "Select Theme as Template",
+    "LOAD_ERROR": "Failed to load Theme",
+    "NOT_FOUND": "Theme was not found",
+    "NO_PROPERTIES": "No properties specified",
+    "TABS": {
+      "INTERN": "Internal",
+      "PROPERTIES": "Properties",
+      "VARIABLES": "Theme Variables"
+    },
+    "IMPORT": {
+      "HEADER": "Import Theme",
+      "IMPORT_THEME_SUCCESS": "The Theme was sucessfully imported.",
+      "IMPORT_THEME_FAIL": "An error occurred, the Theme was not imported.",
+      "THEME_EXISTS_MESSAGE": "A Theme with this name already exists. Its definition is overwritten.",
+      "THEME_COLOR_PRIMARY": "Primary color",
+      "THEME_COLOR_SECONDARY": "Secondary color",
+      "THEME_COLOR_TEXT": "Text color",
+      "THEME_COLOR_TOP_MENU": "Topbar Menu color",
+      "THEME_COLOR_TOP_LEFT": "Topbar Link color"
+    },
+    "TEMPLATE": {
+      "SELECTOR": "Select Theme template",
+      "SELECTOR.TOOLTIP": "Choose an existing Theme and use it as a template",
+      "CONFIRMATION.HEADER": "Use a Theme as Template",
+      "CONFIRMATION.MESSAGE": "Should all values be replaced by the values of \"{{ITEM}}\"?"
+    },
+    "GROUPS": {
+      "BASE": "Basis",
+      "FONT": "Font"
+    },
+    "ID": "ID",
+    "NAME": "Name",
+    "THEME_NAME": "Theme Name",
+    "VERSION": "Version",
+    "DESCRIPTION": "Description",
+    "CSS_FILE": "CSS File",
+    "CREATION_DATE": "Created on",
+    "CREATION_USER": "Created by",
+    "MODIFICATION_DATE": "Changed on",
+    "MODIFICATION_USER": "Changed by",
+    "WORKSPACES": "Used in Workspaces",
+    "TOOLTIPS": {
+      "ID": "Unique technical ID of the Theme",
+      "NAME": "Unique Name of the Theme",
+      "VERSION": "Version of the Theme",
+      "DESCRIPTION": "Description of the Theme",
+      "WORKSPACES": "Workspaces using the Theme",
+      "CSS_FILE": "CSS file name",
+      "CREATION_DATE": "Timestamp the Theme was created",
+      "CREATION_USER": "Name of the user which created the Theme",
+      "MODIFICATION_DATE": "Timestamp the Theme was latest modified",
+      "MODIFICATION_USER": "Name of the user which changed the Theme last time"
+    }
+  },
+  "VALIDATION": {
+    "ERRORS": {
+      "PARSE_ERROR": "Parse error: The contained structure does not match the expected format.",
+      "INTERNAL_ERROR": "Internal error",
+      "EMPTY_REQUIRED_FIELD": "This field is required.",
+      "MAXIMUM_LENGTH": "Only {{chars}} characters are allowed.",
+      "MINIMUM_LENGTH": "At least {{chars}} characters are required.",
+      "PATTERN_ERROR": "Your input does not match the required pattern",
+      "FILETYPE_PATTERN_ERROR": "Your file does not match the allowed filetypes: .png, .jpg, .jpeg"
+    }
+  },
+  "EXCEPTIONS": {
+    "HTTP_STATUS_0": {
+      "PORTALS": "Unknown problem retrieving Workspace data - please try again.",
+      "MENUS": "Unknown problem retrieving menu data - please try again."
+    },
+    "HTTP_STATUS_403": {
+      "PORTALS": "You have no permissions to see workspaces.",
+      "MENUS": "You have no permissions to see menus."
+    },
+    "HTTP_STATUS_404": {
+      "PORTALS": "No Workspaces could be found.",
+      "MENUS": "No menus could be found."
+    },
+    "HTTP_STATUS_500": {
+      "PORTALS": "Unknown server problem retrieving Workspace data - please try again.",
+      "MENUS": "Unknown server problem retrieving menu data - please try again."
+    }
+  }
+}

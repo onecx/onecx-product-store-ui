@@ -1,0 +1,9 @@
+PERMISSION NAME;PERMISSION_KEY;portal-mgmt-admin;portal-mgmt-user;
+Theme create;THEME#CREATE;x;;
+Theme delete;THEME#DELETE;x;;
+Theme edit;THEME#EDIT;x;;
+Theme save;THEME#SAVE;x;;
+Theme import;THEME#IMPORT;x;;
+Theme export;THEME#EXPORT;x;;
+Theme detail page;THEME#VIEW;x;x;
+Theme search page;THEME#SEARCH;x;x;

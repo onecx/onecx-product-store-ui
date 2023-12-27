@@ -1,0 +1,23 @@
+app:
+  image:
+    repository: '1000kit/theme-mgmt-ui'
+    tag: sha-master
+  routing:
+    enabled: true
+  operator:
+    apm:
+      enabled: false
+    keycloak:
+      enabled: true
+      client: "{ \n  \"clientId\": \"theme-mgmt-ui\",\n  \"enabled\": true,\n  \"description\": \"Keycloak client for theme-mgmt-ui\",\n  \"redirectUris\": [\"*\"],\n  \"webOrigins\": [\"*\"],\n  \"publicClient\": true,\n  \"protocol\": \"openid-connect\"\n}"
+      roles: |-
+        [
+           {
+             "name": "onecx-portal-admin",
+             "description": "OneCX portal platform admin"
+           },
+           {
+             "name": "onecx-portal-user",
+             "description": "OneCX portal platform user"
+           }
+         ]

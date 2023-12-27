@@ -1,0 +1,86 @@
+<ocx-portal-page permission="PRODUCT#SEARCH" helpArticleId="PAGE_PRODUCT_SEARCH">
+  <ocx-page-header
+    [header]="'PRODUCT.SEARCH.HEADER' | translate"
+    [subheader]="'PRODUCT.SEARCH.SUBHEADER' | translate"
+    [actions]="actions"
+  >
+  </ocx-page-header>
+
+  <ocx-page-content>
+    <ng-container *ngIf="product$ | async as products">
+      <p-dataView
+        id="product_search_dataview"
+        [value]="products.stream ? products.stream : []"
+        [paginator]="true"
+        [alwaysShowPaginator]="false"
+        [rowsPerPageOptions]="[10, 20, 50]"
+        [rows]="viewMode === 'grid' ? 12 : 10"
+        [layout]="viewMode"
+        filterBy="name,description"
+        [sortField]="sortField"
+        [sortOrder]="sortOrder"
+      >
+        <ng-template pTemplate="header">
+          <ocx-data-view-controls
+            [enableFiltering]="true"
+            [enableSorting]="true"
+            [supportedViews]="['grid', 'list']"
+            [initialViewMode]="viewMode"
+            [sortingOptions]="[
+              { label: 'PRODUCT.NAME' | translate, value: 'name' },
+              { label: 'PRODUCT.DESCRIPTION' | translate, value: 'description' }
+            ]"
+            [defaultSortOption]="sortField"
+            [defaultSortDirection]="sortOrder === 1"
+            (dataViewChange)="onLayoutChange($event)"
+            (filterChange)="onFilterChange($event)"
+            [filterColumns]="['PRODUCT.NAME' | translate, 'PRODUCT.DESCRIPTION' | translate]"
+            (sortChange)="onSortChange($event)"
+            (sortDirectionChange)="onSortDirChange($event)"
+            [translations]="dataViewControlsTranslations"
+          >
+          </ocx-data-view-controls
+        ></ng-template>
+        <ng-template let-product pTemplate="listItem">
+          <div
+            class="col-12 grid grid-nogutter align-items-center row-gap-1 listview-row p-1 hover:bg-gray-200 cursor-pointer"
+            [routerLink]="['./', product.name]"
+          >
+            <div class="col-12 md:col-2 lg:col-2 xl:col-2 text-center">
+              <div class="flex flex-column justify-content-center align-items-center gap-1 md:gap-2 h-full">
+                <app-image-container
+                  [imageUrl]="product.imageUrl"
+                  [small]="true"
+                  [title]="'LOGO.TOOLTIPS.' + (product.imageUrl ? 'IMAGE' : 'PLACEHOLDER') | translate"
+                ></app-image-container>
+              </div>
+            </div>
+            <div class="col-12 md:col-5 lg:col-5 xl:col-6">
+              <div class="flex flex-column justify-content-center gap-1 text-center md:text-left">
+                <div class="font-bold">{{ product.name }}</div>
+                <div>{{ limitText(product.description, 75) }}</div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template let-product pTemplate="gridItem">
+          <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3" [routerLink]="['./', product.name]">
+            <div class="card p-2 flex flex-column justify-content-center hover:bg-gray-200 cursor-pointer">
+              <div
+                class="h-3rem md:h-5rem lg:h-6rem flex flex-column justify-content-center align-items-center text-center"
+              >
+                <app-image-container [imageUrl]="product.logoUrl" [small]="false"></app-image-container>
+              </div>
+              <div class="h-3rem flex flex-column justify-content-between gap-1 lg:gap-2 my-1 lg:my-2 text-center">
+                <div class="font-bold text-xl lg:text-2xl" [title]="'Product: ' + limitText(product.name, 100)">
+                  {{ limitText(product.name, 15) }}
+                </div>
+                <div>{{ limitText(product.description, 25) }}</div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </p-dataView>
+    </ng-container>
+  </ocx-page-content>
+</ocx-portal-page>

@@ -1,0 +1,17 @@
+.angular/**
+.husky/**
+.docusaurus/
+.prettierignore
+coverage/**
+dist/**
+helm/**
+nginx/**
+node_modules
+CHANGELOG.md
+README.md
+Dockerfile
+*.log
+*.sh
+src/app/generated/**
+src/app/api/*
+src/app/model/*

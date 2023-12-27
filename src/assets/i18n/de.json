@@ -1,0 +1,199 @@
+{
+  "ACTIONS": {
+    "CONFIRMATION": {
+      "NO": "Nein",
+      "YES": "Ja",
+      "NO.TOOLTIP": "Abbruch der Aktion",
+      "YES.TOOLTIP": "Fortfahren mit der Aktion"
+    },
+    "CREATE": {
+      "THEME": "Theme erstellen",
+      "THEME.TOOLTIP": "Ein neues Theme erstellen",
+      "MESSAGE": {
+        "THEME_ALREADY_EXISTS": "Ein Theme mit diesem Namen existert schon",
+        "CREATE_OK": "Das Theme wurde erfolgreich erstellt",
+        "CREATE_NOK": "Ein Fehler ist aufgetreten. Das Theme wurde nicht erstellt."
+      }
+    },
+    "DELETE": {
+      "LABEL": "Löschen",
+      "TOOLTIP": "Theme löschen",
+      "THEME_MESSAGE": "Möchten Sie {{ITEM}} löschen?",
+      "MESSAGE_INFO": "Diese Aktion kann nicht rückgängig gemacht werden!",
+      "THEME_NOK": "Theme konnte nicht gelöscht werden",
+      "THEME_OK": "Theme erfolgreich gelöscht"
+    },
+    "EDIT": {
+      "LABEL": "Bearbeiten",
+      "TOOLTIP": "Die Eigenschaften bearbeiten",
+      "MESSAGE": {
+        "CHANGE_OK": "Das Theme wurde erfolgreich geändert",
+        "CHANGE_NOK": "Ein Fehler ist aufgetreten. Das Theme wurde nicht geändert."
+      }
+    },
+    "EXPORT": {
+      "LABEL": "Export",
+      "TOOLTIP": "Definition als JSON herunterladen",
+      "THEME": "Theme exportieren"
+    },
+    "IMPORT": {
+      "LABEL": "Import",
+      "TOOLTIP": "Definition als JSON hochladen",
+      "THEME": "Theme importieren"
+    },
+    "NAVIGATION": {
+      "CLOSE": "Schließen",
+      "CLOSE.TOOLTIP": "Dialog schließen",
+      "CLOSE_WITHOUT_SAVE": "Dialog ohne Speichern schließen",
+      "BACK": "Zurück",
+      "NEXT": "Weiter",
+      "NEXT.TOOLTIP": "Nächste Seite",
+      "BACK.TOOLTIP": "Vorherige Seite",
+      "DETAILS.TOOLTIP": "Anzeige Details",
+      "NEW.TOOLTIP": "Erstelle neuen Eintrag"
+    },
+    "CANCEL": "Abbrechen",
+    "CHOOSE": "Auswählen",
+    "SAVE": "Speichern",
+    "SAVE_AS": "Speichern als ...",
+    "UPLOAD": "Hochladen",
+    "TOOLTIPS": {
+      "CANCEL_AND_CLOSE": "Abbrechen und Dialog schließen",
+      "SAVE": "Änderungen speichern",
+      "SAVE_AS": "Speichern als neues Theme"
+    }
+  },
+  "BREADCRUMBS": {
+    "CREATE": "Neu",
+    "DETAIL": "Details",
+    "EDIT": "Ändern"
+  },
+  "DETAIL": {
+    "CREATION_DATE": "Erstellt am",
+    "CREATION_USER": "Erstellt von",
+    "MODIFICATION_DATE": "Geändert am",
+    "MODIFICATION_USER": "Geändert von",
+    "TOOLTIPS": {
+      "CREATION_DATE": "Zeitpunkt der Erstellung",
+      "CREATION_USER": "Name des Benutzers der Erstellung",
+      "MODIFICATION_DATE": "Zeitpunkt der letzten Änderung",
+      "MODIFICATION_USER": "Name des Benutzers der letzten Änderung"
+    }
+  },
+  "GENERAL": {
+    "COPY_OF": "Kopie von ",
+    "TOOLTIP": {
+      "VIEW_MODE_GRID": "Kachelansicht",
+      "VIEW_MODE_LIST": "Listenansicht",
+      "VIEW_MODE_TABLE": "Tabellenansicht"
+    }
+  },
+  "LOGO": {
+    "LOGO_URL": "Logo URL",
+    "TOOLTIPS": {
+      "IMAGE": "Logo",
+      "PLACEHOLDER": "Bild Platzhalter",
+      "UPLOAD": "Bild auswählen und hochladen"
+    },
+    "UPLOADED": "Datei hochgeladen"
+  },
+  "SEARCH": {
+    "FILTER": "Filter",
+    "FILTER_OF": "Filter für ",
+    "SORT_BY": "Sortiert nach",
+    "SORT_DIRECTION_ASC": "aufsteigend",
+    "SORT_DIRECTION_DESC": "absteigend"
+  },
+  "THEME": {
+    "SEARCH.HEADER": "Theme Verwaltung",
+    "SEARCH.SUBHEADER": "Erstellung und Bearbeitung von Themes",
+    "DESIGNER.EDIT.SUBHEADER": "Theme Details ändern",
+    "DESIGNER.NEW.SUBHEADER": "Ein neues Theme erstellen",
+    "DETAIL.SUBHEADER": "Theme Details",
+    "DETAIL.AUTO_APPLY": "Änderungen automatisch anwenden",
+    "DETAIL.AUTO_APPLY.TOOLTIP": "Wenn diese Option eingeschaltet ist, dann werden alle Änderungen (Schriftart, Farben) automatisch auf die aktuelle Seite angewendet.",
+    "DETAIL.AUTO_APPLY_CURRENT_THEME": "Änderungen werden beim Speichern sofort angewendet, weil es das aktuell benutzte Theme ist",
+    "DETAIL.THEME_SELECTOR": "Ein Theme als Vorlage wählen",
+    "LOAD_ERROR": "Theme konnte nicht geladen werden",
+    "NOT_FOUND": "Theme nicht gefunden",
+    "NO_PROPERTIES": "Keine Farbwerte enthalten",
+    "TABS": {
+      "INTERN": "Intern",
+      "PROPERTIES": "Eigenschaften",
+      "VARIABLES": "Theme Variablen"
+    },
+    "IMPORT": {
+      "HEADER": "Import Theme",
+      "IMPORT_THEME_SUCCESS": "Theme wurde erfolgreich importiert.",
+      "IMPORT_THEME_FAIL": "Ein Fehler ist aufgetreten. Das Theme wurde nicht importiert.",
+      "THEME_EXISTS_MESSAGE": "Ein Theme mit diesem Namen existiert bereits. Dessen Definition wird überschrieben.",
+      "THEME_COLOR_PRIMARY": "Primärfarbe",
+      "THEME_COLOR_SECONDARY": "Sekundärfarbe",
+      "THEME_COLOR_TEXT": "Textfarbe",
+      "THEME_COLOR_TOP_MENU": "Menüfarbe",
+      "THEME_COLOR_TOP_LEFT": "Linkfarbe"
+    },
+    "TEMPLATE": {
+      "SELECTOR": "Theme-Vorlage wählen",
+      "SELECTOR.TOOLTIP": "Ein vorhandenes Theme als Vorlage verwenden",
+      "CONFIRMATION.HEADER": "Theme als Vorlage benutzen",
+      "CONFIRMATION.MESSAGE": "Sollen alle vorhandenen Werte durch die Werte von \"{{ITEM}}\" ersetzt werden?"
+    },
+    "GROUPS": {
+      "BASE": "Basis",
+      "FONT": "Font"
+    },
+    "ID": "ID",
+    "NAME": "Name",
+    "THEME_NAME": "Themename",
+    "VERSION": "Version",
+    "DESCRIPTION": "Beschreibung",
+    "CSS_FILE": "CSS Datei",
+    "CREATION_DATE": "Erstellt am",
+    "CREATION_USER": "Erstellt von",
+    "MODIFICATION_DATE": "Geändert am",
+    "MODIFICATION_USER": "Geändert von",
+    "WORKSPACES": "Verwendet in Workspaces",
+    "TOOLTIPS": {
+      "ID": "Eindeutige technische ID des Themes",
+      "NAME": "Eindeutiger Name des Themes",
+      "VERSION": "Version des Themes",
+      "DESCRIPTION": "Beschreibung des Themes",
+      "WORKSPACES": "Workspaces, die das Theme benutzen",
+      "CSS_FILE": "CSS Datei",
+      "CREATION_DATE": "Erstellt am",
+      "CREATION_USER": "Erstellt von",
+      "MODIFICATION_DATE": "Geändert am",
+      "MODIFICATION_USER": "Geändert von"
+    }
+  },
+  "VALIDATION": {
+    "ERRORS": {
+      "PARSE_ERROR": "Parserfehler: Die enthaltene Struktur entspricht nicht dem erwarteten Format.",
+      "INTERNAL_ERROR": "Interner Fehler",
+      "EMPTY_REQUIRED_FIELD": "Dieses Feld ist ein Pflichtfeld.",
+      "MAXIMUM_LENGTH": "Es sind nur {{chars}} Zeichen erlaubt.",
+      "MINIMUM_LENGTH": "Es sind mindestens {{chars}} Zeichen erforderlich.",
+      "PATTERN_ERROR": "Ihre Eingabe entspricht nicht dem benötigten Format.",
+      "FILETYPE_PATTERN_ERROR": "Ihre Datei entspricht nicht den erlaubten Formaten: .png, .jpg, .jpeg"
+    }
+  },
+  "EXCEPTIONS": {
+    "HTTP_STATUS_0": {
+      "PORTALS": "Unbekanntes Problem beim Abrufen von Workspace-Daten - Bitte versuchen sie es noch einmal.",
+      "MENUS": "Unbekanntes Problem beim Abrufen von Menü-Daten - Bitte versuchen sie es noch einmal."
+    },
+    "HTTP_STATUS_403": {
+      "PORTALS": "Sie haben keine Rechte um Workspaces zu sehen.",
+      "MENUS": "Sie haben keine Rechte um Menüs zu sehen."
+    },
+    "HTTP_STATUS_404": {
+      "PORTALS": "Es konnten keine Workspaces gefunden werden.",
+      "MENUS": "Es konnten keine Menüs gefunden werden."
+    },
+    "HTTP_STATUS_500": {
+      "PORTALS": "Unbekanntes Server-Problem beim Abrufen von Workspace-Daten - Bitte versuchen sie es noch einmal.",
+      "MENUS": "Unbekanntes Server-Problem beim Abrufen von Menü-Daten - Bitte versuchen sie es noch einmal."
+    }
+  }
+}
