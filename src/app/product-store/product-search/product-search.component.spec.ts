@@ -1,15 +1,18 @@
-/* tslint:disable:no-unused-variable */
+import { NO_ERRORS_SCHEMA } from '@angular/core'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { HttpClient } from '@angular/common/http'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { ActivatedRoute } from '@angular/router'
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
-import { HttpLoaderFactory } from 'src/app/app.module'
+
+import { PortalMessageService } from '@onecx/portal-integration-angular'
+import { HttpLoaderFactory } from 'src/app/shared/shared.module'
 import { ProductSearchComponent } from './product-search.component'
 
 describe('ProductSearchComponent', () => {
   let component: ProductSearchComponent
   let fixture: ComponentFixture<ProductSearchComponent>
+
+  const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -24,18 +27,8 @@ describe('ProductSearchComponent', () => {
           }
         })
       ],
-      providers: [
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              paramMap: {
-                get: () => '1'
-              }
-            }
-          }
-        }
-      ]
+      schemas: [NO_ERRORS_SCHEMA],
+      providers: [{ provide: PortalMessageService, useValue: msgServiceSpy }]
     }).compileComponents()
   }))
 
@@ -43,6 +36,12 @@ describe('ProductSearchComponent', () => {
     fixture = TestBed.createComponent(ProductSearchComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
+  })
+
+  afterEach(() => {
+    msgServiceSpy.success.calls.reset()
+    msgServiceSpy.error.calls.reset()
+    msgServiceSpy.info.calls.reset()
   })
 
   it('should create', () => {

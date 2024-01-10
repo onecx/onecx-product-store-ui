@@ -17,7 +17,7 @@
     },
     "DELETE": {
       "LABEL": "Delete",
-      "TOOLTIP": "Delete theme",
+      "TOOLTIP": "Delete Product",
       "MESSAGE": "Do you want to delete {{ITEM}}?",
       "MESSAGE_INFO": "This action cannot be undone!",
       "PRODUCT_NOK": "Product could not be deleted",
