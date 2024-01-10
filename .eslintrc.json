@@ -3,13 +3,17 @@
   "ignorePatterns": [
     ".angular/**",
     ".husky/**",
-    "coverage/**",
+    ".github/**",
+    ".scannerwork/**",
+    "reports/**",
     "dist/**",
     "helm/**",
     "node_modules/**",
     "src/app/generated/**",
     "src/app/api/*",
-    "src/app/model/*"
+    "src/app/model/*",
+    "src/**/*.ico",
+    "src/**/*.svg"
   ],
   "overrides": [
     {
@@ -35,7 +39,7 @@
           "error",
           {
             "type": "attribute",
-            "prefix": "app",
+            "prefix": "ps",
             "style": "camelCase"
           }
         ],
@@ -43,7 +47,7 @@
           "warn",
           {
             "type": "element",
-            "prefix": "app",
+            "prefix": "ps",
             "style": "kebab-case"
           }
         ],

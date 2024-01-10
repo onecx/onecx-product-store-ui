@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core'
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
-import { ConfigurationService } from '@onecx/portal-integration-angular'
 import { filter, map, Observable, OperatorFunction, tap } from 'rxjs'
+
+import { ConfigurationService } from '@onecx/portal-integration-angular'
 
 const SUPPORTED_LANGUAGES = ['de', 'en']
 const DEFAULT_LANG = 'en'
@@ -19,15 +20,15 @@ export class CanActivateGuard implements CanActivate {
     return this.loadTranslations()
   }
 
-  loadTranslations() {
-    console.log(`loadTranslations in portal-mgmt`)
+  private loadTranslations(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    console.log('Start Translation guard - default language ' + DEFAULT_LANG)
     // this language will be used as a fallback when a translation isn't found in the current language
     this.txService.setDefaultLang(DEFAULT_LANG)
 
     return this.txService.use(this.getBestMatchLanguage(this.config.lang)).pipe(
       //optional, after we set the language, we can listen for eventual changes to the lang
       tap(() => {
-        // console.log(`Translations guard done ${this.config.lang}`)
+        console.log(`Translations guard done ${this.config.lang}`)
         this.config.lang$
           //the explict cast is to help linter understand that we will never get undefined
           .pipe(
@@ -43,7 +44,7 @@ export class CanActivateGuard implements CanActivate {
     )
   }
 
-  getBestMatchLanguage(lang: string) {
+  private getBestMatchLanguage(lang: string): string {
     if (SUPPORTED_LANGUAGES.includes(lang)) {
       return lang
     } else {

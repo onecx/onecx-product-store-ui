@@ -97,6 +97,10 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         '404':
           description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
     put:
       tags:
         - Products
@@ -125,6 +129,10 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         '404':
           description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
     delete:
       tags:
         - Products

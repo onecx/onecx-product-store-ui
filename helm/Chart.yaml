@@ -1,23 +1,17 @@
 apiVersion: v2
-name: theme-mgmt-ui
-version: ${project.version}
-description: Helm chart for theme-mgmt-ui deployment.
-home: https://gitlab.com/1000kit/apps/tkit-portal/portal-theme-ui
+name: onecx-product-store-ui
+version: 0.0.0
+description: OneCX Product Store UI.
+home: https://github.com/onecx/onecx-product-store-ui
 keywords:
-  - onecx
-  - portal
-  - 1000kit
-  - menu
-  - microfrontend
+  - product-store
 sources:
-  - https://gitlab.com/1000kit/apps/tkit-portal/portal-theme-ui.git
+  - https://github.com/onecx/onecx-product-store-ui
 maintainers:
   - name: OneCX Developer Team
     email: tkit_dev@1000kit.org
 dependencies:
-  # https://gitlab.com/1000kit/infra/helm/angular.git
-  - name: angular
+  - name: helm-angular-app
     version: ^0
-    repository: https://harbor.1000kit.org/chartrepo/1000kit/
-    # repository: file:///home/mat/projects/tkit/helm/angular
+    repository: oci://ghcr.io/onecx/charts
     alias: app

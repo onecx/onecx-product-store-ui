@@ -19,6 +19,6 @@ export interface UpdateProductRequest {
     basePath: string;
     displayName?: string;
     iconName?: string;
-    classifications?: Set<string>;
+    classifications?: Array<string>;
 }
 

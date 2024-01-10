@@ -1,5 +1,5 @@
 {
-  "id": "THEME_MFE",
+  "id": "ONECX_PRODUCT_STORE_UI",
   {{- if .Values.app.routing.hostName }}
   "remoteEntry": "https://{{ .Values.app.routing.hostName }}{{ .Values.app.routing.path }}remoteEntry.js",
   {{- else if .Values.global.hostName }}
@@ -11,11 +11,11 @@
   {{- else if .Values.global.hostName }}
   "remoteBaseUrl": "https://{{ .Values.global.hostName }}{{ .Values.app.routing.path }}",
   {{- end }}
-  "exposedModule": "./ThemeModule",
-  "displayName": "ThemeModule",
+  "exposedModule": "./ProductStoreMgmtModule",
+  "displayName": "ProductStoreMgmtModule",
   "moduleType": "ANGULAR",
   "wcTagName": "UPMF",
   "appVersion": "{{ .Chart.Version }}",
-  "note": "Theme mgmt module auto import via MF operator",
+  "note": "Product Store module auto import via MF operator",
   "contact": "onecx@1000kit.org"
 }

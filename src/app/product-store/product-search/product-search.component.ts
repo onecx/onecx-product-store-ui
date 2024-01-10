@@ -20,7 +20,6 @@ export class ProductSearchComponent implements OnInit {
   public sortOrder = 1
   public limitText = limitText
 
-  public themeImportDialogVisible = false
   public dataViewControlsTranslations: DataViewControlTranslations = {}
   @ViewChild(DataView) dv: DataView | undefined
 
@@ -32,19 +31,14 @@ export class ProductSearchComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadThemes()
-    this.translate
-      .get(['ACTIONS.CREATE.THEME', 'ACTIONS.CREATE.THEME.TOOLTIP', 'ACTIONS.IMPORT.LABEL', 'ACTIONS.IMPORT.PORTAL'])
-      .subscribe((data) => {
-        this.prepareActionButtons(data)
-      })
+    this.loadProducts()
     this.translate
       .get([
         'SEARCH.SORT_BY',
         'SEARCH.FILTER',
         'SEARCH.FILTER_OF',
-        'THEME.NAME',
-        'THEME.DESCRIPTION',
+        'PRODUCT.NAME',
+        'PRODUCT.DESCRIPTION',
         'GENERAL.TOOLTIP.VIEW_MODE_GRID',
         'GENERAL.TOOLTIP.VIEW_MODE_LIST',
         'GENERAL.TOOLTIP.VIEW_MODE_TABLE',
@@ -56,37 +50,15 @@ export class ProductSearchComponent implements OnInit {
       })
   }
 
-  public loadThemes(): void {
+  public loadProducts(): void {
     this.product$ = this.productApi.searchProducts({ productSearchCriteria: { pageSize: 10 } as ProductSearchCriteria })
-  }
-
-  prepareActionButtons(data: any): void {
-    this.actions = [] // provoke change event
-    this.actions.push(
-      {
-        label: data['ACTIONS.CREATE.THEME'],
-        title: data['ACTIONS.CREATE.THEME.TOOLTIP'],
-        actionCallback: () => this.onNewTheme(),
-        permission: 'THEME#CREATE',
-        icon: 'pi pi-plus',
-        show: 'always'
-      },
-      {
-        label: data['ACTIONS.IMPORT.LABEL'],
-        title: data['ACTIONS.IMPORT.PORTAL'],
-        actionCallback: () => this.onImportThemeClick(),
-        permission: 'THEME#IMPORT',
-        icon: 'pi pi-upload',
-        show: 'always'
-      }
-    )
   }
 
   prepareTranslations(data: any): void {
     this.dataViewControlsTranslations = {
       sortDropdownPlaceholder: data['SEARCH.SORT_BY'],
       filterInputPlaceholder: data['SEARCH.FILTER'],
-      filterInputTooltip: data['SEARCH.FILTER_OF'] + data['THEME.NAME'] + ', ' + data['THEME.DESCRIPTION'],
+      filterInputTooltip: data['SEARCH.FILTER_OF'] + data['PRODUCT.NAME'] + ', ' + data['PRODUCT.DESCRIPTION'],
       viewModeToggleTooltips: {
         grid: data['GENERAL.TOOLTIP.VIEW_MODE_GRID'],
         list: data['GENERAL.TOOLTIP.VIEW_MODE_LIST']
@@ -100,9 +72,6 @@ export class ProductSearchComponent implements OnInit {
     }
   }
 
-  private onNewTheme(): void {
-    this.router.navigate(['./new'], { relativeTo: this.route })
-  }
   public onLayoutChange(viewMode: string): void {
     this.viewMode = viewMode
   }
@@ -115,8 +84,5 @@ export class ProductSearchComponent implements OnInit {
   }
   public onSortDirChange(asc: boolean): void {
     this.sortOrder = asc ? -1 : 1
-  }
-  public onImportThemeClick(): void {
-    this.themeImportDialogVisible = true
   }
 }

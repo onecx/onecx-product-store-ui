@@ -3,7 +3,7 @@
  *   Request proxy to rewrite URLs and prevent CORS errors
  */
 const logFn = function (req, res) {
-  console.log(new Date().toISOString() + `: bypassing ${req.method} ${req.url} `)
+  //console.log(new Date().toISOString() + `: bypassing ${req.method} ${req.url} `)
 }
 const bypassFn = function (req, res) {
   logFn(req, res)
@@ -17,11 +17,11 @@ const bypassFn = function (req, res) {
 }
 
 const PROXY_CONFIG = {
-  '/portal-api': {
-    target: 'http://tkit-portal-server',
+  '/product-store-bff': {
+    target: 'http://onecx-product-store-bff',
     secure: false,
     pathRewrite: {
-      '^.*/portal-api': ''
+      '^.*/product-store-bff': ''
     },
     changeOrigin: true,
     logLevel: 'debug',

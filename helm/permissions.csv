@@ -1,9 +1,8 @@
-PERMISSION NAME;PERMISSION_KEY;portal-mgmt-admin;portal-mgmt-user;
-Theme create;THEME#CREATE;x;;
-Theme delete;THEME#DELETE;x;;
-Theme edit;THEME#EDIT;x;;
-Theme save;THEME#SAVE;x;;
-Theme import;THEME#IMPORT;x;;
-Theme export;THEME#EXPORT;x;;
-Theme detail page;THEME#VIEW;x;x;
-Theme search page;THEME#SEARCH;x;x;
+PERMISSION NAME;PERMISSION_KEY;onecx-product-store-admin;onecx-product-store-user
+View Product Store;PRODUCT_STORE#VIEW;x;x
+View/Search Products in Product Store;PRODUCT#SEARCH;x;x
+View Product Details in Product Store;PRODUCT#VIEW;x;x
+Edit Product Details in Product Store;PRODUCT#EDIT;x;
+Delete Products in Product Store;PRODUCT#DELETE;x;
+Edit Microfrontends;MICROFRONTEND#EDIT;x;
+Delete Microfrontends;MICROFRONTEND#DELETE;x;

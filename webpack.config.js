@@ -2,10 +2,10 @@ const { ModifyEntryPlugin } = require('@angular-architects/module-federation/src
 const { share, withModuleFederationPlugin } = require('@angular-architects/module-federation/webpack')
 
 const config = withModuleFederationPlugin({
-  name: 'product-store',
+  name: 'product-store-ui',
   filename: 'remoteEntry.js',
   exposes: {
-    './ProductStoreModule': 'src/app/product-store-remote.module.ts'
+    './ProductStoreMgmtModule': 'src/app/product-store-remote.module.ts'
   },
   shared: share({
     '@angular/core': { singleton: true, strictVersion: true, requiredVersion: 'auto' },

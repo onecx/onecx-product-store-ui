@@ -1,7 +1,7 @@
 app:
+  name: ui
   image:
-    repository: '1000kit/theme-mgmt-ui'
-    tag: sha-master
+    repository: 'onecx/onecx-product-store-ui'
   routing:
     enabled: true
   operator:
@@ -9,15 +9,26 @@ app:
       enabled: false
     keycloak:
       enabled: true
-      client: "{ \n  \"clientId\": \"theme-mgmt-ui\",\n  \"enabled\": true,\n  \"description\": \"Keycloak client for theme-mgmt-ui\",\n  \"redirectUris\": [\"*\"],\n  \"webOrigins\": [\"*\"],\n  \"publicClient\": true,\n  \"protocol\": \"openid-connect\"\n}"
+      client: |-
+        { 
+          "clientId": "product-store-ui",
+          "enabled": true,
+          "description": "Keycloak client for product-store-ui",
+          "redirectUris": ["*"],
+          "webOrigins": ["*"],
+          "publicClient": true,
+          "protocol": "openid-connect"
+        }
       roles: |-
         [
            {
-             "name": "onecx-portal-admin",
-             "description": "OneCX portal platform admin"
+             "name": "onecx-product-store-admin",
+             "description": "OneCX Product Store admin"
            },
            {
-             "name": "onecx-portal-user",
-             "description": "OneCX portal platform user"
+             "name": "onecx-product-store-user",
+             "description": "OneCX Product Store user"
            }
          ]
+
+# PIPE Config

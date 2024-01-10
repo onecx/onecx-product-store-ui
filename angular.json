@@ -6,15 +6,15 @@
     "onecx-product-store-ui": {
       "projectType": "application",
       "schematics": {},
-      "root": "./",
+      "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "ps",
       "architect": {
         "build": {
           "builder": "ngx-build-plus:browser",
           "options": {
             "preserveSymlinks": true,
-            "outputPath": "dist",
+            "outputPath": "dist/onecx-product-store-ui",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -67,7 +67,6 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "outputHashing": "all",
               "extraWebpackConfig": "webpack.prod.config.js"
             }
           },
@@ -108,13 +107,14 @@
             "karmaConfig": "karma.conf.js",
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/styles.scss"],
-            "scripts": []
+            "scripts": [],
+            "codeCoverageExclude": ["src/app/test/**", "src/app/generated/**"]
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": ["**/*.ts", "**/*.js", "src/**/*.html"]
+            "lintFilePatterns": ["**/*.ts", "**/*.js", "**/*.html"]
           }
         }
       }

@@ -2,101 +2,96 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from '@angular/cor
 import { CommonModule } from '@angular/common'
 import { HttpClient } from '@angular/common/http'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
-import {
-  MissingTranslationHandler,
-  MissingTranslationHandlerParams,
-  TranslateModule,
-  TranslateService
-} from '@ngx-translate/core'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { TranslateHttpLoader } from '@ngx-translate/http-loader'
+import { ColorSketchModule } from 'ngx-color/sketch'
+import { ErrorTailorModule } from '@ngneat/error-tailor'
 
+import { AutoCompleteModule } from 'primeng/autocomplete'
 import { CheckboxModule } from 'primeng/checkbox'
-import { InputTextareaModule } from 'primeng/inputtextarea'
-import { AccordionModule } from 'primeng/accordion'
-import { MessageService } from 'primeng/api'
+import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { ConfirmPopupModule } from 'primeng/confirmpopup'
+import { ConfirmationService, MessageService } from 'primeng/api'
 import { DataViewModule } from 'primeng/dataview'
 import { DialogModule } from 'primeng/dialog'
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog'
 import { DropdownModule } from 'primeng/dropdown'
+import { FileUploadModule } from 'primeng/fileupload'
 import { InputTextModule } from 'primeng/inputtext'
+import { InputTextareaModule } from 'primeng/inputtextarea'
 import { KeyFilterModule } from 'primeng/keyfilter'
 import { ListboxModule } from 'primeng/listbox'
 import { MultiSelectModule } from 'primeng/multiselect'
 import { OverlayPanelModule } from 'primeng/overlaypanel'
-import { SelectButtonModule } from 'primeng/selectbutton'
 import { PanelModule } from 'primeng/panel'
-import { StepsModule } from 'primeng/steps'
-import { TableModule } from 'primeng/table'
+import { SelectButtonModule } from 'primeng/selectbutton'
 import { TabViewModule } from 'primeng/tabview'
+import { TableModule } from 'primeng/table'
 import { ToastModule } from 'primeng/toast'
-import { TreeModule } from 'primeng/tree'
-import { BadgeModule } from 'primeng/badge'
-import { FileUploadModule } from 'primeng/fileupload'
-import { AutoCompleteModule } from 'primeng/autocomplete'
-import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog'
-import { ErrorTailorModule } from '@ngneat/error-tailor'
 
-import { MfeInfo, MFE_INFO, PortalDialogService, PortalMessageService } from '@onecx/portal-integration-angular'
+import {
+  MfeInfo,
+  MFE_INFO,
+  PortalDialogService,
+  PortalMessageService,
+  TranslateCombinedLoader
+} from '@onecx/portal-integration-angular'
+
 import { BASE_PATH } from '../generated'
+import { LabelResolver } from './label.resolver'
 import { environment } from '../../environments/environment'
 import { CanActivateGuard } from './can-active-guard.service'
-import { LabelResolver } from './label.resolver'
 import { ImageContainerComponent } from './image-container/image-container.component'
 
-export function createTranslateLoader(http: HttpClient, mfeInfo: MfeInfo) {
-  console.log(`configuring translate loader ${mfeInfo?.remoteBaseUrl}`)
-  if (mfeInfo && mfeInfo.remoteBaseUrl) {
-    return new TranslateHttpLoader(http, `${mfeInfo.remoteBaseUrl}/assets/i18n/`, '.json')
-  } else {
-    return new TranslateHttpLoader(http, `./assets/i18n/`, '.json')
-  }
-}
-
 export const basePathProvider = (mfeInfo: MfeInfo) => {
-  console.log(`Base path provider ${mfeInfo?.remoteBaseUrl}`)
-  return mfeInfo ? mfeInfo.remoteBaseUrl + '/' + environment.apiPrefix : './' + environment.apiPrefix
+  console.log(
+    'Base path provider: ' + (mfeInfo ? mfeInfo.remoteBaseUrl + '' + environment.apiPrefix : '' + environment.apiPrefix)
+  )
+  return mfeInfo ? mfeInfo.remoteBaseUrl + '' + environment.apiPrefix : '' + environment.apiPrefix
 }
 
-export class MyMissingTranslationHandler implements MissingTranslationHandler {
-  handle(params: MissingTranslationHandlerParams) {
-    console.log(`Missing translation for ${params.key}`)
-    return params.key
+export function HttpLoaderFactory(http: HttpClient, mfeInfo: MfeInfo) {
+  if (mfeInfo) {
+    console.log(`Configuring translation loader ${mfeInfo?.remoteBaseUrl}`)
   }
+  // if running standalone then load the app assets directly from remote base URL
+  const appAssetPrefix = mfeInfo && mfeInfo.remoteBaseUrl ? mfeInfo.remoteBaseUrl : './'
+  return new TranslateCombinedLoader(
+    new TranslateHttpLoader(http, appAssetPrefix + 'assets/i18n/', '.json'),
+    new TranslateHttpLoader(http, appAssetPrefix + 'onecx-portal-lib/assets/i18n/', '.json')
+  )
 }
 
 @NgModule({
   declarations: [ImageContainerComponent],
   imports: [
-    AccordionModule,
-    CommonModule,
+    AutoCompleteModule,
     CheckboxModule,
+    ColorSketchModule,
+    CommonModule,
+    ConfirmDialogModule,
+    ConfirmPopupModule,
     DataViewModule,
     DialogModule,
-    DynamicDialogModule,
     DropdownModule,
+    DynamicDialogModule,
+    FileUploadModule,
     FormsModule,
+    InputTextModule,
+    InputTextareaModule,
     KeyFilterModule,
-    BadgeModule,
     ListboxModule,
     MultiSelectModule,
+    OverlayPanelModule,
+    PanelModule,
     ReactiveFormsModule,
-    FileUploadModule,
-    AutoCompleteModule,
+    SelectButtonModule,
     TabViewModule,
-    TreeModule,
-    TranslateModule.forChild({
-      isolate: true,
-      missingTranslationHandler: {
-        provide: MissingTranslationHandler,
-        useClass: MyMissingTranslationHandler
-      }
-    }),
+    TableModule,
+    ToastModule,
+    TranslateModule.forChild({ isolate: true }),
     ErrorTailorModule.forRoot({
-      controlErrorsOn: {
-        async: true,
-        blur: true,
-        change: true
-      },
+      controlErrorsOn: { async: true, blur: true, change: true },
       errors: {
         useFactory: (i18n: TranslateService) => {
           return {
@@ -116,60 +111,43 @@ export class MyMissingTranslationHandler implements MissingTranslationHandler {
           (selector) => element.tagName === selector
         )
       }
-    }),
-    StepsModule,
-    InputTextModule,
-    InputTextareaModule,
-    ConfirmPopupModule,
-    ToastModule,
-    PanelModule,
-    OverlayPanelModule,
-    SelectButtonModule,
-    TableModule
+    })
   ],
   exports: [
-    AccordionModule,
+    AutoCompleteModule,
     CheckboxModule,
     CommonModule,
+    ConfirmPopupModule,
     DataViewModule,
     DialogModule,
     DropdownModule,
-    FormsModule,
-    KeyFilterModule,
-    ListboxModule,
-    TabViewModule,
-    BadgeModule,
-    MultiSelectModule,
-    AutoCompleteModule,
-    FileUploadModule,
-    ReactiveFormsModule,
-    TranslateModule,
+    DynamicDialogModule,
     ErrorTailorModule,
-    TreeModule,
-    StepsModule,
+    FileUploadModule,
+    FormsModule,
+    ImageContainerComponent,
     InputTextModule,
     InputTextareaModule,
-    ConfirmPopupModule,
-    ToastModule,
-    PanelModule,
+    KeyFilterModule,
+    ListboxModule,
+    MultiSelectModule,
     OverlayPanelModule,
+    PanelModule,
+    ReactiveFormsModule,
     SelectButtonModule,
+    TabViewModule,
     TableModule,
-    DynamicDialogModule,
-    ImageContainerComponent
+    ToastModule,
+    TranslateModule
   ],
   //this is not elegant, for some reason the injection token from primeng does not work across federated module
   providers: [
+    CanActivateGuard,
+    ConfirmationService,
     LabelResolver,
     { provide: MessageService, useExisting: PortalMessageService },
     { provide: DialogService, useClass: PortalDialogService },
-
-    CanActivateGuard,
-    {
-      provide: BASE_PATH,
-      useFactory: basePathProvider,
-      deps: [MFE_INFO]
-    }
+    { provide: BASE_PATH, useFactory: basePathProvider, deps: [MFE_INFO] }
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA]
 })

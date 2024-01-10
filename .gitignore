@@ -15,7 +15,7 @@ chrome-profiler-events*.json
 speed-measure-plugin*.json
 
 # IDEs and editors
-/.idea
+.idea
 .project
 .classpath
 .c9/
@@ -32,12 +32,13 @@ speed-measure-plugin*.json
 .history/*
 
 # misc
-/.angular/cache
-/.sass-cache
-/connect.lock
-/coverage
-/libpeerconnection.log
-/typings
+.angular/cache
+.sass-cache
+.gitlab*
+.scannerwork
+connect.lock
+reports
+typings
 *.log
 *.sh
 

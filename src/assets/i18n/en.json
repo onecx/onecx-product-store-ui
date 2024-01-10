@@ -7,39 +7,29 @@
       "YES.TOOLTIP": "Proceed with the action"
     },
     "CREATE": {
-      "THEME": "Create Theme",
-      "THEME.TOOLTIP": "Create a new Theme",
+      "PRODUCT": "Create Product",
+      "PRODUCT.TOOLTIP": "Create a new Product",
       "MESSAGE": {
-        "THEME_ALREADY_EXISTS": "A Theme with that name already exists",
-        "CREATE_OK": "The Theme was created successfully",
-        "CREATE_NOK": "An error has occurred. The Theme was not created."
+        "PRODUCT_ALREADY_EXISTS": "A Product with that name already exists",
+        "PRODUCT_OK": "The Product was created successfully",
+        "PRODUCT_NOK": "An error has occurred. The Product was not created."
       }
     },
     "DELETE": {
       "LABEL": "Delete",
       "TOOLTIP": "Delete theme",
-      "THEME_MESSAGE": "Do you want to delete {{ITEM}}?",
+      "MESSAGE": "Do you want to delete {{ITEM}}?",
       "MESSAGE_INFO": "This action cannot be undone!",
-      "THEME_NOK": "Theme could not be deleted",
-      "THEME_OK": "Theme deleted successfully"
+      "PRODUCT_NOK": "Product could not be deleted",
+      "PRODUCT_OK": "Product deleted successfully"
     },
     "EDIT": {
       "LABEL": "Edit",
       "TOOLTIP": "Edit properties",
       "MESSAGE": {
-        "CHANGE_OK": "The Theme was changed successfully",
-        "CHANGE_NOK": "An error has occurred. The Theme was not changed."
+        "PRODUCT_OK": "The Product was changed successfully",
+        "PRODUCT_NOK": "An error has occurred. The Product was not changed."
       }
-    },
-    "EXPORT": {
-      "LABEL": "Export",
-      "TOOLTIP": "Export definition in JSON format",
-      "THEME": "Export Theme"
-    },
-    "IMPORT": {
-      "LABEL": "Import",
-      "TOOLTIP": "Upload definition in JSON format",
-      "THEME": "Import Theme"
     },
     "NAVIGATION": {
       "CLOSE": "Close",
@@ -55,12 +45,10 @@
     "CANCEL": "Cancel",
     "CHOOSE": "Choose",
     "SAVE": "Save",
-    "SAVE_AS": "Save as ...",
     "UPLOAD": "Upload",
     "TOOLTIPS": {
       "CANCEL_AND_CLOSE": "Cancel and close dialog",
-      "SAVE": "Save changes",
-      "SAVE_AS": "Save as new theme"
+      "SAVE": "Save changes"
     }
   },
   "BREADCRUMBS": {
@@ -104,67 +92,36 @@
     "SORT_DIRECTION_ASC": "ascending",
     "SORT_DIRECTION_DESC": "descending"
   },
-  "THEME": {
-    "SEARCH.HEADER": "Theme Management",
-    "SEARCH.SUBHEADER": "Creation and editing of Themes",
-    "DESIGNER.EDIT.SUBHEADER": "Change Theme Details",
-    "DESIGNER.NEW.SUBHEADER": "Create a new Theme",
-    "DETAIL.SUBHEADER": "Theme Details",
-    "DETAIL.AUTO_APPLY": "Auto apply changes",
-    "DETAIL.AUTO_APPLY.TOOLTIP": "If this option is switched on, then all changes (font, colors) are automatically applied to the current page.",
-    "DETAIL.AUTO_APPLY_CURRENT_THEME": "Changes are applied immediately when saving because it is the Theme currently in use",
-    "DETAIL.THEME_SELECTOR": "Select Theme as Template",
-    "LOAD_ERROR": "Failed to load Theme",
-    "NOT_FOUND": "Theme was not found",
+  "PRODUCT": {
+    "SEARCH.HEADER": "Product Store",
+    "SEARCH.SUBHEADER": "Viewing and Managing Products and their Apps",
+    "DETAIL.SUBHEADER": "Product Details",
+    "LOAD_ERROR": "Failed to load Product",
+    "NOT_FOUND": "Product was not found",
     "NO_PROPERTIES": "No properties specified",
     "TABS": {
       "INTERN": "Internal",
-      "PROPERTIES": "Properties",
-      "VARIABLES": "Theme Variables"
-    },
-    "IMPORT": {
-      "HEADER": "Import Theme",
-      "IMPORT_THEME_SUCCESS": "The Theme was sucessfully imported.",
-      "IMPORT_THEME_FAIL": "An error occurred, the Theme was not imported.",
-      "THEME_EXISTS_MESSAGE": "A Theme with this name already exists. Its definition is overwritten.",
-      "THEME_COLOR_PRIMARY": "Primary color",
-      "THEME_COLOR_SECONDARY": "Secondary color",
-      "THEME_COLOR_TEXT": "Text color",
-      "THEME_COLOR_TOP_MENU": "Topbar Menu color",
-      "THEME_COLOR_TOP_LEFT": "Topbar Link color"
-    },
-    "TEMPLATE": {
-      "SELECTOR": "Select Theme template",
-      "SELECTOR.TOOLTIP": "Choose an existing Theme and use it as a template",
-      "CONFIRMATION.HEADER": "Use a Theme as Template",
-      "CONFIRMATION.MESSAGE": "Should all values be replaced by the values of \"{{ITEM}}\"?"
-    },
-    "GROUPS": {
-      "BASE": "Basis",
-      "FONT": "Font"
+      "PROPERTIES": "Properties"
     },
     "ID": "ID",
     "NAME": "Name",
-    "THEME_NAME": "Theme Name",
     "VERSION": "Version",
     "DESCRIPTION": "Description",
-    "CSS_FILE": "CSS File",
     "CREATION_DATE": "Created on",
     "CREATION_USER": "Created by",
     "MODIFICATION_DATE": "Changed on",
     "MODIFICATION_USER": "Changed by",
     "WORKSPACES": "Used in Workspaces",
     "TOOLTIPS": {
-      "ID": "Unique technical ID of the Theme",
-      "NAME": "Unique Name of the Theme",
-      "VERSION": "Version of the Theme",
-      "DESCRIPTION": "Description of the Theme",
-      "WORKSPACES": "Workspaces using the Theme",
-      "CSS_FILE": "CSS file name",
-      "CREATION_DATE": "Timestamp the Theme was created",
-      "CREATION_USER": "Name of the user which created the Theme",
-      "MODIFICATION_DATE": "Timestamp the Theme was latest modified",
-      "MODIFICATION_USER": "Name of the user which changed the Theme last time"
+      "ID": "Unique technical ID of the Product",
+      "NAME": "Unique Name of the Product",
+      "VERSION": "Version of the Product",
+      "DESCRIPTION": "Description of the Product",
+      "WORKSPACES": "Workspaces using the Product",
+      "CREATION_DATE": "Timestamp the Product was created",
+      "CREATION_USER": "Name of the user which created the Product",
+      "MODIFICATION_DATE": "Timestamp the Product was latest modified",
+      "MODIFICATION_USER": "Name of the user which changed the Product last time"
     }
   },
   "VALIDATION": {

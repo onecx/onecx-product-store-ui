@@ -1,9 +1,9 @@
 import { Component } from '@angular/core'
 @Component({
-  selector: 'app-root',
+  selector: 'ps-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'theme-mgmt'
+  title = 'product-store-ui'
 }
