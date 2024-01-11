@@ -3,7 +3,7 @@
 
 module.exports = function (config) {
   config.set({
-    basePath: '',
+    basePath: '.',
     logLevel: config.LOG_INFO,
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
     plugins: [
@@ -45,8 +45,8 @@ module.exports = function (config) {
     coverageReporter: {
       includeAllSources: true,
       dir: 'reports',
-      subdir: 'coverage',
-      reporters: [{ type: 'html' }, { type: 'text-summary' }]
+      subdir: 'coverage', // common name instaed browser-specific
+      reporters: [{ type: 'text-summary' }, { type: 'lcov' }]
     },
     reporters: ['progress', 'kjhtml', 'coverage', 'sonarqubeUnit'],
     preprocessors: { 'src/**/*.js': ['coverage'] },
