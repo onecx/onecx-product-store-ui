@@ -1,10 +1,22 @@
 <ocx-portal-page permission="PRODUCT#SEARCH" helpArticleId="PAGE_PRODUCT_SEARCH">
-  <ocx-page-header
+  <ocx-search-criteria
     [header]="'DIALOG.SEARCH.HEADER' | translate"
     [subheader]="'DIALOG.SEARCH.SUBHEADER' | translate"
     [actions]="actions"
+    [disableAdvancedToggle]="true"
+    [disableAdvancedToggle]="true"
+    (search)="onSearch()"
+    (reset)="onSearchReset()"
   >
-  </ocx-page-header>
+    <div simpleCriteria>
+      <div [formGroup]="productSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-3 px-2">
+        <span class="p-float-label">
+          <input id="productName" pInputText type="text" formControlName="productName" class="w-18rem" [clear]="true" />
+          <label for="productName">{{ 'PRODUCT.NAME' | translate }}</label>
+        </span>
+      </div>
+    </div>
+  </ocx-search-criteria>
 
   <ocx-page-content>
     <ng-container *ngIf="product$ | async as products">
@@ -16,7 +28,7 @@
         [rowsPerPageOptions]="[10, 20, 50]"
         [rows]="viewMode === 'grid' ? 12 : 10"
         [layout]="viewMode"
-        filterBy="name,description"
+        filterBy="name,displayName"
         [sortField]="sortField"
         [sortOrder]="sortOrder"
       >
@@ -28,13 +40,13 @@
             [initialViewMode]="viewMode"
             [sortingOptions]="[
               { label: 'PRODUCT.NAME' | translate, value: 'name' },
-              { label: 'PRODUCT.DESCRIPTION' | translate, value: 'description' }
+              { label: 'PRODUCT.DISPLAY_NAME' | translate, value: 'displayName' }
             ]"
             [defaultSortOption]="sortField"
             [defaultSortDirection]="sortOrder === 1"
             (dataViewChange)="onLayoutChange($event)"
             (filterChange)="onFilterChange($event)"
-            [filterColumns]="['PRODUCT.NAME' | translate, 'PRODUCT.DESCRIPTION' | translate]"
+            [filterColumns]="['PRODUCT.NAME' | translate, 'PRODUCT.DISPLAY_NAME' | translate]"
             (sortChange)="onSortChange($event)"
             (sortDirectionChange)="onSortDirChange($event)"
             [translations]="dataViewControlsTranslations"
@@ -58,7 +70,7 @@
             <div class="col-12 md:col-5 lg:col-5 xl:col-6">
               <div class="flex flex-column justify-content-center gap-1 text-center md:text-left">
                 <div class="font-bold">{{ product.name }}</div>
-                <div>{{ limitText(product.description, 75) }}</div>
+                <div>{{ limitText(product.displayName, 75) }}</div>
               </div>
             </div>
           </div>
@@ -70,10 +82,10 @@
                 <ps-image-container [imageUrl]="product.logoUrl" [small]="false"></ps-image-container>
               </div>
               <div class="h-3rem flex flex-column justify-content-between gap-1 lg:gap-2 mt-0 mb-1 text-center">
-                <div class="font-bold text-xl lg:text-2xl" [title]="limitText(product.displayName, 100)">
-                  {{ limitText(product.displayName, 15) }}
+                <div class="font-bold text-xl lg:text-2xl" [title]="limitText(product.name, 100)">
+                  {{ limitText(product.name, 15) }}
                 </div>
-                <div [title]="limitText(product.description, 100)">{{ limitText(product.description, 25) }}</div>
+                <div [title]="limitText(product.displayName, 100)">{{ limitText(product.displayName, 25) }}</div>
               </div>
             </div>
           </div>

@@ -1,23 +1,30 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { Observable } from 'rxjs'
+import { Observable, finalize } from 'rxjs'
 import { DataView } from 'primeng/dataview'
 import { TranslateService } from '@ngx-translate/core'
 import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
-import { ProductPageResult, ProductsAPIService, ProductSearchCriteria } from '../../generated'
+import { ProductPageResult, ProductsAPIService } from '../../generated'
 import { limitText } from '../../shared/utils'
+import { FormControl, FormGroup } from '@angular/forms'
+
+export interface ProductSearchCriteria {
+  productName: FormControl<string | null>
+}
 
 @Component({
   templateUrl: './product-search.component.html',
   styleUrls: ['./product-search.component.scss']
 })
 export class ProductSearchComponent implements OnInit {
-  product$!: Observable<ProductPageResult>
+  public product$!: Observable<ProductPageResult>
+  public productSearchCriteriaGroup!: FormGroup<ProductSearchCriteria>
   public actions: Action[] = []
   public viewMode = 'grid'
   public filter: string | undefined
   public sortField = 'name'
   public sortOrder = 1
+  public searchInProgress = false
   public limitText = limitText
 
   public dataViewControlsTranslations: DataViewControlTranslations = {}
@@ -28,7 +35,11 @@ export class ProductSearchComponent implements OnInit {
     private router: Router,
     private productApi: ProductsAPIService,
     private translate: TranslateService
-  ) {}
+  ) {
+    this.productSearchCriteriaGroup = new FormGroup<ProductSearchCriteria>({
+      productName: new FormControl<string | null>(null)
+    })
+  }
 
   ngOnInit(): void {
     this.loadProducts()
@@ -51,9 +62,12 @@ export class ProductSearchComponent implements OnInit {
   }
 
   public loadProducts(): void {
-    this.product$ = this.productApi.searchProducts({
-      productSearchCriteria: { pageSize: 1000 } as ProductSearchCriteria
-    })
+    this.searchInProgress = true
+    this.product$ = this.productApi
+      .searchProducts({
+        productSearchCriteria: { name: this.productSearchCriteriaGroup.controls['productName'].value, pageSize: 1000 }
+      })
+      .pipe(finalize(() => (this.searchInProgress = false)))
   }
 
   prepareTranslations(data: any): void {
@@ -87,5 +101,11 @@ export class ProductSearchComponent implements OnInit {
   }
   public onSortDirChange(asc: boolean): void {
     this.sortOrder = asc ? -1 : 1
+  }
+  public onSearch() {
+    this.loadProducts()
+  }
+  public onSearchReset() {
+    this.productSearchCriteriaGroup.reset()
   }
 }
