@@ -2,6 +2,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { HttpClient } from '@angular/common/http'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
+import { RouterTestingModule } from '@angular/router/testing'
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
@@ -19,6 +20,7 @@ describe('ProductSearchComponent', () => {
       declarations: [ProductSearchComponent],
       imports: [
         HttpClientTestingModule,
+        RouterTestingModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
