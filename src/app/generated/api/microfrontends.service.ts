@@ -19,49 +19,49 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { CreateProductRequest } from '../model/createProductRequest';
+import { CreateMicrofrontendRequest } from '../model/createMicrofrontendRequest';
+// @ts-ignore
+import { Microfrontend } from '../model/microfrontend';
+// @ts-ignore
+import { MicrofrontendPageResult } from '../model/microfrontendPageResult';
+// @ts-ignore
+import { MicrofrontendSearchCriteria } from '../model/microfrontendSearchCriteria';
 // @ts-ignore
 import { ProblemDetailResponse } from '../model/problemDetailResponse';
 // @ts-ignore
-import { Product } from '../model/product';
-// @ts-ignore
-import { ProductPageResult } from '../model/productPageResult';
-// @ts-ignore
-import { ProductSearchCriteria } from '../model/productSearchCriteria';
-// @ts-ignore
-import { UpdateProductRequest } from '../model/updateProductRequest';
+import { UpdateMicrofrontendRequest } from '../model/updateMicrofrontendRequest';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
 
 
-export interface CreateProductRequestParams {
-    createProductRequest: CreateProductRequest;
+export interface CreateMicrofrontendRequestParams {
+    createMicrofrontendRequest: CreateMicrofrontendRequest;
 }
 
-export interface DeleteProductRequestParams {
+export interface DeleteMicrofrontendRequestParams {
     id: string;
 }
 
-export interface GetProductRequestParams {
+export interface GetMicrofrontendRequestParams {
     id: string;
 }
 
-export interface SearchProductsRequestParams {
-    productSearchCriteria: ProductSearchCriteria;
+export interface SearchMicrofrontendsRequestParams {
+    microfrontendSearchCriteria: MicrofrontendSearchCriteria;
 }
 
-export interface UpdateProductRequestParams {
+export interface UpdateMicrofrontendRequestParams {
     id: string;
-    updateProductRequest: UpdateProductRequest;
+    updateMicrofrontendRequest: UpdateMicrofrontendRequest;
 }
 
 
 @Injectable({
   providedIn: 'any'
 })
-export class ProductsAPIService {
+export class MicrofrontendsAPIService {
 
     protected basePath = 'http://onecx-product-store-bff:8080';
     public defaultHeaders = new HttpHeaders();
@@ -123,18 +123,18 @@ export class ProductsAPIService {
     }
 
     /**
-     * Create new product
+     * Create microfrontend
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public createProduct(requestParameters: CreateProductRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Product>;
-    public createProduct(requestParameters: CreateProductRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Product>>;
-    public createProduct(requestParameters: CreateProductRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Product>>;
-    public createProduct(requestParameters: CreateProductRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
-        const createProductRequest = requestParameters.createProductRequest;
-        if (createProductRequest === null || createProductRequest === undefined) {
-            throw new Error('Required parameter createProductRequest was null or undefined when calling createProduct.');
+    public createMicrofrontend(requestParameters: CreateMicrofrontendRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Microfrontend>;
+    public createMicrofrontend(requestParameters: CreateMicrofrontendRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Microfrontend>>;
+    public createMicrofrontend(requestParameters: CreateMicrofrontendRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Microfrontend>>;
+    public createMicrofrontend(requestParameters: CreateMicrofrontendRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+        const createMicrofrontendRequest = requestParameters.createMicrofrontendRequest;
+        if (createMicrofrontendRequest === null || createMicrofrontendRequest === undefined) {
+            throw new Error('Required parameter createMicrofrontendRequest was null or undefined when calling createMicrofrontend.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -177,11 +177,11 @@ export class ProductsAPIService {
             }
         }
 
-        let localVarPath = `/products`;
-        return this.httpClient.request<Product>('post', `${this.configuration.basePath}${localVarPath}`,
+        let localVarPath = `/microfrontends`;
+        return this.httpClient.request<Microfrontend>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: createProductRequest,
+                body: createMicrofrontendRequest,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -192,18 +192,18 @@ export class ProductsAPIService {
     }
 
     /**
-     * Delete product by ID
+     * Delete microfrontend by ID
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public deleteProduct(requestParameters: DeleteProductRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
-    public deleteProduct(requestParameters: DeleteProductRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
-    public deleteProduct(requestParameters: DeleteProductRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
-    public deleteProduct(requestParameters: DeleteProductRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public deleteMicrofrontend(requestParameters: DeleteMicrofrontendRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public deleteMicrofrontend(requestParameters: DeleteMicrofrontendRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public deleteMicrofrontend(requestParameters: DeleteMicrofrontendRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public deleteMicrofrontend(requestParameters: DeleteMicrofrontendRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         const id = requestParameters.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling deleteProduct.');
+            throw new Error('Required parameter id was null or undefined when calling deleteMicrofrontend.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -237,7 +237,7 @@ export class ProductsAPIService {
             }
         }
 
-        let localVarPath = `/products/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        let localVarPath = `/microfrontends/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
         return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -251,18 +251,18 @@ export class ProductsAPIService {
     }
 
     /**
-     * Return product by ID
+     * Return microfrontend by ID
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getProduct(requestParameters: GetProductRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Product>;
-    public getProduct(requestParameters: GetProductRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Product>>;
-    public getProduct(requestParameters: GetProductRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Product>>;
-    public getProduct(requestParameters: GetProductRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public getMicrofrontend(requestParameters: GetMicrofrontendRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Microfrontend>;
+    public getMicrofrontend(requestParameters: GetMicrofrontendRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Microfrontend>>;
+    public getMicrofrontend(requestParameters: GetMicrofrontendRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Microfrontend>>;
+    public getMicrofrontend(requestParameters: GetMicrofrontendRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         const id = requestParameters.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling getProduct.');
+            throw new Error('Required parameter id was null or undefined when calling getMicrofrontend.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -296,8 +296,8 @@ export class ProductsAPIService {
             }
         }
 
-        let localVarPath = `/products/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<Product>('get', `${this.configuration.basePath}${localVarPath}`,
+        let localVarPath = `/microfrontends/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        return this.httpClient.request<Microfrontend>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -310,18 +310,18 @@ export class ProductsAPIService {
     }
 
     /**
-     * Search for products by search criteria
+     * Search for microfrontend(s) by search criteria
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public searchProducts(requestParameters: SearchProductsRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ProductPageResult>;
-    public searchProducts(requestParameters: SearchProductsRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ProductPageResult>>;
-    public searchProducts(requestParameters: SearchProductsRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ProductPageResult>>;
-    public searchProducts(requestParameters: SearchProductsRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
-        const productSearchCriteria = requestParameters.productSearchCriteria;
-        if (productSearchCriteria === null || productSearchCriteria === undefined) {
-            throw new Error('Required parameter productSearchCriteria was null or undefined when calling searchProducts.');
+    public searchMicrofrontends(requestParameters: SearchMicrofrontendsRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<MicrofrontendPageResult>;
+    public searchMicrofrontends(requestParameters: SearchMicrofrontendsRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<MicrofrontendPageResult>>;
+    public searchMicrofrontends(requestParameters: SearchMicrofrontendsRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<MicrofrontendPageResult>>;
+    public searchMicrofrontends(requestParameters: SearchMicrofrontendsRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+        const microfrontendSearchCriteria = requestParameters.microfrontendSearchCriteria;
+        if (microfrontendSearchCriteria === null || microfrontendSearchCriteria === undefined) {
+            throw new Error('Required parameter microfrontendSearchCriteria was null or undefined when calling searchMicrofrontends.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -364,11 +364,11 @@ export class ProductsAPIService {
             }
         }
 
-        let localVarPath = `/products/search`;
-        return this.httpClient.request<ProductPageResult>('post', `${this.configuration.basePath}${localVarPath}`,
+        let localVarPath = `/microfrontends/search`;
+        return this.httpClient.request<MicrofrontendPageResult>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: productSearchCriteria,
+                body: microfrontendSearchCriteria,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -379,22 +379,22 @@ export class ProductsAPIService {
     }
 
     /**
-     * Update product by ID
+     * Update microfrontend by ID
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateProduct(requestParameters: UpdateProductRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
-    public updateProduct(requestParameters: UpdateProductRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
-    public updateProduct(requestParameters: UpdateProductRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
-    public updateProduct(requestParameters: UpdateProductRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public updateMicrofrontend(requestParameters: UpdateMicrofrontendRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public updateMicrofrontend(requestParameters: UpdateMicrofrontendRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public updateMicrofrontend(requestParameters: UpdateMicrofrontendRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public updateMicrofrontend(requestParameters: UpdateMicrofrontendRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         const id = requestParameters.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling updateProduct.');
+            throw new Error('Required parameter id was null or undefined when calling updateMicrofrontend.');
         }
-        const updateProductRequest = requestParameters.updateProductRequest;
-        if (updateProductRequest === null || updateProductRequest === undefined) {
-            throw new Error('Required parameter updateProductRequest was null or undefined when calling updateProduct.');
+        const updateMicrofrontendRequest = requestParameters.updateMicrofrontendRequest;
+        if (updateMicrofrontendRequest === null || updateMicrofrontendRequest === undefined) {
+            throw new Error('Required parameter updateMicrofrontendRequest was null or undefined when calling updateMicrofrontend.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -437,11 +437,11 @@ export class ProductsAPIService {
             }
         }
 
-        let localVarPath = `/products/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        let localVarPath = `/microfrontends/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
         return this.httpClient.request<any>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: updateProductRequest,
+                body: updateMicrofrontendRequest,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

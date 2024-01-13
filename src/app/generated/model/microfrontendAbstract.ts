@@ -11,8 +11,12 @@
  */
 
 
-export interface ProblemDetailInvalidParam { 
-    name?: string;
-    message?: string;
+export interface MicrofrontendAbstract { 
+    id: string;
+    appId: string;
+    appName: string;
+    description?: string;
+    remoteBaseUrl: string;
+    productName: string;
 }
 

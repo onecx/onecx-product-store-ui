@@ -42,6 +42,16 @@
       "DETAILS.TOOLTIP": "Display details",
       "NEW.TOOLTIP": "Create new entry"
     },
+    "DATAVIEW": {
+      "FILTER": "Filter",
+      "FILTER_OF": "Filter for ",
+      "SORT_BY": "Sort By",
+      "SORT_DIRECTION_ASC": "ascending",
+      "SORT_DIRECTION_DESC": "descending",
+      "VIEW_MODE_GRID": "Tile view",
+      "VIEW_MODE_LIST": "List view",
+      "VIEW_MODE_TABLE": "Table view"
+    },
     "CANCEL": "Cancel",
     "CHOOSE": "Choose",
     "SAVE": "Save",
@@ -56,7 +66,7 @@
     "DETAIL": "Details",
     "EDIT": "Edit"
   },
-  "DETAIL": {
+  "INTERNAL": {
     "CREATION_DATE": "Created on",
     "CREATION_USER": "Created by",
     "MODIFICATION_DATE": "Changed on",
@@ -68,14 +78,6 @@
       "MODIFICATION_USER": "Name of the user of the last change"
     }
   },
-  "GENERAL": {
-    "COPY_OF": "Copy of ",
-    "TOOLTIP": {
-      "VIEW_MODE_GRID": "Tile view",
-      "VIEW_MODE_LIST": "List view",
-      "VIEW_MODE_TABLE": "Table view"
-    }
-  },
   "LOGO": {
     "LOGO_URL": "Logo URL",
     "TOOLTIPS": {
@@ -85,43 +87,50 @@
     },
     "UPLOADED": "File uploaded"
   },
-  "SEARCH": {
-    "FILTER": "Filter",
-    "FILTER_OF": "Filter for ",
-    "SORT_BY": "Sort By",
-    "SORT_DIRECTION_ASC": "ascending",
-    "SORT_DIRECTION_DESC": "descending"
-  },
-  "PRODUCT": {
+  "DIALOG": {
     "SEARCH.HEADER": "Product Store",
     "SEARCH.SUBHEADER": "Viewing and Managing Products and their Apps",
     "DETAIL.SUBHEADER": "Product Details",
     "LOAD_ERROR": "Failed to load Product",
     "NOT_FOUND": "Product was not found",
-    "NO_PROPERTIES": "No properties specified",
     "TABS": {
+      "APPS": "Apps",
       "INTERN": "Internal",
       "PROPERTIES": "Properties"
-    },
+    }
+  },
+  "PRODUCT": {
     "ID": "ID",
     "NAME": "Name",
     "VERSION": "Version",
     "DESCRIPTION": "Description",
-    "CREATION_DATE": "Created on",
-    "CREATION_USER": "Created by",
-    "MODIFICATION_DATE": "Changed on",
-    "MODIFICATION_USER": "Changed by",
+    "DISPLAY_NAME": "Display Name",
     "WORKSPACES": "Used in Workspaces",
     "TOOLTIPS": {
       "ID": "Unique technical ID of the Product",
       "NAME": "Unique Name of the Product",
       "VERSION": "Version of the Product",
       "DESCRIPTION": "Description of the Product",
-      "WORKSPACES": "Workspaces using the Product",
-      "CREATION_DATE": "Timestamp the Product was created",
-      "CREATION_USER": "Name of the user which created the Product",
-      "MODIFICATION_DATE": "Timestamp the Product was latest modified",
-      "MODIFICATION_USER": "Name of the user which changed the Product last time"
+      "DISPLAY_NAME": "Display Name of the Product",
+      "WORKSPACES": "Workspaces using the Product"
+    }
+  },
+  "EXCEPTIONS": {
+    "HTTP_STATUS_0": {
+      "PRODUCTS": "Unknown problem retrieving Product data - please try again.",
+      "APPS": "Unknown problem retrieving App data - please try again."
+    },
+    "HTTP_STATUS_403": {
+      "PRODUCTS": "You have no permissions to see Products.",
+      "APPS": "You have no permissions to see Apps."
+    },
+    "HTTP_STATUS_404": {
+      "PRODUCTS": "No Products could be found.",
+      "APPS": "No Apps could be found."
+    },
+    "HTTP_STATUS_500": {
+      "PRODUCTS": "Unknown server problem retrieving Product data - please try again.",
+      "APPS": "Unknown server problem retrieving App data - please try again."
     }
   },
   "VALIDATION": {
@@ -133,24 +142,6 @@
       "MINIMUM_LENGTH": "At least {{chars}} characters are required.",
       "PATTERN_ERROR": "Your input does not match the required pattern",
       "FILETYPE_PATTERN_ERROR": "Your file does not match the allowed filetypes: .png, .jpg, .jpeg"
-    }
-  },
-  "EXCEPTIONS": {
-    "HTTP_STATUS_0": {
-      "PORTALS": "Unknown problem retrieving Workspace data - please try again.",
-      "MENUS": "Unknown problem retrieving menu data - please try again."
-    },
-    "HTTP_STATUS_403": {
-      "PORTALS": "You have no permissions to see workspaces.",
-      "MENUS": "You have no permissions to see menus."
-    },
-    "HTTP_STATUS_404": {
-      "PORTALS": "No Workspaces could be found.",
-      "MENUS": "No menus could be found."
-    },
-    "HTTP_STATUS_500": {
-      "PORTALS": "Unknown server problem retrieving Workspace data - please try again.",
-      "MENUS": "Unknown server problem retrieving menu data - please try again."
     }
   }
 }

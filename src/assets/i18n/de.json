@@ -42,6 +42,16 @@
       "DETAILS.TOOLTIP": "Anzeige Details",
       "NEW.TOOLTIP": "Erstelle neuen Eintrag"
     },
+    "DATAVIEW": {
+      "FILTER": "Filter",
+      "FILTER_OF": "Filter für ",
+      "SORT_BY": "Sortiert nach",
+      "SORT_DIRECTION_ASC": "aufsteigend",
+      "SORT_DIRECTION_DESC": "absteigend",
+      "VIEW_MODE_GRID": "Kachelansicht",
+      "VIEW_MODE_LIST": "Listenansicht",
+      "VIEW_MODE_TABLE": "Tabellenansicht"
+    },
     "CANCEL": "Abbrechen",
     "CHOOSE": "Auswählen",
     "SAVE": "Speichern",
@@ -56,7 +66,7 @@
     "DETAIL": "Details",
     "EDIT": "Ändern"
   },
-  "DETAIL": {
+  "INTERNAL": {
     "CREATION_DATE": "Erstellt am",
     "CREATION_USER": "Erstellt von",
     "MODIFICATION_DATE": "Geändert am",
@@ -68,14 +78,6 @@
       "MODIFICATION_USER": "Name des Benutzers der letzten Änderung"
     }
   },
-  "GENERAL": {
-    "COPY_OF": "Kopie von ",
-    "TOOLTIP": {
-      "VIEW_MODE_GRID": "Kachelansicht",
-      "VIEW_MODE_LIST": "Listenansicht",
-      "VIEW_MODE_TABLE": "Tabellenansicht"
-    }
-  },
   "LOGO": {
     "LOGO_URL": "Logo URL",
     "TOOLTIPS": {
@@ -85,43 +87,50 @@
     },
     "UPLOADED": "Datei hochgeladen"
   },
-  "SEARCH": {
-    "FILTER": "Filter",
-    "FILTER_OF": "Filter für ",
-    "SORT_BY": "Sortiert nach",
-    "SORT_DIRECTION_ASC": "aufsteigend",
-    "SORT_DIRECTION_DESC": "absteigend"
-  },
-  "PRODUCT": {
+  "DIALOG": {
     "SEARCH.HEADER": "Product Store",
     "SEARCH.SUBHEADER": "Produkte und deren Apps verwalten",
     "DETAIL.SUBHEADER": "Produkt Details",
     "LOAD_ERROR": "Produkt konnte nicht geladen werden",
     "NOT_FOUND": "Produkt nicht gefunden",
-    "NO_PROPERTIES": "Keine Farbwerte enthalten",
     "TABS": {
+      "APPS": "Apps",
       "INTERN": "Intern",
       "PROPERTIES": "Eigenschaften"
-    },
+    }
+  },
+  "PRODUCT": {
     "ID": "ID",
     "NAME": "Name",
     "VERSION": "Version",
     "DESCRIPTION": "Beschreibung",
-    "CREATION_DATE": "Erstellt am",
-    "CREATION_USER": "Erstellt von",
-    "MODIFICATION_DATE": "Geändert am",
-    "MODIFICATION_USER": "Geändert von",
+    "DISPLAY_NAME": "Anzeigename",
     "WORKSPACES": "Verwendet in Workspaces",
     "TOOLTIPS": {
       "ID": "Eindeutige technische ID des Produkts",
       "NAME": "Eindeutiger Name des Produkts",
       "VERSION": "Version des Produkts",
       "DESCRIPTION": "Beschreibung des Produkts",
-      "WORKSPACES": "Workspaces, die das Produkt benutzen",
-      "CREATION_DATE": "Erstellt am",
-      "CREATION_USER": "Erstellt von",
-      "MODIFICATION_DATE": "Geändert am",
-      "MODIFICATION_USER": "Geändert von"
+      "DISPLAY_NAME": "Anzeigename des Produkts",
+      "WORKSPACES": "Workspaces, die das Produkt benutzen"
+    }
+  },
+  "EXCEPTIONS": {
+    "HTTP_STATUS_0": {
+      "PRODUCTS": "Unbekanntes Problem beim Abrufen von Produkte-Daten - Bitte versuchen sie es noch einmal.",
+      "APPS": "Unbekanntes Problem beim Abrufen von App-Daten - Bitte versuchen sie es noch einmal."
+    },
+    "HTTP_STATUS_403": {
+      "PRODUCTS": "Sie haben keine Rechte um Produkte zu sehen.",
+      "APPS": "Sie haben keine Rechte um Apps zu sehen."
+    },
+    "HTTP_STATUS_404": {
+      "PRODUCTS": "Es konnten keine Produkte gefunden werden.",
+      "APPS": "Es konnten keine Apps gefunden werden."
+    },
+    "HTTP_STATUS_500": {
+      "PRODUCTS": "Unbekanntes Server-Problem beim Abrufen von Produkt-Daten - Bitte versuchen sie es noch einmal.",
+      "APPS": "Unbekanntes Server-Problem beim Abrufen von App-Daten - Bitte versuchen sie es noch einmal."
     }
   },
   "VALIDATION": {
@@ -133,24 +142,6 @@
       "MINIMUM_LENGTH": "Es sind mindestens {{chars}} Zeichen erforderlich.",
       "PATTERN_ERROR": "Ihre Eingabe entspricht nicht dem benötigten Format.",
       "FILETYPE_PATTERN_ERROR": "Ihre Datei entspricht nicht den erlaubten Formaten: .png, .jpg, .jpeg"
-    }
-  },
-  "EXCEPTIONS": {
-    "HTTP_STATUS_0": {
-      "PORTALS": "Unbekanntes Problem beim Abrufen von Workspace-Daten - Bitte versuchen sie es noch einmal.",
-      "MENUS": "Unbekanntes Problem beim Abrufen von Menü-Daten - Bitte versuchen sie es noch einmal."
-    },
-    "HTTP_STATUS_403": {
-      "PORTALS": "Sie haben keine Rechte um Workspaces zu sehen.",
-      "MENUS": "Sie haben keine Rechte um Menüs zu sehen."
-    },
-    "HTTP_STATUS_404": {
-      "PORTALS": "Es konnten keine Workspaces gefunden werden.",
-      "MENUS": "Es konnten keine Menüs gefunden werden."
-    },
-    "HTTP_STATUS_500": {
-      "PORTALS": "Unbekanntes Server-Problem beim Abrufen von Workspace-Daten - Bitte versuchen sie es noch einmal.",
-      "MENUS": "Unbekanntes Server-Problem beim Abrufen von Menü-Daten - Bitte versuchen sie es noch einmal."
     }
   }
 }

@@ -11,8 +11,8 @@
  */
 
 
-export interface ProblemDetailInvalidParam { 
-    name?: string;
-    message?: string;
+export interface UpdateUIEndpoint { 
+    path: string;
+    name: string;
 }
 

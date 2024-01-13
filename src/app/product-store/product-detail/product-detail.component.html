@@ -1,0 +1,26 @@
+<ocx-portal-page permission="PRODUCT#VIEW" helpArticleId="PAGE_PRODUCT_DETAIL">
+  <ocx-page-header
+    [loading]="loading"
+    [header]="product?.displayName"
+    [subheader]="'DIALOG.DETAIL.SUBHEADER' | translate"
+    [actions]="actions"
+    [figureImage]="headerImageUrl"
+    [figureBackground]="!product?.imageUrl"
+  >
+  </ocx-page-header>
+  <ocx-page-content>
+    <p-tabView>
+      <p-tabPanel id="product_detail_panel_props" [header]="'DIALOG.TABS.PROPERTIES' | translate">
+        <ps-product-props [product]="product"></ps-product-props>
+      </p-tabPanel>
+
+      <p-tabPanel id="product_detail_panel_intern" [header]="'DIALOG.TABS.INTERN' | translate">
+        <ps-product-intern [product]="product" [dateFormat]="dateFormat"></ps-product-intern>
+      </p-tabPanel>
+
+      <p-tabPanel id="product_detail_panel_apps" [header]="'DIALOG.TABS.APPS' | translate">
+        <!--p-panel [showHeader]="false" styleClass="pt-1 pb-0 mx-2 my-1 surface-50"> Apps </p-panel-->
+      </p-tabPanel>
+    </p-tabView>
+  </ocx-page-content>
+</ocx-portal-page>

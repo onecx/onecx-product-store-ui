@@ -9,10 +9,23 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { CreateUIEndpoint } from './createUIEndpoint';
 
 
-export interface ProblemDetailInvalidParam { 
-    name?: string;
-    message?: string;
+export interface CreateMicrofrontendRequest { 
+    appId: string;
+    appVersion: string;
+    appName: string;
+    description?: string;
+    remoteBaseUrl: string;
+    remoteEntry: string;
+    technology?: string;
+    productName: string;
+    classifications?: Array<string>;
+    contact?: string;
+    iconName?: string;
+    note?: string;
+    exposedModule?: string;
+    endpoints?: Array<CreateUIEndpoint>;
 }
 

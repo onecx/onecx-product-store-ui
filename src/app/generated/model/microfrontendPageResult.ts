@@ -9,10 +9,17 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { MicrofrontendAbstract } from './microfrontendAbstract';
 
 
-export interface ProblemDetailInvalidParam { 
-    name?: string;
-    message?: string;
+export interface MicrofrontendPageResult { 
+    /**
+     * The total elements in the resource.
+     */
+    totalElements?: number;
+    number?: number;
+    size?: number;
+    totalPages?: number;
+    stream?: Array<MicrofrontendAbstract>;
 }
 

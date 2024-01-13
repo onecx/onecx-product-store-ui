@@ -34,16 +34,16 @@ export class ProductSearchComponent implements OnInit {
     this.loadProducts()
     this.translate
       .get([
-        'SEARCH.SORT_BY',
-        'SEARCH.FILTER',
-        'SEARCH.FILTER_OF',
         'PRODUCT.NAME',
         'PRODUCT.DESCRIPTION',
-        'GENERAL.TOOLTIP.VIEW_MODE_GRID',
-        'GENERAL.TOOLTIP.VIEW_MODE_LIST',
-        'GENERAL.TOOLTIP.VIEW_MODE_TABLE',
-        'SEARCH.SORT_DIRECTION_ASC',
-        'SEARCH.SORT_DIRECTION_DESC'
+        'ACTIONS.DATAVIEW.VIEW_MODE_GRID',
+        'ACTIONS.DATAVIEW.VIEW_MODE_LIST',
+        'ACTIONS.DATAVIEW.VIEW_MODE_TABLE',
+        'ACTIONS.DATAVIEW.SORT_BY',
+        'ACTIONS.DATAVIEW.FILTER',
+        'ACTIONS.DATAVIEW.FILTER_OF',
+        'ACTIONS.DATAVIEW.SORT_DIRECTION_ASC',
+        'ACTIONS.DATAVIEW.SORT_DIRECTION_DESC'
       ])
       .subscribe((data) => {
         this.prepareTranslations(data)
@@ -51,24 +51,27 @@ export class ProductSearchComponent implements OnInit {
   }
 
   public loadProducts(): void {
-    this.product$ = this.productApi.searchProducts({ productSearchCriteria: { pageSize: 10 } as ProductSearchCriteria })
+    this.product$ = this.productApi.searchProducts({
+      productSearchCriteria: { pageSize: 1000 } as ProductSearchCriteria
+    })
   }
 
   prepareTranslations(data: any): void {
     this.dataViewControlsTranslations = {
-      sortDropdownPlaceholder: data['SEARCH.SORT_BY'],
-      filterInputPlaceholder: data['SEARCH.FILTER'],
-      filterInputTooltip: data['SEARCH.FILTER_OF'] + data['PRODUCT.NAME'] + ', ' + data['PRODUCT.DESCRIPTION'],
+      sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY'],
+      filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
+      filterInputTooltip:
+        data['ACTIONS.DATAVIEW.FILTER_OF'] + data['PRODUCT.NAME'] + ', ' + data['PRODUCT.DESCRIPTION'],
       viewModeToggleTooltips: {
-        grid: data['GENERAL.TOOLTIP.VIEW_MODE_GRID'],
-        list: data['GENERAL.TOOLTIP.VIEW_MODE_LIST']
-        // table: data['GENERAL.TOOLTIP.VIEW_MODE_TABLE'],
+        grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID'],
+        list: data['ACTIONS.DATAVIEW.VIEW_MODE_LIST']
+        // table: data['ACTIONS.DATAVIEW.VIEW_MODE_TABLE'],
       },
       sortOrderTooltips: {
-        ascending: data['SEARCH.SORT_DIRECTION_ASC'],
-        descending: data['SEARCH.SORT_DIRECTION_DESC']
+        ascending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_ASC'],
+        descending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_DESC']
       },
-      sortDropdownTooltip: data['SEARCH.SORT_BY']
+      sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY']
     }
   }
 

@@ -9,10 +9,12 @@ import { FieldsetModule } from 'primeng/fieldset'
 import { MFE_INFO, PortalCoreModule, MyMissingTranslationHandler } from '@onecx/portal-integration-angular'
 
 import { CanActivateGuard } from '../shared/can-active-guard.service'
-//import { LabelResolver } from '../shared/label.resolver'
+import { LabelResolver } from '../shared/label.resolver'
 import { HttpLoaderFactory, SharedModule } from '../shared/shared.module'
 import { ProductSearchComponent } from './product-search/product-search.component'
-//import { ProductDetailComponent } from './product-detail/product-detail.component'
+import { ProductDetailComponent } from './product-detail/product-detail.component'
+import { ProductPropertyComponent } from './product-detail/product-props/product-props.component'
+import { ProductInternComponent } from './product-detail/product-intern/product-intern.component'
 
 const routes: Routes = [
   {
@@ -20,9 +22,8 @@ const routes: Routes = [
     component: ProductSearchComponent,
     canActivate: [CanActivateGuard],
     pathMatch: 'full'
-  }
-
-  /*  {
+  },
+  {
     path: ':name',
     canActivate: [CanActivateGuard],
     component: ProductDetailComponent,
@@ -34,10 +35,10 @@ const routes: Routes = [
     resolve: {
       labeli18n: LabelResolver
     }
-  } */
+  }
 ]
 @NgModule({
-  declarations: [ProductSearchComponent],
+  declarations: [ProductSearchComponent, ProductDetailComponent, ProductPropertyComponent, ProductInternComponent],
   imports: [
     FormsModule,
     FieldsetModule,

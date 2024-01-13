@@ -11,8 +11,8 @@
  */
 
 
-export interface ProblemDetailInvalidParam { 
-    name?: string;
-    message?: string;
+export interface CreateUIEndpoint { 
+    path: string;
+    name: string;
 }
 

@@ -11,8 +11,17 @@
  */
 
 
-export interface ProblemDetailInvalidParam { 
-    name?: string;
-    message?: string;
+export interface MicrofrontendSearchCriteria { 
+    appId?: string | null;
+    appName?: string | null;
+    productName?: string | null;
+    /**
+     * The number of page.
+     */
+    pageNumber?: number;
+    /**
+     * The size of page
+     */
+    pageSize?: number;
 }
 
