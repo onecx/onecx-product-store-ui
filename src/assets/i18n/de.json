@@ -105,6 +105,11 @@
     "VERSION": "Version",
     "DESCRIPTION": "Beschreibung",
     "DISPLAY_NAME": "Anzeigename",
+    "OPERATOR": "Operator",
+    "IMAGE_URL": "Image URL",
+    "BASE_PATH": "Basispfad",
+    "ICON_NAME": "Iconname",
+    "CLASSIFICATIONS": "Klassifizierungen",
     "WORKSPACES": "Verwendet in Workspaces",
     "TOOLTIPS": {
       "ID": "Eindeutige technische ID des Produkts",
@@ -112,6 +117,11 @@
       "VERSION": "Version des Produkts",
       "DESCRIPTION": "Beschreibung des Produkts",
       "DISPLAY_NAME": "Anzeigename des Produkts",
+      "OPERATOR": "Wer hat das Produkt angelegt?",
+      "IMAGE_URL": "Image URL",
+      "BASE_PATH": "Der Basispfad wie das Produkt erreichbar ist. Muss eindeutig über alle Produkte sein",
+      "ICON_NAME": "Name der Icons aus der PrimeNG Icon Bibliothek. Benutzt z.b. als Default bei Menüeinträgen",
+      "CLASSIFICATIONS": "Klassifizierungen des Produkts, z.b. Game oder Tool. Kann zur Suche benutzt werden. Mehrere Einträge möglich",
       "WORKSPACES": "Workspaces, die das Produkt benutzen"
     }
   },

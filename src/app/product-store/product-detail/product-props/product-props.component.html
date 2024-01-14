@@ -12,11 +12,76 @@
           readonly
           class="w-full"
           id="product_detail_item_display_name"
-          [value]="product?.name"
+          [value]="product?.displayName"
         />
         <label for="product_detail_item_display_name">{{ 'PRODUCT.DISPLAY_NAME' | translate }}</label>
       </span>
-
+      <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.OPERATOR' | translate">
+        <input
+          pInputText
+          type="text"
+          readonly
+          class="w-full"
+          id="product_detail_item_operator"
+          [value]="product?.operator"
+        />
+        <label for="product_detail_item_operator">{{ 'PRODUCT.OPERATOR' | translate }}</label>
+      </span>
+      <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.VERSION' | translate">
+        <input
+          pInputText
+          type="text"
+          readonly
+          class="w-full"
+          id="product_detail_item_version"
+          [value]="product?.version"
+        />
+        <label for="product_detail_item_version">{{ 'PRODUCT.VERSION' | translate }}</label>
+      </span>
+      <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.IMAGE_URL' | translate">
+        <input
+          pInputText
+          type="text"
+          readonly
+          class="w-full"
+          id="product_detail_item_imageUrl"
+          [value]="product?.imageUrl"
+        />
+        <label for="product_detail_item_imageUrl">{{ 'PRODUCT.IMAGE_URL' | translate }}</label>
+      </span>
+      <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.BASE_PATH' | translate">
+        <input
+          pInputText
+          type="text"
+          readonly
+          class="w-full"
+          id="product_detail_item_basePath"
+          [value]="product?.basePath"
+        />
+        <label for="product_detail_item_basePath">{{ 'PRODUCT.BASE_PATH' | translate }}</label>
+      </span>
+      <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.ICON_NAME' | translate">
+        <input
+          pInputText
+          type="text"
+          readonly
+          class="w-full"
+          id="product_detail_item_iconName"
+          [value]="product?.iconName"
+        />
+        <label for="product_detail_item_iconName">{{ 'PRODUCT.ICON_NAME' | translate }}</label>
+      </span>
+      <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.CLASSIFICATIONS' | translate">
+        <input
+          pInputText
+          type="text"
+          readonly
+          class="w-full"
+          id="product_detail_item_classifications"
+          [value]="product?.classifications"
+        />
+        <label for="product_detail_item_classifications">{{ 'PRODUCT.CLASSIFICATIONS' | translate }}</label>
+      </span>
       <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.DESCRIPTION' | translate">
         <textarea
           pInputTextarea
