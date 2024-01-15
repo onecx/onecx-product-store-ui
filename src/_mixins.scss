@@ -1,15 +1,37 @@
-// disable preset opacity: not readable
+// disable preset of opacity in form: not readable
 @mixin make-disabled-form-readable-input {
-  :host {
+  :host ::ng-deep {
     .p-inputtext.p-component:disabled {
       opacity: unset;
     }
   }
 }
+
 @mixin make-disabled-form-readable-dropdown {
   :host ::ng-deep {
     .p-dropdown.p-component.p-disabled {
       opacity: unset;
+    }
+  }
+}
+
+@mixin prepare-inputgroup {
+  :host ::ng-deep {
+    .inputgroup-dropdown-with-link {
+      border-right: none;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    .input-field-correction .p-inputtext {
+      padding-top: 1rem !important;
+      padding-bottom: 0.5rem !important;
+    }
+    .pseudo-button:hover {
+      background: var(--button-hover-bg) !important;
+      cursor: pointer;
+      * {
+        background: var(--button-hover-bg) !important;
+      }
     }
   }
 }

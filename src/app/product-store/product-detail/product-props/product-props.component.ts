@@ -1,9 +1,13 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
+import { SelectItem } from 'primeng/api'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
 import { CreateProductRequest, Product, ProductsAPIService, UpdateProductRequest } from '../../../generated'
+import { IconService } from '../../../shared/iconservice'
+import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
+// import { setFetchUrls } from '../../../shared/utils'
 
 interface ProductDetailForm {
   id: FormControl<string | null>
@@ -20,7 +24,8 @@ interface ProductDetailForm {
 
 @Component({
   selector: 'ps-product-props',
-  templateUrl: './product-props.component.html'
+  templateUrl: './product-props.component.html',
+  styleUrls: ['./product-props.component.scss']
 })
 export class ProductPropertyComponent implements OnChanges {
   @Input() product: Product | undefined
@@ -31,8 +36,12 @@ export class ProductPropertyComponent implements OnChanges {
   public formGroup: FormGroup<ProductDetailForm>
   public productId: string | undefined
   public productName: string | null | undefined
+  public productOperator: string | undefined
+  public fetchingLogoUrl?: string
+  public iconItems: SelectItem[] = [{ label: '', value: null }] // default value is empty
 
   constructor(
+    private icon: IconService,
     private productApi: ProductsAPIService,
     private translate: TranslateService,
     private msgService: PortalMessageService
@@ -41,7 +50,7 @@ export class ProductPropertyComponent implements OnChanges {
       id: new FormControl(null),
       name: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
       displayName: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
-      operator: new FormControl(null, [Validators.maxLength(255)]),
+      operator: new FormControl(null),
       version: new FormControl(null, [Validators.maxLength(255)]),
       description: new FormControl(null, [Validators.maxLength(255)]),
       imageUrl: new FormControl(null, [Validators.maxLength(255)]),
@@ -49,6 +58,8 @@ export class ProductPropertyComponent implements OnChanges {
       iconName: new FormControl(null, [Validators.maxLength(255)]),
       classifications: new FormControl(null, [Validators.maxLength(255)])
     })
+    this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
+    this.iconItems.sort(dropDownSortItemsByLabel)
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -128,5 +139,22 @@ export class ProductPropertyComponent implements OnChanges {
             : this.msgService.error({ summaryKey: 'ACTIONS.EDIT.MESSAGE.PRODUCT_NOK' })
         }
       })
+  }
+
+  public onFileUpload(ev: Event, fieldType: 'logo'): void {
+    if (ev.target && (ev.target as HTMLInputElement).files) {
+      const files = (ev.target as HTMLInputElement).files
+      if (files) {
+        Array.from(files).forEach((file) => {
+          /*
+          this.imageApi.uploadImage({ image: file }).subscribe((data) => {
+            this.formGroup.controls[fieldType + 'Url'].setValue(data.imageUrl)
+            this.fetchingLogoUrl = setFetchUrls(this.apiPrefix, this.formGroup.controls[fieldType + 'Url'].value)
+            this.msgService.info({ summaryKey: 'LOGO.UPLOADED', detailKey: 'LOGO.LOGO_URL' })
+          })
+          */
+        })
+      }
+    }
   }
 }
