@@ -57,7 +57,7 @@
     "SAVE": "Speichern",
     "UPLOAD": "Hochladen",
     "TOOLTIPS": {
-      "CANCEL_AND_CLOSE": "Abbrechen und Dialog schließen",
+      "CANCEL": "Aktion abbrechen ",
       "SAVE": "Änderungen speichern"
     }
   },
@@ -144,6 +144,9 @@
     }
   },
   "VALIDATION": {
+    "FORM_INVALID": "Die Daten sind nicht bereit zum Speichern.",
+    "PRODUCT.UNIQUE_CONSTRAINT": "Ein Produkt mit diesem Namen existiert bereits.",
+    "PRODUCT.NOT_EXISTS": "Ein Produkt mit diesem Namen konnte nicht gefunden werden.",
     "ERRORS": {
       "PARSE_ERROR": "Parserfehler: Die enthaltene Struktur entspricht nicht dem erwarteten Format.",
       "INTERNAL_ERROR": "Interner Fehler",

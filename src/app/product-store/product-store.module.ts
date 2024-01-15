@@ -24,12 +24,23 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'new',
+    canActivate: [CanActivateGuard],
+    component: ProductDetailComponent,
+    data: {
+      breadcrumb: 'BREADCRUMBS.CREATE',
+      breadcrumbFn: (data: any) => `${data.labeli18n}`
+    },
+    resolve: {
+      labeli18n: LabelResolver
+    }
+  },
+  {
     path: ':name',
     canActivate: [CanActivateGuard],
     component: ProductDetailComponent,
     data: {
       breadcrumb: 'BREADCRUMBS.DETAIL',
-
       breadcrumbFn: (data: any) => `${data.labeli18n}`
     },
     resolve: {

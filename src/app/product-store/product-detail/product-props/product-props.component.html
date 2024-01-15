@@ -1,102 +1,100 @@
-<div class="surface-section grid grid-nogutter m-3">
-  <div class="col-12 md:col-6">
-    <div class="flex flex-wrap flex-column gap-4 justify-content-between">
-      <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.NAME' | translate">
-        <input pInputText type="text" readonly class="w-full" id="product_detail_item_name" [value]="product?.name" />
-        <label for="product_detail_item_name">{{ 'PRODUCT.NAME' | translate }}</label>
-      </span>
-      <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.DISPLAY_NAME' | translate">
-        <input
-          pInputText
-          type="text"
-          readonly
-          class="w-full"
-          id="product_detail_item_display_name"
-          [value]="product?.displayName"
-        />
-        <label for="product_detail_item_display_name">{{ 'PRODUCT.DISPLAY_NAME' | translate }}</label>
-      </span>
-      <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.OPERATOR' | translate">
-        <input
-          pInputText
-          type="text"
-          readonly
-          class="w-full"
-          id="product_detail_item_operator"
-          [value]="product?.operator"
-        />
-        <label for="product_detail_item_operator">{{ 'PRODUCT.OPERATOR' | translate }}</label>
-      </span>
-      <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.VERSION' | translate">
-        <input
-          pInputText
-          type="text"
-          readonly
-          class="w-full"
-          id="product_detail_item_version"
-          [value]="product?.version"
-        />
-        <label for="product_detail_item_version">{{ 'PRODUCT.VERSION' | translate }}</label>
-      </span>
-      <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.IMAGE_URL' | translate">
-        <input
-          pInputText
-          type="text"
-          readonly
-          class="w-full"
-          id="product_detail_item_imageUrl"
-          [value]="product?.imageUrl"
-        />
-        <label for="product_detail_item_imageUrl">{{ 'PRODUCT.IMAGE_URL' | translate }}</label>
-      </span>
-      <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.BASE_PATH' | translate">
-        <input
-          pInputText
-          type="text"
-          readonly
-          class="w-full"
-          id="product_detail_item_basePath"
-          [value]="product?.basePath"
-        />
-        <label for="product_detail_item_basePath">{{ 'PRODUCT.BASE_PATH' | translate }}</label>
-      </span>
-      <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.ICON_NAME' | translate">
-        <input
-          pInputText
-          type="text"
-          readonly
-          class="w-full"
-          id="product_detail_item_iconName"
-          [value]="product?.iconName"
-        />
-        <label for="product_detail_item_iconName">{{ 'PRODUCT.ICON_NAME' | translate }}</label>
-      </span>
-      <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.CLASSIFICATIONS' | translate">
-        <input
-          pInputText
-          type="text"
-          readonly
-          class="w-full"
-          id="product_detail_item_classifications"
-          [value]="product?.classifications"
-        />
-        <label for="product_detail_item_classifications">{{ 'PRODUCT.CLASSIFICATIONS' | translate }}</label>
-      </span>
-      <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.DESCRIPTION' | translate">
-        <textarea
-          pInputTextarea
-          readonly
-          class="w-full"
-          autoresize="true"
-          rows="3"
-          id="product_detail_item_description"
-          [ngModel]="product?.description"
-          [pTooltip]="'PRODUCT.DESCRIPTION' | translate"
-          tooltipPosition="top"
-          tooltipEvent="focus"
-        ></textarea>
-        <label for="product_detail_item_description">{{ 'PRODUCT.DESCRIPTION' | translate }}</label>
-      </span>
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <div class="surface-section grid grid-nogutter m-3">
+    <div class="col-12 md:col-6">
+      <div class="flex flex-wrap flex-column gap-4 justify-content-between">
+        <div>
+          <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.NAME' | translate" controlErrorAnchor>
+            <input pInputText type="text" class="w-full" id="product_detail_item_name" formControlName="name" />
+            <label class="ocx-required-label" for="product_detail_item_name">{{ 'PRODUCT.NAME' | translate }}</label>
+          </span>
+        </div>
+        <div>
+          <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.DISPLAY_NAME' | translate" controlErrorAnchor>
+            <input
+              pInputText
+              type="text"
+              class="w-full"
+              id="product_detail_item_display_name"
+              formControlName="displayName"
+            />
+            <label class="ocx-required-label" for="product_detail_item_display_name">
+              {{ 'PRODUCT.DISPLAY_NAME' | translate }}</label
+            >
+          </span>
+        </div>
+        <div>
+          <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.VERSION' | translate" controlErrorAnchor>
+            <input pInputText type="text" class="w-full" id="product_detail_item_version" formControlName="version" />
+            <label for="product_detail_item_version">{{ 'PRODUCT.VERSION' | translate }}</label>
+          </span>
+        </div>
+        <div>
+          <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.BASE_PATH' | translate" controlErrorAnchor>
+            <input pInputText type="text" class="w-full" id="product_detail_item_basePath" formControlName="basePath" />
+            <label class="ocx-required-label" for="product_detail_item_basePath">
+              {{ 'PRODUCT.BASE_PATH' | translate }}</label
+            >
+          </span>
+        </div>
+        <div>
+          <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.IMAGE_URL' | translate" controlErrorAnchor>
+            <input pInputText type="text" class="w-full" id="product_detail_item_imageUrl" formControlName="imageUrl" />
+            <label for="product_detail_item_imageUrl">{{ 'PRODUCT.IMAGE_URL' | translate }}</label>
+          </span>
+        </div>
+        <div class="flex justify-content-start align-items-center gap-4">
+          <div class="width: 5rem">
+            <span *ngIf="product?.iconName" class="pi pi-{{ product?.iconName }}"> </span>
+            <span *ngIf="!product?.iconName" class="pi text-bold text-xl">?</span>
+          </div>
+          <div class="w-full">
+            <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.ICON_NAME' | translate" controlErrorAnchor>
+              <input
+                pInputText
+                type="text"
+                class="w-full"
+                id="product_detail_item_iconName"
+                formControlName="iconName"
+              />
+              <label for="product_detail_item_iconName">{{ 'PRODUCT.ICON_NAME' | translate }}</label>
+            </span>
+          </div>
+        </div>
+        <div>
+          <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.CLASSIFICATIONS' | translate">
+            <input
+              pInputText
+              type="text"
+              class="w-full"
+              id="product_detail_item_classifications"
+              formControlName="classifications"
+            />
+            <label for="product_detail_item_classifications">{{ 'PRODUCT.CLASSIFICATIONS' | translate }}</label>
+          </span>
+        </div>
+        <div>
+          <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.OPERATOR' | translate" controlErrorAnchor>
+            <input pInputText type="text" class="w-full" id="product_detail_item_operator" formControlName="operator" />
+            <label for="product_detail_item_operator">{{ 'PRODUCT.OPERATOR' | translate }}</label>
+          </span>
+        </div>
+        <div>
+          <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.DESCRIPTION' | translate">
+            <textarea
+              pInputTextarea
+              class="w-full"
+              autoresize="true"
+              rows="3"
+              id="product_detail_item_description"
+              [pTooltip]="'PRODUCT.DESCRIPTION' | translate"
+              tooltipPosition="top"
+              tooltipEvent="focus"
+              formControlName="description"
+            ></textarea>
+            <label for="product_detail_item_description">{{ 'PRODUCT.DESCRIPTION' | translate }}</label>
+          </span>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</form>
