@@ -9,10 +9,10 @@
   >
   </ocx-page-header>
   <ocx-page-content>
-    <div *ngIf="!product && !loading" class="card px-3 align-items-center">
+    <div *ngIf="!product && changeMode !== 'NEW'" class="card px-3 align-items-center">
       <p-message severity="error" styleClass="p-2" [text]="'VALIDATION.PRODUCT.NOT_EXISTS' | translate"></p-message>
     </div>
-    <p-tabView *ngIf="product && !loading">
+    <p-tabView *ngIf="(product && !loading) || changeMode === 'NEW'">
       <p-tabPanel id="product_detail_panel_props" [header]="'DIALOG.TABS.PROPERTIES' | translate">
         <ps-product-props
           [product]="product"

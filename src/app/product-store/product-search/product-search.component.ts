@@ -76,7 +76,7 @@ export class ProductSearchComponent implements OnInit {
           sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY'],
           filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
           filterInputTooltip:
-            data['ACTIONS.DATAVIEW.FILTER_OF'] + data['PRODUCT.NAME'] + ', ' + data['PRODUCT.DESCRIPTION'],
+            data['ACTIONS.DATAVIEW.FILTER_OF'] + data['PRODUCT.NAME'] + ', ' + data['PRODUCT.DISPLAY_NAME'],
           viewModeToggleTooltips: {
             grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID'],
             list: data['ACTIONS.DATAVIEW.VIEW_MODE_LIST']
