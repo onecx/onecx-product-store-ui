@@ -19,6 +19,9 @@
   </ocx-search-criteria>
 
   <ocx-page-content>
+    <div *ngIf="!product$" class="card px-3 align-items-center">
+      <p-message severity="error" styleClass="p-2" [text]="'VALIDATION.PRODUCT.NOT_EXISTS' | translate"></p-message>
+    </div>
     <ng-container *ngIf="product$ | async as products">
       <p-dataView
         id="product_search_dataview"

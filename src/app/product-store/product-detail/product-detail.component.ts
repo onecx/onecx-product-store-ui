@@ -21,7 +21,7 @@ export class ProductDetailComponent implements OnInit {
   @ViewChild(ProductPropertyComponent, { static: false }) productPropsComponent!: ProductPropertyComponent
 
   private apiPrefix = environment.apiPrefix
-  private productName: string
+  public productName: string
   public product: Product | undefined
   //  usedInWorkspace: Workspace[] | undefined
   public changeMode: ChangeMode = 'NEW'
