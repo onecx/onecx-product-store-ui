@@ -13,9 +13,7 @@
           <label for="product_detail_item_version">{{ 'PRODUCT.VERSION' | translate }}</label>
         </span>
       </div>
-    </div>
 
-    <div class="flex flex-wrap row-gap-4 column-gap-5">
       <div class="w-full sm:w-10 md:w-9 lg:w-5">
         <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.DISPLAY_NAME' | translate" controlErrorAnchor>
           <input
@@ -38,9 +36,7 @@
           >
         </span>
       </div>
-    </div>
 
-    <div class="flex flex-wrap row-gap-4 column-gap-5">
       <div class="w-full sm:w-10 md:w-9 lg:w-5">
         <div class="flex flex-wrap sm:flex-nowrap align-items-center row-gap-2 column-gap-4">
           <input hidden type="file" accept="image/*" #selectedFileInputLogo (change)="onFileUpload($event, 'logo')" />
@@ -81,9 +77,7 @@
           <label for="product_detail_item_classifications">{{ 'PRODUCT.CLASSIFICATIONS' | translate }}</label>
         </span>
       </div>
-    </div>
 
-    <div class="flex flex-wrap row-gap-4 column-gap-5">
       <div class="w-full sm:w-10 md:w-9 lg:w-5">
         <span class="p-float-label" controlErrorAnchor>
           <p-dropdown
@@ -121,8 +115,7 @@
           <label for="product_detail_item_operator">{{ 'PRODUCT.OPERATOR' | translate }}</label>
         </span>
       </div>
-    </div>
-    <div>
+
       <div class="w-full sm:w-10 md:w-9 lg:w-10">
         <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.DESCRIPTION' | translate">
           <textarea
