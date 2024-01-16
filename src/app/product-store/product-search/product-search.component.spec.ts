@@ -3,8 +3,10 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { HttpClient } from '@angular/common/http'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { RouterTestingModule } from '@angular/router/testing'
+import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { of /* , throwError */ } from 'rxjs'
+// import { DataView } from 'primeng/dataview'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
 import { HttpLoaderFactory } from 'src/app/shared/shared.module'
@@ -13,6 +15,8 @@ import { ProductSearchComponent } from './product-search.component'
 describe('ProductSearchComponent', () => {
   let component: ProductSearchComponent
   let fixture: ComponentFixture<ProductSearchComponent>
+  let router: Router
+  let routeSpy: jasmine.SpyObj<ActivatedRoute>
 
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
   const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
@@ -32,13 +36,17 @@ describe('ProductSearchComponent', () => {
         })
       ],
       schemas: [NO_ERRORS_SCHEMA],
-      providers: [{ provide: PortalMessageService, useValue: msgServiceSpy }]
+      providers: [
+        { provide: PortalMessageService, useValue: msgServiceSpy },
+        { provide: ActivatedRoute, useValue: routeSpy }
+      ]
     }).compileComponents()
   }))
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProductSearchComponent)
     component = fixture.componentInstance
+    router = TestBed.inject(Router)
     fixture.detectChanges()
   })
 
@@ -55,6 +63,7 @@ describe('ProductSearchComponent', () => {
   it('should prepare action buttons on init', () => {
     translateServiceSpy.get.and.returnValue(of({ 'ACTIONS.CREATE.PRODUCT': 'Create' }))
     spyOn(component, 'onNewProduct')
+
     component.ngOnInit()
 
     const action = component.actions[0]
@@ -65,17 +74,58 @@ describe('ProductSearchComponent', () => {
 
   it('should set correct value onLayoutChange', () => {
     const viewMode = 'EDIT'
+
     component.onLayoutChange(viewMode)
 
     expect(component.viewMode).toEqual('EDIT')
   })
 
-  /* fit('should set correct values onFilterChange', () => {
+  it('should set correct values onFilterChange', () => {
     const filter = 'filter'
+
     component.onFilterChange(filter)
 
     expect(component.filter).toEqual(filter)
-    expect(component.search).toHaveBeenCalled()
-  }) */
-})
+  })
 
+  it('should set correct value onSortChange', () => {
+    const sortField = 'field'
+
+    component.onSortChange(sortField)
+
+    expect(component.sortField).toEqual(sortField)
+  })
+
+  it('should set correct value onSortDirChange', () => {
+    const asc = true
+
+    component.onSortDirChange(asc)
+
+    expect(component.sortOrder).toEqual(-1)
+  })
+
+  it('should call loadProducts onSearch', () => {
+    translateServiceSpy.get.and.returnValue(of({ 'ACTIONS.CREATE.PRODUCT': 'Create' }))
+    spyOn(component, 'loadProducts')
+
+    component.onSearch()
+
+    expect(component.loadProducts).toHaveBeenCalled()
+  })
+
+  it('should reset productSearchCriteriaGroup onSearchReset', () => {
+    spyOn(component.productSearchCriteriaGroup, 'reset')
+
+    component.onSearchReset()
+
+    expect(component.productSearchCriteriaGroup.reset).toHaveBeenCalled()
+  })
+
+  it('should navigate to new product on onNewProduct', () => {
+    const routerSpy = spyOn(router, 'navigate')
+
+    component.onNewProduct()
+
+    expect(routerSpy).toHaveBeenCalledWith(['./new'], { relativeTo: routeSpy })
+  })
+})
