@@ -1,0 +1,8 @@
+PERMISSION NAME;PERMISSION_KEY;onecx-product-store-admin;onecx-product-store-user
+View Product Store;PRODUCT_STORE#VIEW;x;x
+View/Search Products in Product Store;PRODUCT#SEARCH;x;x
+View Product Details in Product Store;PRODUCT#VIEW;x;x
+Edit Product Details in Product Store;PRODUCT#EDIT;x;
+Delete Products in Product Store;PRODUCT#DELETE;x;
+Edit Microfrontends;MICROFRONTEND#EDIT;x;
+Delete Microfrontends;MICROFRONTEND#DELETE;x;

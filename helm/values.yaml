@@ -1,0 +1,34 @@
+app:
+  name: ui
+  image:
+    repository: 'onecx/onecx-product-store-ui'
+  routing:
+    enabled: true
+  operator:
+    apm:
+      enabled: false
+    keycloak:
+      enabled: true
+      client: |-
+        { 
+          "clientId": "product-store-ui",
+          "enabled": true,
+          "description": "Keycloak client for product-store-ui",
+          "redirectUris": ["*"],
+          "webOrigins": ["*"],
+          "publicClient": true,
+          "protocol": "openid-connect"
+        }
+      roles: |-
+        [
+           {
+             "name": "onecx-product-store-admin",
+             "description": "OneCX Product Store admin"
+           },
+           {
+             "name": "onecx-product-store-user",
+             "description": "OneCX Product Store user"
+           }
+         ]
+
+# PIPE Config

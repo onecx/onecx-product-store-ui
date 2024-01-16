@@ -1,0 +1,150 @@
+<div class="surface-section w-full">
+  <div class="flex flex-wrap flex-column row-gap-4 my-3 w-12 sm:w-10 md:w-8 lg:w-6 xl:w-6">
+    <div class="flex flex-wrap row-gap-4">
+      <div class="w-10 sm:w-6 px-3">
+        <span class="p-float-label">
+          <input
+            pInputText
+            type="text"
+            readonly
+            id="portal_detail_item_creationDate"
+            class="w-full pt-3 pb-2"
+            [value]="product?.creationDate | date : dateFormat"
+            [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
+            tooltipPosition="top"
+            tooltipEvent="focus"
+          />
+          <label for="portal_detail_item_creationDate">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
+        </span>
+      </div>
+      <div class="w-10 sm:w-6 px-3">
+        <span class="p-float-label">
+          <input
+            pInputText
+            type="text"
+            readonly
+            id="portal_detail_item_creationUser"
+            class="w-full pt-3 pb-2"
+            [value]="product?.creationUser"
+            [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_USER' | translate"
+            tooltipPosition="top"
+            tooltipEvent="focus"
+          />
+          <label for="portal_detail_item_creationUser">{{ 'INTERNAL.CREATION_USER' | translate }}</label>
+        </span>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap row-gap-4">
+      <div class="w-10 sm:w-6 px-3">
+        <span class="p-float-label">
+          <input
+            pInputText
+            type="text"
+            readonly
+            id="portal_detail_item_modificationDate"
+            class="w-full pt-3 pb-2"
+            [value]="product?.modificationDate | date : dateFormat"
+            [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
+            tooltipPosition="top"
+            tooltipEvent="focus"
+          />
+          <label for="portal_detail_item_modificationDate">{{ 'INTERNAL.MODIFICATION_DATE' | translate }}</label>
+        </span>
+      </div>
+
+      <div class="w-10 sm:w-6 px-3">
+        <span class="p-float-label">
+          <input
+            pInputText
+            type="text"
+            readonly
+            id="portal_detail_item_modificationUser"
+            class="w-full pt-3 pb-2"
+            [value]="product?.modificationUser"
+            [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_USER' | translate"
+            tooltipPosition="top"
+            tooltipEvent="focus"
+          />
+          <label for="portal_detail_item_modificationUser">{{ 'INTERNAL.MODIFICATION_USER' | translate }}</label>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--
+<div class="surface-section grid grid-nogutter">
+  <div class="col-12 md:col-6">
+    <div class="col-12 md:col-6 p-3">
+      <span class="p-float-label">
+        <input
+          pInputText
+          type="text"
+          readonly
+          id="portal_detail_item_creationDate"
+          class="w-full pt-3 pb-2"
+          [value]="product?.creationDate | date : dateFormat"
+          [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
+          tooltipPosition="top"
+          tooltipEvent="focus"
+        />
+        <label for="portal_detail_item_creationDate">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
+      </span>
+    </div>
+
+    <div class="col-12 md:col-6 p-3">
+      <span class="p-float-label">
+        <input
+          pInputText
+          type="text"
+          readonly
+          id="portal_detail_item_creationUser"
+          class="w-full pt-3 pb-2"
+          [value]="product?.creationUser"
+          [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_USER' | translate"
+          tooltipPosition="top"
+          tooltipEvent="focus"
+        />
+        <label for="portal_detail_item_creationUser">{{ 'INTERNAL.CREATION_USER' | translate }}</label>
+      </span>
+    </div>
+  </div>
+
+  <div class="col-12 md:col-6">
+    <div class="col-12 md:col-3 p-3">
+      <span class="p-float-label">
+        <input
+          pInputText
+          type="text"
+          readonly
+          id="portal_detail_item_modificationDate"
+          class="w-full pt-3 pb-2"
+          [value]="product?.modificationDate | date : dateFormat"
+          [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
+          tooltipPosition="top"
+          tooltipEvent="focus"
+        />
+        <label for="portal_detail_item_modificationDate">{{ 'INTERNAL.MODIFICATION_DATE' | translate }}</label>
+      </span>
+    </div>
+
+    <div class="col-12 md:col-3 p-3">
+      <span class="p-float-label">
+        <input
+          pInputText
+          type="text"
+          readonly
+          id="portal_detail_item_modificationUser"
+          class="w-full pt-3 pb-2"
+          [value]="product?.modificationUser"
+          [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_USER' | translate"
+          tooltipPosition="top"
+          tooltipEvent="focus"
+        />
+        <label for="portal_detail_item_modificationUser">{{ 'INTERNAL.MODIFICATION_USER' | translate }}</label>
+      </span>
+    </div>
+  </div>
+</div>
+-->

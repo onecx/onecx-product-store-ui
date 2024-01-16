@@ -1,0 +1,137 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <div class="surface-section flex flex-column row-gap-4 my-3">
+    <div class="flex flex-wrap row-gap-4">
+      <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
+        <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.NAME' | translate" controlErrorAnchor>
+          <input pInputText type="text" class="w-full" id="product_detail_item_name" formControlName="name" />
+          <label class="ocx-required-label" for="product_detail_item_name">{{ 'PRODUCT.NAME' | translate }}</label>
+        </span>
+      </div>
+      <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
+        <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.VERSION' | translate" controlErrorAnchor>
+          <input pInputText type="text" class="w-full" id="product_detail_item_version" formControlName="version" />
+          <label for="product_detail_item_version">{{ 'PRODUCT.VERSION' | translate }}</label>
+        </span>
+      </div>
+
+      <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
+        <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.DISPLAY_NAME' | translate" controlErrorAnchor>
+          <input
+            pInputText
+            type="text"
+            class="w-full"
+            id="product_detail_item_display_name"
+            formControlName="displayName"
+          />
+          <label class="ocx-required-label" for="product_detail_item_display_name">
+            {{ 'PRODUCT.DISPLAY_NAME' | translate }}</label
+          >
+        </span>
+      </div>
+      <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
+        <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.BASE_PATH' | translate" controlErrorAnchor>
+          <input pInputText type="text" class="w-full" id="product_detail_item_basePath" formControlName="basePath" />
+          <label class="ocx-required-label" for="product_detail_item_basePath">
+            {{ 'PRODUCT.BASE_PATH' | translate }}</label
+          >
+        </span>
+      </div>
+
+      <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
+        <div class="flex flex-wrap sm:flex-nowrap align-items-center row-gap-2 column-gap-4">
+          <input hidden type="file" accept="image/*" #selectedFileInputLogo (change)="onFileUpload($event, 'logo')" />
+          <ps-image-container
+            [id]="'product_detail_item_logo_image'"
+            [imageUrl]="fetchingLogoUrl"
+            [small]="true"
+            [title]="'LOGO.TOOLTIPS.' + (fetchingLogoUrl ? 'IMAGE' : 'PLACEHOLDER') | translate"
+          ></ps-image-container>
+          <div class="flex flex-column w-full">
+            <div class="p-inputgroup mb-1" controlErrorAnchor>
+              <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.IMAGE_URL' | translate">
+                <input pInputText type="text" id="product_detail_item_imageUrl" formControlName="imageUrl" />
+                <label for="product_detail_item_imageUrl">{{ 'PRODUCT.IMAGE_URL' | translate }}</label>
+              </span>
+              <span
+                id="product_detail_item_upload_logo2"
+                class="p-inputgroup-addon bg-primary pseudo-button"
+                [ngClass]="changeMode !== 'VIEW' ? 'cursor-pointer' : 'p-disabled'"
+                [title]="'LOGO.TOOLTIPS.UPLOAD' | translate"
+                (click)="changeMode !== 'VIEW' ? selectedFileInputLogo.click() : null"
+              >
+                <span class="pi pi-upload"></span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
+        <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.CLASSIFICATIONS' | translate">
+          <input
+            pInputText
+            type="text"
+            class="w-full"
+            id="product_detail_item_classifications"
+            formControlName="classifications"
+          />
+          <label for="product_detail_item_classifications">{{ 'PRODUCT.CLASSIFICATIONS' | translate }}</label>
+        </span>
+      </div>
+
+      <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
+        <span class="p-float-label" controlErrorAnchor>
+          <p-dropdown
+            id="product_detail_item_iconName"
+            styleClass="w-full min-w-min input-field-correction"
+            formControlName="iconName"
+            [options]="iconItems"
+          >
+            <ng-template let-ico pTemplate="selectedItem">
+              <div class="flex">
+                <span class="pi pi-{{ ico.value }} mr-3"> </span>
+                <span>{{ ico.label || 'dummy-for-renderer' }}</span>
+              </div>
+            </ng-template>
+            <ng-template let-ico pTemplate="item">
+              <div class="flex">
+                <span class="pi pi-{{ ico.value }} mr-3"> </span>
+                <span>{{ ico.label }}</span>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <label for="product_detail_item_iconName">{{ 'PRODUCT.ICON_NAME' | translate }}</label>
+        </span>
+      </div>
+      <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
+        <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.OPERATOR' | translate" controlErrorAnchor>
+          <input
+            readonly
+            pInputText
+            type="text"
+            class="w-full"
+            id="product_detail_item_operator"
+            [value]="'PRODUCT.OPERATOR.' + (product?.operator ? 'DEPLOYMENT' : 'MANUAL') | translate"
+          />
+          <label for="product_detail_item_operator">{{ 'PRODUCT.OPERATOR' | translate }}</label>
+        </span>
+      </div>
+
+      <div class="w-full sm:w-12 md:w-9 lg:w-12 px-3">
+        <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.DESCRIPTION' | translate">
+          <textarea
+            pInputTextarea
+            class="w-full"
+            autoresize="true"
+            rows="3"
+            id="product_detail_item_description"
+            [pTooltip]="'PRODUCT.DESCRIPTION' | translate"
+            tooltipPosition="top"
+            tooltipEvent="focus"
+            formControlName="description"
+          ></textarea>
+          <label for="product_detail_item_description">{{ 'PRODUCT.DESCRIPTION' | translate }}</label>
+        </span>
+      </div>
+    </div>
+  </div>
+</form>

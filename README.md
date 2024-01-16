@@ -1,2 +1,2 @@
 # onecx-product-store-ui
-OneCx product store UI
+OneCX Product Store UI

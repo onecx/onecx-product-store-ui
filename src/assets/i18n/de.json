@@ -1,0 +1,162 @@
+{
+  "ACTIONS": {
+    "CONFIRMATION": {
+      "NO": "Nein",
+      "YES": "Ja",
+      "NO.TOOLTIP": "Abbruch der Aktion",
+      "YES.TOOLTIP": "Fortfahren mit der Aktion"
+    },
+    "CREATE": {
+      "PRODUCT": "Produkt erstellen",
+      "PRODUCT.TOOLTIP": "Ein neues Produkt erstellen",
+      "MESSAGE": {
+        "PRODUCT_ALREADY_EXISTS": "Ein Produkt mit diesem Namen existert schon",
+        "PRODUCT_OK": "Das Produkt wurde erfolgreich erstellt",
+        "PRODUCT_NOK": "Ein Fehler ist aufgetreten. Das Produkt wurde nicht erstellt."
+      }
+    },
+    "DELETE": {
+      "LABEL": "Löschen",
+      "TOOLTIP": "Produkt löschen",
+      "MESSAGE": "Möchten Sie {{ITEM}} löschen?",
+      "MESSAGE_INFO": "Diese Aktion kann nicht rückgängig gemacht werden!",
+      "PRODUCT_NOK": "Produkt konnte nicht gelöscht werden",
+      "PRODUCT_OK": "Produkt erfolgreich gelöscht"
+    },
+    "EDIT": {
+      "LABEL": "Bearbeiten",
+      "TOOLTIP": "Die Eigenschaften bearbeiten",
+      "MESSAGE": {
+        "PRODUCT_OK": "Das Produkt wurde erfolgreich geändert",
+        "PRODUCT_NOK": "Ein Fehler ist aufgetreten. Das Produkt wurde nicht geändert."
+      }
+    },
+    "NAVIGATION": {
+      "CLOSE": "Schließen",
+      "CLOSE.TOOLTIP": "Dialog schließen",
+      "CLOSE_WITHOUT_SAVE": "Dialog ohne Speichern schließen",
+      "BACK": "Zurück",
+      "NEXT": "Weiter",
+      "NEXT.TOOLTIP": "Nächste Seite",
+      "BACK.TOOLTIP": "Vorherige Seite",
+      "DETAILS.TOOLTIP": "Anzeige Details",
+      "NEW.TOOLTIP": "Erstelle neuen Eintrag"
+    },
+    "DATAVIEW": {
+      "FILTER": "Filter",
+      "FILTER_OF": "Filter für ",
+      "SORT_BY": "Sortiert nach",
+      "SORT_DIRECTION_ASC": "aufsteigend",
+      "SORT_DIRECTION_DESC": "absteigend",
+      "VIEW_MODE_GRID": "Kachelansicht",
+      "VIEW_MODE_LIST": "Listenansicht",
+      "VIEW_MODE_TABLE": "Tabellenansicht"
+    },
+    "CANCEL": "Abbrechen",
+    "CHOOSE": "Auswählen",
+    "SAVE": "Speichern",
+    "UPLOAD": "Hochladen",
+    "TOOLTIPS": {
+      "CANCEL": "Aktion abbrechen ",
+      "SAVE": "Änderungen speichern"
+    }
+  },
+  "BREADCRUMBS": {
+    "CREATE": "Neu",
+    "DETAIL": "Details",
+    "EDIT": "Ändern"
+  },
+  "INTERNAL": {
+    "CREATION_DATE": "Erstellt am",
+    "CREATION_USER": "Erstellt von",
+    "MODIFICATION_DATE": "Geändert am",
+    "MODIFICATION_USER": "Geändert von",
+    "TOOLTIPS": {
+      "CREATION_DATE": "Zeitpunkt der Erstellung",
+      "CREATION_USER": "Name des Benutzers der Erstellung",
+      "MODIFICATION_DATE": "Zeitpunkt der letzten Änderung",
+      "MODIFICATION_USER": "Name des Benutzers der letzten Änderung"
+    }
+  },
+  "LOGO": {
+    "LOGO_URL": "Logo URL",
+    "TOOLTIPS": {
+      "IMAGE": "Logo",
+      "PLACEHOLDER": "Bild Platzhalter",
+      "UPLOAD": "Bild auswählen und hochladen"
+    },
+    "UPLOADED": "Datei hochgeladen"
+  },
+  "DIALOG": {
+    "SEARCH.HEADER": "Product Store",
+    "SEARCH.SUBHEADER": "Produkte und deren Apps verwalten",
+    "DETAIL.SUBHEADER": "Produkt Details",
+    "LOAD_ERROR": "Produkt konnte nicht geladen werden",
+    "NOT_FOUND": "Produkt nicht gefunden",
+    "TABS": {
+      "APPS": "Apps",
+      "INTERN": "Intern",
+      "PROPERTIES": "Eigenschaften"
+    }
+  },
+  "PRODUCT": {
+    "ID": "ID",
+    "NAME": "Name",
+    "VERSION": "Version",
+    "DESCRIPTION": "Beschreibung",
+    "DISPLAY_NAME": "Anzeigename",
+    "OPERATOR": "Erzeugt durch",
+    "OPERATOR.MANUAL": "Manuell",
+    "OPERATOR.DEPLOYMENT": "Deployment Operator",
+    "IMAGE_URL": "Image URL",
+    "BASE_PATH": "Basispfad",
+    "ICON_NAME": "Iconname",
+    "CLASSIFICATIONS": "Klassifizierungen",
+    "WORKSPACES": "Verwendet in Workspaces",
+    "TOOLTIPS": {
+      "ID": "Eindeutige technische ID des Produkts",
+      "NAME": "Eindeutiger Name des Produkts",
+      "VERSION": "Version des Produkts",
+      "DESCRIPTION": "Beschreibung des Produkts",
+      "DISPLAY_NAME": "Anzeigename des Produkts",
+      "OPERATOR": "Wie wurde das Produkt angelegt? Wird bei der Erstellung des Produkts bestimmt.",
+      "IMAGE_URL": "Image URL",
+      "BASE_PATH": "Der Basispfad wie das Produkt erreichbar ist. Muss eindeutig über alle Produkte sein",
+      "ICON_NAME": "Name eines Icons aus der PrimeNG Icon Bibliothek. Wird z.b. als Default bei Menüeinträgen benutzt",
+      "CLASSIFICATIONS": "Kommaseparierte Liste von Begriffen zur Klassifizierungen des Produkts, z.b. Game, Tool etc.. Kann zur Filterung benutzt werden",
+      "WORKSPACES": "Workspaces, die das Produkt benutzen"
+    }
+  },
+  "EXCEPTIONS": {
+    "HTTP_STATUS_0": {
+      "PRODUCTS": "Unbekanntes Problem beim Abrufen von Produkte-Daten - Bitte versuchen sie es noch einmal.",
+      "APPS": "Unbekanntes Problem beim Abrufen von App-Daten - Bitte versuchen sie es noch einmal."
+    },
+    "HTTP_STATUS_403": {
+      "PRODUCTS": "Sie haben keine Rechte um Produkte zu sehen.",
+      "APPS": "Sie haben keine Rechte um Apps zu sehen."
+    },
+    "HTTP_STATUS_404": {
+      "PRODUCTS": "Es konnten keine Produkte gefunden werden.",
+      "APPS": "Es konnten keine Apps gefunden werden."
+    },
+    "HTTP_STATUS_500": {
+      "PRODUCTS": "Unbekanntes Server-Problem beim Abrufen von Produkt-Daten - Bitte versuchen sie es noch einmal.",
+      "APPS": "Unbekanntes Server-Problem beim Abrufen von App-Daten - Bitte versuchen sie es noch einmal."
+    }
+  },
+  "VALIDATION": {
+    "FORM_INVALID": "Die Daten sind nicht bereit zum Speichern.",
+    "PRODUCT.UNIQUE_CONSTRAINT": "Ein Produkt mit diesem Namen existiert bereits.",
+    "PRODUCT.NOT_EXISTS": "Ein Produkt mit diesem Namen konnte nicht gefunden werden.",
+    "ERRORS": {
+      "PARSE_ERROR": "Parserfehler: Die enthaltene Struktur entspricht nicht dem erwarteten Format.",
+      "INTERNAL_ERROR": "Interner Fehler",
+      "EMPTY_REQUIRED_FIELD": "Dieses Feld ist ein Pflichtfeld.",
+      "MAXIMUM_LENGTH": "Es sind nur {{chars}} Zeichen erlaubt.",
+      "MINIMUM_LENGTH": "Es sind mindestens {{chars}} Zeichen erforderlich.",
+      "PATTERN_ERROR": "Ihre Eingabe entspricht nicht dem benötigten Format.",
+      "FILETYPE_PATTERN_ERROR": "Ihre Datei entspricht nicht den erlaubten Formaten: .png, .jpg, .jpeg"
+    }
+  }
+}
