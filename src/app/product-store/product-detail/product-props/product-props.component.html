@@ -1,13 +1,13 @@
 <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
   <div class="surface-section flex flex-column row-gap-4 m-3">
     <div class="flex flex-wrap row-gap-3 column-gap-5">
-      <div class="w-full sm:w-9 md:w-7 lg:w-5">
+      <div class="w-full sm:w-10 md:w-9 lg:w-5">
         <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.NAME' | translate" controlErrorAnchor>
           <input pInputText type="text" class="w-full" id="product_detail_item_name" formControlName="name" />
           <label class="ocx-required-label" for="product_detail_item_name">{{ 'PRODUCT.NAME' | translate }}</label>
         </span>
       </div>
-      <div class="w-full sm:w-9 md:w-7 lg:w-5">
+      <div class="w-full sm:w-10 md:w-9 lg:w-5">
         <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.VERSION' | translate" controlErrorAnchor>
           <input pInputText type="text" class="w-full" id="product_detail_item_version" formControlName="version" />
           <label for="product_detail_item_version">{{ 'PRODUCT.VERSION' | translate }}</label>
@@ -16,7 +16,7 @@
     </div>
 
     <div class="flex flex-wrap row-gap-3 column-gap-5">
-      <div class="w-full sm:w-9 md:w-7 lg:w-5">
+      <div class="w-full sm:w-10 md:w-9 lg:w-5">
         <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.DISPLAY_NAME' | translate" controlErrorAnchor>
           <input
             pInputText
@@ -30,7 +30,7 @@
           >
         </span>
       </div>
-      <div class="w-full sm:w-9 md:w-7 lg:w-5">
+      <div class="w-full sm:w-10 md:w-9 lg:w-5">
         <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.BASE_PATH' | translate" controlErrorAnchor>
           <input pInputText type="text" class="w-full" id="product_detail_item_basePath" formControlName="basePath" />
           <label class="ocx-required-label" for="product_detail_item_basePath">
@@ -41,7 +41,7 @@
     </div>
 
     <div class="flex flex-wrap row-gap-3 column-gap-5">
-      <div class="w-full sm:w-9 md:w-7 lg:w-5">
+      <div class="w-full sm:w-10 md:w-9 lg:w-5">
         <div class="flex flex-wrap sm:flex-nowrap align-items-center row-gap-2 column-gap-4">
           <input hidden type="file" accept="image/*" #selectedFileInputLogo (change)="onFileUpload($event, 'logo')" />
           <ps-image-container
@@ -69,7 +69,7 @@
           </div>
         </div>
       </div>
-      <div class="w-full sm:w-9 md:w-7 lg:w-5">
+      <div class="w-full sm:w-10 md:w-9 lg:w-5">
         <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.CLASSIFICATIONS' | translate">
           <input
             pInputText
@@ -84,7 +84,7 @@
     </div>
 
     <div class="flex flex-wrap row-gap-3 column-gap-5">
-      <div class="w-full sm:w-9 md:w-7 lg:w-5">
+      <div class="w-full sm:w-10 md:w-9 lg:w-5">
         <span class="p-float-label" controlErrorAnchor>
           <p-dropdown
             id="product_detail_item_iconName"
@@ -108,7 +108,7 @@
           <label for="product_detail_item_iconName">{{ 'PRODUCT.ICON_NAME' | translate }}</label>
         </span>
       </div>
-      <div class="w-full sm:w-9 md:w-7 lg:w-5">
+      <div class="w-full sm:w-10 md:w-9 lg:w-5">
         <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.OPERATOR' | translate" controlErrorAnchor>
           <input
             readonly
@@ -122,8 +122,8 @@
         </span>
       </div>
     </div>
-    <div class="flex flex-wrap row-gap-3 column-gap-5">
-      <div class="w-10">
+    <div>
+      <div class="w-full sm:w-10 md:w-9 lg:w-10">
         <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.DESCRIPTION' | translate">
           <textarea
             pInputTextarea

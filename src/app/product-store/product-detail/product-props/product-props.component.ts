@@ -36,9 +36,8 @@ export class ProductPropertyComponent implements OnChanges {
   public formGroup: FormGroup<ProductDetailForm>
   public productId: string | undefined
   public productName: string | null | undefined
-  public productOperator: string | undefined
   public fetchingLogoUrl?: string
-  public iconItems: SelectItem[] = [{ label: '', value: null }] // default value is empty
+  public iconItems: SelectItem[] = [{ label: '', value: null }]
 
   constructor(
     private icon: IconService,
@@ -68,7 +67,7 @@ export class ProductPropertyComponent implements OnChanges {
         ...this.product
       })
       this.productId = this.product.id
-      this.productName = this.product.name
+      this.productName = this.product.name // business key => manage the change!
     } else this.formGroup.reset()
     this.changeMode !== 'VIEW' ? this.formGroup.enable() : this.formGroup.disable()
   }
@@ -80,6 +79,7 @@ export class ProductPropertyComponent implements OnChanges {
       this.msgService.error({ summaryKey: 'VALIDATION.FORM_INVALID' })
     }
   }
+
   private createProduct() {
     this.productApi
       .createProduct({
@@ -91,7 +91,7 @@ export class ProductPropertyComponent implements OnChanges {
           basePath: this.formGroup.value['basePath'],
           displayName: this.formGroup.value['displayName'],
           iconName: this.formGroup.value['iconName'],
-          classifications: []
+          classifications: this.formGroup.value['classifications']?.toString().split(',')
         } as CreateProductRequest
       })
       .subscribe({
@@ -109,6 +109,7 @@ export class ProductPropertyComponent implements OnChanges {
         }
       })
   }
+
   private updateProduct() {
     this.productApi
       .updateProduct({
@@ -121,13 +122,12 @@ export class ProductPropertyComponent implements OnChanges {
           basePath: this.formGroup.value['basePath'],
           displayName: this.formGroup.value['displayName'],
           iconName: this.formGroup.value['iconName'],
-          classifications: []
+          classifications: this.formGroup.value['classifications']?.toString().split(',')
         } as UpdateProductRequest
       })
       .subscribe({
-        next: (data) => {
+        next: () => {
           this.msgService.success({ summaryKey: 'ACTIONS.EDIT.MESSAGE.PRODUCT_OK' })
-          console.log('data', data)
           this.productNameChanged.emit(this.productName !== this.formGroup.value['name'])
         },
         error: (err) => {
