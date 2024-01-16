@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
-import { TranslateService } from '@ngx-translate/core'
+// import { TranslateService } from '@ngx-translate/core'
 import { SelectItem } from 'primeng/api'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
@@ -42,7 +42,7 @@ export class ProductPropertyComponent implements OnChanges {
   constructor(
     private icon: IconService,
     private productApi: ProductsAPIService,
-    private translate: TranslateService,
+    // private translate: TranslateService,
     private msgService: PortalMessageService
   ) {
     this.formGroup = new FormGroup<ProductDetailForm>({
