@@ -43,6 +43,10 @@ export class ProductDetailComponent implements OnInit {
   ) {
     this.dateFormat = this.config.lang === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'medium'
     this.productName = this.route.snapshot.paramMap.get('name') || ''
+  }
+
+  ngOnInit(): void {
+    console.log('product detail ngOnInit()')
     if (this.productName !== '') {
       this.changeMode = 'VIEW'
       this.loadProduct()
@@ -50,10 +54,6 @@ export class ProductDetailComponent implements OnInit {
       this.product = undefined
       this.prepareTranslations()
     }
-  }
-
-  ngOnInit(): void {
-    console.log('product detail ngOnInit()')
   }
 
   private loadProduct() {
@@ -75,15 +75,16 @@ export class ProductDetailComponent implements OnInit {
           this.prepareTranslations()
         },
         error: (err: any) => {
+          console.log('ERR')
           this.msgService.error({
-            summaryKey: 'DIALOG.LOAD_ERROR',
-            detailKey: err.error.indexOf('was not found') > 1 ? 'DIALOG.NOT_FOUND' : err.error
+            summaryKey: 'DIALOG.LOAD_ERROR'
+            // detailKey: err.error.indexOf('was not found') > 1 ? 'DIALOG.NOT_FOUND' : err.error
           })
           this.close()
         }
       })
   }
-  private getProduct() {
+  public getProduct() {
     this.loading = true
     this.productApi
       .getProduct({ id: this.product?.id } as GetProductRequestParams)
@@ -104,11 +105,12 @@ export class ProductDetailComponent implements OnInit {
       })
   }
 
-  private prepareTranslations(): void {
+  public prepareTranslations(): void {
     this.translate
       .get([
         'ACTIONS.DELETE.LABEL',
         'ACTIONS.DELETE.TOOLTIP',
+        'ACTIONS.DELETE.MESSAGE',
         'ACTIONS.EDIT.LABEL',
         'ACTIONS.EDIT.TOOLTIP',
         'ACTIONS.CANCEL',
@@ -189,18 +191,18 @@ export class ProductDetailComponent implements OnInit {
     }
   }
 
-  private close(): void {
+  public close(): void {
     this.router.navigate(['./..'], { relativeTo: this.route })
   }
   public onClose() {
     this.close()
   }
-  private onEdit() {
+  public onEdit() {
     this.getProduct()
     this.changeMode = 'EDIT'
     this.prepareTranslations()
   }
-  private onCancel() {
+  public onCancel() {
     if (this.changeMode === 'EDIT') {
       this.changeMode = 'VIEW'
       this.getProduct()
@@ -210,7 +212,7 @@ export class ProductDetailComponent implements OnInit {
       this.close()
     }
   }
-  private onSave() {
+  public onSave() {
     this.productPropsComponent.onSubmit()
   }
   public onCreate(data: any) {
