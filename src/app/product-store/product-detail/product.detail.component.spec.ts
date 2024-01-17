@@ -16,7 +16,6 @@ describe('ProductDetailComponent', () => {
   let fixture: ComponentFixture<ProductDetailComponent>
 
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
-  // const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
   const apiServiceSpy = {
     searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of({})),
     getProduct: jasmine.createSpy('getProduct').and.returnValue(of({}))
