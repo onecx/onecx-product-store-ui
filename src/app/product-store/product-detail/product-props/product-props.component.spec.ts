@@ -11,7 +11,6 @@ import { PortalMessageService } from '@onecx/portal-integration-angular'
 import { HttpLoaderFactory } from 'src/app/shared/shared.module'
 import { ProductPropertyComponent, ProductDetailForm } from './product-props.component'
 import { ProductsAPIService } from 'src/app/generated'
-// import { ProductDetailComponent } from '../product-detail.component'
 
 describe('ProductPropertyComponent', () => {
   let component: ProductPropertyComponent
@@ -106,6 +105,55 @@ describe('ProductPropertyComponent', () => {
     component.onSubmit()
 
     expect(apiServiceSpy.createProduct).toHaveBeenCalled()
+    expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.MESSAGE.PRODUCT_OK' })
+  })
+
+  it('should call updateProduct onSubmit in view mode', () => {
+    apiServiceSpy.updateProduct.and.returnValue(of({}))
+    const formGroup = new FormGroup<ProductDetailForm>({
+      id: new FormControl<string | null>('id'),
+      name: new FormControl<string | null>('name'),
+      operator: new FormControl<boolean | null>(null),
+      version: new FormControl<string | null>('version'),
+      description: new FormControl<string | null>(null),
+      imageUrl: new FormControl<string | null>(null),
+      basePath: new FormControl<string | null>('path'),
+      displayName: new FormControl<string | null>('display'),
+      iconName: new FormControl<string | null>('icon'),
+      classifications: new FormControl<string[] | null>(null)
+    })
+    component.formGroup = formGroup as FormGroup<ProductDetailForm>
+    component.changeMode = 'VIEW'
+
+    component.onSubmit()
+
+    expect(apiServiceSpy.updateProduct).toHaveBeenCalled()
+    expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.EDIT.MESSAGE.PRODUCT_OK' })
+  })
+
+  it('should display error if searchProducts fails', () => {
+    apiServiceSpy.updateProduct.and.returnValue(throwError(() => new Error()))
+    const formGroup = new FormGroup<ProductDetailForm>({
+      id: new FormControl<string | null>('id'),
+      name: new FormControl<string | null>('name'),
+      operator: new FormControl<boolean | null>(null),
+      version: new FormControl<string | null>('version'),
+      description: new FormControl<string | null>(null),
+      imageUrl: new FormControl<string | null>(null),
+      basePath: new FormControl<string | null>('path'),
+      displayName: new FormControl<string | null>('display'),
+      iconName: new FormControl<string | null>('icon'),
+      classifications: new FormControl<string[] | null>(null)
+    })
+    component.formGroup = formGroup as FormGroup<ProductDetailForm>
+    component.changeMode = 'VIEW'
+
+    component.onSubmit()
+
+    expect(component.formGroup.valid).toBeTrue()
+    expect(msgServiceSpy.error).toHaveBeenCalledWith({
+      summaryKey: 'ACTIONS.EDIT.MESSAGE.PRODUCT_NOK'
+    })
   })
 
   it('should display error if searchProducts fails', () => {
@@ -154,5 +202,17 @@ describe('ProductPropertyComponent', () => {
     expect(msgServiceSpy.error).toHaveBeenCalledWith({
       summaryKey: 'VALIDATION.FORM_INVALID'
     })
+  })
+
+  it('should display error onSubmit if formGroup invalid', () => {
+    const event = {
+      target: {
+        files: ['file']
+      }
+    }
+
+    component.onFileUpload(event as any)
+
+    expect(component.formGroup.valid).toBeFalse()
   })
 })

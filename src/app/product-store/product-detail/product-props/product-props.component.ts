@@ -134,17 +134,18 @@ export class ProductPropertyComponent implements OnChanges {
           this.productNameChanged.emit(this.productName !== this.formGroup.value['name'])
         },
         error: (err) => {
-          err.error.key && err.error.key === 'PERSIST_ENTITY_FAILED'
+          /* err.error.key && err.error.key === 'PERSIST_ENTITY_FAILED'
             ? this.msgService.error({
                 summaryKey: 'ACTIONS.EDIT.MESSAGE.PRODUCT_NOK',
                 detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT'
               })
-            : this.msgService.error({ summaryKey: 'ACTIONS.EDIT.MESSAGE.PRODUCT_NOK' })
+            :  */
+          this.msgService.error({ summaryKey: 'ACTIONS.EDIT.MESSAGE.PRODUCT_NOK' })
         }
       })
   }
 
-  public onFileUpload(ev: Event, fieldType: 'logo'): void {
+  public onFileUpload(ev: Event /* , fieldType: 'logo' */): void {
     if (ev.target && (ev.target as HTMLInputElement).files) {
       const files = (ev.target as HTMLInputElement).files
       if (files) {
