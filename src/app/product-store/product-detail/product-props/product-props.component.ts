@@ -145,7 +145,7 @@ export class ProductPropertyComponent implements OnChanges {
       })
   }
 
-  public onFileUpload(ev: Event /* , fieldType: 'logo' */): void {
+  public onFileUpload(ev: Event, fieldType: 'logo'): void {
     if (ev.target && (ev.target as HTMLInputElement).files) {
       const files = (ev.target as HTMLInputElement).files
       if (files) {
