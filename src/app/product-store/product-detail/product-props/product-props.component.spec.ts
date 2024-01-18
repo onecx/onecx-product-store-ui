@@ -211,7 +211,7 @@ describe('ProductPropertyComponent', () => {
       }
     }
 
-    component.onFileUpload(event as any)
+    component.onFileUpload(event as any, 'logo')
 
     expect(component.formGroup.valid).toBeFalse()
   })
