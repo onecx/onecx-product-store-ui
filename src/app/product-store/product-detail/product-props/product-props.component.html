@@ -10,7 +10,9 @@
       <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
         <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.VERSION' | translate" controlErrorAnchor>
           <input pInputText type="text" class="w-full" id="product_detail_item_version" formControlName="version" />
-          <label for="product_detail_item_version">{{ 'PRODUCT.VERSION' | translate }}</label>
+          <label class="ocx-required-label" for="product_detail_item_version">
+            {{ 'PRODUCT.VERSION' | translate }}</label
+          >
         </span>
       </div>
 

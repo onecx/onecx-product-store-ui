@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core'
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
-import { TranslateService } from '@ngx-translate/core'
+// import { TranslateService } from '@ngx-translate/core'
 import { SelectItem } from 'primeng/api'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
@@ -9,7 +9,7 @@ import { IconService } from '../../../shared/iconservice'
 import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
 // import { setFetchUrls } from '../../../shared/utils'
 
-interface ProductDetailForm {
+export interface ProductDetailForm {
   id: FormControl<string | null>
   name: FormControl<string | null>
   operator: FormControl<boolean | null>
@@ -42,7 +42,7 @@ export class ProductPropertyComponent implements OnChanges {
   constructor(
     private icon: IconService,
     private productApi: ProductsAPIService,
-    private translate: TranslateService,
+    // private translate: TranslateService,
     private msgService: PortalMessageService
   ) {
     this.formGroup = new FormGroup<ProductDetailForm>({
@@ -50,7 +50,7 @@ export class ProductPropertyComponent implements OnChanges {
       name: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
       displayName: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
       operator: new FormControl(null),
-      version: new FormControl(null, [Validators.maxLength(255)]),
+      version: new FormControl(null, [Validators.required, Validators.maxLength(255)]),
       description: new FormControl(null, [Validators.maxLength(255)]),
       imageUrl: new FormControl(null, [Validators.maxLength(255)]),
       basePath: new FormControl(null, [Validators.required, Validators.maxLength(255)]),
@@ -61,7 +61,7 @@ export class ProductPropertyComponent implements OnChanges {
     this.iconItems.sort(dropDownSortItemsByLabel)
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(): void {
     if (this.product) {
       this.formGroup.patchValue({
         ...this.product
@@ -96,16 +96,19 @@ export class ProductPropertyComponent implements OnChanges {
       })
       .subscribe({
         next: (data) => {
+          console.log('NEXT')
           this.msgService.success({ summaryKey: 'ACTIONS.CREATE.MESSAGE.PRODUCT_OK' })
           this.productCreated.emit(data)
         },
         error: (err) => {
-          err.error.key && err.error.key === 'PERSIST_ENTITY_FAILED'
+          // console.log('ERR', err)
+          /* err.error.key && err.error.key === 'PERSIST_ENTITY_FAILED'
             ? this.msgService.error({
                 summaryKey: 'ACTIONS.CREATE.MESSAGE.PRODUCT_NOK',
                 detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT'
               })
-            : this.msgService.error({ summaryKey: 'ACTIONS.CREATE.MESSAGE.PRODUCT_NOK' })
+            :  */
+          this.msgService.error({ summaryKey: 'ACTIONS.CREATE.MESSAGE.PRODUCT_NOK' })
         }
       })
   }
@@ -131,12 +134,13 @@ export class ProductPropertyComponent implements OnChanges {
           this.productNameChanged.emit(this.productName !== this.formGroup.value['name'])
         },
         error: (err) => {
-          err.error.key && err.error.key === 'PERSIST_ENTITY_FAILED'
+          /* err.error.key && err.error.key === 'PERSIST_ENTITY_FAILED'
             ? this.msgService.error({
                 summaryKey: 'ACTIONS.EDIT.MESSAGE.PRODUCT_NOK',
                 detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT'
               })
-            : this.msgService.error({ summaryKey: 'ACTIONS.EDIT.MESSAGE.PRODUCT_NOK' })
+            :  */
+          this.msgService.error({ summaryKey: 'ACTIONS.EDIT.MESSAGE.PRODUCT_NOK' })
         }
       })
   }
