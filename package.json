@@ -52,7 +52,7 @@
     "@onecx/accelerator": "^3.7.1",
     "@onecx/integration-interface": "^3.7.1",
     "@onecx/keycloak-auth": "^3.7.1",
-    "@onecx/portal-integration-angular": "^3.7.1",
+    "@onecx/portal-integration-angular": "^3.9.0",
     "@onecx/portal-layout-styles": "^3.7.1",
     "file-saver": "^2.0.5",
     "i18n-iso-countries": "^7.6.0",
