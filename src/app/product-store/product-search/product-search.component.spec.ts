@@ -60,7 +60,7 @@ describe('ProductSearchComponent', () => {
   })
 
   it('should prepare action buttons on init', () => {
-    translateServiceSpy.get.and.returnValue(of({ 'ACTIONS.CREATE.PRODUCT': 'Create' }))
+    translateServiceSpy.get.and.returnValue(of({ 'ACTIONS.CREATE.LABEL': 'Create' }))
     spyOn(component, 'onNewProduct')
 
     component.ngOnInit()
@@ -104,7 +104,7 @@ describe('ProductSearchComponent', () => {
   })
 
   it('should call loadProducts onSearch', () => {
-    translateServiceSpy.get.and.returnValue(of({ 'ACTIONS.CREATE.PRODUCT': 'Create' }))
+    translateServiceSpy.get.and.returnValue(of({ 'ACTIONS.CREATE.LABEL': 'Create' }))
     spyOn(component, 'loadProducts')
 
     component.onSearch()

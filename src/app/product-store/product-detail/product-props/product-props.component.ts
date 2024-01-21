@@ -86,6 +86,8 @@ export class ProductPropertyComponent implements OnChanges {
     this.changeMode !== 'VIEW' ? this.formGroup.enable() : this.formGroup.disable()
   }
 
+  /** CREATE/UPDATE product
+   */
   public onSubmit() {
     if (this.formGroup.valid) {
       this.changeMode === 'CREATE' ? this.createProduct() : this.updateProduct()
@@ -120,15 +122,6 @@ export class ProductPropertyComponent implements OnChanges {
       })
   }
 
-  private displaySaveError(err: any) {
-    err.error && err.error.errorCode && err.error.errorCode === 'MERGE_ENTITY_FAILED' // 'PERSIST_ENTITY_FAILED'
-      ? this.msgService.error({
-          summaryKey: 'ACTIONS.' + this.changeMode + '.PRODUCT.NOK',
-          detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT'
-        })
-      : this.msgService.error({ summaryKey: 'ACTIONS.' + this.changeMode + '.PRODUCT.NOK' })
-  }
-
   private updateProduct() {
     this.productApi
       .updateProduct({
@@ -154,6 +147,17 @@ export class ProductPropertyComponent implements OnChanges {
       })
   }
 
+  private displaySaveError(err: any) {
+    err.error && err.error.errorCode && err.error.errorCode === 'MERGE_ENTITY_FAILED' // 'PERSIST_ENTITY_FAILED'
+      ? this.msgService.error({
+          summaryKey: 'ACTIONS.' + this.changeMode + '.PRODUCT.NOK',
+          detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT'
+        })
+      : this.msgService.error({ summaryKey: 'ACTIONS.' + this.changeMode + '.PRODUCT.NOK' })
+  }
+
+  /** File Handling
+   */
   public onFileUpload(ev: Event, fieldType: 'logo'): void {
     if (ev.target && (ev.target as HTMLInputElement).files) {
       const files = (ev.target as HTMLInputElement).files

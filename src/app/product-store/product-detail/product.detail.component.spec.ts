@@ -191,7 +191,7 @@ describe('ProductDetailComponent', () => {
     expect(component.productPropsComponent.onSubmit).toHaveBeenCalled()
   })
 
-  it('should behave correctly onCreate', () => {
+  it('should behave correctly onCreate henry', () => {
     const data: any = { id: 'id ' }
 
     component.onCreate(data)
@@ -207,7 +207,7 @@ describe('ProductDetailComponent', () => {
     expect(component.close).toHaveBeenCalled()
   })
 
-  it('should behave correctly onNameChange if change false', () => {
+  it('should behave correctly onChange if change false', () => {
     spyOn(component, 'getProduct')
 
     component.onChange(false)

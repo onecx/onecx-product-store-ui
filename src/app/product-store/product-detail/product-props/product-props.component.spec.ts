@@ -100,15 +100,15 @@ describe('ProductPropertyComponent', () => {
       classifications: new FormControl<string[] | null>(null)
     })
     component.formGroup = formGroup as FormGroup<ProductDetailForm>
-    component.changeMode = 'NEW'
+    component.changeMode = 'CREATE'
 
     component.onSubmit()
 
     expect(apiServiceSpy.createProduct).toHaveBeenCalled()
-    expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.MESSAGE.PRODUCT_OK' })
+    expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.PRODUCT.OK' })
   })
 
-  it('should call updateProduct onSubmit in view mode', () => {
+  it('should call updateProduct onSubmit in edit mode', () => {
     apiServiceSpy.updateProduct.and.returnValue(of({}))
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>('id'),
@@ -123,15 +123,15 @@ describe('ProductPropertyComponent', () => {
       classifications: new FormControl<string[] | null>(null)
     })
     component.formGroup = formGroup as FormGroup<ProductDetailForm>
-    component.changeMode = 'VIEW'
+    component.changeMode = 'EDIT'
 
     component.onSubmit()
 
     expect(apiServiceSpy.updateProduct).toHaveBeenCalled()
-    expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.EDIT.MESSAGE.PRODUCT_OK' })
+    expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.EDIT.PRODUCT.OK' })
   })
 
-  it('should display error if searchProducts fails', () => {
+  it('should display error if updateProduct fails', () => {
     apiServiceSpy.updateProduct.and.returnValue(throwError(() => new Error()))
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>('id'),
@@ -146,17 +146,17 @@ describe('ProductPropertyComponent', () => {
       classifications: new FormControl<string[] | null>(null)
     })
     component.formGroup = formGroup as FormGroup<ProductDetailForm>
-    component.changeMode = 'VIEW'
+    component.changeMode = 'EDIT'
 
     component.onSubmit()
 
     expect(component.formGroup.valid).toBeTrue()
     expect(msgServiceSpy.error).toHaveBeenCalledWith({
-      summaryKey: 'ACTIONS.EDIT.MESSAGE.PRODUCT_NOK'
+      summaryKey: 'ACTIONS.EDIT.PRODUCT.NOK'
     })
   })
 
-  it('should display error if searchProducts fails', () => {
+  it('should display error if createProduct fails', () => {
     apiServiceSpy.createProduct.and.returnValue(throwError(() => new Error()))
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>('id'),
@@ -171,13 +171,13 @@ describe('ProductPropertyComponent', () => {
       classifications: new FormControl<string[] | null>(null)
     })
     component.formGroup = formGroup as FormGroup<ProductDetailForm>
-    component.changeMode = 'NEW'
+    component.changeMode = 'CREATE'
 
     component.onSubmit()
 
     expect(component.formGroup.valid).toBeTrue()
     expect(msgServiceSpy.error).toHaveBeenCalledWith({
-      summaryKey: 'ACTIONS.CREATE.MESSAGE.PRODUCT_NOK'
+      summaryKey: 'ACTIONS.CREATE.PRODUCT.NOK'
     })
   })
 
