@@ -30,16 +30,3 @@ export function dropDownGetLabelByValue(ddArray: SelectItem[], val: string): str
 export function sortByLocale(a: any, b: any): number {
   return a.toUpperCase().localeCompare(b.toUpperCase())
 }
-
-/**
- * Filter objects => exclude given properties
- */
-export function filterObject(obj: any, exProps: string[]): any {
-  const pickedObj: any = {}
-  for (const prop in obj) {
-    if (!exProps.includes(prop)) {
-      pickedObj[prop] = obj[prop]
-    }
-  }
-  return pickedObj
-}

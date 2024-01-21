@@ -9,16 +9,16 @@
   >
   </ocx-page-header>
   <ocx-page-content>
-    <div *ngIf="!product && changeMode !== 'NEW'" class="card px-3 align-items-center">
+    <div *ngIf="!loading && !product && changeMode !== 'CREATE'" class="card px-3 align-items-center">
       <p-message severity="error" styleClass="p-2" [text]="'VALIDATION.PRODUCT.NOT_EXISTS' | translate"></p-message>
     </div>
-    <p-tabView *ngIf="(product && !loading) || changeMode === 'NEW'">
+    <p-tabView *ngIf="(product && !loading) || changeMode === 'CREATE'">
       <p-tabPanel id="product_detail_panel_props" [header]="'DIALOG.TABS.PROPERTIES' | translate">
         <ps-product-props
           [product]="product"
           [changeMode]="changeMode"
-          (productCreate)="onCreate($event)"
-          (productNameChanged)="onNameChange($event)"
+          (productCreated)="onCreate($event)"
+          (productChanged)="onChange($event)"
         ></ps-product-props>
       </p-tabPanel>
 
@@ -32,3 +32,45 @@
     </p-tabView>
   </ocx-page-content>
 </ocx-portal-page>
+
+<p-dialog
+  [(visible)]="productDeleteVisible"
+  [header]="'ACTIONS.DELETE.PRODUCT.HEADER' | translate"
+  [modal]="true"
+  [resizable]="false"
+  [dismissableMask]="true"
+  [style]="{ 'max-width': '500px' }"
+>
+  <div class="flex column-gap-3 row-gap-1 justify-content-start align-items-center">
+    <div class="pi pi-question-circle text-3xl danger-action-text"></div>
+    <div>
+      <div>{{('ACTIONS.DELETE.MESSAGE' | translate).replace('{{ITEM}}', product?.name)}}</div>
+      <div class="mt-2">{{ 'ACTIONS.DELETE.MESSAGE_INFO' | translate }}</div>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <div class="flex flex-wrap column-gap-2 row-gap-1 justify-content-end">
+      <button
+        pButton
+        autofocus
+        type="button"
+        class="m-0"
+        icon="pi pi-times"
+        iconPos="left"
+        [label]="'ACTIONS.CONFIRMATION.NO' | translate"
+        [title]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
+        (click)="productDeleteVisible = false"
+      ></button>
+      <button
+        pButton
+        type="button"
+        class="m-0"
+        icon="pi pi-check"
+        iconPos="left"
+        [label]="'ACTIONS.CONFIRMATION.YES' | translate"
+        [title]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
+        (click)="onDeleteConfirmation()"
+      ></button>
+    </div>
+  </ng-template>
+</p-dialog>

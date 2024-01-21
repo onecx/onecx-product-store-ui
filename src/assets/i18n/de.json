@@ -7,28 +7,52 @@
       "YES.TOOLTIP": "Fortfahren mit der Aktion"
     },
     "CREATE": {
-      "PRODUCT": "Produkt erstellen",
-      "PRODUCT.TOOLTIP": "Ein neues Produkt erstellen",
-      "MESSAGE": {
-        "PRODUCT_ALREADY_EXISTS": "Ein Produkt mit diesem Namen existert schon",
-        "PRODUCT_OK": "Das Produkt wurde erfolgreich erstellt",
-        "PRODUCT_NOK": "Ein Fehler ist aufgetreten. Das Produkt wurde nicht erstellt."
+      "LABEL": "Erstellen",
+      "APP": {
+        "HEADER": "App erstellen",
+        "TOOLTIP": "Eine neue App erstellen",
+        "ALREADY_EXISTS": "Eine App mit diesem Namen existert schon für das Produkt",
+        "OK": "Die App wurde erfolgreich erstellt",
+        "NOK": "Ein Fehler ist aufgetreten. Die App wurde nicht erstellt."
+      },
+      "PRODUCT": {
+        "HEADER": "Produkt erstellen",
+        "TOOLTIP": "Ein neues Produkt erstellen",
+        "ALREADY_EXISTS": "Ein Produkt mit diesem Namen existert schon",
+        "OK": "Das Produkt wurde erfolgreich erstellt",
+        "NOK": "Ein Fehler ist aufgetreten. Das Produkt wurde nicht erstellt."
       }
     },
     "DELETE": {
       "LABEL": "Löschen",
-      "TOOLTIP": "Produkt löschen",
-      "MESSAGE": "Möchten Sie {{ITEM}} löschen?",
-      "MESSAGE_INFO": "Diese Aktion kann nicht rückgängig gemacht werden!",
-      "PRODUCT_NOK": "Produkt konnte nicht gelöscht werden",
-      "PRODUCT_OK": "Produkt erfolgreich gelöscht"
+      "APP": {
+        "TOOLTIP": "App löschen",
+        "HEADER": "App löschen",
+        "NOK": "App konnte nicht gelöscht werden",
+        "OK": "App erfolgreich gelöscht"
+      },
+      "PRODUCT": {
+        "TOOLTIP": "Produkt löschen",
+        "HEADER": "Produkt löschen",
+        "NOK": "Produkt konnte nicht gelöscht werden",
+        "OK": "Produkt erfolgreich gelöscht"
+      },
+      "MESSAGE": "Möchten Sie \"{{ITEM}}\" löschen?",
+      "MESSAGE_INFO": "Diese Aktion kann nicht rückgängig gemacht werden!"
     },
     "EDIT": {
       "LABEL": "Bearbeiten",
-      "TOOLTIP": "Die Eigenschaften bearbeiten",
-      "MESSAGE": {
-        "PRODUCT_OK": "Das Produkt wurde erfolgreich geändert",
-        "PRODUCT_NOK": "Ein Fehler ist aufgetreten. Das Produkt wurde nicht geändert."
+      "APP": {
+        "HEADER": "App bearbeiten",
+        "TOOLTIP": "Die App-Eigenschaften bearbeiten",
+        "OK": "Das App wurde erfolgreich geändert",
+        "NOK": "Ein Fehler ist aufgetreten. Das App wurde nicht geändert."
+      },
+      "PRODUCT": {
+        "HEADER": "Produkt bearbeiten",
+        "TOOLTIP": "Die Produkteigenschaften bearbeiten",
+        "OK": "Das Produkt wurde erfolgreich geändert",
+        "NOK": "Ein Fehler ist aufgetreten. Das Produkt wurde nicht geändert."
       }
     },
     "NAVIGATION": {
@@ -149,6 +173,7 @@
     "FORM_INVALID": "Die Daten sind nicht bereit zum Speichern.",
     "PRODUCT.UNIQUE_CONSTRAINT": "Ein Produkt mit diesem Namen existiert bereits.",
     "PRODUCT.NOT_EXISTS": "Ein Produkt mit diesem Namen konnte nicht gefunden werden.",
+    "PRODUCT.INVALID_NAME": "Dieser Namen kann nicht verwendet werden.",
     "ERRORS": {
       "PARSE_ERROR": "Parserfehler: Die enthaltene Struktur entspricht nicht dem erwarteten Format.",
       "INTERNAL_ERROR": "Interner Fehler",

@@ -10,7 +10,7 @@ import { Product, ProductsAPIService, MicrofrontendsAPIService, GetProductReques
 import { environment } from '../../../environments/environment'
 import { ProductPropertyComponent } from './product-props/product-props.component'
 
-type ChangeMode = 'VIEW' | 'NEW' | 'EDIT'
+type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT'
 
 @Component({
   templateUrl: './product-detail.component.html',
@@ -24,7 +24,7 @@ export class ProductDetailComponent implements OnInit {
   public productName: string
   public product: Product | undefined
   //  usedInWorkspace: Workspace[] | undefined
-  public changeMode: ChangeMode = 'NEW'
+  public changeMode: ChangeMode = 'CREATE'
   public loading = false
   public dateFormat = 'medium'
   public actions: Action[] = []
@@ -75,7 +75,6 @@ export class ProductDetailComponent implements OnInit {
           this.prepareTranslations()
         },
         error: (err: any) => {
-          console.log('ERR')
           this.msgService.error({
             summaryKey: 'DIALOG.LOAD_ERROR'
             // detailKey: err.error.indexOf('was not found') > 1 ? 'DIALOG.NOT_FOUND' : err.error
@@ -109,10 +108,10 @@ export class ProductDetailComponent implements OnInit {
     this.translate
       .get([
         'ACTIONS.DELETE.LABEL',
-        'ACTIONS.DELETE.TOOLTIP',
+        'ACTIONS.DELETE.PRODUCT.TOOLTIP',
         'ACTIONS.DELETE.MESSAGE',
         'ACTIONS.EDIT.LABEL',
-        'ACTIONS.EDIT.TOOLTIP',
+        'ACTIONS.EDIT.PRODUCT.TOOLTIP',
         'ACTIONS.CANCEL',
         'ACTIONS.TOOLTIPS.CANCEL',
         'ACTIONS.SAVE',
@@ -139,7 +138,7 @@ export class ProductDetailComponent implements OnInit {
       },
       {
         label: data['ACTIONS.EDIT.LABEL'],
-        title: data['ACTIONS.EDIT.TOOLTIP'],
+        title: data['ACTIONS.EDIT.PRODUCT.TOOLTIP'],
         actionCallback: () => this.onEdit(),
         icon: 'pi pi-pencil',
         show: 'always',
@@ -151,7 +150,7 @@ export class ProductDetailComponent implements OnInit {
         label: data['ACTIONS.CANCEL'],
         title: data['ACTIONS.TOOLTIPS.CANCEL'],
         actionCallback: () => this.onCancel(),
-        icon: 'pi pi-pencil',
+        icon: 'pi pi-times',
         show: 'always',
         conditional: true,
         showCondition: this.changeMode !== 'VIEW'
@@ -160,7 +159,7 @@ export class ProductDetailComponent implements OnInit {
         label: data['ACTIONS.SAVE'],
         title: data['ACTIONS.TOOLTIPS.SAVE'],
         actionCallback: () => this.onSave(),
-        icon: 'pi pi-pencil',
+        icon: 'pi pi-save',
         show: 'always',
         conditional: true,
         showCondition: this.changeMode !== 'VIEW',
@@ -168,7 +167,7 @@ export class ProductDetailComponent implements OnInit {
       },
       {
         label: data['ACTIONS.DELETE.LABEL'],
-        title: data['ACTIONS.DELETE.TOOLTIP'],
+        title: data['ACTIONS.DELETE.PRODUCT.TOOLTIP'],
         actionCallback: () => {
           this.productDeleteMessage = data['ACTIONS.DELETE.MESSAGE'].replace('{{ITEM}}', this.product?.name)
           this.productDeleteVisible = true
@@ -208,7 +207,7 @@ export class ProductDetailComponent implements OnInit {
       this.getProduct()
       this.prepareTranslations()
     }
-    if (this.changeMode === 'NEW') {
+    if (this.changeMode === 'CREATE') {
       this.close()
     }
   }
@@ -217,8 +216,35 @@ export class ProductDetailComponent implements OnInit {
   }
   public onCreate(data: any) {
     this.product = data
+    this.changeMode === 'VIEW'
+    this.router.navigate(['./../', this.product?.name], { relativeTo: this.route })
   }
-  public onNameChange(change: boolean) {
-    change ? this.close() : this.getProduct()
+  public onChange(nameChanged: boolean) {
+    console.log('detail.onChange ')
+    if (nameChanged) {
+      this.close()
+    } else {
+      this.getProduct()
+      this.changeMode === 'VIEW'
+      this.prepareTranslations()
+    }
+  }
+  public onDelete(ev: MouseEvent, item: Product): void {
+    ev.stopPropagation()
+    this.product = item
+    this.productDeleteVisible = true
+  }
+  public onDeleteConfirmation(): void {
+    if (this.product?.id) {
+      this.productApi.deleteProduct({ id: this.product?.id }).subscribe({
+        next: () => {
+          this.productDeleteVisible = false
+          this.product = undefined
+          this.msgService.success({ summaryKey: 'ACTIONS.DELETE.PRODUCT.OK' })
+          this.close()
+        },
+        error: () => this.msgService.error({ summaryKey: 'ACTIONS.DELETE.PRODUCT.NOK' })
+      })
+    }
   }
 }
