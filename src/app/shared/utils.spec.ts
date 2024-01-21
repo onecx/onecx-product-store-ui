@@ -1,13 +1,6 @@
 import { SelectItem } from 'primeng/api'
 
-import {
-  limitText,
-  setFetchUrls,
-  dropDownSortItemsByLabel,
-  dropDownGetLabelByValue,
-  sortByLocale,
-  filterObject
-} from './utils'
+import { limitText, setFetchUrls, dropDownSortItemsByLabel, dropDownGetLabelByValue, sortByLocale } from './utils'
 
 describe('util functions', () => {
   describe('limitText', () => {
@@ -33,15 +26,15 @@ describe('util functions', () => {
 
   describe('setFetchUrls', () => {
     it('should prepend apiPrefix to a relative URL', () => {
-      const result = setFetchUrls('ahm-api', '/am')
+      const result = setFetchUrls('api-prefix', '/url')
 
-      expect(result).toEqual('ahm-api/am')
+      expect(result).toEqual('api-prefix/url')
     })
 
     it('should return the original URL if it is absolute', () => {
-      const result = setFetchUrls('ahm-api', 'http://am')
+      const result = setFetchUrls('api-prefix', 'http://host')
 
-      expect(result).toEqual('http://am')
+      expect(result).toEqual('http://host')
     })
   })
 
@@ -78,15 +71,6 @@ describe('util functions', () => {
       const sortedStrings = strings.sort(sortByLocale)
 
       expect(sortedStrings[0]).toEqual('str1')
-    })
-  })
-
-  describe('filterObject', () => {
-    it('should exclude specified properties from the object', () => {
-      const obj = { prop1: 'value1', prop2: 'value2', prop3: 'value3' }
-      const exProps = ['prop2', 'prop3']
-      const result = filterObject(obj, exProps)
-      expect(result).toEqual({ prop1: 'value1' })
     })
   })
 })

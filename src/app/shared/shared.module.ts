@@ -44,18 +44,15 @@ import { CanActivateGuard } from './can-active-guard.service'
 import { ImageContainerComponent } from './image-container/image-container.component'
 
 export const basePathProvider = (mfeInfo: MfeInfo) => {
-  /* console.log(
-    'Base path provider: ' + (mfeInfo ? mfeInfo.remoteBaseUrl + '' + environment.apiPrefix : '' + environment.apiPrefix)
-  ) */
-  return mfeInfo ? mfeInfo.remoteBaseUrl + '' + environment.apiPrefix : '' + environment.apiPrefix
+  const appBasePath = mfeInfo ? mfeInfo.remoteBaseUrl + '' + environment.apiPrefix : environment.apiPrefix
+  console.log('Base path: ' + appBasePath)
+  return appBasePath
 }
 
+// Always load the app assets directly from the Microfrontend
 export function HttpLoaderFactory(http: HttpClient, mfeInfo: MfeInfo) {
-  /* if (mfeInfo) {
-    console.log(`Configuring translation loader ${mfeInfo?.remoteBaseUrl}`)
-  } */
-  // if running standalone then load the app assets directly from remote base URL
   const appAssetPrefix = mfeInfo && mfeInfo.remoteBaseUrl ? mfeInfo.remoteBaseUrl : './'
+  console.log('Path prefix: ' + appAssetPrefix)
   return new TranslateCombinedLoader(
     new TranslateHttpLoader(http, appAssetPrefix + 'assets/i18n/', '.json'),
     new TranslateHttpLoader(http, appAssetPrefix + 'onecx-portal-lib/assets/i18n/', '.json')

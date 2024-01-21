@@ -60,7 +60,7 @@ export class ProductSearchComponent implements OnInit {
       .get([
         'PRODUCT.NAME',
         'PRODUCT.DISPLAY_NAME',
-        'ACTIONS.CREATE.PRODUCT',
+        'ACTIONS.CREATE.LABEL',
         'ACTIONS.CREATE.PRODUCT.TOOLTIP',
         'ACTIONS.DATAVIEW.VIEW_MODE_GRID',
         'ACTIONS.DATAVIEW.VIEW_MODE_LIST',
@@ -95,7 +95,7 @@ export class ProductSearchComponent implements OnInit {
   private prepareActionButtons(data: any): void {
     this.actions = [] // provoke change event
     this.actions.push({
-      label: data['ACTIONS.CREATE.PRODUCT'],
+      label: data['ACTIONS.CREATE.LABEL'],
       title: data['ACTIONS.CREATE.PRODUCT.TOOLTIP'],
       actionCallback: () => this.onNewProduct(),
       permission: 'PRODUCT#EDIT',

@@ -26,16 +26,6 @@ const PROXY_CONFIG = {
     changeOrigin: true,
     logLevel: 'debug',
     bypass: bypassFn
-  },
-  '/ahm-api': {
-    target: 'http://ahm',
-    secure: false,
-    pathRewrite: {
-      '^.*/ahm-api': ''
-    },
-    changeOrigin: true,
-    logLevel: 'debug',
-    bypass: logFn
   }
 }
 

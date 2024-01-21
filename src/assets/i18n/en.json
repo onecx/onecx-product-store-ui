@@ -7,28 +7,56 @@
       "YES.TOOLTIP": "Proceed with the action"
     },
     "CREATE": {
-      "PRODUCT": "Create Product",
-      "PRODUCT.TOOLTIP": "Create a new Product",
-      "MESSAGE": {
-        "PRODUCT_ALREADY_EXISTS": "A Product with that name already exists",
-        "PRODUCT_OK": "The Product was created successfully",
-        "PRODUCT_NOK": "An error has occurred. The Product was not created."
+      "LABEL": "Create",
+      "APP": {
+        "HEADER": "Create App",
+        "TOOLTIP": "Create a new App",
+        "MESSAGE": {
+          "ALREADY_EXISTS": "App with that name already exists",
+          "OK": "The App was created successfully",
+          "NOK": "An error has occurred. The App was not created."
+        }
+      },
+      "PRODUCT": {
+        "HEADER": "Create Product",
+        "TOOLTIP": "Create a new Product",
+        "MESSAGE": {
+          "ALREADY_EXISTS": "A Product with that name already exists",
+          "OK": "The Product was created successfully",
+          "NOK": "An error has occurred. The Product was not created."
+        }
       }
     },
     "DELETE": {
       "LABEL": "Delete",
-      "TOOLTIP": "Delete Product",
-      "MESSAGE": "Do you want to delete {{ITEM}}?",
-      "MESSAGE_INFO": "This action cannot be undone!",
-      "PRODUCT_NOK": "Product could not be deleted",
-      "PRODUCT_OK": "Product deleted successfully"
+      "APP": {
+        "TOOLTIP": "Delete App",
+        "HEADER": "Delete App",
+        "NOK": "App could not be deleted",
+        "OK": "App deleted successfully"
+      },
+      "PRODUCT": {
+        "TOOLTIP": "Delete Product",
+        "HEADER": "Delete Product",
+        "NOK": "Product could not be deleted",
+        "OK": "Product deleted successfully"
+      },
+      "MESSAGE": "Do you want to delete \"{{ITEM}}\"?",
+      "MESSAGE_INFO": "This action cannot be undone!"
     },
     "EDIT": {
       "LABEL": "Edit",
-      "TOOLTIP": "Edit properties",
-      "MESSAGE": {
-        "PRODUCT_OK": "The Product was changed successfully",
-        "PRODUCT_NOK": "An error has occurred. The Product was not changed."
+      "APP": {
+        "HEADER": "Edit App",
+        "TOOLTIP": "Edit App properties",
+        "OK": "Das App wurde erfolgreich geändert",
+        "NOK": "Ein Fehler ist aufgetreten. Das App wurde nicht geändert."
+      },
+      "PRODUCT": {
+        "HEADER": "Edit Product",
+        "TOOLTIP": "Edit Product properties",
+        "OK": "The Product was changed successfully",
+        "NOK": "An error has occurred. The Product was not changed."
       }
     },
     "NAVIGATION": {
@@ -149,6 +177,7 @@
     "FORM_INVALID": "The data are not ready to store.",
     "PRODUCT.UNIQUE_CONSTRAINT": "A Product with this name exists already.",
     "PRODUCT.NOT_EXISTS": "A product with this name could not be found.",
+    "PRODUCT.INVALID_NAME": "This name is a reserved term and cannot be used.",
     "ERRORS": {
       "PARSE_ERROR": "Parse error: The contained structure does not match the expected format.",
       "INTERNAL_ERROR": "Internal error",

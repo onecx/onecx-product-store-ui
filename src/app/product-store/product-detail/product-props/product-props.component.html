@@ -6,6 +6,10 @@
           <input pInputText type="text" class="w-full" id="product_detail_item_name" formControlName="name" />
           <label class="ocx-required-label" for="product_detail_item_name">{{ 'PRODUCT.NAME' | translate }}</label>
         </span>
+        <!-- Custom validator message -->
+        <div *ngIf="this.formGroup.controls['name'].errors?.['invalidProductName']">
+          <label class="control-error">{{ 'VALIDATION.PRODUCT.INVALID_NAME' | translate }}</label>
+        </div>
       </div>
       <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
         <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.VERSION' | translate" controlErrorAnchor>
