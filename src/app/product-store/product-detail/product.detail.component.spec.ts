@@ -176,7 +176,7 @@ describe('ProductDetailComponent', () => {
 
   it('should behave correctly onCancel in new mode', () => {
     spyOn(component, 'close')
-    component.changeMode = 'NEW'
+    component.changeMode = 'CREATE'
 
     component.onCancel()
 
@@ -202,7 +202,7 @@ describe('ProductDetailComponent', () => {
   it('should behave correctly onNameChange if change true', () => {
     spyOn(component, 'close')
 
-    component.onNameChange(true)
+    component.onChange(true)
 
     expect(component.close).toHaveBeenCalled()
   })
@@ -210,7 +210,7 @@ describe('ProductDetailComponent', () => {
   it('should behave correctly onNameChange if change false', () => {
     spyOn(component, 'getProduct')
 
-    component.onNameChange(false)
+    component.onChange(false)
 
     expect(component.getProduct).toHaveBeenCalled()
   })
