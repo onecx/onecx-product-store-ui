@@ -12,7 +12,7 @@ const DEFAULT_LANG = 'en'
 export class CanActivateGuard implements CanActivate {
   constructor(private txService: TranslateService, private config: ConfigurationService) {}
 
-  /* eslint-disable @typescript-eslint/no-unused-vars */ /* TODO: is route and state needed */
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot

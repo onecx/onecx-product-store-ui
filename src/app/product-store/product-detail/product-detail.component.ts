@@ -216,7 +216,7 @@ export class ProductDetailComponent implements OnInit {
   }
   public onCreate(data: any) {
     this.product = data
-    this.changeMode === 'VIEW'
+    this.changeMode = 'VIEW'
     this.router.navigate(['./../', this.product?.name], { relativeTo: this.route })
   }
   public onChange(nameChanged: boolean) {
@@ -225,7 +225,7 @@ export class ProductDetailComponent implements OnInit {
       this.close()
     } else {
       this.getProduct()
-      this.changeMode === 'VIEW'
+      this.changeMode = 'VIEW'
       this.prepareTranslations()
     }
   }
