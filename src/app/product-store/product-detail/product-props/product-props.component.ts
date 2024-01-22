@@ -147,7 +147,7 @@ export class ProductPropertyComponent implements OnChanges {
   }
 
   private displaySaveError(err: any) {
-    if (err.error && err.error.errorCode && err.error.errorCode === 'MERGE_ENTITY_FAILED') {
+    if (err.error?.errorCode === 'MERGE_ENTITY_FAILED') {
       this.msgService.error({
         summaryKey: 'ACTIONS.' + this.changeMode + '.PRODUCT.NOK',
         detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT'
