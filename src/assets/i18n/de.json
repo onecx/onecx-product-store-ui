@@ -76,6 +76,19 @@
       "VIEW_MODE_LIST": "Listenansicht",
       "VIEW_MODE_TABLE": "Tabellenansicht"
     },
+    "SEARCH": {
+      "NOT_FOUND": "Keine Daten gefunden",
+      "APP": {
+        "NOT_EXISTS": "Eine App mit diesem Namen konnte nicht gefunden werden.",
+        "LOAD_ERROR": "App konnte nicht geladen werden",
+        "NOT_FOUND": "App nicht gefunden"
+      },
+      "PRODUCT": {
+        "NOT_EXISTS": "Ein Produkt mit diesem Namen konnte nicht gefunden werden.",
+        "LOAD_ERROR": "Produkt konnte nicht geladen werden",
+        "NOT_FOUND": "Produkt nicht gefunden"
+      }
+    },
     "CANCEL": "Abbrechen",
     "CHOOSE": "Auswählen",
     "SAVE": "Speichern",
@@ -115,8 +128,6 @@
     "SEARCH.HEADER": "Product Store",
     "SEARCH.SUBHEADER": "Produkte und deren Apps verwalten",
     "DETAIL.SUBHEADER": "Produkt Details",
-    "LOAD_ERROR": "Produkt konnte nicht geladen werden",
-    "NOT_FOUND": "Produkt nicht gefunden",
     "TABS": {
       "APPS": "Apps",
       "INTERN": "Intern",
@@ -172,7 +183,6 @@
   "VALIDATION": {
     "FORM_INVALID": "Die Daten sind nicht bereit zum Speichern.",
     "PRODUCT.UNIQUE_CONSTRAINT": "Ein Produkt mit diesem Namen existiert bereits.",
-    "PRODUCT.NOT_EXISTS": "Ein Produkt mit diesem Namen konnte nicht gefunden werden.",
     "PRODUCT.INVALID_NAME": "Dieser Namen kann nicht verwendet werden.",
     "ERRORS": {
       "PARSE_ERROR": "Parserfehler: Die enthaltene Struktur entspricht nicht dem erwarteten Format.",

@@ -139,7 +139,6 @@ export class ProductPropertyComponent implements OnChanges {
       })
       .subscribe({
         next: () => {
-          this.changeMode === 'VIEW'
           this.msgService.success({ summaryKey: 'ACTIONS.EDIT.PRODUCT.OK' })
           this.productChanged.emit(this.productName !== this.formGroup.value['name'])
         },
@@ -148,12 +147,14 @@ export class ProductPropertyComponent implements OnChanges {
   }
 
   private displaySaveError(err: any) {
-    err.error && err.error.errorCode && err.error.errorCode === 'MERGE_ENTITY_FAILED' // 'PERSIST_ENTITY_FAILED'
-      ? this.msgService.error({
-          summaryKey: 'ACTIONS.' + this.changeMode + '.PRODUCT.NOK',
-          detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT'
-        })
-      : this.msgService.error({ summaryKey: 'ACTIONS.' + this.changeMode + '.PRODUCT.NOK' })
+    if (err.error?.errorCode === 'MERGE_ENTITY_FAILED') {
+      this.msgService.error({
+        summaryKey: 'ACTIONS.' + this.changeMode + '.PRODUCT.NOK',
+        detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT'
+      })
+    } else {
+      this.msgService.error({ summaryKey: 'ACTIONS.' + this.changeMode + '.PRODUCT.NOK' })
+    }
   }
 
   /** File Handling

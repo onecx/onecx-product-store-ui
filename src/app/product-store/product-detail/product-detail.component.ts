@@ -46,7 +46,6 @@ export class ProductDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('product detail ngOnInit()')
     if (this.productName !== '') {
       this.changeMode = 'VIEW'
       this.loadProduct()
@@ -75,9 +74,10 @@ export class ProductDetailComponent implements OnInit {
           this.prepareTranslations()
         },
         error: (err: any) => {
+          console.error('search: ', err)
           this.msgService.error({
-            summaryKey: 'DIALOG.LOAD_ERROR'
-            // detailKey: err.error.indexOf('was not found') > 1 ? 'DIALOG.NOT_FOUND' : err.error
+            summaryKey: 'ACTIONS.SEARCH.PRODUCT.LOAD_ERROR'
+            // detailKey: err.error.indexOf('was not found') > 1 ? 'SEARCH.NOT_FOUND' : err.error
           })
           this.close()
         }
@@ -196,6 +196,7 @@ export class ProductDetailComponent implements OnInit {
   public onClose() {
     this.close()
   }
+
   public onEdit() {
     this.getProduct()
     this.changeMode = 'EDIT'
@@ -214,21 +215,23 @@ export class ProductDetailComponent implements OnInit {
   public onSave() {
     this.productPropsComponent.onSubmit()
   }
+
   public onCreate(data: any) {
     this.product = data
-    this.changeMode === 'VIEW'
+    this.changeMode = 'VIEW'
     this.router.navigate(['./../', this.product?.name], { relativeTo: this.route })
   }
+
   public onChange(nameChanged: boolean) {
-    console.log('detail.onChange ')
     if (nameChanged) {
       this.close()
     } else {
       this.getProduct()
-      this.changeMode === 'VIEW'
+      this.changeMode = 'VIEW'
       this.prepareTranslations()
     }
   }
+
   public onDelete(ev: MouseEvent, item: Product): void {
     ev.stopPropagation()
     this.product = item

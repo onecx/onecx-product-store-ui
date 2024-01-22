@@ -80,6 +80,19 @@
       "VIEW_MODE_LIST": "List view",
       "VIEW_MODE_TABLE": "Table view"
     },
+    "SEARCH": {
+      "NOT_FOUND": "No data found",
+      "APP": {
+        "PRODUCT.NOT_EXISTS": "An App with this name could not be found.",
+        "LOAD_ERROR": "Failed to load App",
+        "NOT_FOUND": "App was not found"
+      },
+      "PRODUCT": {
+        "PRODUCT.NOT_EXISTS": "A Product with this name could not be found.",
+        "LOAD_ERROR": "Failed to load Product",
+        "NOT_FOUND": "Product was not found"
+      }
+    },
     "CANCEL": "Cancel",
     "CHOOSE": "Choose",
     "SAVE": "Save",
@@ -119,8 +132,6 @@
     "SEARCH.HEADER": "Product Store",
     "SEARCH.SUBHEADER": "Viewing and Managing Products and their Apps",
     "DETAIL.SUBHEADER": "Product Details",
-    "LOAD_ERROR": "Failed to load Product",
-    "NOT_FOUND": "Product was not found",
     "TABS": {
       "APPS": "Apps",
       "INTERN": "Internal",
@@ -176,7 +187,6 @@
   "VALIDATION": {
     "FORM_INVALID": "The data are not ready to store.",
     "PRODUCT.UNIQUE_CONSTRAINT": "A Product with this name exists already.",
-    "PRODUCT.NOT_EXISTS": "A product with this name could not be found.",
     "PRODUCT.INVALID_NAME": "This name is a reserved term and cannot be used.",
     "ERRORS": {
       "PARSE_ERROR": "Parse error: The contained structure does not match the expected format.",

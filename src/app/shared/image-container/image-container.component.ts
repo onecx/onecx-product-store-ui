@@ -24,7 +24,7 @@ export class ImageContainerComponent implements OnChanges {
 
       // if image Url does not start with a http the api-prefix ...
       //   ...then it stored in the backend. So we need to put prefix in front
-      if (this.imageUrl && !this.imageUrl.match(/^(http|https)/g) && this.imageUrl.indexOf(this.apiPrefix) !== 0) {
+      if (this.imageUrl && !this.imageUrl.match(/^(http|https)/g) && !this.imageUrl.startsWith(this.apiPrefix)) {
         this.imageUrl = this.apiPrefix + this.imageUrl
       }
     }

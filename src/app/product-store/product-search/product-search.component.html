@@ -20,7 +20,7 @@
 
   <ocx-page-content>
     <div *ngIf="!product$" class="card px-3 align-items-center">
-      <p-message severity="error" styleClass="p-2" [text]="'VALIDATION.PRODUCT.NOT_EXISTS' | translate"></p-message>
+      <p-message severity="error" styleClass="p-2" [text]="'ACTIONS.SEARCH.PRODUCT.NOT_EXISTS' | translate"></p-message>
     </div>
     <ng-container *ngIf="product$ | async as products">
       <p-dataView
@@ -31,6 +31,7 @@
         [rowsPerPageOptions]="[10, 20, 50]"
         [rows]="viewMode === 'grid' ? 12 : 10"
         [layout]="viewMode"
+        [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
         filterBy="name,displayName"
         [sortField]="sortField"
         [sortOrder]="sortOrder"
