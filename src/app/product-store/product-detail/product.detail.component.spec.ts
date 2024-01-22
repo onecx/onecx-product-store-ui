@@ -97,7 +97,7 @@ describe('ProductDetailComponent', () => {
     component.ngOnInit()
 
     expect(msgServiceSpy.error).toHaveBeenCalledWith({
-      summaryKey: 'DIALOG.LOAD_ERROR'
+      summaryKey: 'ACTIONS.SEARCH.PRODUCT.LOAD_ERROR'
     })
   })
 
