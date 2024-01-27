@@ -81,7 +81,7 @@
       "APP": {
         "NOT_EXISTS": "Eine App mit diesem Namen konnte nicht gefunden werden.",
         "LOAD_ERROR": "App konnte nicht geladen werden",
-        "NOT_FOUND": "App nicht gefunden"
+        "NOT_FOUND": "Das Produkt hat noch keine Apps"
       },
       "PRODUCT": {
         "NOT_EXISTS": "Ein Produkt mit diesem Namen konnte nicht gefunden werden.",
@@ -133,6 +133,22 @@
       "INTERN": "Intern",
       "PROPERTIES": "Eigenschaften"
     }
+  },
+  "APP": {
+    "APP_ID": "ID",
+    "APP_NAME": "Name",
+    "APP_VERSION": "Version",
+    "DESCRIPTION": "Beschreibung",
+    "PRODUCT_NAME": "Produkt",
+    "TECHNOLOGY": "Technologie",
+    "REMOTE_BASE_URL": "Remote Base URL",
+    "REMOTE_ENTRY": "Remote Entry",
+    "CLASSIFICATIONS": "Klassifizierungen",
+    "CONTACT": "Kontakt",
+    "ICON_NAME": "Iconname",
+    "NOTE": "Notiz",
+    "EXPOSED_MODULE": "Exposed Module",
+    "ENDPOINTS": "UI Endpunkte"
   },
   "PRODUCT": {
     "ID": "ID",

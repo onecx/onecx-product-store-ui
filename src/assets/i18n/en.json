@@ -85,7 +85,7 @@
       "APP": {
         "PRODUCT.NOT_EXISTS": "An App with this name could not be found.",
         "LOAD_ERROR": "Failed to load App",
-        "NOT_FOUND": "App was not found"
+        "NOT_FOUND": "The product does not have an App"
       },
       "PRODUCT": {
         "PRODUCT.NOT_EXISTS": "A Product with this name could not be found.",
@@ -137,6 +137,22 @@
       "INTERN": "Internal",
       "PROPERTIES": "Properties"
     }
+  },
+  "APP": {
+    "APP_ID": "ID",
+    "APP_NAME": "Name",
+    "APP_VERSION": "Version",
+    "DESCRIPTION": "Description",
+    "PRODUCT_NAME": "Product",
+    "TECHNOLOGY": "Technology",
+    "REMOTE_BASE_URL": "Remote Base URL",
+    "REMOTE_ENTRY": "Remote Entry",
+    "CLASSIFICATIONS": "Classifications",
+    "CONTACT": "Contact",
+    "ICON_NAME": "Icon Name",
+    "NOTE": "Note",
+    "EXPOSED_MODULE": "Exposed Module",
+    "ENDPOINTS": "UI Endpoints"
   },
   "PRODUCT": {
     "ID": "ID",

@@ -15,6 +15,7 @@ import { ProductSearchComponent } from './product-search/product-search.componen
 import { ProductDetailComponent } from './product-detail/product-detail.component'
 import { ProductPropertyComponent } from './product-detail/product-props/product-props.component'
 import { ProductInternComponent } from './product-detail/product-intern/product-intern.component'
+import { ProductAppsComponent } from './product-detail/product-apps/product-apps.component'
 
 const routes: Routes = [
   {
@@ -49,7 +50,13 @@ const routes: Routes = [
   }
 ]
 @NgModule({
-  declarations: [ProductSearchComponent, ProductDetailComponent, ProductPropertyComponent, ProductInternComponent],
+  declarations: [
+    ProductSearchComponent,
+    ProductDetailComponent,
+    ProductPropertyComponent,
+    ProductInternComponent,
+    ProductAppsComponent
+  ],
   imports: [
     FormsModule,
     FieldsetModule,

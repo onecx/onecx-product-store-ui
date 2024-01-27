@@ -1,0 +1,50 @@
+<div *ngIf="!apps$">
+  <div class="surface-section my-3">
+    <p-message severity="error" styleClass="p-2" [text]="'ACTIONS.SEARCH.APP.NOT_FOUND' | translate"></p-message>
+  </div>
+</div>
+<ng-container *ngIf="apps$ | async as apps">
+  <p-dataView
+    id="product_detail_apps_dataview"
+    [value]="apps.stream ? apps.stream : []"
+    [paginator]="true"
+    [alwaysShowPaginator]="false"
+    [rowsPerPageOptions]="[10, 20, 50]"
+    [rows]="viewMode === 'grid' ? 12 : 10"
+    [layout]="viewMode"
+    [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
+    filterBy="app_name"
+    [sortField]="sortField"
+    [sortOrder]="sortOrder"
+  >
+    <ng-template pTemplate="header">
+      <ocx-data-view-controls
+        [enableFiltering]="true"
+        [enableSorting]="true"
+        [supportedViews]="['list']"
+        [initialViewMode]="viewMode"
+        [sortingOptions]="[{ label: 'APP.APP_NAME' | translate, value: 'app_name' }]"
+        [defaultSortOption]="sortField"
+        [defaultSortDirection]="sortOrder === 1"
+        (dataViewChange)="onLayoutChange($event)"
+        (filterChange)="onFilterChange($event)"
+        [filterColumns]="['APP.APP_NAME' | translate]"
+        (sortChange)="onSortChange($event)"
+        (sortDirectionChange)="onSortDirChange($event)"
+        [translations]="dataViewControlsTranslations"
+      >
+      </ocx-data-view-controls
+    ></ng-template>
+    <ng-template let-app pTemplate="listItem">
+      <div
+        class="col-12 grid grid-nogutter align-items-center row-gap-1 listview-row p-1 hover:bg-gray-200 cursor-pointer"
+      >
+        <div class="col-12 md:col-5 lg:col-5 xl:col-6">
+          <div class="flex flex-column justify-content-center gap-1 text-center md:text-left">
+            <div>{{ limitText(app.app_name, 50) }}</div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-dataView>
+</ng-container>
