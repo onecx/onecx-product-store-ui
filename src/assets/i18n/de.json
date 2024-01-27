@@ -99,6 +99,7 @@
     }
   },
   "BREADCRUMBS": {
+    "APPS": "Apps",
     "CREATE": "Neu",
     "DETAIL": "Details",
     "EDIT": "Ändern"
@@ -128,15 +129,19 @@
     "SEARCH.HEADER": "Product Store",
     "SEARCH.SUBHEADER": "Produkte und deren Apps verwalten",
     "DETAIL.SUBHEADER": "Produkt Details",
+    "SEARCH.APPS.LABEL": "Microfrontends",
+    "SEARCH.APPS.TOOLTIP": "Microfrontends suchen und anzeigen",
+    "SEARCH.APPS.HEADER": "Microfrontends",
+    "SEARCH.APPS.SUBHEADER": "Suchen und verwalten",
     "TABS": {
       "APPS": "Apps",
       "INTERN": "Intern",
       "PROPERTIES": "Eigenschaften"
     }
   },
-  "APP": {
-    "APP_ID": "ID",
-    "APP_NAME": "Name",
+  "MICROFRONTEND": {
+    "APP_ID": "App ID",
+    "APP_NAME": "App-Name",
     "APP_VERSION": "Version",
     "DESCRIPTION": "Beschreibung",
     "PRODUCT_NAME": "Produkt",
@@ -145,10 +150,26 @@
     "REMOTE_ENTRY": "Remote Entry",
     "CLASSIFICATIONS": "Klassifizierungen",
     "CONTACT": "Kontakt",
-    "ICON_NAME": "Iconname",
+    "ICON_NAME": "Icon-Name",
     "NOTE": "Notiz",
     "EXPOSED_MODULE": "Exposed Module",
-    "ENDPOINTS": "UI Endpunkte"
+    "ENDPOINTS": "UI Endpunkte",
+    "TOOLTIPS": {
+      "APP_ID": "Eindeutige ID - Basis Bezeichner des Microfrontends",
+      "APP_NAME": "Name des Microfrontends",
+      "APP_VERSION": "Version",
+      "DESCRIPTION": "Beschreibung",
+      "PRODUCT_NAME": "Name des Produkts dem das Microfrontend zugeordnet ist",
+      "TECHNOLOGY": "Technologie",
+      "REMOTE_BASE_URL": "Remote Base URL",
+      "REMOTE_ENTRY": "Remote Entry",
+      "CLASSIFICATIONS": "Klassifizierungen",
+      "CONTACT": "Kontakt",
+      "ICON_NAME": "Iconname",
+      "NOTE": "Notiz",
+      "EXPOSED_MODULE": "Exposed Module",
+      "ENDPOINTS": "UI Endpunkte"
+    }
   },
   "PRODUCT": {
     "ID": "ID",
