@@ -95,8 +95,15 @@
           </ocx-data-view-controls
         ></ng-template>
         <ng-template let-app pTemplate="gridItem">
-          <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3" [routerLink]="['../', app.productName]">
-            <div class="card p-1 flex flex-column justify-content-center hover:bg-gray-200 cursor-pointer">
+          <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3" [onclick]="onDetail(app.appId)">
+            <div class="card relative p-1 flex flex-column justify-content-center hover:bg-gray-200 cursor-pointer">
+              <!-- span [routerLink]="['../', app.productName]"></span -->
+              <span
+                [id]="'app_search_data_' + app.appId + '_goto_product'"
+                class="card-badge-right badge-1 p-2 pi pi-external-link pseudo-button-link"
+                [title]="'PORTAL.QUICK_LINKS.GOTO_WORKSPACE' | translate"
+                (click)="onGotoProduct($event, app.productName)"
+              ></span>
               <div class="flex flex-column justify-content-between gap-1 text-center">
                 <div class="font-bold" [title]="app.appId">{{ limitText(app.appId, 25) }}</div>
                 <div class="text-sm" [title]="app.appName">{{ limitText(app.appName, 30) }}</div>
@@ -109,3 +116,9 @@
     </ng-container>
   </ocx-page-content>
 </ocx-portal-page>
+
+<app-app-detail
+  [(displayDetailDialog)]="displayDetailDialog"
+  [appId]="appId"
+  [changeMode]="changeMode"
+></app-app-detail>

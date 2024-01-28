@@ -10,6 +10,14 @@
       top: 5px;
     }
   }
+  .pseudo-button-link {
+    border-radius: var(--border-radius);
+    &:hover {
+      color: var(--primary-color-text);
+      background: var(--button-hover-bg);
+      cursor: pointer;
+    }
+  }
 
   .p-dataview-content .p-grid > div {
     min-height: 60px;

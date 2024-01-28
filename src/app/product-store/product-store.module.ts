@@ -12,6 +12,7 @@ import { CanActivateGuard } from '../shared/can-active-guard.service'
 import { LabelResolver } from '../shared/label.resolver'
 import { HttpLoaderFactory, SharedModule } from '../shared/shared.module'
 import { AppSearchComponent } from './app-search/app-search.component'
+import { AppDetailComponent } from './app-detail/app-detail.component'
 import { ProductSearchComponent } from './product-search/product-search.component'
 import { ProductDetailComponent } from './product-detail/product-detail.component'
 import { ProductPropertyComponent } from './product-detail/product-props/product-props.component'
@@ -65,6 +66,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     AppSearchComponent,
+    AppDetailComponent,
     ProductSearchComponent,
     ProductDetailComponent,
     ProductPropertyComponent,

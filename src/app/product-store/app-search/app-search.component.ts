@@ -4,8 +4,8 @@ import { Observable, finalize } from 'rxjs'
 import { DataView } from 'primeng/dataview'
 import { TranslateService } from '@ngx-translate/core'
 import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
-import { MicrofrontendPageResult, MicrofrontendsAPIService } from '../../generated'
-import { limitText } from '../../shared/utils'
+import { MicrofrontendPageResult, MicrofrontendsAPIService } from 'src/app/generated'
+import { limitText } from 'src/app/shared/utils'
 import { FormControl, FormGroup } from '@angular/forms'
 
 export interface MicrofrontendSearchCriteria {
@@ -13,6 +13,7 @@ export interface MicrofrontendSearchCriteria {
   appName: FormControl<string | null>
   productName: FormControl<string | null>
 }
+type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT'
 
 @Component({
   templateUrl: './app-search.component.html',
@@ -20,13 +21,16 @@ export interface MicrofrontendSearchCriteria {
 })
 export class AppSearchComponent implements OnInit {
   public apps$!: Observable<MicrofrontendPageResult>
+  public appId: string | undefined
   public appSearchCriteriaGroup!: FormGroup<MicrofrontendSearchCriteria>
   public actions: Action[] = []
   public viewMode = 'grid'
+  public changeMode: ChangeMode = 'VIEW'
   public filter: string | undefined
   public sortField = 'appName'
   public sortOrder = 1
   public searchInProgress = false
+  public displayDetailDialog = false
   public limitText = limitText
 
   public dataViewControlsTranslations: DataViewControlTranslations = {}
@@ -139,5 +143,21 @@ export class AppSearchComponent implements OnInit {
   }
   public onBack() {
     this.router.navigate(['../'], { relativeTo: this.route })
+  }
+  public onGotoProduct(ev: any, product: string) {
+    ev.stopPropagation()
+    this.router.navigate(['../', product], { relativeTo: this.route })
+  }
+
+  public onDetail(id: string) {
+    //ev.stopPropagation()
+    this.appId = id
+    this.changeMode = 'EDIT'
+    this.displayDetailDialog = true
+  }
+  public onCreate() {
+    this.changeMode = 'CREATE'
+    this.appId = undefined
+    this.displayDetailDialog = true
   }
 }

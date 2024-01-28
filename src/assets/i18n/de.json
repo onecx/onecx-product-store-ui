@@ -220,7 +220,7 @@
   "VALIDATION": {
     "FORM_INVALID": "Die Daten sind nicht bereit zum Speichern.",
     "PRODUCT.UNIQUE_CONSTRAINT": "Ein Produkt mit diesem Namen existiert bereits.",
-    "PRODUCT.INVALID_NAME": "Dieser Namen kann nicht verwendet werden.",
+    "PRODUCT.INVALID_NAME": "Dieser Name ist reserviert und kann nicht verwendet werden.",
     "ERRORS": {
       "PARSE_ERROR": "Parserfehler: Die enthaltene Struktur entspricht nicht dem erwarteten Format.",
       "INTERNAL_ERROR": "Interner Fehler",

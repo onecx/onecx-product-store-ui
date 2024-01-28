@@ -14,12 +14,12 @@
     </div>
     <p-tabView *ngIf="(product && !loading) || changeMode === 'CREATE'">
       <p-tabPanel id="product_detail_panel_props" class="p-0" [header]="'DIALOG.TABS.PROPERTIES' | translate">
-        <ps-product-props
+        <app-product-props
           [product]="product"
           [changeMode]="changeMode"
           (productCreated)="onCreate($event)"
           (productChanged)="onChange($event)"
-        ></ps-product-props>
+        ></app-product-props>
       </p-tabPanel>
 
       <p-tabPanel
@@ -28,7 +28,7 @@
         [disabled]="changeMode !== 'VIEW'"
         [header]="'DIALOG.TABS.INTERN' | translate"
       >
-        <ps-product-intern [product]="product" [dateFormat]="dateFormat"></ps-product-intern>
+        <app-product-intern [product]="product" [dateFormat]="dateFormat"></app-product-intern>
       </p-tabPanel>
 
       <p-tabPanel
@@ -37,7 +37,7 @@
         [disabled]="changeMode !== 'VIEW'"
         [header]="'DIALOG.TABS.APPS' | translate"
       >
-        <ps-product-apps [product]="product" [changeMode]="changeMode"></ps-product-apps>
+        <app-product-apps [product]="product" [changeMode]="changeMode"></app-product-apps>
       </p-tabPanel>
     </p-tabView>
   </ocx-page-content>

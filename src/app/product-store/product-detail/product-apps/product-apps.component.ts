@@ -8,7 +8,7 @@ import { dropDownSortItemsByLabel, limitText } from 'src/app/shared/utils'
 import { IconService } from '../../../shared/iconservice'
 
 @Component({
-  selector: 'ps-product-apps',
+  selector: 'app-product-apps',
   templateUrl: './product-apps.component.html',
   styleUrls: ['./product-apps.component.scss']
 })

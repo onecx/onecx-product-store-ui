@@ -1,0 +1,60 @@
+<p-dialog
+  [header]="'ACTIONS.' + this.changeMode + '.APP.HEADER' | translate"
+  [(visible)]="displayDetailDialog"
+  (onHide)="onDialogHide()"
+  [baseZIndex]="10000"
+  [draggable]="true"
+  [resizable]="true"
+  [closable]="true"
+  [modal]="true"
+  [style]="{ width: '350px' }"
+  [showHeader]="true"
+  [breakpoints]="{
+    '992px': '50vw',
+    '700px': '70vw',
+    '600px': '80vw',
+    '500px': '90vw',
+    '400px': '100vw',
+      }"
+>
+  <form [formGroup]="formGroup">
+    <ng-template pTemplate="header">
+      <span>{{ 'HELPITEM_CREATION.HEADER' | translate }}</span>
+    </ng-template>
+    <div class="flex flex-wrap flex-column gap-4 justify-content-between mt-2">
+      <div [title]="'HELP_ITEM.TOOLTIPS.APPLICATION_ID' | translate">
+        <span class="p-float-label mb-1" controlErrorAnchor>
+          <input
+            [readonly]="changeMode === 'EDIT'"
+            pInputText
+            type="text"
+            id="ah_mgmt_help_management_detail_app_id"
+            class="w-full pt-3 pb-2"
+            formControlName="appId"
+          />
+          <label class="ocx-required-label" for="ah_mgmt_help_management_detail_app_id">
+            {{ 'HELP_ITEM.APPLICATION_ID' | translate }}</label
+          >
+        </span>
+      </div>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <div class="flex flex-wrap justify-content-end gap-2 mb-1">
+      <p-button
+        id="ah_help_detail_button_close"
+        [label]="'GENERAL.CANCEL' | translate"
+        (onClick)="onDialogHide()"
+        icon="pi pi-times"
+      ></p-button>
+      <p-button
+        id="ah_help_detail_button_save"
+        [label]="'GENERAL.SAVE' | translate"
+        (onClick)="onSave()"
+        icon="pi pi-save"
+        [disabled]="!formGroup.valid"
+      ></p-button>
+    </div>
+  </ng-template>
+</p-dialog>
