@@ -43,10 +43,10 @@ export class ProductSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.prepareTranslations()
-    this.loadProducts()
+    this.searchData()
   }
 
-  public loadProducts(): void {
+  public searchData(): void {
     this.searchInProgress = true
     this.products$ = this.productApi
       .searchProducts({
@@ -129,7 +129,7 @@ export class ProductSearchComponent implements OnInit {
     this.sortOrder = asc ? -1 : 1
   }
   public onSearch() {
-    this.loadProducts()
+    this.searchData()
   }
   public onSearchReset() {
     this.productSearchCriteriaGroup.reset()

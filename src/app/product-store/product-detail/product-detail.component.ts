@@ -1,13 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
-//import { DatePipe } from '@angular/common'
+import { Location } from '@angular/common'
+//import { Location, DatePipe } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
 import { finalize } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 
 import { Action, ConfigurationService, PortalMessageService } from '@onecx/portal-integration-angular'
 //import { limitText } from '../../shared/utils'
-import { Product, ProductsAPIService, MicrofrontendsAPIService, GetProductRequestParams } from '../../generated'
-import { environment } from '../../../environments/environment'
+import { Product, ProductsAPIService, GetProductRequestParams } from 'src/app/generated'
+import { environment } from 'src/environments/environment'
 import { ProductPropertyComponent } from './product-props/product-props.component'
 
 type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT'
@@ -35,8 +36,8 @@ export class ProductDetailComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private location: Location,
     private productApi: ProductsAPIService,
-    private mfeApi: MicrofrontendsAPIService,
     private config: ConfigurationService,
     private msgService: PortalMessageService,
     private translate: TranslateService
@@ -116,8 +117,8 @@ export class ProductDetailComponent implements OnInit {
         'ACTIONS.TOOLTIPS.CANCEL',
         'ACTIONS.SAVE',
         'ACTIONS.TOOLTIPS.SAVE',
-        'ACTIONS.NAVIGATION.CLOSE',
-        'ACTIONS.NAVIGATION.CLOSE.TOOLTIP'
+        'ACTIONS.NAVIGATION.BACK',
+        'ACTIONS.NAVIGATION.BACK.TOOLTIP'
       ])
       .subscribe((data) => {
         this.prepareActionButtons(data)
@@ -128,10 +129,10 @@ export class ProductDetailComponent implements OnInit {
     this.actions = [] // provoke change event
     this.actions.push(
       {
-        label: data['ACTIONS.NAVIGATION.CLOSE'],
-        title: data['ACTIONS.NAVIGATION.CLOSE.TOOLTIP'],
-        actionCallback: () => this.close(),
-        icon: 'pi pi-times',
+        label: data['ACTIONS.NAVIGATION.BACK'],
+        title: data['ACTIONS.NAVIGATION.BACK.TOOLTIP'],
+        actionCallback: () => this.onClose(),
+        icon: 'pi pi-arrow-left',
         show: 'always',
         conditional: true,
         showCondition: this.changeMode === 'VIEW'
@@ -191,7 +192,7 @@ export class ProductDetailComponent implements OnInit {
   }
 
   public close(): void {
-    this.router.navigate(['./..'], { relativeTo: this.route })
+    this.location.back()
   }
   public onClose() {
     this.close()

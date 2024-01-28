@@ -47,10 +47,10 @@ export class AppSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.prepareTranslations()
-    this.loadProducts()
+    this.searchData()
   }
 
-  public loadProducts(): void {
+  public searchData(): void {
     this.searchInProgress = true
     this.apps$ = this.appApi
       .searchMicrofrontends({
@@ -132,7 +132,7 @@ export class AppSearchComponent implements OnInit {
     this.sortOrder = asc ? -1 : 1
   }
   public onSearch() {
-    this.loadProducts()
+    this.searchData()
   }
   public onSearchReset() {
     this.appSearchCriteriaGroup.reset()
