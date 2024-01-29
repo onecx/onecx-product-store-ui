@@ -139,7 +139,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-
   /products:
     post:
       tags:
@@ -275,6 +274,37 @@ paths:
           description: No Content
         '400':
           description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /products/name/{name}:
+    get:
+      tags:
+        - Products
+      description: Return product by (unique) name
+      operationId: getProductByName
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        '404':
+          description: Not Found
           content:
             application/json:
               schema:
@@ -437,6 +467,12 @@ components:
         displayName:
           type: string
           description: name of the product used for displaying to user.
+        classifications:
+          type: array
+          description: like tags for grouing and labeling. Used in frontend to enable filtering.
+          uniqueItems: true
+          items:
+            type: string
     OffsetDateTime:
       format: date-time
       type: string
@@ -480,14 +516,18 @@ components:
         number:
           format: int32
           type: integer
+          description: Number of page which has been queried (e.g. 2 of 10)
         size:
           format: int32
           type: integer
+          description: Correlated to the input (pagesize)), how many products should be shown on a single page
         totalPages:
           format: int64
           type: integer
+          description: Representing the total amount of pages based on the size provided in the request
         stream:
           type: array
+          description: Result set of the given search criteria.
           items:
             $ref: '#/components/schemas/MicrofrontendAbstract'
     MicrofrontendAbstract:
@@ -501,16 +541,27 @@ components:
       properties:
         id:
           type: string
+          description: Business ID (BID) representing a microfrontend
         appId:
           type: string
+          description: BID of an app
         appName:
           type: string
+          description: Readable name of the app
         description:
           type: string
+          description: textual description of MFE
         remoteBaseUrl:
           type: string
+          description: uri used as base url for a remote component
         productName:
           type: string
+          description: reference to the product entity as a weak reference
+        endpoints:
+          type: array
+          description: available endpoints which are exposed by MFE
+          items:
+            $ref: '#/components/schemas/UIEndpoint'
     MicrofrontendSearchCriteria:
       type: object
       properties:

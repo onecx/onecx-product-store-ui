@@ -9,14 +9,37 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { UIEndpoint } from './uIEndpoint';
 
 
 export interface MicrofrontendAbstract { 
+    /**
+     * Business ID (BID) representing a microfrontend
+     */
     id: string;
+    /**
+     * BID of an app
+     */
     appId: string;
+    /**
+     * Readable name of the app
+     */
     appName: string;
+    /**
+     * textual description of MFE
+     */
     description?: string;
+    /**
+     * uri used as base url for a remote component
+     */
     remoteBaseUrl: string;
+    /**
+     * reference to the product entity as a weak reference
+     */
     productName: string;
+    /**
+     * available endpoints which are exposed by MFE
+     */
+    endpoints?: Array<UIEndpoint>;
 }
 

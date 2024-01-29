@@ -1,10 +1,16 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import { Component, EventEmitter, Inject, Input, OnChanges, Output } from '@angular/core'
 //import { DatePipe } from '@angular/common'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { finalize } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 
-import { Action, ConfigurationService, MicroFrontend, PortalMessageService } from '@onecx/portal-integration-angular'
+import {
+  AUTH_SERVICE,
+  ConfigurationService,
+  IAuthService,
+  MicroFrontend,
+  PortalMessageService
+} from '@onecx/portal-integration-angular'
 import { MicrofrontendsAPIService, GetMicrofrontendRequestParams, MicrofrontendAbstract } from 'src/app/generated'
 
 type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT'
@@ -15,8 +21,7 @@ interface AppDetailForm {
 @Component({
   selector: 'app-app-detail',
   templateUrl: './app-detail.component.html',
-  styleUrls: ['./app-detail.component.scss'],
-  providers: [ConfigurationService]
+  styleUrls: ['./app-detail.component.scss']
 })
 export class AppDetailComponent implements OnChanges {
   @Input() appAbstract: MicrofrontendAbstract | undefined
@@ -28,14 +33,18 @@ export class AppDetailComponent implements OnChanges {
   public app: MicroFrontend | undefined
   public formGroup: FormGroup
   public loading = false
-  public actions: Action[] = []
+  public hasCreatePermission = false
+  public hasEditPermission = false
 
   constructor(
     private appApi: MicrofrontendsAPIService,
     private config: ConfigurationService,
     private msgService: PortalMessageService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    @Inject(AUTH_SERVICE) readonly auth: IAuthService
   ) {
+    this.hasCreatePermission = this.auth.hasPermission('MICROFRONTEND#CREATE')
+    this.hasEditPermission = this.auth.hasPermission('MICROFRONTEND#EDIT')
     this.dateFormat = this.config.lang === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'medium'
     this.formGroup = new FormGroup<AppDetailForm>({
       appId: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)])

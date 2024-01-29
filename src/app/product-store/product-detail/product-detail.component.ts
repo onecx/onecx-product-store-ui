@@ -7,7 +7,7 @@ import { TranslateService } from '@ngx-translate/core'
 
 import { Action, ConfigurationService, PortalMessageService } from '@onecx/portal-integration-angular'
 //import { limitText } from '../../shared/utils'
-import { Product, ProductsAPIService, GetProductRequestParams } from 'src/app/generated'
+import { Product, ProductsAPIService } from 'src/app/generated'
 import { environment } from 'src/environments/environment'
 import { ProductPropertyComponent } from './product-props/product-props.component'
 
@@ -49,45 +49,17 @@ export class ProductDetailComponent implements OnInit {
   ngOnInit(): void {
     if (this.productName !== '') {
       this.changeMode = 'VIEW'
-      this.loadProduct()
+      this.getProduct()
     } else {
       this.product = undefined
       this.prepareTranslations()
     }
   }
 
-  private loadProduct() {
-    this.loading = true
-    this.productApi
-      .searchProducts({ productSearchCriteria: { name: this.productName } })
-      .pipe(
-        finalize(() => {
-          this.loading = false
-        })
-      )
-      .subscribe({
-        next: (data: any) => {
-          if (data.stream && data.stream.length > 0) {
-            this.product = data.stream[0]
-            console.info('search: ', data.stream[0])
-            this.getProduct()
-          }
-          this.prepareTranslations()
-        },
-        error: (err: any) => {
-          console.error('search: ', err)
-          this.msgService.error({
-            summaryKey: 'ACTIONS.SEARCH.PRODUCT.LOAD_ERROR'
-            // detailKey: err.error.indexOf('was not found') > 1 ? 'SEARCH.NOT_FOUND' : err.error
-          })
-          this.close()
-        }
-      })
-  }
   public getProduct() {
     this.loading = true
     this.productApi
-      .getProduct({ id: this.product?.id } as GetProductRequestParams)
+      .getProductByName({ name: this.productName })
       .pipe(
         finalize(() => {
           this.loading = false

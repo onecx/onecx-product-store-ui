@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
+import { FormControl, FormGroup } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
-import { Observable, finalize } from 'rxjs'
-import { DataView } from 'primeng/dataview'
 import { TranslateService } from '@ngx-translate/core'
 import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+import { DataView } from 'primeng/dataview'
+import { Observable, finalize } from 'rxjs'
 import { MicrofrontendAbstract, MicrofrontendPageResult, MicrofrontendsAPIService } from 'src/app/generated'
 import { limitText } from 'src/app/shared/utils'
-import { FormControl, FormGroup } from '@angular/forms'
 
 export interface MicrofrontendSearchCriteria {
   appId: FormControl<string | null>
@@ -77,7 +77,7 @@ export class AppSearchComponent implements OnInit {
         'ACTIONS.NAVIGATION.BACK',
         'ACTIONS.NAVIGATION.BACK.TOOLTIP',
         'ACTIONS.CREATE.LABEL',
-        'ACTIONS.CREATE.PRODUCT.TOOLTIP',
+        'ACTIONS.CREATE.APP.TOOLTIP',
         'ACTIONS.DATAVIEW.VIEW_MODE_LIST',
         'ACTIONS.DATAVIEW.VIEW_MODE_TABLE',
         'ACTIONS.DATAVIEW.SORT_BY',
@@ -113,13 +113,23 @@ export class AppSearchComponent implements OnInit {
 
   private prepareActionButtons(data: any): void {
     this.actions = [] // provoke change event
-    this.actions.push({
-      label: data['ACTIONS.NAVIGATION.BACK'],
-      title: data['ACTIONS.NAVIGATION.BACK.TOOLTIP'],
-      actionCallback: () => this.onBack(),
-      icon: 'pi pi-arrow-left',
-      show: 'always'
-    })
+    this.actions.push(
+      {
+        label: data['ACTIONS.NAVIGATION.BACK'],
+        title: data['ACTIONS.NAVIGATION.BACK.TOOLTIP'],
+        actionCallback: () => this.onBack(),
+        icon: 'pi pi-arrow-left',
+        show: 'always'
+      },
+      {
+        label: data['ACTIONS.CREATE.LABEL'],
+        title: data['ACTIONS.CREATE.APP.TOOLTIP'],
+        actionCallback: () => this.onCreate(),
+        permission: 'MICROFRONTEND#CREATE',
+        icon: 'pi pi-plus',
+        show: 'always'
+      }
+    )
   }
 
   public onLayoutChange(viewMode: string): void {

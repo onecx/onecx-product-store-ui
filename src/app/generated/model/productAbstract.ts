@@ -32,5 +32,9 @@ export interface ProductAbstract {
      * name of the product used for displaying to user.
      */
     displayName?: string;
+    /**
+     * like tags for grouing and labeling. Used in frontend to enable filtering.
+     */
+    classifications?: Array<string>;
 }
 
