@@ -4,7 +4,7 @@ import { Observable, finalize } from 'rxjs'
 import { DataView } from 'primeng/dataview'
 import { TranslateService } from '@ngx-translate/core'
 import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
-import { MicrofrontendPageResult, MicrofrontendsAPIService } from 'src/app/generated'
+import { MicrofrontendAbstract, MicrofrontendPageResult, MicrofrontendsAPIService } from 'src/app/generated'
 import { limitText } from 'src/app/shared/utils'
 import { FormControl, FormGroup } from '@angular/forms'
 
@@ -21,7 +21,7 @@ type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT'
 })
 export class AppSearchComponent implements OnInit {
   public apps$!: Observable<MicrofrontendPageResult>
-  public appId: string | undefined
+  public app: MicrofrontendAbstract | undefined
   public appSearchCriteriaGroup!: FormGroup<MicrofrontendSearchCriteria>
   public actions: Action[] = []
   public viewMode = 'grid'
@@ -149,15 +149,15 @@ export class AppSearchComponent implements OnInit {
     this.router.navigate(['../', product], { relativeTo: this.route })
   }
 
-  public onDetail(id: string) {
-    //ev.stopPropagation()
-    this.appId = id
+  public onDetail(ev: any, app: MicrofrontendAbstract) {
+    ev.stopPropagation()
+    this.app = app
     this.changeMode = 'EDIT'
     this.displayDetailDialog = true
   }
   public onCreate() {
     this.changeMode = 'CREATE'
-    this.appId = undefined
+    this.app = undefined
     this.displayDetailDialog = true
   }
 }

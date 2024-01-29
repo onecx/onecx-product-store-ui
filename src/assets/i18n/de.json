@@ -43,7 +43,7 @@
     "EDIT": {
       "LABEL": "Bearbeiten",
       "APP": {
-        "HEADER": "App bearbeiten",
+        "HEADER": "App Details",
         "TOOLTIP": "Die App-Eigenschaften bearbeiten",
         "OK": "Das App wurde erfolgreich geändert",
         "NOK": "Ein Fehler ist aufgetreten. Das App wurde nicht geändert."

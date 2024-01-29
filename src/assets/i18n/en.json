@@ -11,20 +11,16 @@
       "APP": {
         "HEADER": "Create App",
         "TOOLTIP": "Create a new App",
-        "MESSAGE": {
-          "ALREADY_EXISTS": "App with that name already exists",
-          "OK": "The App was created successfully",
-          "NOK": "An error has occurred. The App was not created."
-        }
+        "ALREADY_EXISTS": "App with that name already exists",
+        "OK": "The App was created successfully",
+        "NOK": "An error has occurred. The App was not created."
       },
       "PRODUCT": {
         "HEADER": "Create Product",
         "TOOLTIP": "Create a new Product",
-        "MESSAGE": {
-          "ALREADY_EXISTS": "A Product with that name already exists",
-          "OK": "The Product was created successfully",
-          "NOK": "An error has occurred. The Product was not created."
-        }
+        "ALREADY_EXISTS": "A Product with that name already exists",
+        "OK": "The Product was created successfully",
+        "NOK": "An error has occurred. The Product was not created."
       }
     },
     "DELETE": {
@@ -83,12 +79,12 @@
     "SEARCH": {
       "NOT_FOUND": "No data found",
       "APP": {
-        "PRODUCT.NOT_EXISTS": "An App with this name could not be found.",
+        "NOT_EXISTS": "An App with this name could not be found.",
         "LOAD_ERROR": "Failed to load App",
         "NOT_FOUND": "The product does not have an App"
       },
       "PRODUCT": {
-        "PRODUCT.NOT_EXISTS": "A Product with this name could not be found.",
+        "NOT_EXISTS": "A Product with this name could not be found.",
         "LOAD_ERROR": "Failed to load Product",
         "NOT_FOUND": "Product was not found"
       }

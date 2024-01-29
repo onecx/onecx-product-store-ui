@@ -1,13 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
-import { Location } from '@angular/common'
-//import { Location, DatePipe } from '@angular/common'
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+//import { DatePipe } from '@angular/common'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { finalize } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 
 import { Action, ConfigurationService, MicroFrontend, PortalMessageService } from '@onecx/portal-integration-angular'
-//import { limitText } from '../../shared/utils'
-import { MicrofrontendsAPIService, GetMicrofrontendRequestParams } from 'src/app/generated'
+import { MicrofrontendsAPIService, GetMicrofrontendRequestParams, MicrofrontendAbstract } from 'src/app/generated'
 
 type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT'
 interface AppDetailForm {
@@ -20,8 +18,8 @@ interface AppDetailForm {
   styleUrls: ['./app-detail.component.scss'],
   providers: [ConfigurationService]
 })
-export class AppDetailComponent implements OnInit {
-  @Input() appId: string | undefined
+export class AppDetailComponent implements OnChanges {
+  @Input() appAbstract: MicrofrontendAbstract | undefined
   @Input() dateFormat = 'medium'
   @Input() changeMode: ChangeMode = 'VIEW'
   @Input() displayDetailDialog = false
@@ -33,7 +31,6 @@ export class AppDetailComponent implements OnInit {
   public actions: Action[] = []
 
   constructor(
-    private location: Location,
     private appApi: MicrofrontendsAPIService,
     private config: ConfigurationService,
     private msgService: PortalMessageService,
@@ -45,14 +42,19 @@ export class AppDetailComponent implements OnInit {
     })
   }
 
-  ngOnInit(): void {
-    this.prepareTranslations()
+  ngOnChanges() {
+    if (this.changeMode !== 'CREATE') {
+      this.loadApp()
+      this.changeMode = 'EDIT'
+    } else if (this.changeMode === 'CREATE') {
+      this.app = undefined
+    }
   }
 
   private loadApp() {
     this.loading = true
     this.appApi
-      .searchMicrofrontends({ microfrontendSearchCriteria: { appId: this.appId } })
+      .searchMicrofrontends({ microfrontendSearchCriteria: { appId: this.appAbstract?.appId } })
       .pipe(
         finalize(() => {
           this.loading = false
@@ -65,7 +67,6 @@ export class AppDetailComponent implements OnInit {
             console.info('search: ', data.stream[0])
             this.getApp()
           }
-          this.prepareTranslations()
         },
         error: (err: any) => {
           console.error('search: ', err)
@@ -73,14 +74,14 @@ export class AppDetailComponent implements OnInit {
             summaryKey: 'ACTIONS.SEARCH.APP.LOAD_ERROR'
             // detailKey: err.error.indexOf('was not found') > 1 ? 'SEARCH.NOT_FOUND' : err.error
           })
-          this.close()
+          this.displayDetailDialogChange.emit(false)
         }
       })
   }
   public getApp() {
     this.loading = true
     this.appApi
-      .getMicrofrontend({ id: this.appId } as GetMicrofrontendRequestParams)
+      .getMicrofrontend({ id: this.app?.id } as GetMicrofrontendRequestParams)
       .pipe(
         finalize(() => {
           this.loading = false
@@ -96,83 +97,11 @@ export class AppDetailComponent implements OnInit {
       })
   }
 
-  public prepareTranslations(): void {
-    this.translate
-      .get([
-        'ACTIONS.EDIT.LABEL',
-        'ACTIONS.EDIT.APP.TOOLTIP',
-        'ACTIONS.CANCEL',
-        'ACTIONS.TOOLTIPS.CANCEL',
-        'ACTIONS.SAVE',
-        'ACTIONS.TOOLTIPS.SAVE',
-        'ACTIONS.NAVIGATION.BACK',
-        'ACTIONS.NAVIGATION.BACK.TOOLTIP'
-      ])
-      .subscribe((data) => {
-        this.prepareActionButtons(data)
-      })
-  }
-
-  private prepareActionButtons(data: any): void {
-    this.actions = [] // provoke change event
-    this.actions.push(
-      {
-        label: data['ACTIONS.NAVIGATION.BACK'],
-        title: data['ACTIONS.NAVIGATION.BACK.TOOLTIP'],
-        actionCallback: () => this.onClose(),
-        icon: 'pi pi-arrow-left',
-        show: 'always',
-        conditional: true,
-        showCondition: this.changeMode !== 'CREATE'
-      },
-      {
-        label: data['ACTIONS.CANCEL'],
-        title: data['ACTIONS.TOOLTIPS.CANCEL'],
-        actionCallback: () => this.onCancel(),
-        icon: 'pi pi-times',
-        show: 'always',
-        conditional: true,
-        showCondition: this.changeMode === 'CREATE'
-      },
-      {
-        label: data['ACTIONS.SAVE'],
-        title: data['ACTIONS.TOOLTIPS.SAVE'],
-        actionCallback: () => this.onSave(),
-        icon: 'pi pi-save',
-        show: 'always',
-        conditional: true,
-        showCondition: this.changeMode !== 'VIEW',
-        permission: 'MICROFRONTEND#' + this.changeMode
-      }
-    )
-  }
-
-  public close(): void {
-    this.location.back()
-  }
-  public onClose() {
-    this.close()
-  }
-
-  public onEdit() {
-    this.getApp()
-    this.changeMode = 'EDIT'
-    this.prepareTranslations()
-  }
-  public onCancel() {
-    if (this.changeMode === 'EDIT') {
-      this.changeMode = 'VIEW'
-      this.getApp()
-      this.prepareTranslations()
-    }
-    if (this.changeMode === 'CREATE') {
-      this.close()
-    }
-  }
   public onDialogHide() {
     this.displayDetailDialogChange.emit(false)
   }
   public onSave() {
     //this.onSubmit()
+    // this.displayDetailDialogChange.emit(true)
   }
 }
