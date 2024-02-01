@@ -50,7 +50,7 @@ export class AppSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.prepareTranslations()
+    //this.prepareTranslations()
     this.searchData()
   }
 
@@ -71,9 +71,9 @@ export class AppSearchComponent implements OnInit {
   private prepareTranslations(): void {
     this.translate
       .get([
-        'MICROFRONTEND.APP_ID',
-        'MICROFRONTEND.APP_NAME',
-        'MICROFRONTEND.PRODUCT_NAME',
+        'MFE.APP_ID',
+        'MFE.APP_NAME',
+        'MFE.PRODUCT_NAME',
         'ACTIONS.NAVIGATION.BACK',
         'ACTIONS.NAVIGATION.BACK.TOOLTIP',
         'ACTIONS.CREATE.LABEL',
@@ -92,11 +92,11 @@ export class AppSearchComponent implements OnInit {
           filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
           filterInputTooltip:
             data['ACTIONS.DATAVIEW.FILTER_OF'] +
-            data['MICROFRONTEND.APP_ID'] +
+            data['MFE.APP_ID'] +
             ', ' +
-            data['MICROFRONTEND.APP_NAME'] +
+            data['MFE.APP_NAME'] +
             ', ' +
-            data['MICROFRONTEND.PRODUCT_NAME'],
+            data['MFE.PRODUCT_NAME'],
           viewModeToggleTooltips: {
             grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID'],
             table: data['ACTIONS.DATAVIEW.VIEW_MODE_TABLE']

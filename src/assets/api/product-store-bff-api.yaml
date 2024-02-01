@@ -70,6 +70,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+  /microfrontends/appId/{appId}:
+    get:
+      tags:
+        - Microfrontends
+      description: Return micro-frontend by its appId
+      operationId: getMicrofrontendByAppId
+      parameters:
+        - name: appId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microfrontend'
+        '404':
+          description: Not Found
   /microfrontends/{id}:
     get:
       tags:
@@ -557,6 +578,11 @@ components:
         productName:
           type: string
           description: reference to the product entity as a weak reference
+        classifications:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
         endpoints:
           type: array
           description: available endpoints which are exposed by MFE

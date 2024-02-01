@@ -42,6 +42,7 @@ export class ProductAppsComponent implements OnChanges {
   }
 
   public loadApps(): void {
+    console.log('loadApps() ' + this.product?.name)
     this.searchInProgress = true
     this.apps$ = this.appApi
       .searchMicrofrontends({

@@ -18,9 +18,9 @@
             formControlName="appId"
             class="w-18rem"
             [clear]="true"
-            [title]="'MICROFRONTEND.APP_ID' | translate"
+            [title]="'MFE.APP_ID' | translate"
           />
-          <label for="app_search_app_id">{{ 'MICROFRONTEND.APP_ID' | translate }}</label>
+          <label for="app_search_app_id">{{ 'MFE.APP_ID' | translate }}</label>
         </span>
         <span class="p-float-label">
           <input
@@ -30,9 +30,9 @@
             formControlName="appName"
             class="w-18rem"
             [clear]="true"
-            [title]="'MICROFRONTEND.APP_NAME' | translate"
+            [title]="'MFE.APP_NAME' | translate"
           />
-          <label for="app_search_app_name">{{ 'MICROFRONTEND.APP_NAME' | translate }}</label>
+          <label for="app_search_app_name">{{ 'MFE.APP_NAME' | translate }}</label>
         </span>
         <span class="p-float-label">
           <input
@@ -42,9 +42,9 @@
             formControlName="productName"
             class="w-18rem"
             [clear]="true"
-            [title]="'MICROFRONTEND.PRODUCT_NAME' | translate"
+            [title]="'MFE.PRODUCT_NAME' | translate"
           />
-          <label for="app_search_product_name">{{ 'MICROFRONTEND.PRODUCT_NAME' | translate }}</label>
+          <label for="app_search_product_name">{{ 'MFE.PRODUCT_NAME' | translate }}</label>
         </span>
       </div>
     </div>
@@ -75,19 +75,15 @@
             [supportedViews]="['grid']"
             [initialViewMode]="viewMode"
             [sortingOptions]="[
-              { label: 'MICROFRONTEND.APP_ID' | translate, value: 'appId' },
-              { label: 'MICROFRONTEND.APP_NAME' | translate, value: 'appName' },
-              { label: 'MICROFRONTEND.PRODUCT_NAME' | translate, value: 'productName' }
+              { label: 'MFE.APP_ID' | translate, value: 'appId' },
+              { label: 'MFE.APP_NAME' | translate, value: 'appName' },
+              { label: 'MFE.PRODUCT_NAME' | translate, value: 'productName' }
             ]"
             [defaultSortOption]="sortField"
             [defaultSortDirection]="sortOrder === 1"
             (dataViewChange)="onLayoutChange($event)"
             (filterChange)="onFilterChange($event)"
-            [filterColumns]="[
-              'MICROFRONTEND.APP_ID' | translate,
-              'MICROFRONTEND.APP_NAME' | translate,
-              'MICROFRONTEND.PRODUCT_NAME' | translate
-            ]"
+            [filterColumns]="['MFE.APP_ID' | translate, 'MFE.APP_NAME' | translate, 'MFE.PRODUCT_NAME' | translate]"
             (sortChange)="onSortChange($event)"
             (sortDirectionChange)="onSortDirChange($event)"
             [translations]="dataViewControlsTranslations"

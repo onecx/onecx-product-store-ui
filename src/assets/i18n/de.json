@@ -139,7 +139,7 @@
       "PROPERTIES": "Eigenschaften"
     }
   },
-  "MICROFRONTEND": {
+  "MFE": {
     "APP_ID": "App ID",
     "APP_NAME": "App-Name",
     "APP_VERSION": "Version",
@@ -154,6 +154,9 @@
     "NOTE": "Notiz",
     "EXPOSED_MODULE": "Exposed Module",
     "ENDPOINTS": "UI Endpunkte",
+    "GROUP.REMOTE_MODULE": "Remote Modul",
+    "GROUP.LOCAL_MODULE": "Modul Management Details",
+    "GROUP.INTERNALS": "Weitere Details",
     "TOOLTIPS": {
       "APP_ID": "Eindeutige ID - Basis Bezeichner des Microfrontends",
       "APP_NAME": "Name des Microfrontends",
@@ -168,7 +171,10 @@
       "ICON_NAME": "Iconname",
       "NOTE": "Notiz",
       "EXPOSED_MODULE": "Exposed Module",
-      "ENDPOINTS": "UI Endpunkte"
+      "ENDPOINTS": "UI Endpunkte",
+      "GROUP.REMOTE_MODULE": "Details des zu verwendeten Remote Moduls",
+      "GROUP.LOCAL_MODULE": "Details der lokalen Registrierung des Moduls",
+      "GROUP.INTERNALS": "Weitere Details der Objektverwaltung und Verwendung"
     }
   },
   "PRODUCT": {

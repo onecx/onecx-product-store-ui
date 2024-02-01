@@ -139,7 +139,7 @@
       "PROPERTIES": "Properties"
     }
   },
-  "MICROFRONTEND": {
+  "MFE": {
     "APP_ID": "App ID",
     "APP_NAME": "App Name",
     "APP_VERSION": "Version",
@@ -154,6 +154,9 @@
     "NOTE": "Note",
     "EXPOSED_MODULE": "Exposed Module",
     "ENDPOINTS": "UI Endpoints",
+    "GROUP.REMOTE_MODULE": "Remote Module",
+    "GROUP.LOCAL_MODULE": "Module Management Details",
+    "GROUP.INTERNALS": "More Details",
     "TOOLTIPS": {
       "APP_ID": "Unique ID - base identifier for this Microfrontend",
       "APP_NAME": "Business name of the Microfrontend",
@@ -168,7 +171,10 @@
       "ICON_NAME": "Icon Name",
       "NOTE": "Note",
       "EXPOSED_MODULE": "Exposed Module",
-      "ENDPOINTS": "UI Endpoints"
+      "ENDPOINTS": "UI Endpoints",
+      "GROUP.REMOTE_MODULE": "Details of the remote module to be used",
+      "GROUP.LOCAL_MODULE": "Details of the module's local registration",
+      "GROUP.INTERNALS": "More details of object management and usage"
     }
   },
   "PRODUCT": {

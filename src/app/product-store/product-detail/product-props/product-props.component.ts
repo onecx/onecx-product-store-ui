@@ -42,7 +42,7 @@ export class ProductPropertyComponent implements OnChanges {
   public formGroup: FormGroup<ProductDetailForm>
   public productId: string | undefined
   public productName: string | null | undefined
-  public fetchingLogoUrl?: string
+  public fetchingLogoUrl: string | undefined
   public iconItems: SelectItem[] = [{ label: '', value: null }]
   //private productNamePattern = '^(?!new$)(.*)$' // matching for valid product names
 
