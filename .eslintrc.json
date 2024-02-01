@@ -9,9 +9,8 @@
     "dist/**",
     "helm/**",
     "node_modules/**",
-    "src/app/generated/**",
-    "src/app/api/*",
-    "src/app/model/*",
+    "src/app/shared/generated/**",
+    "src/assets/api/*",
     "src/**/*.ico",
     "src/**/*.svg"
   ],

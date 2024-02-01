@@ -3,9 +3,9 @@ import { SelectItem } from 'primeng/api'
 import { Observable, finalize } from 'rxjs'
 
 import { DataViewControlTranslations, PortalMessageService } from '@onecx/portal-integration-angular'
-import { Product, MicrofrontendsAPIService, MicrofrontendPageResult } from '../../../generated'
+import { Product, MicrofrontendsAPIService, MicrofrontendPageResult } from 'src/app/shared/generated'
 import { dropDownSortItemsByLabel, limitText } from 'src/app/shared/utils'
-import { IconService } from '../../../shared/iconservice'
+import { IconService } from 'src/app/shared/iconservice'
 
 @Component({
   selector: 'app-product-apps',

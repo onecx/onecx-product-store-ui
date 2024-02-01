@@ -2,10 +2,11 @@ import { Component, OnInit, ViewChild } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
-import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 import { DataView } from 'primeng/dataview'
 import { Observable, finalize } from 'rxjs'
-import { MicrofrontendAbstract, MicrofrontendPageResult, MicrofrontendsAPIService } from 'src/app/generated'
+
+import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+import { MicrofrontendAbstract, MicrofrontendPageResult, MicrofrontendsAPIService } from 'src/app/shared/generated'
 import { limitText } from 'src/app/shared/utils'
 
 export interface MicrofrontendSearchCriteria {

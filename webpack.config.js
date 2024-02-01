@@ -2,10 +2,10 @@ const { ModifyEntryPlugin } = require('@angular-architects/module-federation/src
 const { share, withModuleFederationPlugin } = require('@angular-architects/module-federation/webpack')
 
 const config = withModuleFederationPlugin({
-  name: 'product-store-ui',
+  name: 'onecx-product-store-ui',
   filename: 'remoteEntry.js',
   exposes: {
-    './ProductStoreMgmtModule': 'src/app/product-store-remote.module.ts'
+    './OneCXProductStoreModule': 'src/app/onecx-product-store-remote.module.ts'
   },
   shared: share({
     '@angular/core': { singleton: true, strictVersion: true, requiredVersion: 'auto' },
@@ -30,17 +30,13 @@ const config = withModuleFederationPlugin({
       requiredVersion: 'auto',
       includeSecondaries: true
     },
-    '@angular/router': { singleton: true, strictVersion: true, requiredVersion: 'auto', includeSecondaries: true },
     rxjs: { singleton: true, strictVersion: true, requiredVersion: 'auto', includeSecondaries: true },
+    '@angular/router': { singleton: true, strictVersion: true, requiredVersion: 'auto', includeSecondaries: true },
     '@ngx-translate/core': { singleton: true, strictVersion: false, requiredVersion: '^14.0.0' },
-    '@onecx/portal-integration-angular': {
-      singleton: true,
-      requiredVersion: 'auto'
-    },
-    '@onecx/keycloak-auth': {
-      singleton: true,
-      requiredVersion: 'auto'
-    }
+    '@onecx/keycloak-auth': { requiredVersion: 'auto', includeSecondaries: true },
+    '@onecx/portal-integration-angular': { requiredVersion: 'auto', includeSecondaries: true },
+    '@onecx/accelerator': { requiredVersion: 'auto', includeSecondaries: true },
+    '@onecx/integration-interface': { requiredVersion: 'auto', includeSecondaries: true }
   }),
   sharedMappings: ['@onecx/portal-integration-angular']
 })

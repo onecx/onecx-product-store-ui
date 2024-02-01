@@ -1,7 +1,7 @@
 apiVersion: v2
 name: onecx-product-store-ui
 version: 0.0.0
-description: OneCX Product Store UI.
+description: OneCX Product Store UI
 home: https://github.com/onecx/onecx-product-store-ui
 keywords:
   - product-store

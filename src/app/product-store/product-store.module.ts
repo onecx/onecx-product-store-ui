@@ -1,16 +1,16 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from '@angular/core'
-import { HttpClient } from '@angular/common/http'
+import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { RouterModule, Routes } from '@angular/router'
-import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core'
-
 import { FieldsetModule } from 'primeng/fieldset'
+import { ConfirmDialogModule } from 'primeng/confirmdialog'
+import { ConfirmationService } from 'primeng/api'
 
-import { MFE_INFO, PortalCoreModule, MyMissingTranslationHandler } from '@onecx/portal-integration-angular'
+import { addInitializeModuleGuard, InitializeModuleGuard, PortalCoreModule } from '@onecx/portal-integration-angular'
 
-import { CanActivateGuard } from '../shared/can-active-guard.service'
-import { LabelResolver } from '../shared/label.resolver'
-import { HttpLoaderFactory, SharedModule } from '../shared/shared.module'
+import { LabelResolver } from 'src/app/shared/label.resolver'
+import { SharedModule } from 'src/app/shared/shared.module'
+
 import { AppSearchComponent } from './app-search/app-search.component'
 import { AppDetailComponent } from './app-detail/app-detail.component'
 import { ProductSearchComponent } from './product-search/product-search.component'
@@ -23,44 +23,25 @@ const routes: Routes = [
   {
     path: '',
     component: ProductSearchComponent,
-    canActivate: [CanActivateGuard],
     pathMatch: 'full'
   },
   {
     path: 'apps',
     component: AppSearchComponent,
-    canActivate: [CanActivateGuard],
-    data: {
-      breadcrumb: 'BREADCRUMBS.APPS',
-      breadcrumbFn: (data: any) => `${data.labeli18n}`
-    },
-    resolve: {
-      labeli18n: LabelResolver
-    }
+    data: { breadcrumb: 'BREADCRUMBS.APPS', breadcrumbFn: (data: any) => `${data.labeli18n}` },
+    resolve: { labeli18n: LabelResolver }
   },
   {
     path: 'new',
-    canActivate: [CanActivateGuard],
     component: ProductDetailComponent,
-    data: {
-      breadcrumb: 'BREADCRUMBS.CREATE',
-      breadcrumbFn: (data: any) => `${data.labeli18n}`
-    },
-    resolve: {
-      labeli18n: LabelResolver
-    }
+    data: { breadcrumb: 'BREADCRUMBS.CREATE', breadcrumbFn: (data: any) => `${data.labeli18n}` },
+    resolve: { labeli18n: LabelResolver }
   },
   {
     path: ':name',
-    canActivate: [CanActivateGuard],
     component: ProductDetailComponent,
-    data: {
-      breadcrumb: 'BREADCRUMBS.DETAIL',
-      breadcrumbFn: (data: any) => `${data.labeli18n}`
-    },
-    resolve: {
-      labeli18n: LabelResolver
-    }
+    data: { breadcrumb: 'BREADCRUMBS.DETAIL', breadcrumbFn: (data: any) => `${data.labeli18n}` },
+    resolve: { labeli18n: LabelResolver }
   }
 ]
 @NgModule({
@@ -74,29 +55,19 @@ const routes: Routes = [
     ProductAppsComponent
   ],
   imports: [
-    FormsModule,
+    CommonModule,
+    ConfirmDialogModule,
     FieldsetModule,
+    FormsModule,
     PortalCoreModule.forMicroFrontend(),
-    [RouterModule.forChild(routes)],
-    SharedModule,
-    TranslateModule.forChild({
-      isolate: true,
-      missingTranslationHandler: {
-        provide: MissingTranslationHandler,
-        useClass: MyMissingTranslationHandler
-      },
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient, MFE_INFO]
-      }
-    })
+    [RouterModule.forChild(addInitializeModuleGuard(routes))],
+    SharedModule
   ],
-  providers: [],
+  providers: [ConfirmationService, InitializeModuleGuard],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ProductStoreModule {
   constructor() {
-    console.info('Product Store Module constructor')
+    console.info('Theme Module constructor')
   }
 }

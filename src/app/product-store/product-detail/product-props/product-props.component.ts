@@ -3,8 +3,8 @@ import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn,
 import { SelectItem } from 'primeng/api'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
-import { CreateProductRequest, Product, ProductsAPIService, UpdateProductRequest } from '../../../generated'
-import { IconService } from '../../../shared/iconservice'
+import { CreateProductRequest, Product, ProductsAPIService, UpdateProductRequest } from 'src/app/shared/generated'
+import { IconService } from 'src/app/shared/iconservice'
 import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
 
 export interface ProductDetailForm {

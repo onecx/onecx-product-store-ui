@@ -5,9 +5,9 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { finalize } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 
-import { Action, ConfigurationService, PortalMessageService } from '@onecx/portal-integration-angular'
+import { Action, PortalMessageService, UserService } from '@onecx/portal-integration-angular'
 //import { limitText } from '../../shared/utils'
-import { Product, ProductsAPIService } from 'src/app/generated'
+import { Product, ProductsAPIService } from 'src/app/shared/generated'
 import { environment } from 'src/environments/environment'
 import { ProductPropertyComponent } from './product-props/product-props.component'
 
@@ -15,8 +15,7 @@ type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT'
 
 @Component({
   templateUrl: './product-detail.component.html',
-  styleUrls: ['./product-detail.component.scss'],
-  providers: [ConfigurationService]
+  styleUrls: ['./product-detail.component.scss']
 })
 export class ProductDetailComponent implements OnInit {
   @ViewChild(ProductPropertyComponent, { static: false }) productPropsComponent!: ProductPropertyComponent
@@ -36,13 +35,13 @@ export class ProductDetailComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private user: UserService,
     private location: Location,
     private productApi: ProductsAPIService,
-    private config: ConfigurationService,
     private msgService: PortalMessageService,
     private translate: TranslateService
   ) {
-    this.dateFormat = this.config.lang === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'medium'
+    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'medium'
     this.productName = this.route.snapshot.paramMap.get('name') || ''
   }
 

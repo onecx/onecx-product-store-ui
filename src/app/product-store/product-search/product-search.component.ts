@@ -1,12 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { Observable, finalize } from 'rxjs'
-import { DataView } from 'primeng/dataview'
-import { TranslateService } from '@ngx-translate/core'
-import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
-import { ProductPageResult, ProductsAPIService } from '../../generated'
-import { limitText } from '../../shared/utils'
 import { FormControl, FormGroup } from '@angular/forms'
+import { Observable, finalize } from 'rxjs'
+import { TranslateService } from '@ngx-translate/core'
+import { DataView } from 'primeng/dataview'
+
+import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+
+import { ProductPageResult, ProductsAPIService } from 'src/app/shared/generated'
+import { limitText } from 'src/app/shared/utils'
 
 export interface ProductSearchCriteria {
   productName: FormControl<string | null>

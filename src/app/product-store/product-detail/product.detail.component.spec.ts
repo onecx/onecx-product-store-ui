@@ -1,45 +1,40 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { HttpClient } from '@angular/common/http'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { RouterTestingModule } from '@angular/router/testing'
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
-import { of, throwError } from 'rxjs'
+import { of } from 'rxjs'
+import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
-import { HttpLoaderFactory } from 'src/app/shared/shared.module'
 import { ProductDetailComponent } from './product-detail.component'
-import { ProductsAPIService } from 'src/app/generated'
+import { ProductsAPIService } from 'src/app/shared/generated'
 
 describe('ProductDetailComponent', () => {
   let component: ProductDetailComponent
   let fixture: ComponentFixture<ProductDetailComponent>
 
-  const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
   const apiServiceSpy = {
     searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of({})),
-    getProduct: jasmine.createSpy('getProduct').and.returnValue(of({}))
+    getProductByName: jasmine.createSpy('getProductByName').and.returnValue(of({}))
   }
+  const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ProductDetailComponent],
       imports: [
-        HttpClientTestingModule,
         RouterTestingModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useFactory: HttpLoaderFactory,
-            deps: [HttpClient]
-          }
-        })
+        HttpClientTestingModule,
+        TranslateTestingModule.withTranslations({
+          de: require('src/assets/i18n/de.json'),
+          en: require('src/assets/i18n/en.json')
+        }).withDefaultLanguage('en')
       ],
-      schemas: [NO_ERRORS_SCHEMA],
       providers: [
         { provide: ProductsAPIService, useValue: apiServiceSpy },
         { provide: PortalMessageService, useValue: msgServiceSpy }
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents()
   }))
 
@@ -54,7 +49,7 @@ describe('ProductDetailComponent', () => {
     msgServiceSpy.error.calls.reset()
     msgServiceSpy.info.calls.reset()
     apiServiceSpy.searchProducts.calls.reset()
-    apiServiceSpy.getProduct.calls.reset()
+    apiServiceSpy.getProductByName.calls.reset()
   })
 
   it('should create', () => {
@@ -69,36 +64,15 @@ describe('ProductDetailComponent', () => {
     expect(component.changeMode).toEqual('VIEW')
   })
 
-  it('should search products onInit', () => {
-    const productPageResult = {
-      stream: [
-        {
-          id: 'id',
-          name: 'name',
-          basePath: 'path'
-        }
-      ]
-    }
-    apiServiceSpy.searchProducts.and.returnValue(of(productPageResult))
-    apiServiceSpy.getProduct.and.returnValue(of({ id: 'id' }))
+  it('should get product onInit', () => {
+    const p = { id: 'id', name: 'name', basePath: 'path' }
+    apiServiceSpy.getProductByName.and.returnValue(of(p))
+
     component.productName = 'name'
 
     component.ngOnInit()
 
-    expect(component.product?.id).toEqual(productPageResult.stream[0].id)
-  })
-
-  it('should display error if searchProducts fails', () => {
-    const errorMsg = 'Product was not found'
-    const mockError = new Error(errorMsg)
-    apiServiceSpy.searchProducts.and.returnValue(throwError(() => mockError))
-    component.productName = 'name'
-
-    component.ngOnInit()
-
-    expect(msgServiceSpy.error).toHaveBeenCalledWith({
-      summaryKey: 'ACTIONS.SEARCH.PRODUCT.LOAD_ERROR'
-    })
+    expect(component.product?.id).toEqual(p.id)
   })
 
   it('should prepare action buttons callbacks on init: close', () => {

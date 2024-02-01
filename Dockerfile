@@ -10,7 +10,7 @@ COPY dist/onecx-product-store-ui/ $DIR_HTML
 
 # Application environments default values
 ENV BFF_URL http://onecx-product-store-bff:8080/
-ENV APP_BASE_HREF /product-store/
+ENV APP_BASE_HREF /
 
 RUN chmod 775 -R "$DIR_HTML"/assets
 USER 1001

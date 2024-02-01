@@ -1,46 +1,41 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { HttpClient } from '@angular/common/http'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { RouterTestingModule } from '@angular/router/testing'
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { of, throwError } from 'rxjs'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
-import { HttpLoaderFactory } from 'src/app/shared/shared.module'
 import { ProductPropertyComponent, ProductDetailForm } from './product-props.component'
-import { ProductsAPIService } from 'src/app/generated'
+import { ProductsAPIService } from 'src/app/shared/generated'
 
 describe('ProductPropertyComponent', () => {
   let component: ProductPropertyComponent
   let fixture: ComponentFixture<ProductPropertyComponent>
 
-  const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
   const apiServiceSpy = {
     createProduct: jasmine.createSpy('createProduct').and.returnValue(of({})),
     updateProduct: jasmine.createSpy('updateProduct').and.returnValue(of({}))
   }
+  const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ProductPropertyComponent],
       imports: [
-        HttpClientTestingModule,
         RouterTestingModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useFactory: HttpLoaderFactory,
-            deps: [HttpClient]
-          }
-        })
+        HttpClientTestingModule,
+        TranslateTestingModule.withTranslations({
+          de: require('src/assets/i18n/de.json'),
+          en: require('src/assets/i18n/en.json')
+        }).withDefaultLanguage('en')
       ],
-      schemas: [NO_ERRORS_SCHEMA],
       providers: [
         { provide: ProductsAPIService, useValue: apiServiceSpy },
         { provide: PortalMessageService, useValue: msgServiceSpy }
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents()
   }))
 

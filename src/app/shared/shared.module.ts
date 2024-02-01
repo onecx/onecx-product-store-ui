@@ -1,92 +1,65 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { HttpClient } from '@angular/common/http'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
-import { TranslateHttpLoader } from '@ngx-translate/http-loader'
-import { ColorSketchModule } from 'ngx-color/sketch'
 import { ErrorTailorModule } from '@ngneat/error-tailor'
 
 import { AutoCompleteModule } from 'primeng/autocomplete'
-import { CheckboxModule } from 'primeng/checkbox'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { ConfirmPopupModule } from 'primeng/confirmpopup'
-import { ConfirmationService, MessageService } from 'primeng/api'
+import { ConfirmationService } from 'primeng/api'
 import { DataViewModule } from 'primeng/dataview'
 import { DialogModule } from 'primeng/dialog'
-import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog'
+import { DialogService } from 'primeng/dynamicdialog'
 import { DropdownModule } from 'primeng/dropdown'
-import { FileUploadModule } from 'primeng/fileupload'
 import { InputTextModule } from 'primeng/inputtext'
 import { InputTextareaModule } from 'primeng/inputtextarea'
 import { KeyFilterModule } from 'primeng/keyfilter'
 import { ListboxModule } from 'primeng/listbox'
 import { MultiSelectModule } from 'primeng/multiselect'
-import { OverlayPanelModule } from 'primeng/overlaypanel'
-import { PanelModule } from 'primeng/panel'
 import { SelectButtonModule } from 'primeng/selectbutton'
-import { TabViewModule } from 'primeng/tabview'
 import { TableModule } from 'primeng/table'
+import { TabViewModule } from 'primeng/tabview'
 import { ToastModule } from 'primeng/toast'
 
 import {
-  MfeInfo,
-  MFE_INFO,
+  AppStateService,
+  ConfigurationService,
   PortalDialogService,
-  PortalMessageService,
-  TranslateCombinedLoader
+  PortalApiConfiguration
 } from '@onecx/portal-integration-angular'
 
-import { BASE_PATH } from '../generated'
+import { Configuration } from 'src/app/shared/generated'
+import { environment } from 'src/environments/environment'
 import { LabelResolver } from './label.resolver'
-import { environment } from '../../environments/environment'
-import { CanActivateGuard } from './can-active-guard.service'
 import { ImageContainerComponent } from './image-container/image-container.component'
 
-export const basePathProvider = (mfeInfo: MfeInfo) => {
-  const appBasePath = mfeInfo ? mfeInfo.remoteBaseUrl + '' + environment.apiPrefix : environment.apiPrefix
-  console.log('Base path: ' + appBasePath)
-  return appBasePath
-}
-
-// Always load the app assets directly from the Microfrontend
-export function HttpLoaderFactory(http: HttpClient, mfeInfo: MfeInfo) {
-  const appAssetPrefix = mfeInfo && mfeInfo.remoteBaseUrl ? mfeInfo.remoteBaseUrl : './'
-  console.log('Path prefix: ' + appAssetPrefix)
-  return new TranslateCombinedLoader(
-    new TranslateHttpLoader(http, appAssetPrefix + 'assets/i18n/', '.json'),
-    new TranslateHttpLoader(http, appAssetPrefix + 'onecx-portal-lib/assets/i18n/', '.json')
-  )
+export function apiConfigProvider(configService: ConfigurationService, appStateService: AppStateService) {
+  return new PortalApiConfiguration(Configuration, environment.apiPrefix, configService, appStateService)
 }
 
 @NgModule({
   declarations: [ImageContainerComponent],
   imports: [
     AutoCompleteModule,
-    CheckboxModule,
-    ColorSketchModule,
     CommonModule,
     ConfirmDialogModule,
     ConfirmPopupModule,
     DataViewModule,
     DialogModule,
     DropdownModule,
-    DynamicDialogModule,
-    FileUploadModule,
     FormsModule,
     InputTextModule,
     InputTextareaModule,
     KeyFilterModule,
     ListboxModule,
     MultiSelectModule,
-    OverlayPanelModule,
-    PanelModule,
     ReactiveFormsModule,
     SelectButtonModule,
-    TabViewModule,
     TableModule,
+    TabViewModule,
     ToastModule,
-    TranslateModule.forChild({ isolate: true }),
+    TranslateModule,
     ErrorTailorModule.forRoot({
       controlErrorsOn: { async: true, blur: true, change: true },
       errors: {
@@ -112,39 +85,33 @@ export function HttpLoaderFactory(http: HttpClient, mfeInfo: MfeInfo) {
   ],
   exports: [
     AutoCompleteModule,
-    CheckboxModule,
     CommonModule,
+    ConfirmDialogModule,
     ConfirmPopupModule,
     DataViewModule,
     DialogModule,
     DropdownModule,
-    DynamicDialogModule,
     ErrorTailorModule,
-    FileUploadModule,
     FormsModule,
-    ImageContainerComponent,
     InputTextModule,
     InputTextareaModule,
+    ImageContainerComponent,
     KeyFilterModule,
     ListboxModule,
     MultiSelectModule,
-    OverlayPanelModule,
-    PanelModule,
     ReactiveFormsModule,
     SelectButtonModule,
-    TabViewModule,
     TableModule,
+    TabViewModule,
     ToastModule,
     TranslateModule
   ],
   //this is not elegant, for some reason the injection token from primeng does not work across federated module
   providers: [
-    CanActivateGuard,
     ConfirmationService,
     LabelResolver,
-    { provide: MessageService, useExisting: PortalMessageService },
     { provide: DialogService, useClass: PortalDialogService },
-    { provide: BASE_PATH, useFactory: basePathProvider, deps: [MFE_INFO] }
+    { provide: Configuration, useFactory: apiConfigProvider, deps: [ConfigurationService, AppStateService] }
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA]
 })
