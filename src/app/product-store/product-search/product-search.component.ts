@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { FormControl, FormGroup } from '@angular/forms'
-import { Observable, finalize } from 'rxjs'
+import { Observable, finalize, map } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 import { DataView } from 'primeng/dataview'
 
@@ -21,6 +21,7 @@ export interface ProductSearchCriteria {
 export class ProductSearchComponent implements OnInit {
   public products$!: Observable<ProductPageResult>
   public productSearchCriteriaGroup!: FormGroup<ProductSearchCriteria>
+  public actions$: Observable<Action[]> | undefined
   public actions: Action[] = []
   public viewMode = 'grid'
   public filter: string | undefined
@@ -44,7 +45,8 @@ export class ProductSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.prepareTranslations()
+    this.prepareDialogTranslations()
+    this.prepareActionButtons()
     this.searchData()
   }
 
@@ -57,15 +59,11 @@ export class ProductSearchComponent implements OnInit {
       .pipe(finalize(() => (this.searchInProgress = false)))
   }
 
-  private prepareTranslations(): void {
+  private prepareDialogTranslations(): void {
     this.translate
       .get([
         'PRODUCT.NAME',
         'PRODUCT.DISPLAY_NAME',
-        'DIALOG.SEARCH.APPS.LABEL',
-        'DIALOG.SEARCH.APPS.TOOLTIP',
-        'ACTIONS.CREATE.LABEL',
-        'ACTIONS.CREATE.PRODUCT.TOOLTIP',
         'ACTIONS.DATAVIEW.VIEW_MODE_GRID',
         'ACTIONS.DATAVIEW.VIEW_MODE_LIST',
         'ACTIONS.DATAVIEW.VIEW_MODE_TABLE',
@@ -91,30 +89,39 @@ export class ProductSearchComponent implements OnInit {
           },
           sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY']
         }
-        this.prepareActionButtons(data)
       })
   }
 
-  private prepareActionButtons(data: any): void {
-    this.actions = [] // provoke change event
-    this.actions.push(
-      {
-        label: data['DIALOG.SEARCH.APPS.LABEL'],
-        title: data['DIALOG.SEARCH.APPS.TOOLTIP'],
-        actionCallback: () => this.onAppSearch(),
-        permission: 'MICROFRONTEND#SEARCH',
-        icon: 'pi pi-cog',
-        show: 'always'
-      },
-      {
-        label: data['ACTIONS.CREATE.LABEL'],
-        title: data['ACTIONS.CREATE.PRODUCT.TOOLTIP'],
-        actionCallback: () => this.onNewProduct(),
-        permission: 'PRODUCT#CREATE',
-        icon: 'pi pi-plus',
-        show: 'always'
-      }
-    )
+  private prepareActionButtons(): void {
+    this.actions$ = this.translate
+      .get([
+        'ACTIONS.CREATE.LABEL',
+        'ACTIONS.CREATE.PRODUCT.TOOLTIP',
+        'DIALOG.SEARCH.APPS.LABEL',
+        'DIALOG.SEARCH.APPS.TOOLTIP'
+      ])
+      .pipe(
+        map((data) => {
+          return [
+            {
+              label: data['DIALOG.SEARCH.APPS.LABEL'],
+              title: data['DIALOG.SEARCH.APPS.TOOLTIP'],
+              actionCallback: () => this.onAppSearch(),
+              permission: 'MICROFRONTEND#SEARCH',
+              icon: 'pi pi-cog',
+              show: 'always'
+            },
+            {
+              label: data['ACTIONS.CREATE.LABEL'],
+              title: data['ACTIONS.CREATE.PRODUCT.TOOLTIP'],
+              actionCallback: () => this.onNewProduct(),
+              permission: 'PRODUCT#CREATE',
+              icon: 'pi pi-plus',
+              show: 'always'
+            }
+          ]
+        })
+      )
   }
 
   public onLayoutChange(viewMode: string): void {
