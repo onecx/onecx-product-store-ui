@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { ImageContainerComponent } from './image-container.component'
+import { prepareUrl } from 'src/app/shared/utils'
 
 describe('ImageContainerComponent', () => {
   let component: ImageContainerComponent
@@ -24,7 +25,7 @@ describe('ImageContainerComponent', () => {
   describe('ngOnChanges', () => {
     it('should prepend apiPrefix to imageUrl if not starting with http/https and not already prefixed', () => {
       const testUrl = 'path/to/image.jpg'
-      const expectedUrl = component['apiPrefix'] + testUrl
+      const expectedUrl = prepareUrl(testUrl)
 
       component.imageUrl = testUrl
       component.ngOnChanges({
@@ -36,7 +37,7 @@ describe('ImageContainerComponent', () => {
         }
       })
 
-      expect(component.imageUrl).toBe(expectedUrl)
+      expect(component.imageUrl).toBe(expectedUrl ?? '')
     })
 
     it('should not modify imageUrl if it starts with http/https', () => {

@@ -1,14 +1,14 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { HttpClient } from '@angular/common/http'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { RouterTestingModule } from '@angular/router/testing'
 import { Router, ActivatedRoute } from '@angular/router'
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { of } from 'rxjs'
+import { DataViewModule } from 'primeng/dataview'
+import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
-import { HttpLoaderFactory } from 'src/app/shared/shared.module'
+import { ProductsAPIService } from 'src/app/shared/generated'
 import { ProductSearchComponent } from './product-search.component'
 
 describe('ProductSearchComponent', () => {
@@ -17,6 +17,7 @@ describe('ProductSearchComponent', () => {
   let router: Router
   let routeSpy: jasmine.SpyObj<ActivatedRoute>
 
+  const productApiSpy = jasmine.createSpyObj<ProductsAPIService>('ProductsAPIService', ['searchProducts'])
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
   const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
 
@@ -24,21 +25,16 @@ describe('ProductSearchComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ProductSearchComponent],
       imports: [
-        HttpClientTestingModule,
         RouterTestingModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useFactory: HttpLoaderFactory,
-            deps: [HttpClient]
-          }
-        })
+        HttpClientTestingModule,
+        DataViewModule,
+        TranslateTestingModule.withTranslations({
+          de: require('src/assets/i18n/de.json'),
+          en: require('src/assets/i18n/en.json')
+        }).withDefaultLanguage('en')
       ],
-      schemas: [NO_ERRORS_SCHEMA],
-      providers: [
-        { provide: PortalMessageService, useValue: msgServiceSpy },
-        { provide: ActivatedRoute, useValue: routeSpy }
-      ]
+      providers: [{ provide: ProductsAPIService, useValue: productApiSpy }],
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents()
   }))
 
@@ -105,11 +101,11 @@ describe('ProductSearchComponent', () => {
 
   it('should call loadProducts onSearch', () => {
     translateServiceSpy.get.and.returnValue(of({ 'ACTIONS.CREATE.LABEL': 'Create' }))
-    spyOn(component, 'loadProducts')
+    spyOn(component, 'searchData')
 
     component.onSearch()
 
-    expect(component.loadProducts).toHaveBeenCalled()
+    expect(component.searchData).toHaveBeenCalled()
   })
 
   it('should reset productSearchCriteriaGroup onSearchReset', () => {

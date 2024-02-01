@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
 
-import { Product } from '../../../generated'
+import { Product } from 'src/app/shared/generated'
 
 @Component({
   selector: 'app-product-intern',

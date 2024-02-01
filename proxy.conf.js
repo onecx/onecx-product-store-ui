@@ -17,11 +17,11 @@ const bypassFn = function (req, res) {
 }
 
 const PROXY_CONFIG = {
-  '/product-store-bff': {
+  '/bff': {
     target: 'http://onecx-product-store-bff',
     secure: false,
     pathRewrite: {
-      '^.*/product-store-bff': ''
+      '^.*/bff': ''
     },
     changeOrigin: true,
     logLevel: 'debug',

@@ -1,4 +1,6 @@
 import { SelectItem } from 'primeng/api'
+import { Location } from '@angular/common'
+import { environment } from 'src/environments/environment'
 
 export function limitText(text: string, limit: number): string {
   if (text) {
@@ -8,9 +10,9 @@ export function limitText(text: string, limit: number): string {
   }
 }
 
-export function setFetchUrls(apiPrefix: string, url: string): string {
+export function prepareUrl(url: string | undefined): string | undefined {
   if (url && !url.match(/^(http|https)/g)) {
-    return apiPrefix + url
+    return Location.joinWithSlash(environment.apiPrefix, url)
   } else {
     return url
   }

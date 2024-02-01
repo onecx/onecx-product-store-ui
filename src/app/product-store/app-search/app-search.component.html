@@ -101,9 +101,9 @@
                 (click)="onGotoProduct($event, app.productName)"
               ></span>
               <div class="flex flex-column justify-content-between gap-1 text-center">
-                <div class="font-bold" [title]="app.appId">{{ limitText(app.appId, 25) }}</div>
-                <div class="text-sm" [title]="app.appName">{{ limitText(app.appName, 30) }}</div>
-                <div [title]="app.productName">{{ limitText(app.productName, 25) }}</div>
+                <div class="font-bold" [title]="'ID: ' + app.appId">{{ limitText(app.appId, 25) }}</div>
+                <div class="text-sm" [title]="'App Name: ' + app.appName">{{ limitText(app.appName, 30) }}</div>
+                <div [title]="'Product: ' + app.productName">{{ limitText(app.productName, 25) }}</div>
               </div>
             </div>
           </div>

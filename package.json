@@ -8,7 +8,7 @@
   ],
   "config": {
     "openapiYaml": "src/assets/api/product-store-bff-api.yaml",
-    "openapiOutput": "src/app/generated"
+    "openapiOutput": "src/app/shared/generated"
   },
   "scripts": {
     "build": "ng build",
@@ -49,11 +49,11 @@
     "@ngneat/falso": "^6.4.0",
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
-    "@onecx/accelerator": "^3.7.1",
-    "@onecx/integration-interface": "^3.7.1",
-    "@onecx/keycloak-auth": "^3.7.1",
-    "@onecx/portal-integration-angular": "^3.7.1",
-    "@onecx/portal-layout-styles": "^3.7.1",
+    "@onecx/accelerator": "^4.1.2",
+    "@onecx/integration-interface": "^4.1.2",
+    "@onecx/keycloak-auth": "^4.1.2",
+    "@onecx/portal-integration-angular": "^4.1.2",
+    "@onecx/portal-layout-styles": "^4.1.2",
     "file-saver": "^2.0.5",
     "i18n-iso-countries": "^7.6.0",
     "ngx-color": "^8.0.3",
