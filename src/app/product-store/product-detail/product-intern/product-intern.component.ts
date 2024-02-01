@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core'
 import { Product } from '../../../generated'
 
 @Component({
-  selector: 'ps-product-intern',
+  selector: 'app-product-intern',
   templateUrl: './product-intern.component.html'
 })
 export class ProductInternComponent {

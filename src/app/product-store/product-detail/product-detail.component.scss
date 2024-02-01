@@ -1,5 +1,12 @@
 /* limit deletion dialog */
 :host ::ng-deep {
+  // each tab panel manages its own padding separately
+  .p-tabview .p-tabview-panels {
+    padding: 0;
+    padding-left: var(--panel-content-padding);
+    padding-right: var(--panel-content-padding);
+  }
+  // popup dialogues
   @media (max-width: 991px) {
     .p-dialog.p-dialog {
       max-height: unset !important;

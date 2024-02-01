@@ -11,10 +11,13 @@ import { MFE_INFO, PortalCoreModule, MyMissingTranslationHandler } from '@onecx/
 import { CanActivateGuard } from '../shared/can-active-guard.service'
 import { LabelResolver } from '../shared/label.resolver'
 import { HttpLoaderFactory, SharedModule } from '../shared/shared.module'
+import { AppSearchComponent } from './app-search/app-search.component'
+import { AppDetailComponent } from './app-detail/app-detail.component'
 import { ProductSearchComponent } from './product-search/product-search.component'
 import { ProductDetailComponent } from './product-detail/product-detail.component'
 import { ProductPropertyComponent } from './product-detail/product-props/product-props.component'
 import { ProductInternComponent } from './product-detail/product-intern/product-intern.component'
+import { ProductAppsComponent } from './product-detail/product-apps/product-apps.component'
 
 const routes: Routes = [
   {
@@ -22,6 +25,18 @@ const routes: Routes = [
     component: ProductSearchComponent,
     canActivate: [CanActivateGuard],
     pathMatch: 'full'
+  },
+  {
+    path: 'apps',
+    component: AppSearchComponent,
+    canActivate: [CanActivateGuard],
+    data: {
+      breadcrumb: 'BREADCRUMBS.APPS',
+      breadcrumbFn: (data: any) => `${data.labeli18n}`
+    },
+    resolve: {
+      labeli18n: LabelResolver
+    }
   },
   {
     path: 'new',
@@ -49,7 +64,15 @@ const routes: Routes = [
   }
 ]
 @NgModule({
-  declarations: [ProductSearchComponent, ProductDetailComponent, ProductPropertyComponent, ProductInternComponent],
+  declarations: [
+    AppSearchComponent,
+    AppDetailComponent,
+    ProductSearchComponent,
+    ProductDetailComponent,
+    ProductPropertyComponent,
+    ProductInternComponent,
+    ProductAppsComponent
+  ],
   imports: [
     FormsModule,
     FieldsetModule,

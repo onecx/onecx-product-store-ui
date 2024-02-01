@@ -17,9 +17,21 @@ export interface MicrofrontendPageResult {
      * The total elements in the resource.
      */
     totalElements?: number;
+    /**
+     * Number of page which has been queried (e.g. 2 of 10)
+     */
     number?: number;
+    /**
+     * Correlated to the input (pagesize)), how many products should be shown on a single page
+     */
     size?: number;
+    /**
+     * Representing the total amount of pages based on the size provided in the request
+     */
     totalPages?: number;
+    /**
+     * Result set of the given search criteria.
+     */
     stream?: Array<MicrofrontendAbstract>;
 }
 

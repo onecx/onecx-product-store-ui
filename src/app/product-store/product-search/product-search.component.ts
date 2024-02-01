@@ -17,7 +17,7 @@ export interface ProductSearchCriteria {
   styleUrls: ['./product-search.component.scss']
 })
 export class ProductSearchComponent implements OnInit {
-  public product$!: Observable<ProductPageResult>
+  public products$!: Observable<ProductPageResult>
   public productSearchCriteriaGroup!: FormGroup<ProductSearchCriteria>
   public actions: Action[] = []
   public viewMode = 'grid'
@@ -43,12 +43,12 @@ export class ProductSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.prepareTranslations()
-    this.loadProducts()
+    this.searchData()
   }
 
-  public loadProducts(): void {
+  public searchData(): void {
     this.searchInProgress = true
-    this.product$ = this.productApi
+    this.products$ = this.productApi
       .searchProducts({
         productSearchCriteria: { name: this.productSearchCriteriaGroup.controls['productName'].value, pageSize: 1000 }
       })
@@ -60,6 +60,8 @@ export class ProductSearchComponent implements OnInit {
       .get([
         'PRODUCT.NAME',
         'PRODUCT.DISPLAY_NAME',
+        'DIALOG.SEARCH.APPS.LABEL',
+        'DIALOG.SEARCH.APPS.TOOLTIP',
         'ACTIONS.CREATE.LABEL',
         'ACTIONS.CREATE.PRODUCT.TOOLTIP',
         'ACTIONS.DATAVIEW.VIEW_MODE_GRID',
@@ -80,7 +82,6 @@ export class ProductSearchComponent implements OnInit {
           viewModeToggleTooltips: {
             grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID'],
             list: data['ACTIONS.DATAVIEW.VIEW_MODE_LIST']
-            // table: data['ACTIONS.DATAVIEW.VIEW_MODE_TABLE'],
           },
           sortOrderTooltips: {
             ascending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_ASC'],
@@ -94,14 +95,24 @@ export class ProductSearchComponent implements OnInit {
 
   private prepareActionButtons(data: any): void {
     this.actions = [] // provoke change event
-    this.actions.push({
-      label: data['ACTIONS.CREATE.LABEL'],
-      title: data['ACTIONS.CREATE.PRODUCT.TOOLTIP'],
-      actionCallback: () => this.onNewProduct(),
-      permission: 'PRODUCT#EDIT',
-      icon: 'pi pi-plus',
-      show: 'always'
-    })
+    this.actions.push(
+      {
+        label: data['DIALOG.SEARCH.APPS.LABEL'],
+        title: data['DIALOG.SEARCH.APPS.TOOLTIP'],
+        actionCallback: () => this.onAppSearch(),
+        permission: 'MICROFRONTEND#SEARCH',
+        icon: 'pi pi-cog',
+        show: 'always'
+      },
+      {
+        label: data['ACTIONS.CREATE.LABEL'],
+        title: data['ACTIONS.CREATE.PRODUCT.TOOLTIP'],
+        actionCallback: () => this.onNewProduct(),
+        permission: 'PRODUCT#CREATE',
+        icon: 'pi pi-plus',
+        show: 'always'
+      }
+    )
   }
 
   public onLayoutChange(viewMode: string): void {
@@ -118,12 +129,15 @@ export class ProductSearchComponent implements OnInit {
     this.sortOrder = asc ? -1 : 1
   }
   public onSearch() {
-    this.loadProducts()
+    this.searchData()
   }
   public onSearchReset() {
     this.productSearchCriteriaGroup.reset()
   }
   public onNewProduct() {
     this.router.navigate(['./new'], { relativeTo: this.route })
+  }
+  public onAppSearch() {
+    this.router.navigate(['./apps'], { relativeTo: this.route })
   }
 }

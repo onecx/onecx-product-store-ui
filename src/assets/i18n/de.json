@@ -43,7 +43,7 @@
     "EDIT": {
       "LABEL": "Bearbeiten",
       "APP": {
-        "HEADER": "App bearbeiten",
+        "HEADER": "App Details",
         "TOOLTIP": "Die App-Eigenschaften bearbeiten",
         "OK": "Das App wurde erfolgreich geändert",
         "NOK": "Ein Fehler ist aufgetreten. Das App wurde nicht geändert."
@@ -81,7 +81,7 @@
       "APP": {
         "NOT_EXISTS": "Eine App mit diesem Namen konnte nicht gefunden werden.",
         "LOAD_ERROR": "App konnte nicht geladen werden",
-        "NOT_FOUND": "App nicht gefunden"
+        "NOT_FOUND": "Das Produkt hat noch keine Apps"
       },
       "PRODUCT": {
         "NOT_EXISTS": "Ein Produkt mit diesem Namen konnte nicht gefunden werden.",
@@ -99,6 +99,7 @@
     }
   },
   "BREADCRUMBS": {
+    "APPS": "Apps",
     "CREATE": "Neu",
     "DETAIL": "Details",
     "EDIT": "Ändern"
@@ -128,10 +129,52 @@
     "SEARCH.HEADER": "Product Store",
     "SEARCH.SUBHEADER": "Produkte und deren Apps verwalten",
     "DETAIL.SUBHEADER": "Produkt Details",
+    "SEARCH.APPS.LABEL": "Microfrontends",
+    "SEARCH.APPS.TOOLTIP": "Microfrontends suchen und anzeigen",
+    "SEARCH.APPS.HEADER": "Microfrontends",
+    "SEARCH.APPS.SUBHEADER": "Suchen und verwalten",
     "TABS": {
       "APPS": "Apps",
       "INTERN": "Intern",
       "PROPERTIES": "Eigenschaften"
+    }
+  },
+  "MFE": {
+    "APP_ID": "App ID",
+    "APP_NAME": "App-Name",
+    "APP_VERSION": "Version",
+    "DESCRIPTION": "Beschreibung",
+    "PRODUCT_NAME": "Produkt",
+    "TECHNOLOGY": "Technologie",
+    "REMOTE_BASE_URL": "Remote Base URL",
+    "REMOTE_ENTRY": "Remote Entry",
+    "CLASSIFICATIONS": "Klassifizierungen",
+    "CONTACT": "Kontakt",
+    "ICON_NAME": "Icon-Name",
+    "NOTE": "Notiz",
+    "EXPOSED_MODULE": "Exposed Module",
+    "ENDPOINTS": "UI Endpunkte",
+    "GROUP.REMOTE_MODULE": "Remote Modul",
+    "GROUP.LOCAL_MODULE": "Modul Management Details",
+    "GROUP.INTERNALS": "Weitere Details",
+    "TOOLTIPS": {
+      "APP_ID": "Eindeutige ID - Basis Bezeichner des Microfrontends",
+      "APP_NAME": "Name des Microfrontends",
+      "APP_VERSION": "Version",
+      "DESCRIPTION": "Beschreibung",
+      "PRODUCT_NAME": "Name des Produkts dem das Microfrontend zugeordnet ist",
+      "TECHNOLOGY": "Technologie",
+      "REMOTE_BASE_URL": "Remote Base URL",
+      "REMOTE_ENTRY": "Remote Entry",
+      "CLASSIFICATIONS": "Klassifizierungen",
+      "CONTACT": "Kontakt",
+      "ICON_NAME": "Iconname",
+      "NOTE": "Notiz",
+      "EXPOSED_MODULE": "Exposed Module",
+      "ENDPOINTS": "UI Endpunkte",
+      "GROUP.REMOTE_MODULE": "Details des zu verwendeten Remote Moduls",
+      "GROUP.LOCAL_MODULE": "Details der lokalen Registrierung des Moduls",
+      "GROUP.INTERNALS": "Weitere Details der Objektverwaltung und Verwendung"
     }
   },
   "PRODUCT": {
@@ -183,7 +226,7 @@
   "VALIDATION": {
     "FORM_INVALID": "Die Daten sind nicht bereit zum Speichern.",
     "PRODUCT.UNIQUE_CONSTRAINT": "Ein Produkt mit diesem Namen existiert bereits.",
-    "PRODUCT.INVALID_NAME": "Dieser Namen kann nicht verwendet werden.",
+    "PRODUCT.INVALID_NAME": "Dieser Name ist reserviert und kann nicht verwendet werden.",
     "ERRORS": {
       "PARSE_ERROR": "Parserfehler: Die enthaltene Struktur entspricht nicht dem erwarteten Format.",
       "INTERNAL_ERROR": "Interner Fehler",

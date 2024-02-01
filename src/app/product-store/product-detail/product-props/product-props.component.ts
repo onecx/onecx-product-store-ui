@@ -24,12 +24,12 @@ export function productNameValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const value = control.value
     if (!value) return null
-    return value === 'new' ? { invalidProductName: true } : null
+    return ['new', 'apps'].includes(value) ? { invalidProductName: true } : null
   }
 }
 
 @Component({
-  selector: 'ps-product-props',
+  selector: 'app-product-props',
   templateUrl: './product-props.component.html',
   styleUrls: ['./product-props.component.scss']
 })
@@ -42,7 +42,7 @@ export class ProductPropertyComponent implements OnChanges {
   public formGroup: FormGroup<ProductDetailForm>
   public productId: string | undefined
   public productName: string | null | undefined
-  public fetchingLogoUrl?: string
+  public fetchingLogoUrl: string | undefined
   public iconItems: SelectItem[] = [{ label: '', value: null }]
   //private productNamePattern = '^(?!new$)(.*)$' // matching for valid product names
 
