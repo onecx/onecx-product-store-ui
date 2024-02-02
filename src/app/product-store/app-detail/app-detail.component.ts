@@ -102,7 +102,7 @@ export class AppDetailComponent implements OnChanges {
             this.app = data
             this.viewForm(this.app)
             if (this.changeMode === 'COPY') {
-              if (this.app && this.app.id) {
+              if (this.app?.id) {
                 this.app.id = undefined
                 this.app.creationDate = undefined
                 this.app.modificationDate = undefined
@@ -179,16 +179,18 @@ export class AppDetailComponent implements OnChanges {
   }
 
   private displaySaveError(err: any): void {
+    let key = err?.error?.detail.indexOf('microfrontend_app_id') > 0 ? 'VALIDATION.APP.UNIQUE_CONSTRAINT.APP_ID' : ''
+    key =
+      err?.error?.detail.indexOf('microfrontend_remote_module') > 0
+        ? 'VALIDATION.APP.UNIQUE_CONSTRAINT.REMOTE_MODULE'
+        : key
+
     this.msgService.error({
       summaryKey: 'ACTIONS.' + this.changeMode + '.APP.NOK',
       detailKey:
         err?.error?.errorCode && err?.error?.errorCode === 'PERSIST_ENTITY_FAILED'
-          ? err?.error?.detail.indexOf('microfrontend_app_id') > 0
-            ? 'VALIDATION.APP.UNIQUE_CONSTRAINT.APP_ID'
-            : err?.error?.detail.indexOf('microfrontend_remote_module') > 0
-            ? 'VALIDATION.APP.UNIQUE_CONSTRAINT.REMOTE_MODULE'
-            : 'VALIDATION.ERRORS.INTERNAL_ERROR'
-          : ''
+          ? key
+          : 'VALIDATION.ERRORS.INTERNAL_ERROR'
     })
     console.error('err', err)
   }
