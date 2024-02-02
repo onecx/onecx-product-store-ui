@@ -78,7 +78,6 @@ export class AppDetailComponent implements OnChanges {
   }
 
   ngOnChanges() {
-    console.log('app detail ngOnChanges() ' + this.changeMode, this.appAbstract)
     if (this.appAbstract && this.displayDetailDialog) {
       if (this.changeMode !== 'CREATE') {
         this.getApp()
@@ -102,9 +101,12 @@ export class AppDetailComponent implements OnChanges {
           if (data) {
             this.app = data
             this.viewForm(this.app)
-            console.info('get app: ', data)
             if (this.changeMode === 'COPY') {
-              if (this.app && this.app.id) this.app.id = undefined
+              if (this.app && this.app.id) {
+                this.app.id = undefined
+                this.app.creationDate = undefined
+                this.app.modificationDate = undefined
+              }
               this.changeMode = 'CREATE'
             } else this.changeMode = 'EDIT'
           }
@@ -148,31 +150,18 @@ export class AppDetailComponent implements OnChanges {
   }
 
   private createApp() {
-    console.log('app detail createApp() ')
     this.appApi.createMicrofrontend({ createMicrofrontendRequest: this.app as CreateMicrofrontendRequest }).subscribe({
       next: () => {
         this.msgService.success({ summaryKey: 'ACTIONS.CREATE.APP.OK' })
         this.displayDetailDialogChange.emit(false)
       },
       error: (err) => {
-        this.msgService.error({
-          summaryKey: 'ACTIONS.CREATE.APP.NOK',
-          detailKey:
-            err?.error?.errorCode && err?.error?.errorCode === 'PERSIST_ENTITY_FAILED'
-              ? err?.error?.detail.indexOf('microfrontend_app_id') > 0
-                ? 'VALIDATION.APP.UNIQUE_CONSTRAINT.APP_ID'
-                : err?.error?.detail.indexOf('microfrontend_remote_module') > 0
-                ? 'VALIDATION.APP.UNIQUE_CONSTRAINT.REMOTE_MODULE'
-                : 'VALIDATION.ERRORS.INTERNAL_ERROR'
-              : ''
-        })
-        console.error('err', err)
+        this.displaySaveError(err)
       }
     })
   }
 
   private updateApp() {
-    console.log('app detail updateApp() ' + this.app?.id)
     this.appApi
       .updateMicrofrontend({
         id: this.app?.id ?? '',
@@ -184,19 +173,23 @@ export class AppDetailComponent implements OnChanges {
           this.displayDetailDialogChange.emit(false)
         },
         error: (err) => {
-          this.msgService.error({
-            summaryKey: 'ACTIONS.EDIT.APP.NOK',
-            detailKey:
-              err?.error?.errorCode && err?.error?.errorCode === 'PERSIST_ENTITY_FAILED'
-                ? err?.error?.detail.indexOf('microfrontend_app_id') > 0
-                  ? 'VALIDATION.APP.UNIQUE_CONSTRAINT.APP_ID'
-                  : err?.error?.detail.indexOf('microfrontend_remote_module') > 0
-                  ? 'VALIDATION.APP.UNIQUE_CONSTRAINT.REMOTE_MODULE'
-                  : 'VALIDATION.ERRORS.INTERNAL_ERROR'
-                : ''
-          })
-          console.error('err', err)
+          this.displaySaveError(err)
         }
       })
+  }
+
+  private displaySaveError(err: any): void {
+    this.msgService.error({
+      summaryKey: 'ACTIONS.' + this.changeMode + '.APP.NOK',
+      detailKey:
+        err?.error?.errorCode && err?.error?.errorCode === 'PERSIST_ENTITY_FAILED'
+          ? err?.error?.detail.indexOf('microfrontend_app_id') > 0
+            ? 'VALIDATION.APP.UNIQUE_CONSTRAINT.APP_ID'
+            : err?.error?.detail.indexOf('microfrontend_remote_module') > 0
+            ? 'VALIDATION.APP.UNIQUE_CONSTRAINT.REMOTE_MODULE'
+            : 'VALIDATION.ERRORS.INTERNAL_ERROR'
+          : ''
+    })
+    console.error('err', err)
   }
 }

@@ -10,7 +10,7 @@ import { Product, ProductsAPIService } from 'src/app/shared/generated'
 import { prepareUrl } from 'src/app/shared/utils'
 import { ProductPropertyComponent } from './product-props/product-props.component'
 
-type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT'
+export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
 
 @Component({
   templateUrl: './product-detail.component.html',
@@ -78,6 +78,8 @@ export class ProductDetailComponent implements OnInit {
   private prepareActionButtons(): void {
     this.actions$ = this.translate
       .get([
+        'ACTIONS.COPY.LABEL',
+        'ACTIONS.COPY.PRODUCT.HEADER',
         'ACTIONS.DELETE.LABEL',
         'ACTIONS.DELETE.PRODUCT.TOOLTIP',
         'ACTIONS.DELETE.MESSAGE',
@@ -111,6 +113,16 @@ export class ProductDetailComponent implements OnInit {
               conditional: true,
               showCondition: this.changeMode === 'VIEW' && this.product !== undefined,
               permission: 'PRODUCT#EDIT'
+            },
+            {
+              label: data['ACTIONS.COPY.LABEL'],
+              title: data['ACTIONS.COPY.PRODUCT.HEADER'],
+              actionCallback: () => this.onCopy(),
+              icon: 'pi pi-copy',
+              show: 'always',
+              conditional: true,
+              showCondition: this.changeMode === 'VIEW' && this.product !== undefined,
+              permission: 'PRODUCT#CREATE'
             },
             {
               label: data['ACTIONS.CANCEL'],
@@ -156,6 +168,10 @@ export class ProductDetailComponent implements OnInit {
     this.close()
   }
 
+  public onCopy(): void {
+    this.changeMode = 'COPY'
+    this.prepareActionButtons()
+  }
   public onEdit() {
     this.changeMode = 'EDIT'
     this.getProduct()
@@ -165,9 +181,8 @@ export class ProductDetailComponent implements OnInit {
       this.changeMode = 'VIEW'
       this.getProduct()
     }
-    if (this.changeMode === 'CREATE') {
-      this.close()
-    }
+    if (this.changeMode === 'COPY') this.close()
+    if (this.changeMode === 'CREATE') this.close()
   }
   public onSave() {
     this.productPropsComponent.onSubmit()

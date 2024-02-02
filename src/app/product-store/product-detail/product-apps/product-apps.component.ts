@@ -27,7 +27,7 @@ export class ProductAppsComponent implements OnChanges {
   public app: MicrofrontendAbstract | undefined
   public iconItems: SelectItem[] = [{ label: '', value: null }]
   public filter: string | undefined
-  public viewMode = 'list'
+  public viewMode = 'grid'
   public sortField = 'name'
   public sortOrder = 1
   public searchInProgress = false

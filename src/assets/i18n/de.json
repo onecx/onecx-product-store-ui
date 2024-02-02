@@ -101,6 +101,7 @@
       }
     },
     "VIEW": {
+      "LABEL": "Ansehen",
       "APP": {
         "HEADER": "App Details"
       },

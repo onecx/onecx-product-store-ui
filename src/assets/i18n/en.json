@@ -102,6 +102,7 @@
       }
     },
     "VIEW": {
+      "LABEL": "View",
       "APP": {
         "HEADER": "App Details"
       },

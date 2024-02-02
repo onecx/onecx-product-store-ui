@@ -1,27 +1,8 @@
-:host ::ng-deep {
-  .card-badge-right {
-    display: inline-block;
-    position: absolute;
-    right: 2px;
-    &.badge-1 {
-      top: 3px;
-    }
-    &.badge-2 {
-      top: 30px;
-    }
-  }
-  .card-badge-left {
-    display: inline-block;
-    position: absolute;
-    left: 2px;
-    &.badge-1 {
-      top: 3px;
-    }
-    &.badge-2 {
-      top: 30px;
-    }
-  }
+@import '/src/_mixins.scss';
 
+@include card-badges;
+
+:host ::ng-deep {
   .danger-action-text {
     color: var(--danger-button-bg);
   }

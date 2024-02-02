@@ -3,31 +3,9 @@
 @include make-disabled-form-readable-input;
 @include make-disabled-form-readable-dropdown;
 @include prepare-inputgroup;
+@include card-badges;
 
 :host ::ng-deep {
-  .card-badge-right {
-    display: inline-block;
-    position: absolute;
-    right: 2px;
-    &.badge-1 {
-      top: 3px;
-    }
-    &.badge-2 {
-      top: 30px;
-    }
-  }
-  .card-badge-left {
-    display: inline-block;
-    position: absolute;
-    left: 2px;
-    &.badge-1 {
-      top: 3px;
-    }
-    &.badge-2 {
-      top: 30px;
-    }
-  }
-
   .danger-action-text {
     color: var(--danger-button-bg);
   }

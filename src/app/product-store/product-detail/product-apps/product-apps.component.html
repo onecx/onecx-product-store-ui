@@ -21,7 +21,7 @@
       <ocx-data-view-controls
         [enableFiltering]="true"
         [enableSorting]="true"
-        [supportedViews]="['list']"
+        [supportedViews]="['grid']"
         [initialViewMode]="viewMode"
         [sortingOptions]="[{ label: 'MFE.APP_NAME' | translate, value: 'app_name' }]"
         [defaultSortOption]="sortField"
@@ -35,7 +35,7 @@
       >
       </ocx-data-view-controls
     ></ng-template>
-    <ng-template let-app pTemplate="listItem">
+    <ng-template let-app pTemplate="gridItem">
       <!--
       <div
         class="col-12 grid grid-nogutter align-items-center row-gap-1 listview-row p-1 hover:bg-gray-200 cursor-pointer"
