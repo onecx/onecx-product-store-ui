@@ -10,6 +10,7 @@ export * from './problemDetailParam';
 export * from './problemDetailResponse';
 export * from './product';
 export * from './productAbstract';
+export * from './productAndWorkspaces';
 export * from './productPageResult';
 export * from './productSearchCriteria';
 export * from './uIEndpoint';

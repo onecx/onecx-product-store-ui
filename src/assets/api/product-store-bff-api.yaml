@@ -317,7 +317,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Product'
+                $ref: '#/components/schemas/ProductAndWorkspaces'
         '400':
           description: Bad Request
           content:
@@ -467,6 +467,15 @@ components:
           uniqueItems: true
           items:
             type: string
+    ProductAndWorkspaces:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Product'
+      properties:
+        workspaces:
+          type: array
+          items:
+            type: string
     ProductAbstract:
       type: object
       required:
@@ -566,6 +575,10 @@ components:
         appId:
           type: string
           description: BID of an app
+        remoteName:
+          type: string
+        tagName:
+          type: string
         appName:
           type: string
           description: Readable name of the app
@@ -622,6 +635,10 @@ components:
         - appName
       type: object
       properties:
+        remoteName:
+          type: string
+        tagName:
+          type: string
         appId:
           type: string
         appVersion:
@@ -675,6 +692,10 @@ components:
         - appName
       type: object
       properties:
+        remoteName:
+          type: string
+        tagName:
+          type: string
         appId:
           type: string
         appVersion:
@@ -746,6 +767,10 @@ components:
         appId:
           type: string
         appVersion:
+          type: string
+        remoteName:
+          type: string
+        tagName:
           type: string
         appName:
           type: string

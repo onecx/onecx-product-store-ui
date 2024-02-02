@@ -13,6 +13,8 @@ import { UpdateUIEndpoint } from './updateUIEndpoint';
 
 
 export interface UpdateMicrofrontendRequest { 
+    remoteName?: string;
+    tagName?: string;
     appId: string;
     appVersion: string;
     appName: string;

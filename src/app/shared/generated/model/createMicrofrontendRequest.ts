@@ -13,6 +13,8 @@ import { CreateUIEndpoint } from './createUIEndpoint';
 
 
 export interface CreateMicrofrontendRequest { 
+    remoteName?: string;
+    tagName?: string;
     appId: string;
     appVersion: string;
     appName: string;
