@@ -36,6 +36,7 @@
       </ocx-data-view-controls
     ></ng-template>
     <ng-template let-app pTemplate="listItem">
+      <!--
       <div
         class="col-12 grid grid-nogutter align-items-center row-gap-1 listview-row p-1 hover:bg-gray-200 cursor-pointer"
       >
@@ -44,7 +45,38 @@
             <div>{{ limitText(app.appName, 50) }}</div>
           </div>
         </div>
+      </div-->
+      <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3" (click)="onDetail($event, app)">
+        <div class="card relative p-1 flex flex-column justify-content-center hover:bg-gray-200 cursor-pointer">
+          <span
+            *ngIf="hasCreatePermission"
+            [id]="'app_search_data_' + app.appId + '_copy_app'"
+            class="card-badge-left badge-1 p-2 pi pi-copy pseudo-button-link"
+            [title]="'ACTIONS.COPY.LABEL' | translate"
+            (click)="onCopy($event, app)"
+          ></span>
+          <span
+            *ngIf="hasDeletePermission"
+            [id]="'app_search_data_' + app.appId + '_delete_app'"
+            class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text pseudo-button-link"
+            [title]="'ACTIONS.DELETE.LABEL' | translate"
+            (click)="onDelete($event, app)"
+          ></span>
+          <div class="flex flex-column justify-content-between gap-1 text-center">
+            <div class="font-bold" [title]="'ID: ' + app.appId">{{ limitText(app.appId, 25) }}</div>
+            <div class="text-sm" [title]="'App Name: ' + app.appName">{{ limitText(app.appName, 30) }}</div>
+            <div [title]="'Product: ' + app.productName">{{ limitText(app.productName, 25) }}</div>
+          </div>
+        </div>
       </div>
     </ng-template>
   </p-dataView>
 </ng-container>
+
+<app-app-detail
+  [(displayDetailDialog)]="displayDetailDialog"
+  [appAbstract]="app"
+  [changeMode]="changeMode"
+></app-app-detail>
+
+<app-app-delete [(displayDialog)]="displayDeleteDialog" [appAbstract]="app"></app-app-delete>

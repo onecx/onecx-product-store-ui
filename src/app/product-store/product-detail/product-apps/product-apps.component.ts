@@ -2,10 +2,17 @@ import { Component, Input, OnChanges, ViewChild } from '@angular/core'
 import { SelectItem } from 'primeng/api'
 import { Observable, finalize } from 'rxjs'
 
-import { DataViewControlTranslations, PortalMessageService } from '@onecx/portal-integration-angular'
-import { Product, MicrofrontendsAPIService, MicrofrontendPageResult } from 'src/app/shared/generated'
+import { DataViewControlTranslations, PortalMessageService, UserService } from '@onecx/portal-integration-angular'
+import {
+  Product,
+  MicrofrontendsAPIService,
+  MicrofrontendPageResult,
+  MicrofrontendAbstract
+} from 'src/app/shared/generated'
 import { dropDownSortItemsByLabel, limitText } from 'src/app/shared/utils'
 import { IconService } from 'src/app/shared/iconservice'
+
+import { ChangeMode } from '../../app-detail/app-detail.component'
 
 @Component({
   selector: 'app-product-apps',
@@ -15,23 +22,32 @@ import { IconService } from 'src/app/shared/iconservice'
 export class ProductAppsComponent implements OnChanges {
   @Input() product: Product | undefined
   @Input() dateFormat = 'medium'
-  @Input() changeMode = 'VIEW'
+  @Input() changeMode: ChangeMode = 'VIEW'
   public apps$!: Observable<MicrofrontendPageResult>
+  public app: MicrofrontendAbstract | undefined
   public iconItems: SelectItem[] = [{ label: '', value: null }]
   public filter: string | undefined
   public viewMode = 'list'
   public sortField = 'name'
   public sortOrder = 1
   public searchInProgress = false
-  public limitText = limitText
-  public dataViewControlsTranslations: DataViewControlTranslations = {}
+  public displayDetailDialog = false
+  public displayDeleteDialog = false
+  public hasCreatePermission = false
+  public hasDeletePermission = false
+
   @ViewChild(DataView) dv: DataView | undefined
+  public dataViewControlsTranslations: DataViewControlTranslations = {}
+  public limitText = limitText
 
   constructor(
     private icon: IconService,
+    private user: UserService,
     private appApi: MicrofrontendsAPIService,
     private msgService: PortalMessageService
   ) {
+    this.hasCreatePermission = this.user.hasPermission('MICROFRONTEND#CREATE')
+    this.hasDeletePermission = this.user.hasPermission('MICROFRONTEND#DELETE')
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
     this.iconItems.sort(dropDownSortItemsByLabel)
   }
@@ -41,7 +57,6 @@ export class ProductAppsComponent implements OnChanges {
   }
 
   public loadApps(): void {
-    console.log('loadApps() ' + this.product?.name)
     this.searchInProgress = true
     this.apps$ = this.appApi
       .searchMicrofrontends({
@@ -62,5 +77,28 @@ export class ProductAppsComponent implements OnChanges {
   }
   public onSortDirChange(asc: boolean): void {
     this.sortOrder = asc ? -1 : 1
+  }
+
+  public onDetail(ev: any, app: MicrofrontendAbstract) {
+    ev.stopPropagation()
+    this.app = app
+    this.changeMode = 'EDIT'
+    this.displayDetailDialog = true
+  }
+  public onCopy(ev: any, app: MicrofrontendAbstract) {
+    ev.stopPropagation()
+    this.app = app
+    this.changeMode = 'COPY'
+    this.displayDetailDialog = true
+  }
+  public onCreate() {
+    this.changeMode = 'CREATE'
+    this.app = undefined
+    this.displayDetailDialog = true
+  }
+  public onDelete(ev: any, app: MicrofrontendAbstract) {
+    ev.stopPropagation()
+    this.app = app
+    this.displayDeleteDialog = true
   }
 }

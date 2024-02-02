@@ -14,7 +14,8 @@ import {
   UpdateMicrofrontendRequest
 } from 'src/app/shared/generated'
 
-type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
+export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
+
 interface AppDetailForm {
   appId: FormControl<string | null>
   appName: FormControl<string | null>

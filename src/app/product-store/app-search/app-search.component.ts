@@ -8,13 +8,13 @@ import { Observable, finalize, map } from 'rxjs'
 import { Action, DataViewControlTranslations, UserService } from '@onecx/portal-integration-angular'
 import { MicrofrontendAbstract, MicrofrontendPageResult, MicrofrontendsAPIService } from 'src/app/shared/generated'
 import { limitText } from 'src/app/shared/utils'
+import { ChangeMode } from '../app-detail/app-detail.component'
 
 export interface MicrofrontendSearchCriteria {
   appId: FormControl<string | null>
   appName: FormControl<string | null>
   productName: FormControl<string | null>
 }
-type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
 
 @Component({
   templateUrl: './app-search.component.html',
