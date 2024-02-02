@@ -22,7 +22,6 @@ export class ProductSearchComponent implements OnInit {
   public products$!: Observable<ProductPageResult>
   public productSearchCriteriaGroup!: FormGroup<ProductSearchCriteria>
   public actions$: Observable<Action[]> | undefined
-  public actions: Action[] = []
   public viewMode = 'grid'
   public filter: string | undefined
   public sortField = 'name'

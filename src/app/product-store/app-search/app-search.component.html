@@ -2,7 +2,7 @@
   <ocx-search-criteria
     [header]="'DIALOG.SEARCH.APPS.HEADER' | translate"
     [subheader]="'DIALOG.SEARCH.APPS.SUBHEADER' | translate"
-    [actions]="actions"
+    [actions]="(actions$ | async) ?? []"
     [disableAdvancedToggle]="true"
     [disableAdvancedToggle]="true"
     (search)="onSearch()"
@@ -91,13 +91,26 @@
           </ocx-data-view-controls
         ></ng-template>
         <ng-template let-app pTemplate="gridItem">
-          <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3" (click)="onDetail($event, app.appId)">
+          <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3" (click)="onDetail($event, app)">
             <div class="card relative p-1 flex flex-column justify-content-center hover:bg-gray-200 cursor-pointer">
-              <!-- span [routerLink]="['../', app.productName]"></span -->
+              <span
+                *ngIf="hasCreatePermission"
+                [id]="'app_search_data_' + app.appId + '_copy_app'"
+                class="card-badge-left badge-1 p-2 pi pi-copy pseudo-button-link"
+                [title]="'ACTIONS.COPY.LABEL' | translate"
+                (click)="onCopy($event, app)"
+              ></span>
+              <span
+                *ngIf="hasDeletePermission"
+                [id]="'app_search_data_' + app.appId + '_delete_app'"
+                class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text pseudo-button-link"
+                [title]="'ACTIONS.DELETE.LABEL' | translate"
+                (click)="onDelete($event, app)"
+              ></span>
               <span
                 [id]="'app_search_data_' + app.appId + '_goto_product'"
                 class="card-badge-right badge-1 p-2 pi pi-external-link pseudo-button-link"
-                [title]="'PORTAL.QUICK_LINKS.GOTO_WORKSPACE' | translate"
+                [title]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
                 (click)="onGotoProduct($event, app.productName)"
               ></span>
               <div class="flex flex-column justify-content-between gap-1 text-center">
@@ -118,3 +131,5 @@
   [appAbstract]="app"
   [changeMode]="changeMode"
 ></app-app-detail>
+
+<app-app-delete [(displayDialog)]="displayDeleteDialog" [appAbstract]="app"></app-app-delete>

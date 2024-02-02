@@ -3,7 +3,7 @@
     [loading]="loading"
     [header]="product?.displayName"
     [subheader]="'DIALOG.DETAIL.SUBHEADER' | translate"
-    [actions]="actions"
+    [actions]="(actions$ | async) ?? []"
     [figureImage]="headerImageUrl"
     [figureBackground]="!product?.imageUrl"
   >

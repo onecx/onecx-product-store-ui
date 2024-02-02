@@ -4,11 +4,26 @@
     position: absolute;
     right: 5px;
     &.badge-1 {
-      top: 5px;
+      top: 3px;
     }
     &.badge-2 {
-      top: 5px;
+      top: 30px;
     }
+  }
+  .card-badge-left {
+    display: inline-block;
+    position: absolute;
+    left: 5px;
+    &.badge-1 {
+      top: 3px;
+    }
+    &.badge-2 {
+      top: 30px;
+    }
+  }
+
+  .danger-action-text {
+    color: var(--danger-button-bg);
   }
   .pseudo-button-link {
     border-radius: var(--border-radius);

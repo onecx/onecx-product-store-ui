@@ -3,9 +3,9 @@ import { FormControl, FormGroup } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 import { DataView } from 'primeng/dataview'
-import { Observable, finalize } from 'rxjs'
+import { Observable, finalize, map } from 'rxjs'
 
-import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+import { Action, DataViewControlTranslations, UserService } from '@onecx/portal-integration-angular'
 import { MicrofrontendAbstract, MicrofrontendPageResult, MicrofrontendsAPIService } from 'src/app/shared/generated'
 import { limitText } from 'src/app/shared/utils'
 
@@ -14,7 +14,7 @@ export interface MicrofrontendSearchCriteria {
   appName: FormControl<string | null>
   productName: FormControl<string | null>
 }
-type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT'
+type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
 
 @Component({
   templateUrl: './app-search.component.html',
@@ -24,7 +24,7 @@ export class AppSearchComponent implements OnInit {
   public apps$!: Observable<MicrofrontendPageResult>
   public app: MicrofrontendAbstract | undefined
   public appSearchCriteriaGroup!: FormGroup<MicrofrontendSearchCriteria>
-  public actions: Action[] = []
+  public actions$: Observable<Action[]> | undefined
   public viewMode = 'grid'
   public changeMode: ChangeMode = 'VIEW'
   public filter: string | undefined
@@ -32,6 +32,9 @@ export class AppSearchComponent implements OnInit {
   public sortOrder = 1
   public searchInProgress = false
   public displayDetailDialog = false
+  public displayDeleteDialog = false
+  public hasCreatePermission = false
+  public hasDeletePermission = false
   public limitText = limitText
 
   public dataViewControlsTranslations: DataViewControlTranslations = {}
@@ -40,9 +43,12 @@ export class AppSearchComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private user: UserService,
     private appApi: MicrofrontendsAPIService,
     private translate: TranslateService
   ) {
+    this.hasCreatePermission = this.user.hasPermission('MICROFRONTEND#CREATE')
+    this.hasDeletePermission = this.user.hasPermission('MICROFRONTEND#DELETE')
     this.appSearchCriteriaGroup = new FormGroup<MicrofrontendSearchCriteria>({
       appId: new FormControl<string | null>(null),
       appName: new FormControl<string | null>(null),
@@ -51,11 +57,11 @@ export class AppSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    //this.prepareTranslations()
-    this.searchData()
+    this.prepareActionButtons()
+    this.searchApps()
   }
 
-  public searchData(): void {
+  public searchApps(): void {
     this.searchInProgress = true
     this.apps$ = this.appApi
       .searchMicrofrontends({
@@ -69,68 +75,35 @@ export class AppSearchComponent implements OnInit {
       .pipe(finalize(() => (this.searchInProgress = false)))
   }
 
-  private prepareTranslations(): void {
-    this.translate
+  private prepareActionButtons(): void {
+    this.actions$ = this.translate
       .get([
-        'MFE.APP_ID',
-        'MFE.APP_NAME',
-        'MFE.PRODUCT_NAME',
-        'ACTIONS.NAVIGATION.BACK',
-        'ACTIONS.NAVIGATION.BACK.TOOLTIP',
         'ACTIONS.CREATE.LABEL',
         'ACTIONS.CREATE.APP.TOOLTIP',
-        'ACTIONS.DATAVIEW.VIEW_MODE_LIST',
-        'ACTIONS.DATAVIEW.VIEW_MODE_TABLE',
-        'ACTIONS.DATAVIEW.SORT_BY',
-        'ACTIONS.DATAVIEW.FILTER',
-        'ACTIONS.DATAVIEW.FILTER_OF',
-        'ACTIONS.DATAVIEW.SORT_DIRECTION_ASC',
-        'ACTIONS.DATAVIEW.SORT_DIRECTION_DESC'
+        'ACTIONS.NAVIGATION.BACK',
+        'ACTIONS.NAVIGATION.BACK.TOOLTIP'
       ])
-      .subscribe((data) => {
-        this.dataViewControlsTranslations = {
-          sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY'],
-          filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
-          filterInputTooltip:
-            data['ACTIONS.DATAVIEW.FILTER_OF'] +
-            data['MFE.APP_ID'] +
-            ', ' +
-            data['MFE.APP_NAME'] +
-            ', ' +
-            data['MFE.PRODUCT_NAME'],
-          viewModeToggleTooltips: {
-            grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID'],
-            table: data['ACTIONS.DATAVIEW.VIEW_MODE_TABLE']
-          },
-          sortOrderTooltips: {
-            ascending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_ASC'],
-            descending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_DESC']
-          },
-          sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY']
-        }
-        this.prepareActionButtons(data)
-      })
-  }
-
-  private prepareActionButtons(data: any): void {
-    this.actions = [] // provoke change event
-    this.actions.push(
-      {
-        label: data['ACTIONS.NAVIGATION.BACK'],
-        title: data['ACTIONS.NAVIGATION.BACK.TOOLTIP'],
-        actionCallback: () => this.onBack(),
-        icon: 'pi pi-arrow-left',
-        show: 'always'
-      },
-      {
-        label: data['ACTIONS.CREATE.LABEL'],
-        title: data['ACTIONS.CREATE.APP.TOOLTIP'],
-        actionCallback: () => this.onCreate(),
-        permission: 'MICROFRONTEND#CREATE',
-        icon: 'pi pi-plus',
-        show: 'always'
-      }
-    )
+      .pipe(
+        map((data) => {
+          return [
+            {
+              label: data['ACTIONS.NAVIGATION.BACK'],
+              title: data['ACTIONS.NAVIGATION.BACK.TOOLTIP'],
+              actionCallback: () => this.onBack(),
+              icon: 'pi pi-arrow-left',
+              show: 'always'
+            },
+            {
+              label: data['ACTIONS.CREATE.LABEL'],
+              title: data['ACTIONS.CREATE.APP.TOOLTIP'],
+              actionCallback: () => this.onCreate(),
+              permission: 'MICROFRONTEND#CREATE',
+              icon: 'pi pi-plus',
+              show: 'always'
+            }
+          ]
+        })
+      )
   }
 
   public onLayoutChange(viewMode: string): void {
@@ -147,7 +120,7 @@ export class AppSearchComponent implements OnInit {
     this.sortOrder = asc ? -1 : 1
   }
   public onSearch() {
-    this.searchData()
+    this.searchApps()
   }
   public onSearchReset() {
     this.appSearchCriteriaGroup.reset()
@@ -166,9 +139,20 @@ export class AppSearchComponent implements OnInit {
     this.changeMode = 'EDIT'
     this.displayDetailDialog = true
   }
+  public onCopy(ev: any, app: MicrofrontendAbstract) {
+    ev.stopPropagation()
+    this.app = app
+    this.changeMode = 'COPY'
+    this.displayDetailDialog = true
+  }
   public onCreate() {
     this.changeMode = 'CREATE'
     this.app = undefined
     this.displayDetailDialog = true
+  }
+  public onDelete(ev: any, app: MicrofrontendAbstract) {
+    ev.stopPropagation()
+    this.app = app
+    this.displayDeleteDialog = true
   }
 }

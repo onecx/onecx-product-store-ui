@@ -18,8 +18,8 @@ export class ProductAppsComponent implements OnChanges {
   @Input() changeMode = 'VIEW'
   public apps$!: Observable<MicrofrontendPageResult>
   public iconItems: SelectItem[] = [{ label: '', value: null }]
-  public viewMode = 'list'
   public filter: string | undefined
+  public viewMode = 'list'
   public sortField = 'name'
   public sortOrder = 1
   public searchInProgress = false
@@ -37,8 +37,7 @@ export class ProductAppsComponent implements OnChanges {
   }
 
   ngOnChanges(): void {
-    console.log('apps ngOnChanges')
-    this.loadApps()
+    if (this.product) this.loadApps()
   }
 
   public loadApps(): void {
