@@ -279,15 +279,12 @@
         </div>
       </div>
     </p-fieldset>
-    <!--
-      "NOTE": "Notiz", 
--->
   </form>
 
   <ng-template pTemplate="footer">
     <div class="flex flex-wrap justify-content-end gap-2 mb-1">
       <p-button
-        *ocxIfNotPermission="'MFE#EDIT'"
+        *ocxIfNotPermission="'MICROFRONTEND#EDIT'"
         id="app_search_button_close"
         [label]="'ACTIONS.NAVIGATION.CLOSE' | translate"
         [title]="'ACTIONS.NAVIGATION.CLOSE.TOOLTIP' | translate"
@@ -295,7 +292,7 @@
         icon="pi pi-times"
       ></p-button>
       <p-button
-        *ocxIfPermission="'MFE#EDIT'"
+        *ocxIfPermission="'MICROFRONTEND#EDIT'"
         id="app_search_button_cancel"
         [label]="'ACTIONS.CANCEL' | translate"
         [title]="'ACTIONS.TOOLTIPS.CANCEL' | translate"
@@ -303,7 +300,7 @@
         icon="pi pi-times"
       ></p-button>
       <p-button
-        *ocxIfPermission="'MFE#EDIT'"
+        *ocxIfPermission="'MICROFRONTEND#EDIT'"
         id="app_search_button_save"
         [label]="'ACTIONS.SAVE' | translate"
         [title]="'ACTIONS.TOOLTIPS.SAVE' | translate"

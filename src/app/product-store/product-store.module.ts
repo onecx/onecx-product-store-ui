@@ -13,6 +13,7 @@ import { SharedModule } from 'src/app/shared/shared.module'
 
 import { AppSearchComponent } from './app-search/app-search.component'
 import { AppDetailComponent } from './app-detail/app-detail.component'
+import { AppDeleteComponent } from './app-delete/app-delete.component'
 import { ProductSearchComponent } from './product-search/product-search.component'
 import { ProductDetailComponent } from './product-detail/product-detail.component'
 import { ProductPropertyComponent } from './product-detail/product-props/product-props.component'
@@ -47,6 +48,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     AppSearchComponent,
+    AppDeleteComponent,
     AppDetailComponent,
     ProductSearchComponent,
     ProductDetailComponent,

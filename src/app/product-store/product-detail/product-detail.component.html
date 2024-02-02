@@ -2,8 +2,8 @@
   <ocx-page-header
     [loading]="loading"
     [header]="product?.displayName"
-    [subheader]="'DIALOG.DETAIL.SUBHEADER' | translate"
-    [actions]="actions"
+    [subheader]="('DIALOG.DETAIL.SUBHEADER' | translate) + ': ' + ('ACTIONS.' + changeMode + '.LABEL' | translate)"
+    [actions]="(actions$ | async) ?? []"
     [figureImage]="headerImageUrl"
     [figureBackground]="!product?.imageUrl"
   >

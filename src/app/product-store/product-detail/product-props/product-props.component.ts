@@ -6,6 +6,7 @@ import { PortalMessageService } from '@onecx/portal-integration-angular'
 import { CreateProductRequest, Product, ProductsAPIService, UpdateProductRequest } from 'src/app/shared/generated'
 import { IconService } from 'src/app/shared/iconservice'
 import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
+import { ChangeMode } from '../product-detail.component'
 
 export interface ProductDetailForm {
   id: FormControl<string | null>
@@ -36,9 +37,10 @@ export function productNameValidator(): ValidatorFn {
 export class ProductPropertyComponent implements OnChanges {
   @Input() product: Product | undefined
   @Input() dateFormat = 'medium'
-  @Input() changeMode = 'VIEW'
+  @Input() changeMode: ChangeMode = 'VIEW'
   @Output() productCreated = new EventEmitter<Product>()
   @Output() productChanged = new EventEmitter<boolean>()
+  @Output() changeModeChange = new EventEmitter<ChangeMode>()
   public formGroup: FormGroup<ProductDetailForm>
   public productId: string | undefined
   public productName: string | null | undefined
@@ -78,19 +80,21 @@ export class ProductPropertyComponent implements OnChanges {
       this.formGroup.patchValue({
         ...this.product
       })
-      this.productId = this.product.id
+      this.productId = this.changeMode !== 'COPY' ? this.product.id : undefined
       this.productName = this.product.name // business key => manage the change!
     } else {
       this.formGroup.reset()
     }
     this.changeMode !== 'VIEW' ? this.formGroup.enable() : this.formGroup.disable()
+    this.changeMode = this.changeMode === 'COPY' ? 'CREATE' : this.changeMode
+    this.changeModeChange.emit(this.changeMode)
   }
 
   /** CREATE/UPDATE product
    */
   public onSubmit() {
     if (this.formGroup.valid) {
-      this.changeMode === 'CREATE' ? this.createProduct() : this.updateProduct()
+      this.changeMode === 'EDIT' ? this.updateProduct() : this.createProduct()
     } else {
       this.msgService.error({ summaryKey: 'VALIDATION.FORM_INVALID' })
       // set focus to first invalid field
@@ -147,7 +151,7 @@ export class ProductPropertyComponent implements OnChanges {
   }
 
   private displaySaveError(err: any) {
-    if (err.error?.errorCode === 'MERGE_ENTITY_FAILED') {
+    if (err.error?.errorCode === 'PERSIST_ENTITY_FAILED') {
       this.msgService.error({
         summaryKey: 'ACTIONS.' + this.changeMode + '.PRODUCT.NOK',
         detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT'

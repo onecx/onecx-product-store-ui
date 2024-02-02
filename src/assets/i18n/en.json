@@ -6,6 +6,15 @@
       "NO.TOOLTIP": "Cancel the action",
       "YES.TOOLTIP": "Proceed with the action"
     },
+    "COPY": {
+      "LABEL": "Copy",
+      "APP": {
+        "HEADER": "Copy App"
+      },
+      "PRODUCT": {
+        "HEADER": "Copy Product"
+      }
+    },
     "CREATE": {
       "LABEL": "Create",
       "APP": {
@@ -64,7 +73,10 @@
       "NEXT.TOOLTIP": "Next page",
       "BACK.TOOLTIP": "Previous page",
       "DETAILS.TOOLTIP": "Display details",
-      "NEW.TOOLTIP": "Create new entry"
+      "NEW.TOOLTIP": "Create new entry",
+      "LINKS": {
+        "GOTO.PRODUCT": "Display Product details"
+      }
     },
     "DATAVIEW": {
       "FILTER": "Filter",
@@ -87,6 +99,15 @@
         "NOT_EXISTS": "A Product with this name could not be found.",
         "LOAD_ERROR": "Failed to load Product",
         "NOT_FOUND": "Product was not found"
+      }
+    },
+    "VIEW": {
+      "LABEL": "View",
+      "APP": {
+        "HEADER": "App Details"
+      },
+      "PRODUCT": {
+        "HEADER": "Edit Product"
       }
     },
     "CANCEL": "Cancel",
@@ -225,6 +246,8 @@
   },
   "VALIDATION": {
     "FORM_INVALID": "The data are not ready to store.",
+    "APP.UNIQUE_CONSTRAINT.REMOTE_MODULE": "An app with this remote configuration already exists for the product.",
+    "APP.UNIQUE_CONSTRAINT.APP_ID": "An App with this id exists already for the Product.",
     "PRODUCT.UNIQUE_CONSTRAINT": "A Product with this name exists already.",
     "PRODUCT.INVALID_NAME": "This name is a reserved term and cannot be used.",
     "ERRORS": {

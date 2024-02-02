@@ -6,21 +6,29 @@
       "NO.TOOLTIP": "Abbruch der Aktion",
       "YES.TOOLTIP": "Fortfahren mit der Aktion"
     },
+    "COPY": {
+      "LABEL": "Kopieren",
+      "APP": {
+        "HEADER": "App kopieren"
+      },
+      "PRODUCT": {
+        "HEADER": "Produkt kopieren"
+      }
+    },
     "CREATE": {
       "LABEL": "Erstellen",
       "APP": {
         "HEADER": "App erstellen",
         "TOOLTIP": "Eine neue App erstellen",
-        "ALREADY_EXISTS": "Eine App mit diesem Namen existert schon für das Produkt",
         "OK": "Die App wurde erfolgreich erstellt",
-        "NOK": "Ein Fehler ist aufgetreten. Die App wurde nicht erstellt."
+        "NOK": "Die App konnte nicht erstellt werden."
       },
       "PRODUCT": {
         "HEADER": "Produkt erstellen",
         "TOOLTIP": "Ein neues Produkt erstellen",
         "ALREADY_EXISTS": "Ein Produkt mit diesem Namen existert schon",
         "OK": "Das Produkt wurde erfolgreich erstellt",
-        "NOK": "Ein Fehler ist aufgetreten. Das Produkt wurde nicht erstellt."
+        "NOK": "Das Produkt konnte nicht erstellt werden."
       }
     },
     "DELETE": {
@@ -45,14 +53,14 @@
       "APP": {
         "HEADER": "App Details",
         "TOOLTIP": "Die App-Eigenschaften bearbeiten",
-        "OK": "Das App wurde erfolgreich geändert",
-        "NOK": "Ein Fehler ist aufgetreten. Das App wurde nicht geändert."
+        "OK": "Die App wurde erfolgreich geändert",
+        "NOK": "Die App konnte nicht geändert werden."
       },
       "PRODUCT": {
         "HEADER": "Produkt bearbeiten",
         "TOOLTIP": "Die Produkteigenschaften bearbeiten",
         "OK": "Das Produkt wurde erfolgreich geändert",
-        "NOK": "Ein Fehler ist aufgetreten. Das Produkt wurde nicht geändert."
+        "NOK": "Das Produkt konnte nicht geändert werden."
       }
     },
     "NAVIGATION": {
@@ -64,7 +72,10 @@
       "NEXT.TOOLTIP": "Nächste Seite",
       "BACK.TOOLTIP": "Vorherige Seite",
       "DETAILS.TOOLTIP": "Anzeige Details",
-      "NEW.TOOLTIP": "Erstelle neuen Eintrag"
+      "NEW.TOOLTIP": "Erstelle neuen Eintrag",
+      "LINKS": {
+        "GOTO.PRODUCT": "Produktdetails anzeigen"
+      }
     },
     "DATAVIEW": {
       "FILTER": "Filter",
@@ -87,6 +98,15 @@
         "NOT_EXISTS": "Ein Produkt mit diesem Namen konnte nicht gefunden werden.",
         "LOAD_ERROR": "Produkt konnte nicht geladen werden",
         "NOT_FOUND": "Produkt nicht gefunden"
+      }
+    },
+    "VIEW": {
+      "LABEL": "Ansehen",
+      "APP": {
+        "HEADER": "App Details"
+      },
+      "PRODUCT": {
+        "HEADER": "Produkt bearbeiten"
       }
     },
     "CANCEL": "Abbrechen",
@@ -225,6 +245,8 @@
   },
   "VALIDATION": {
     "FORM_INVALID": "Die Daten sind nicht bereit zum Speichern.",
+    "APP.UNIQUE_CONSTRAINT.REMOTE_MODULE": "Eine App mit dieser Remote Konfiguration existiert bereits für das Produkt.",
+    "APP.UNIQUE_CONSTRAINT.APP_ID": "Eine App mit dieser ID existiert bereits für das Produkt.",
     "PRODUCT.UNIQUE_CONSTRAINT": "Ein Produkt mit diesem Namen existiert bereits.",
     "PRODUCT.INVALID_NAME": "Dieser Name ist reserviert und kann nicht verwendet werden.",
     "ERRORS": {

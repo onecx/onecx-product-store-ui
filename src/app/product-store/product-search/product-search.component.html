@@ -2,7 +2,7 @@
   <ocx-search-criteria
     [header]="'DIALOG.SEARCH.HEADER' | translate"
     [subheader]="'DIALOG.SEARCH.SUBHEADER' | translate"
-    [actions]="actions"
+    [actions]="(actions$ | async) ?? []"
     [disableAdvancedToggle]="true"
     [disableAdvancedToggle]="true"
     (search)="onSearch()"

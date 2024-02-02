@@ -6,13 +6,16 @@ import { TranslateService } from '@ngx-translate/core'
 
 import { PortalMessageService, UserService } from '@onecx/portal-integration-angular'
 import {
-  GetMicrofrontendRequestParams,
+  CreateMicrofrontendRequest,
+  GetMicrofrontendByAppIdRequestParams,
   MicrofrontendsAPIService,
   MicrofrontendAbstract,
-  Microfrontend
+  Microfrontend,
+  UpdateMicrofrontendRequest
 } from 'src/app/shared/generated'
 
-type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT'
+export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
+
 interface AppDetailForm {
   appId: FormControl<string | null>
   appName: FormControl<string | null>
@@ -39,7 +42,7 @@ export class AppDetailComponent implements OnChanges {
   @Input() dateFormat = 'medium'
   @Input() changeMode: ChangeMode = 'VIEW'
   @Input() displayDetailDialog = false
-  @Output() public displayDetailDialogChange = new EventEmitter<boolean>()
+  @Output() displayDetailDialogChange = new EventEmitter<boolean>()
 
   public app: Microfrontend | undefined
   public formGroup: FormGroup
@@ -66,54 +69,28 @@ export class AppDetailComponent implements OnChanges {
       technology: new FormControl(null, [Validators.maxLength(255)]),
       remoteBaseUrl: new FormControl(null, [Validators.maxLength(255)]),
       remoteEntry: new FormControl(null, [Validators.maxLength(255)]),
+      exposedModule: new FormControl(null, [Validators.maxLength(255)]),
       classifications: new FormControl(null, [Validators.maxLength(255)]),
       contact: new FormControl(null, [Validators.maxLength(255)]),
       iconName: new FormControl(null, [Validators.maxLength(255)]),
-      note: new FormControl(null, [Validators.maxLength(255)]),
-      exposedModule: new FormControl(null, [Validators.maxLength(255)])
+      note: new FormControl(null, [Validators.maxLength(255)])
     })
   }
 
   ngOnChanges() {
-    if (this.changeMode !== 'CREATE') {
-      this.loadApp()
-      this.changeMode = 'EDIT'
-    } else if (this.changeMode === 'CREATE') {
-      this.app = undefined
+    if (this.appAbstract && this.displayDetailDialog) {
+      if (this.changeMode !== 'CREATE') {
+        this.getApp()
+      } else if (this.changeMode === 'CREATE') {
+        this.app = undefined
+      }
     }
   }
 
-  private loadApp() {
-    this.loading = true
-    this.appApi
-      .searchMicrofrontends({ microfrontendSearchCriteria: { appId: this.appAbstract?.appId } })
-      .pipe(
-        finalize(() => {
-          this.loading = false
-        })
-      )
-      .subscribe({
-        next: (data: any) => {
-          if (data.stream && data.stream.length > 0) {
-            this.app = data.stream[0]
-            console.info('search: ', data.stream[0])
-            this.getApp()
-          }
-        },
-        error: (err: any) => {
-          console.error('search: ', err)
-          this.msgService.error({
-            summaryKey: 'ACTIONS.SEARCH.APP.LOAD_ERROR'
-            // detailKey: err.error.indexOf('was not found') > 1 ? 'SEARCH.NOT_FOUND' : err.error
-          })
-          this.displayDetailDialogChange.emit(false)
-        }
-      })
-  }
   public getApp() {
     this.loading = true
     this.appApi
-      .getMicrofrontend({ id: this.app?.id } as GetMicrofrontendRequestParams)
+      .getMicrofrontendByAppId({ appId: this.appAbstract?.appId } as GetMicrofrontendByAppIdRequestParams)
       .pipe(
         finalize(() => {
           this.loading = false
@@ -123,9 +100,36 @@ export class AppDetailComponent implements OnChanges {
         next: (data: any) => {
           if (data) {
             this.app = data
-            console.info('get: ', data)
+            this.viewForm(this.app)
+            if (this.changeMode === 'COPY') {
+              if (this.app && this.app.id) {
+                this.app.id = undefined
+                this.app.creationDate = undefined
+                this.app.modificationDate = undefined
+              }
+              this.changeMode = 'CREATE'
+            } else this.changeMode = 'EDIT'
           }
         }
+      })
+  }
+
+  public viewForm(app?: Microfrontend): void {
+    if (app)
+      this.formGroup.setValue({
+        appId: app['appId'],
+        appName: app['appName'],
+        appVersion: app['appVersion'],
+        productName: app['productName'],
+        description: app['description'],
+        technology: app['technology'],
+        remoteBaseUrl: app['remoteBaseUrl'],
+        remoteEntry: app['remoteEntry'],
+        exposedModule: app['exposedModule'],
+        classifications: app['classifications'],
+        contact: app['contact'],
+        iconName: app['iconName'],
+        note: app['note']
       })
   }
 
@@ -133,7 +137,59 @@ export class AppDetailComponent implements OnChanges {
     this.displayDetailDialogChange.emit(false)
   }
   public onSave() {
-    //this.onSubmit()
-    // this.displayDetailDialogChange.emit(true)
+    if (!this.formGroup.valid) {
+      this.msgService.error({ summaryKey: 'VALIDATION.FORM_INVALID' })
+      return
+    }
+    this.app = { ...this.formGroup.value, id: this.app?.id }
+    if (this.changeMode === 'CREATE') {
+      this.createApp()
+    } else if (this.changeMode === 'EDIT') {
+      this.updateApp()
+    }
+  }
+
+  private createApp() {
+    this.appApi.createMicrofrontend({ createMicrofrontendRequest: this.app as CreateMicrofrontendRequest }).subscribe({
+      next: () => {
+        this.msgService.success({ summaryKey: 'ACTIONS.CREATE.APP.OK' })
+        this.displayDetailDialogChange.emit(false)
+      },
+      error: (err) => {
+        this.displaySaveError(err)
+      }
+    })
+  }
+
+  private updateApp() {
+    this.appApi
+      .updateMicrofrontend({
+        id: this.app?.id ?? '',
+        updateMicrofrontendRequest: this.app as UpdateMicrofrontendRequest
+      })
+      .subscribe({
+        next: () => {
+          this.msgService.success({ summaryKey: 'ACTIONS.EDIT.APP.OK' })
+          this.displayDetailDialogChange.emit(false)
+        },
+        error: (err) => {
+          this.displaySaveError(err)
+        }
+      })
+  }
+
+  private displaySaveError(err: any): void {
+    this.msgService.error({
+      summaryKey: 'ACTIONS.' + this.changeMode + '.APP.NOK',
+      detailKey:
+        err?.error?.errorCode && err?.error?.errorCode === 'PERSIST_ENTITY_FAILED'
+          ? err?.error?.detail.indexOf('microfrontend_app_id') > 0
+            ? 'VALIDATION.APP.UNIQUE_CONSTRAINT.APP_ID'
+            : err?.error?.detail.indexOf('microfrontend_remote_module') > 0
+            ? 'VALIDATION.APP.UNIQUE_CONSTRAINT.REMOTE_MODULE'
+            : 'VALIDATION.ERRORS.INTERNAL_ERROR'
+          : ''
+    })
+    console.error('err', err)
   }
 }

@@ -1,14 +1,10 @@
+@import '/src/_mixins.scss';
+
+@include card-badges;
+
 :host ::ng-deep {
-  .card-badge-right {
-    display: inline-block;
-    position: absolute;
-    right: 5px;
-    &.badge-1 {
-      top: 5px;
-    }
-    &.badge-2 {
-      top: 5px;
-    }
+  .danger-action-text {
+    color: var(--danger-button-bg);
   }
   .pseudo-button-link {
     border-radius: var(--border-radius);

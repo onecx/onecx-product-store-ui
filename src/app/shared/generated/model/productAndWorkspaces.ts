@@ -9,32 +9,24 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { UIEndpoint } from './uIEndpoint';
 
 
-export interface Microfrontend { 
-    id?: string;
+export interface ProductAndWorkspaces { 
+    workspaces?: Array<string>;
+    id: string;
     creationDate?: string;
     creationUser?: string;
     modificationDate?: string;
     modificationUser?: string;
     modificationCount?: number;
+    name: string;
     operator?: boolean;
-    appId: string;
-    appVersion: string;
-    remoteName?: string;
-    tagName?: string;
-    appName: string;
+    version?: string;
     description?: string;
-    technology?: string;
-    remoteBaseUrl: string;
-    remoteEntry: string;
-    productName: string;
-    classifications?: Array<string>;
-    contact?: string;
+    imageUrl?: string;
+    basePath: string;
+    displayName?: string;
     iconName?: string;
-    note?: string;
-    exposedModule?: string;
-    endpoints?: Array<UIEndpoint>;
+    classifications?: Array<string>;
 }
 

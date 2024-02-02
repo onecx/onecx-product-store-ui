@@ -21,6 +21,8 @@ export interface MicrofrontendAbstract {
      * BID of an app
      */
     appId: string;
+    remoteName?: string;
+    tagName?: string;
     /**
      * Readable name of the app
      */

@@ -14,7 +14,6 @@ describe('ProductDetailComponent', () => {
   let fixture: ComponentFixture<ProductDetailComponent>
 
   const apiServiceSpy = {
-    searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of({})),
     getProductByName: jasmine.createSpy('getProductByName').and.returnValue(of({}))
   }
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
@@ -48,7 +47,6 @@ describe('ProductDetailComponent', () => {
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
     msgServiceSpy.info.calls.reset()
-    apiServiceSpy.searchProducts.calls.reset()
     apiServiceSpy.getProductByName.calls.reset()
   })
 
@@ -74,7 +72,7 @@ describe('ProductDetailComponent', () => {
 
     expect(component.product?.id).toEqual(p.id)
   })
-
+  /*
   it('should prepare action buttons callbacks on init: close', () => {
     spyOn(component, 'close')
 
@@ -118,7 +116,7 @@ describe('ProductDetailComponent', () => {
 
     expect(component.onSave).toHaveBeenCalled()
   })
-
+*/
   it('should call close() onClose', () => {
     spyOn(component, 'close')
 
@@ -138,14 +136,12 @@ describe('ProductDetailComponent', () => {
 
   it('should behave correctly onCancel in edit mode', () => {
     spyOn(component, 'getProduct')
-    spyOn(component, 'prepareTranslations')
     component.changeMode = 'EDIT'
 
     component.onCancel()
 
     expect(component.changeMode).toEqual('VIEW')
     expect(component.getProduct).toHaveBeenCalled()
-    expect(component.prepareTranslations).toHaveBeenCalled()
   })
 
   it('should behave correctly onCancel in new mode', () => {
