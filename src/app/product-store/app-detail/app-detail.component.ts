@@ -16,7 +16,7 @@ import {
 
 export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
 
-interface AppDetailForm {
+export interface AppDetailForm {
   appId: FormControl<string | null>
   appName: FormControl<string | null>
   appVersion: FormControl<string | null>
