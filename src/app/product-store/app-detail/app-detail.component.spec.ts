@@ -6,7 +6,7 @@ import { of, throwError } from 'rxjs'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
-import { PortalMessageService } from '@onecx/portal-integration-angular'
+import { PortalMessageService, ConfigurationService, UserService } from '@onecx/portal-integration-angular'
 import { AppDetailComponent, AppDetailForm } from './app-detail.component'
 import { MicrofrontendsAPIService, Microfrontend } from 'src/app/shared/generated'
 
@@ -28,6 +28,7 @@ const form = new FormGroup<AppDetailForm>({
 
 const app: Microfrontend = {
   appId: 'appId',
+  id: 'id',
   appName: 'name',
   remoteBaseUrl: 'url',
   productName: 'productName',
@@ -51,7 +52,31 @@ describe('AppDetailComponent', () => {
     createMicrofrontend: jasmine.createSpy('createMicrofrontend').and.returnValue(of({})),
     updateMicrofrontend: jasmine.createSpy('updateMicrofrontend').and.returnValue(of({}))
   }
-  const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
+  const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error'])
+  const configServiceSpy = {
+    lang: 'en',
+    getProperty: jasmine.createSpy('getProperty').and.returnValue('123'),
+    getPortal: jasmine.createSpy('getPortal').and.returnValue({
+      themeId: '1234',
+      portalName: 'test',
+      baseUrl: '/',
+      microfrontendRegistrations: []
+    })
+  }
+  const mockUserService = {
+    lang$: {
+      getValue: jasmine.createSpy('getValue').and.returnValue('en')
+    },
+    hasPermission: jasmine.createSpy('hasPermission').and.callFake((permissionName) => {
+      if (permissionName === 'MICROFRONTEND#CREATE') {
+        return true
+      } else if (permissionName === 'MICROFRONTEND#EDIT') {
+        return true
+      } else {
+        return false
+      }
+    })
+  }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -66,7 +91,9 @@ describe('AppDetailComponent', () => {
       ],
       providers: [
         { provide: MicrofrontendsAPIService, useValue: apiServiceSpy },
-        { provide: PortalMessageService, useValue: msgServiceSpy }
+        { provide: PortalMessageService, useValue: msgServiceSpy },
+        { provide: ConfigurationService, useValue: configServiceSpy },
+        { provide: UserService, useValue: mockUserService }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents()
@@ -81,10 +108,10 @@ describe('AppDetailComponent', () => {
   afterEach(() => {
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
-    msgServiceSpy.info.calls.reset()
     apiServiceSpy.getMicrofrontendByAppId.calls.reset()
     apiServiceSpy.createMicrofrontend.calls.reset()
     apiServiceSpy.updateMicrofrontend.calls.reset()
+    // mockUserService.lang$.getValue.and.returnValue('de')
   })
 
   it('should create', () => {
@@ -153,10 +180,21 @@ describe('AppDetailComponent', () => {
     expect(component.displayDetailDialogChange.emit).toHaveBeenCalledWith(false)
   })
 
-  fit('should display error if form is invalid onSave', () => {
-    component.formGroup = form
-    component.formGroup.patchValue({
-      appId: 'i'
+  it('should display error if form is invalid onSave', () => {
+    component.formGroup = new FormGroup<AppDetailForm>({
+      appId: new FormControl('i', Validators.minLength(2)),
+      appName: new FormControl(''),
+      appVersion: new FormControl(''),
+      productName: new FormControl(''),
+      description: new FormControl(''),
+      technology: new FormControl(''),
+      remoteBaseUrl: new FormControl(''),
+      remoteEntry: new FormControl(''),
+      exposedModule: new FormControl(''),
+      classifications: new FormControl(''),
+      contact: new FormControl(''),
+      iconName: new FormControl(''),
+      note: new FormControl('')
     })
     component.changeMode = 'CREATE'
 
@@ -175,7 +213,7 @@ describe('AppDetailComponent', () => {
     expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.APP.OK' })
   })
 
-  it('should display save error', () => {
+  it('should display save error in create mode', () => {
     const err = {
       error: {
         detail: 'Error',
@@ -188,7 +226,7 @@ describe('AppDetailComponent', () => {
 
     component.onSave()
 
-    const expectedKey = 'VALIDATION.ERRORS.INTERNAL_ERROR'
+    const expectedKey = ''
     expect(msgServiceSpy.error).toHaveBeenCalledWith({
       summaryKey: 'ACTIONS.CREATE.APP.NOK',
       detailKey: expectedKey
@@ -203,5 +241,73 @@ describe('AppDetailComponent', () => {
     component.onSave()
 
     expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.EDIT.APP.OK' })
+  })
+
+  it('should display save error in edit mode: unique constraint app id', () => {
+    const err = {
+      error: {
+        detail: 'error: microfrontend_app_id',
+        errorCode: 'PERSIST_ENTITY_FAILED'
+      }
+    }
+    apiServiceSpy.updateMicrofrontend.and.returnValue(throwError(() => err))
+    component.formGroup = form
+    component.changeMode = 'EDIT'
+
+    component.onSave()
+
+    const expectedKey = 'VALIDATION.APP.UNIQUE_CONSTRAINT.APP_ID'
+    expect(msgServiceSpy.error).toHaveBeenCalledWith({
+      summaryKey: 'ACTIONS.EDIT.APP.NOK',
+      detailKey: expectedKey
+    })
+  })
+
+  it('should display save error in edit mode: unique constraint app id', () => {
+    const err = {
+      error: {
+        detail: 'error: microfrontend_remote_module',
+        errorCode: 'PERSIST_ENTITY_FAILED'
+      }
+    }
+    apiServiceSpy.updateMicrofrontend.and.returnValue(throwError(() => err))
+    component.formGroup = form
+    component.changeMode = 'EDIT'
+
+    component.onSave()
+
+    const expectedKey = 'VALIDATION.APP.UNIQUE_CONSTRAINT.REMOTE_MODULE'
+    expect(msgServiceSpy.error).toHaveBeenCalledWith({
+      summaryKey: 'ACTIONS.EDIT.APP.NOK',
+      detailKey: expectedKey
+    })
+  })
+
+  it('should display save error in edit mode: other internal error', () => {
+    const err = {
+      error: {
+        detail: 'error: microfrontend_remote_module',
+        errorCode: 'other'
+      }
+    }
+    apiServiceSpy.updateMicrofrontend.and.returnValue(throwError(() => err))
+    component.formGroup = form
+    component.changeMode = 'EDIT'
+
+    component.onSave()
+
+    const expectedKey = 'VALIDATION.ERRORS.INTERNAL_ERROR'
+    expect(msgServiceSpy.error).toHaveBeenCalledWith({
+      summaryKey: 'ACTIONS.EDIT.APP.NOK',
+      detailKey: expectedKey
+    })
+  })
+
+  it('should call this.user.lang$ from the constructor and set this.dateFormat to the default format if user.lang$ is not de', () => {
+    mockUserService.lang$.getValue.and.returnValue('de')
+    fixture = TestBed.createComponent(AppDetailComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+    expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm:ss')
   })
 })
