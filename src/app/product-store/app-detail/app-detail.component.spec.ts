@@ -111,7 +111,6 @@ describe('AppDetailComponent', () => {
     apiServiceSpy.getMicrofrontendByAppId.calls.reset()
     apiServiceSpy.createMicrofrontend.calls.reset()
     apiServiceSpy.updateMicrofrontend.calls.reset()
-    // mockUserService.lang$.getValue.and.returnValue('de')
   })
 
   it('should create', () => {
