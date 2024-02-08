@@ -2,6 +2,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { RouterTestingModule } from '@angular/router/testing'
+import { Router, ActivatedRoute } from '@angular/router'
 import { of } from 'rxjs'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { TranslateTestingModule } from 'ngx-translate-testing'
@@ -16,26 +17,11 @@ const form = new FormGroup<MicrofrontendSearchCriteria>({
   productName: new FormControl<string | null>(null)
 })
 
-// const app: Microfrontend = {
-//   appId: 'appId',
-//   id: 'id',
-//   appName: 'name',
-//   remoteBaseUrl: 'url',
-//   productName: 'productName',
-//   appVersion: 'version',
-//   remoteEntry: 'entry',
-//   description: 'description',
-//   technology: 'technology',
-//   contact: 'contact',
-//   iconName: 'iconName',
-//   note: 'note',
-//   exposedModule: 'exposedModule',
-//   classifications: ['classifications']
-// }
-
 describe('AppSearchComponent', () => {
   let component: AppSearchComponent
   let fixture: ComponentFixture<AppSearchComponent>
+  let routerSpy = jasmine.createSpyObj('Router', ['navigate'])
+  let routeMock = { snapshot: { paramMap: new Map() } }
 
   const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
   const apiServiceSpy = {
@@ -69,7 +55,9 @@ describe('AppSearchComponent', () => {
       ],
       providers: [
         { provide: MicrofrontendsAPIService, useValue: apiServiceSpy },
-        { provide: UserService, useValue: mockUserService }
+        { provide: UserService, useValue: mockUserService },
+        { provide: Router, useValue: routerSpy },
+        { provide: ActivatedRoute, useValue: routeMock }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents()
@@ -146,7 +134,7 @@ describe('AppSearchComponent', () => {
     expect(component.sortOrder).toBe(1)
   })
 
-  fit('should call searchApps when onSearch is called', () => {
+  it('should call searchApps onSearch', () => {
     spyOn(component, 'searchApps')
 
     component.onSearch()
@@ -154,12 +142,85 @@ describe('AppSearchComponent', () => {
     expect(component.searchApps).toHaveBeenCalled()
   })
 
-  fit('should reset appSearchCriteriaGroup when onSearchReset is called', () => {
+  it('should reset appSearchCriteriaGroup onSearchReset is called', () => {
     component.appSearchCriteriaGroup = form
     spyOn(form, 'reset').and.callThrough()
 
     component.onSearchReset()
 
     expect(component.appSearchCriteriaGroup.reset).toHaveBeenCalled()
+  })
+
+  it('should navigate back onBack', () => {
+    component.onBack()
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['../'], { relativeTo: routeMock })
+  })
+
+  it('should stop event propagation and navigate to the product onGotoProduct', () => {
+    const event = { stopPropagation: jasmine.createSpy() }
+
+    component.onGotoProduct(event as any, 'product')
+
+    expect(event.stopPropagation).toHaveBeenCalled()
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['../', 'product'], { relativeTo: routeMock })
+  })
+
+  it('should should assign app to component property and change to edit mode onDetail', () => {
+    const event = { stopPropagation: jasmine.createSpy() }
+    const app = {
+      id: 'id',
+      appId: 'appId',
+      appName: 'appName',
+      remoteBaseUrl: 'url',
+      productName: 'product'
+    }
+
+    component.onDetail(event as any, app)
+
+    expect(event.stopPropagation).toHaveBeenCalled()
+    expect(component.app).toBe(app)
+    expect(component.changeMode).toBe('EDIT')
+  })
+
+  it('should should assign app to component property and change to copy mode onCopy', () => {
+    const event = { stopPropagation: jasmine.createSpy() }
+    const app = {
+      id: 'id',
+      appId: 'appId',
+      appName: 'appName',
+      remoteBaseUrl: 'url',
+      productName: 'product'
+    }
+
+    component.onCopy(event as any, app)
+
+    expect(event.stopPropagation).toHaveBeenCalled()
+    expect(component.app).toBe(app)
+    expect(component.changeMode).toBe('COPY')
+  })
+
+  it('should should assign app to component property and change to copy mode onCreate', () => {
+    component.onCreate()
+
+    expect(component.app).toBeUndefined()
+    expect(component.changeMode).toBe('CREATE')
+    expect(component.displayDetailDialog).toBeTrue()
+  })
+
+  it('should should assign app to component property and change to copy mode onDelete', () => {
+    const event = { stopPropagation: jasmine.createSpy() }
+    const app = {
+      id: 'id',
+      appId: 'appId',
+      appName: 'appName',
+      remoteBaseUrl: 'url',
+      productName: 'product'
+    }
+
+    component.onDelete(event as any, app)
+
+    expect(event.stopPropagation).toHaveBeenCalled()
+    expect(component.app).toBe(app)
   })
 })
