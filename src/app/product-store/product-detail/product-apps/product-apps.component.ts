@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, ViewChild } from '@angular/core'
 import { SelectItem } from 'primeng/api'
 import { Observable, finalize } from 'rxjs'
 
-import { DataViewControlTranslations, PortalMessageService, UserService } from '@onecx/portal-integration-angular'
+import { DataViewControlTranslations, UserService } from '@onecx/portal-integration-angular'
 import {
   Product,
   MicrofrontendsAPIService,
@@ -40,12 +40,7 @@ export class ProductAppsComponent implements OnChanges {
   public dataViewControlsTranslations: DataViewControlTranslations = {}
   public limitText = limitText
 
-  constructor(
-    private icon: IconService,
-    private user: UserService,
-    private appApi: MicrofrontendsAPIService,
-    private msgService: PortalMessageService
-  ) {
+  constructor(private icon: IconService, private user: UserService, private appApi: MicrofrontendsAPIService) {
     this.hasCreatePermission = this.user.hasPermission('MICROFRONTEND#CREATE')
     this.hasDeletePermission = this.user.hasPermission('MICROFRONTEND#DELETE')
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
