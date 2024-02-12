@@ -2,21 +2,59 @@ import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { RouterTestingModule } from '@angular/router/testing'
+import { Router } from '@angular/router'
 import { of } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
-import { PortalMessageService } from '@onecx/portal-integration-angular'
+import { PortalMessageService, ConfigurationService, UserService } from '@onecx/portal-integration-angular'
 import { ProductDetailComponent } from './product-detail.component'
+import { ProductPropertyComponent } from './product-props/product-props.component'
 import { ProductsAPIService } from 'src/app/shared/generated'
+
+const product = {
+  id: 'id',
+  name: 'name',
+  basePath: 'path'
+}
+
+class MockProductPropertyComponent {
+  onSubmit = jasmine.createSpy('onSubmit')
+}
 
 describe('ProductDetailComponent', () => {
   let component: ProductDetailComponent
   let fixture: ComponentFixture<ProductDetailComponent>
+  let router: Router
+  const mockChildComponent = new MockProductPropertyComponent()
 
   const apiServiceSpy = {
     getProductByName: jasmine.createSpy('getProductByName').and.returnValue(of({}))
   }
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
+  const configServiceSpy = {
+    getProperty: jasmine.createSpy('getProperty').and.returnValue('123'),
+    getPortal: jasmine.createSpy('getPortal').and.returnValue({
+      themeId: '1234',
+      portalName: 'test',
+      baseUrl: '/',
+      microfrontendRegistrations: []
+    }),
+    lang: 'en'
+  }
+  const mockUserService = {
+    lang$: {
+      getValue: jasmine.createSpy('getValue').and.returnValue('en')
+    },
+    hasPermission: jasmine.createSpy('hasPermission').and.callFake((permissionName) => {
+      if (permissionName === 'MICROFRONTEND#CREATE') {
+        return true
+      } else if (permissionName === 'MICROFRONTEND#EDIT') {
+        return true
+      } else {
+        return false
+      }
+    })
+  }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -31,7 +69,9 @@ describe('ProductDetailComponent', () => {
       ],
       providers: [
         { provide: ProductsAPIService, useValue: apiServiceSpy },
-        { provide: PortalMessageService, useValue: msgServiceSpy }
+        { provide: PortalMessageService, useValue: msgServiceSpy },
+        { provide: ConfigurationService, useValue: configServiceSpy },
+        { provide: UserService, useValue: mockUserService }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents()
@@ -40,6 +80,7 @@ describe('ProductDetailComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ProductDetailComponent)
     component = fixture.componentInstance
+    router = TestBed.inject(Router)
     fixture.detectChanges()
   })
 
@@ -153,22 +194,23 @@ describe('ProductDetailComponent', () => {
     expect(component.close).toHaveBeenCalled()
   })
 
-  xit('should behave correctly onSave', () => {
-    spyOn(component.productPropsComponent, 'onSubmit')
+  it('should behave correctly onSave', () => {
+    component.productPropsComponent = mockChildComponent as unknown as ProductPropertyComponent
 
     component.onSave()
 
     expect(component.productPropsComponent.onSubmit).toHaveBeenCalled()
   })
-  /*
+
   it('should behave correctly onCreate', () => {
-    const data: any = { id: 'id ', name: 'name' }
+    const routerSpy = spyOn(router, 'navigate')
 
-    component.onCreate(data)
+    component.onCreate(product)
 
-    expect(component.product).toEqual(data)
+    expect(component.product).toEqual(product)
+    expect(routerSpy).toHaveBeenCalledWith(['./../', product.name], jasmine.any(Object))
   })
-*/
+
   it('should behave correctly onNameChange if change true', () => {
     spyOn(component, 'close')
 
@@ -183,5 +225,13 @@ describe('ProductDetailComponent', () => {
     component.onChange(false)
 
     expect(component.getProduct).toHaveBeenCalled()
+  })
+
+  it('should call this.user.lang$ from the constructor and set this.dateFormat to default format if user.lang$ is de', () => {
+    mockUserService.lang$.getValue.and.returnValue('de')
+    fixture = TestBed.createComponent(ProductDetailComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+    expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm:ss')
   })
 })
