@@ -2,23 +2,18 @@ import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { RouterTestingModule } from '@angular/router/testing'
-import { Router, ActivatedRoute } from '@angular/router'
+import { Router } from '@angular/router'
 import { of } from 'rxjs'
 import { DataViewModule } from 'primeng/dataview'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
-import { PortalMessageService } from '@onecx/portal-integration-angular'
-import { ProductsAPIService } from 'src/app/shared/generated'
 import { ProductSearchComponent } from './product-search.component'
 
 describe('ProductSearchComponent', () => {
   let component: ProductSearchComponent
   let fixture: ComponentFixture<ProductSearchComponent>
   let router: Router
-  let routeSpy: jasmine.SpyObj<ActivatedRoute>
 
-  const productApiSpy = jasmine.createSpyObj<ProductsAPIService>('ProductsAPIService', ['searchProducts'])
-  const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
   const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
 
   beforeEach(waitForAsync(() => {
@@ -33,7 +28,6 @@ describe('ProductSearchComponent', () => {
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
-      providers: [{ provide: ProductsAPIService, useValue: productApiSpy }],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents()
   }))
@@ -45,25 +39,23 @@ describe('ProductSearchComponent', () => {
     fixture.detectChanges()
   })
 
-  afterEach(() => {
-    msgServiceSpy.success.calls.reset()
-    msgServiceSpy.error.calls.reset()
-    msgServiceSpy.info.calls.reset()
-  })
-
   it('should create', () => {
     expect(component).toBeTruthy()
   })
 
   it('should prepare action buttons on init', () => {
-    translateServiceSpy.get.and.returnValue(of({ 'ACTIONS.CREATE.LABEL': 'Create' }))
+    spyOn(component, 'onAppSearch')
     spyOn(component, 'onNewProduct')
 
     component.ngOnInit()
 
-    const action = component.actions[0]
-    action.actionCallback()
+    let actions: any = []
+    component.actions$!.subscribe((act) => (actions = act))
 
+    actions[0].actionCallback()
+    actions[1].actionCallback()
+
+    expect(component.onAppSearch).toHaveBeenCalled()
     expect(component.onNewProduct).toHaveBeenCalled()
   })
 
@@ -92,11 +84,13 @@ describe('ProductSearchComponent', () => {
   })
 
   it('should set correct value onSortDirChange', () => {
-    const asc = true
-
+    let asc = true
     component.onSortDirChange(asc)
-
     expect(component.sortOrder).toEqual(-1)
+
+    asc = false
+    component.onSortDirChange(asc)
+    expect(component.sortOrder).toEqual(1)
   })
 
   it('should call loadProducts onSearch', () => {
@@ -116,11 +110,19 @@ describe('ProductSearchComponent', () => {
     expect(component.productSearchCriteriaGroup.reset).toHaveBeenCalled()
   })
 
-  it('should navigate to new product on onNewProduct', () => {
+  it('should navigate to new product onNewProduct', () => {
     const routerSpy = spyOn(router, 'navigate')
 
     component.onNewProduct()
 
-    expect(routerSpy).toHaveBeenCalledWith(['./new'], { relativeTo: routeSpy })
+    expect(routerSpy).toHaveBeenCalledWith(['./new'], jasmine.any(Object))
+  })
+
+  it('should navigate to apps onAppSearch', () => {
+    const routerSpy = spyOn(router, 'navigate')
+
+    component.onAppSearch()
+
+    expect(routerSpy).toHaveBeenCalledWith(['./apps'], jasmine.any(Object))
   })
 })

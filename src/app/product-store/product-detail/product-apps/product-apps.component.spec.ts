@@ -9,7 +9,7 @@ import { PortalMessageService } from '@onecx/portal-integration-angular'
 import { ProductAppsComponent } from './product-apps.component'
 import { ProductsAPIService } from 'src/app/shared/generated'
 
-describe('ProductAppComponent', () => {
+describe('ProductAppsComponent', () => {
   let component: ProductAppsComponent
   let fixture: ComponentFixture<ProductAppsComponent>
 
