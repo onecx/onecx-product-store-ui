@@ -70,6 +70,6 @@ const routes: Routes = [
 })
 export class ProductStoreModule {
   constructor() {
-    console.info('Theme Module constructor')
+    console.info('Product Store module constructor')
   }
 }
