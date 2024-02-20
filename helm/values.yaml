@@ -4,31 +4,41 @@ app:
     repository: 'onecx/onecx-product-store-ui'
   routing:
     enabled: true
+    path: /mfe/product-store/
+    
   operator:
-    apm:
-      enabled: false
-    keycloak:
+    # Microfrontend
+    microfrontend:
       enabled: true
-      client: |-
-        { 
-          "clientId": "product-store-ui",
-          "enabled": true,
-          "description": "Keycloak client for product-store-ui",
-          "redirectUris": ["*"],
-          "webOrigins": ["*"],
-          "publicClient": true,
-          "protocol": "openid-connect"
-        }
-      roles: |-
-        [
-           {
-             "name": "onecx-product-store-admin",
-             "description": "OneCX Product Store admin"
-           },
-           {
-             "name": "onecx-product-store-user",
-             "description": "OneCX Product Store user"
-           }
-         ]
+      spec:
+        exposedModule: "./OneCXProductStoreModule"
+        description: "OneCX Product Store UI"
+        note: "OneCX Product Store UI module auto import via MF operator"
+    # Permission
+    permission:
+      enabled: true
+      spec:
+        permissions:
+          APP:
+            CREATE: Create app
+            DELETE: Delete app
+            EDIT: Edit app
+            SAVE: Update and save app
+            SEARCH: Search apps
+            VIEW: View app details
+          PRODUCT:
+            CREATE: Create product
+            DELETE: Delete product
+            EDIT: Edit product
+            SAVE: Update and save product
+            SEARCH: Search products
+            VIEW: View product details
+    # Keycloak
+    keycloak:
+      client:
+        enabled: true
+        spec:
+          kcConfig:
+            clientId: "onecx-product-store-ui"
 
 # PIPE Config
