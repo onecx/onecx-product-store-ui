@@ -1,9 +1,18 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core'
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms'
 import { SelectItem } from 'primeng/api'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
-import { CreateProductRequest, Product, ProductsAPIService, UpdateProductRequest } from 'src/app/shared/generated'
+import {
+  CreateProductRequest,
+  GetImageRequestParams,
+  ImagesInternalAPIService,
+  Product,
+  ProductsAPIService,
+  RefType,
+  UpdateProductRequest,
+  UploadImageRequestParams
+} from 'src/app/shared/generated'
 import { IconService } from 'src/app/shared/iconservice'
 import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
 import { ChangeMode } from '../product-detail.component'
@@ -34,7 +43,7 @@ export function productNameValidator(): ValidatorFn {
   templateUrl: './product-props.component.html',
   styleUrls: ['./product-props.component.scss']
 })
-export class ProductPropertyComponent implements OnChanges {
+export class ProductPropertyComponent implements OnChanges, OnInit {
   @Input() product: Product | undefined
   @Input() dateFormat = 'medium'
   @Input() changeMode: ChangeMode = 'VIEW'
@@ -46,12 +55,15 @@ export class ProductPropertyComponent implements OnChanges {
   public productName: string | null | undefined
   public fetchingLogoUrl: string | undefined
   public iconItems: SelectItem[] = [{ label: '', value: null }]
+  public logoImageWasUploaded: boolean | undefined
+
   //private productNamePattern = '^(?!new$)(.*)$' // matching for valid product names
 
   constructor(
     private icon: IconService,
     private elements: ElementRef,
     private productApi: ProductsAPIService,
+    private imageApi: ImagesInternalAPIService,
     private msgService: PortalMessageService
   ) {
     this.formGroup = new FormGroup<ProductDetailForm>({
@@ -73,6 +85,26 @@ export class ProductPropertyComponent implements OnChanges {
     })
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
     this.iconItems.sort(dropDownSortItemsByLabel)
+  }
+
+  ngOnInit(): void {
+    let productName = this.formGroup.controls['name'].value!
+    let requestParametersGet: GetImageRequestParams = {
+      refId: productName,
+      refType: RefType.Logo
+    }
+    if (
+      requestParametersGet.refId === undefined ||
+      requestParametersGet.refId === '' ||
+      requestParametersGet.refId === null
+    ) {
+      this.logoImageWasUploaded = false
+    } else {
+      this.imageApi.getImage(requestParametersGet).subscribe(() => {
+        this.logoImageWasUploaded = true
+      })
+    }
+    this.fetchingLogoUrl = this.getImageUrl()
   }
 
   ngOnChanges(): void {
@@ -104,13 +136,17 @@ export class ProductPropertyComponent implements OnChanges {
   }
 
   private createProduct() {
+    let imgUrl = this.formGroup.controls['imageUrl'].value
+    if ((imgUrl == '' || imgUrl == null) && !this.logoImageWasUploaded) {
+      imgUrl = 'http://pragmaticscrum.info/wp-content/uploads/2016/06/t1.jpg'
+    }
     this.productApi
       .createProduct({
         createProductRequest: {
           name: this.formGroup.value['name'],
           version: this.formGroup.value['version'],
           description: this.formGroup.value['description'],
-          imageUrl: this.formGroup.value['imageUrl'],
+          imageUrl: imgUrl,
           basePath: this.formGroup.value['basePath'],
           displayName: this.formGroup.value['displayName'],
           iconName: this.formGroup.value['iconName'],
@@ -127,6 +163,10 @@ export class ProductPropertyComponent implements OnChanges {
   }
 
   private updateProduct() {
+    let imgUrl = this.formGroup.controls['imageUrl'].value
+    if ((imgUrl == '' || imgUrl == null) && !this.logoImageWasUploaded) {
+      imgUrl = 'http://pragmaticscrum.info/wp-content/uploads/2016/06/t1.jpg'
+    }
     this.productApi
       .updateProduct({
         id: this.productId!,
@@ -134,7 +174,7 @@ export class ProductPropertyComponent implements OnChanges {
           name: this.formGroup.value['name'],
           version: this.formGroup.value['version'],
           description: this.formGroup.value['description'],
-          imageUrl: this.formGroup.value['imageUrl'],
+          imageUrl: imgUrl,
           basePath: this.formGroup.value['basePath'],
           displayName: this.formGroup.value['displayName'],
           iconName: this.formGroup.value['iconName'],
@@ -164,19 +204,78 @@ export class ProductPropertyComponent implements OnChanges {
   /** File Handling
    */
   public onFileUpload(ev: Event, fieldType: 'logo'): void {
+    let productName = this.formGroup.controls['name'].value
     if (ev.target && (ev.target as HTMLInputElement).files) {
       const files = (ev.target as HTMLInputElement).files
       if (files) {
-        Array.from(files).forEach((file) => {
-          /*
-          this.imageApi.uploadImage({ image: file }).subscribe((data) => {
-            this.formGroup.controls[fieldType + 'Url'].setValue(data.imageUrl)
-            this.fetchingLogoUrl = setFetchUrls(this.apiPrefix, this.formGroup.controls[fieldType + 'Url'].value)
-            this.msgService.info({ summaryKey: 'LOGO.UPLOADED', detailKey: 'LOGO.LOGO_URL' })
-          })
-          */
-        })
+        if (productName == undefined || productName == '' || productName == null) {
+          this.msgService.error({ summaryKey: 'LOGO.UPLOAD_FAILED_NAME' })
+        } else if (files[0].size > 110000) {
+          this.msgService.error({ summaryKey: 'LOGO.UPLOAD_FAILED_SIZE' })
+        } else {
+          let requestParametersGet: GetImageRequestParams
+          requestParametersGet = {
+            refId: productName,
+            refType: RefType.Logo
+          }
+          let requestParameters: UploadImageRequestParams
+          const blob = new Blob([files[0]], { type: files[0].type })
+          let imageType: RefType = RefType.Logo
+
+          requestParameters = {
+            contentLength: files.length,
+            refId: this.formGroup.controls['name'].value!,
+            refType: imageType,
+            body: blob
+          }
+
+          this.fetchingLogoUrl = undefined
+
+          this.imageApi.getImage(requestParametersGet).subscribe(
+            (res) => {
+              if (RegExp(/^.*.(jpg|jpeg|png)$/).exec(files[0].name)) {
+                this.imageApi.updateImage(requestParameters).subscribe(() => {
+                  this.fetchingLogoUrl =
+                    this.imageApi.configuration.basePath + '/images/' + productName + '/' + fieldType
+                  this.msgService.info({ summaryKey: 'LOGO.UPLOADED' })
+                  this.formGroup.controls['imageUrl'].setValue('')
+                  this.logoImageWasUploaded = true
+                })
+              }
+            },
+            (err) => {
+              if (RegExp(/^.*.(jpg|jpeg|png)$/).exec(files[0].name)) {
+                this.imageApi.uploadImage(requestParameters).subscribe(() => {
+                  this.fetchingLogoUrl =
+                    this.imageApi.configuration.basePath + '/images/' + productName + '/' + fieldType
+                  this.msgService.info({ summaryKey: 'LOGO.UPLOADED' })
+                  this.formGroup.controls['imageUrl'].setValue('')
+                  this.logoImageWasUploaded = true
+                })
+              }
+            }
+          )
+        }
       }
     }
+  }
+
+  getImageUrl(): string {
+    let imgUrl = this.formGroup.controls['imageUrl'].value
+    if (imgUrl == '' || imgUrl == null) {
+      return this.imageApi.configuration.basePath + '/images/' + this.formGroup.controls['name'].value + '/logo'
+    } else {
+      return imgUrl
+    }
+  }
+
+  inputChange(event: Event) {
+    setTimeout(() => {
+      this.fetchingLogoUrl = (event.target as HTMLInputElement).value
+      if ((event.target as HTMLInputElement).value == undefined || (event.target as HTMLInputElement).value == '') {
+        this.fetchingLogoUrl =
+          this.imageApi.configuration.basePath + '/images/' + this.formGroup.controls['name'].value + '/logo'
+      }
+    }, 1000)
   }
 }

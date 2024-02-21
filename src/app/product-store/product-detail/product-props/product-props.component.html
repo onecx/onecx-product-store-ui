@@ -53,16 +53,29 @@
             [small]="true"
             [title]="'LOGO.TOOLTIPS.' + (fetchingLogoUrl ? 'IMAGE' : 'PLACEHOLDER') | translate"
           ></ps-image-container>
+          <app-image-container [imageUrl]="fetchingLogoUrl" [small]="false"></app-image-container>
           <div class="flex flex-column w-full">
             <div class="p-inputgroup mb-1" controlErrorAnchor>
               <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.IMAGE_URL' | translate">
-                <input pInputText type="text" id="product_detail_item_imageUrl" formControlName="imageUrl" />
+                <input
+                  pInputText
+                  type="text"
+                  id="product_detail_item_imageUrl"
+                  formControlName="imageUrl"
+                  (input)="inputChange($event)"
+                />
                 <label for="product_detail_item_imageUrl">{{ 'PRODUCT.IMAGE_URL' | translate }}</label>
               </span>
               <span
                 id="product_detail_item_upload_logo2"
                 class="p-inputgroup-addon bg-primary pseudo-button"
-                [ngClass]="changeMode !== 'VIEW' ? 'cursor-pointer' : 'p-disabled'"
+                [ngClass]="
+                  changeMode === 'VIEW' ||
+                  this.formGroup.controls['name'].value === '' ||
+                  this.formGroup.controls['name'].value === null
+                    ? 'p-disabled'
+                    : 'cursor-pointer'
+                "
                 [title]="'LOGO.TOOLTIPS.UPLOAD' | translate"
                 (click)="changeMode !== 'VIEW' ? selectedFileInputLogo.click() : null"
               >

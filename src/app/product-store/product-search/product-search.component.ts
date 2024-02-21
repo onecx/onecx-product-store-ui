@@ -7,7 +7,7 @@ import { DataView } from 'primeng/dataview'
 
 import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 
-import { ProductPageResult, ProductsAPIService } from 'src/app/shared/generated'
+import { ImagesInternalAPIService, ProductPageResult, ProductsAPIService } from 'src/app/shared/generated'
 import { limitText } from 'src/app/shared/utils'
 
 export interface ProductSearchCriteria {
@@ -36,7 +36,8 @@ export class ProductSearchComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private productApi: ProductsAPIService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private imageApi: ImagesInternalAPIService
   ) {
     this.productSearchCriteriaGroup = new FormGroup<ProductSearchCriteria>({
       productName: new FormControl<string | null>(null)
@@ -147,5 +148,13 @@ export class ProductSearchComponent implements OnInit {
   }
   public onAppSearch() {
     this.router.navigate(['./apps'], { relativeTo: this.route })
+  }
+
+  getImageUrl(product: any) {
+    if (product.imageUrl) {
+      return product.imageUrl
+    } else {
+      return this.imageApi.configuration.basePath + '/images/' + product.name + '/logo'
+    }
   }
 }

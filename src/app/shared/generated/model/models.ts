@@ -1,6 +1,7 @@
 export * from './createMicrofrontendRequest';
 export * from './createProductRequest';
 export * from './createUIEndpoint';
+export * from './imageInfo';
 export * from './microfrontend';
 export * from './microfrontendAbstract';
 export * from './microfrontendPageResult';
@@ -13,6 +14,7 @@ export * from './productAbstract';
 export * from './productAndWorkspaces';
 export * from './productPageResult';
 export * from './productSearchCriteria';
+export * from './refType';
 export * from './uIEndpoint';
 export * from './updateMicrofrontendRequest';
 export * from './updateProductRequest';
