@@ -32,9 +32,9 @@ describe('AppSearchComponent', () => {
       getValue: jasmine.createSpy('getValue').and.returnValue('en')
     },
     hasPermission: jasmine.createSpy('hasPermission').and.callFake((permissionName) => {
-      if (permissionName === 'MICROFRONTEND#CREATE') {
+      if (permissionName === 'APP#CREATE') {
         return true
-      } else if (permissionName === 'MICROFRONTEND#EDIT') {
+      } else if (permissionName === 'APP#EDIT') {
         return true
       } else {
         return false

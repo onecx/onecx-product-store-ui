@@ -23,12 +23,12 @@
         [enableSorting]="true"
         [supportedViews]="['grid']"
         [initialViewMode]="viewMode"
-        [sortingOptions]="[{ label: 'MFE.APP_NAME' | translate, value: 'app_name' }]"
+        [sortingOptions]="[{ label: 'APP.APP_NAME' | translate, value: 'app_name' }]"
         [defaultSortOption]="sortField"
         [defaultSortDirection]="sortOrder === 1"
         (dataViewChange)="onLayoutChange($event)"
         (filterChange)="onFilterChange($event)"
-        [filterColumns]="['MFE.APP_NAME' | translate]"
+        [filterColumns]="['APP.APP_NAME' | translate]"
         (sortChange)="onSortChange($event)"
         (sortDirectionChange)="onSortDirChange($event)"
         [translations]="dataViewControlsTranslations"
@@ -64,9 +64,14 @@
 </ng-container>
 
 <app-app-detail
-  [(displayDetailDialog)]="displayDetailDialog"
+  [displayDialog]="displayDetailDialog"
   [appAbstract]="app"
   [changeMode]="changeMode"
+  (appChanged)="appChanged($event)"
 ></app-app-detail>
 
-<app-app-delete [(displayDialog)]="displayDeleteDialog" [appAbstract]="app"></app-app-delete>
+<app-app-delete
+  [displayDialog]="displayDeleteDialog"
+  [appAbstract]="app"
+  (appDeleted)="appDeleted($event)"
+></app-app-delete>

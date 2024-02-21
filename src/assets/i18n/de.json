@@ -17,13 +17,17 @@
     },
     "CREATE": {
       "LABEL": "Erstellen",
+      "MFE.LABEL": "Microfrontend erstellen",
+      "MS.LABEL": "Microservice erstellen",
+      "MFE.HEADER": "Microfrontend erstellen",
+      "MS.HEADER": "Microservice erstellen",
       "APP": {
-        "HEADER": "App erstellen",
         "TOOLTIP": "Eine neue App erstellen",
         "OK": "Die App wurde erfolgreich erstellt",
         "NOK": "Die App konnte nicht erstellt werden."
       },
       "PRODUCT": {
+        "LABEL": "Produkt erstellen",
         "HEADER": "Produkt erstellen",
         "TOOLTIP": "Ein neues Produkt erstellen",
         "ALREADY_EXISTS": "Ein Produkt mit diesem Namen existert schon",
@@ -33,9 +37,10 @@
     },
     "DELETE": {
       "LABEL": "Löschen",
+      "MFE.HEADER": "Microfrontend löschen",
+      "MS.HEADER": "Microservice löschen",
       "APP": {
         "TOOLTIP": "App löschen",
-        "HEADER": "App löschen",
         "NOK": "App konnte nicht gelöscht werden",
         "OK": "App erfolgreich gelöscht"
       },
@@ -50,8 +55,9 @@
     },
     "EDIT": {
       "LABEL": "Bearbeiten",
+      "MFE.HEADER": "Microfrontend Details",
+      "MS.HEADER": "Microservice Details",
       "APP": {
-        "HEADER": "App Details",
         "TOOLTIP": "Die App-Eigenschaften bearbeiten",
         "OK": "Die App wurde erfolgreich geändert",
         "NOK": "Die App konnte nicht geändert werden."
@@ -102,9 +108,8 @@
     },
     "VIEW": {
       "LABEL": "Ansehen",
-      "APP": {
-        "HEADER": "App Details"
-      },
+      "MFE.HEADER": "Microfrontend Details",
+      "MS.HEADER": "Microservice Details",
       "PRODUCT": {
         "HEADER": "Produkt bearbeiten"
       }
@@ -152,19 +157,20 @@
     "SEARCH.HEADER": "Product Store",
     "SEARCH.SUBHEADER": "Produkte und deren Apps verwalten",
     "DETAIL.SUBHEADER": "Produkt Details",
-    "SEARCH.APPS.LABEL": "Microfrontends",
-    "SEARCH.APPS.TOOLTIP": "Microfrontends suchen und anzeigen",
-    "SEARCH.APPS.HEADER": "Microfrontends",
-    "SEARCH.APPS.SUBHEADER": "Suchen und verwalten",
+    "SEARCH.APPS.LABEL": "Apps",
+    "SEARCH.APPS.TOOLTIP": "Apps suchen und anzeigen",
+    "SEARCH.APPS.HEADER": "Apps",
+    "SEARCH.APPS.SUBHEADER": "Suchen und verwalten von Microfrontends und Microservices",
     "TABS": {
       "APPS": "Apps",
       "INTERN": "Intern",
       "PROPERTIES": "Eigenschaften"
     }
   },
-  "MFE": {
+  "APP": {
     "APP_ID": "App ID",
-    "APP_NAME": "App-Name",
+    "APP_NAME": "Name",
+    "APP_TYPE": "Typ",
     "APP_VERSION": "Version",
     "DESCRIPTION": "Beschreibung",
     "PRODUCT_NAME": "Produkt",
@@ -181,11 +187,12 @@
     "GROUP.LOCAL_MODULE": "Modul Management Details",
     "GROUP.INTERNALS": "Weitere Details",
     "TOOLTIPS": {
-      "APP_ID": "Eindeutige ID - Basis Bezeichner des Microfrontends",
-      "APP_NAME": "Name des Microfrontends",
+      "APP_ID": "Eindeutige ID - Basis Bezeichner der App",
+      "APP_NAME": "Name der App",
+      "APP_TYPE": "Typ der App",
       "APP_VERSION": "Version",
       "DESCRIPTION": "Beschreibung",
-      "PRODUCT_NAME": "Name des Produkts dem das Microfrontend zugeordnet ist",
+      "PRODUCT_NAME": "Name des Produkts dem die App zugeordnet ist",
       "TECHNOLOGY": "Technologie",
       "REMOTE_BASE_URL": "Remote Base URL",
       "REMOTE_ENTRY": "Remote Entry",

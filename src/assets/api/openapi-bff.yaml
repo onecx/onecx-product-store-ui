@@ -5,12 +5,12 @@ info:
   description: Backend-For-Frontend (BFF) service for onecx product store. With this API you can manage applications (technical microfrontend(s)) and product(s) as logical abstraction. A Product is a versioned cover for a collection of applications (versioned) to be used within workspaces. Microfrontends (applications) which have reference to exposed/registered modules
   version: 1.0.0
   contact:
-    email: 'tkit_dev@1000kit.org'
+    email: "tkit_dev@1000kit.org"
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  - url: 'http://onecx-product-store-bff:8080'
+  - url: "http://onecx-product-store-bff:8080"
 tags:
   - name: OneCX Product Store
 paths:
@@ -31,7 +31,7 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateMicrofrontendRequest'
       responses:
-        '201':
+        "201":
           description: New microfrontend created
           headers:
             Location:
@@ -43,7 +43,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Microfrontend'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -64,15 +64,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MicrofrontendSearchCriteria'
+              $ref: '#/components/schemas/MfeAndMsSearchCriteria'
       responses:
-        '200':
+        "200":
           description: Corresponding microfrontends
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MicrofrontendPageResult'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -95,13 +95,13 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Microfrontend'
-        '404':
+        "404":
           description: Not Found
   /microfrontends/{id}:
     get:
@@ -120,13 +120,13 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Microfrontend'
-        '404':
+        "404":
           description: Not Found
     put:
       x-onecx:
@@ -150,15 +150,15 @@ paths:
             schema:
               $ref: '#/components/schemas/UpdateMicrofrontendRequest'
       responses:
-        '204':
+        "204":
           description: Microfrontend updated
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-        '404':
+        "404":
           description: Microfrontend not found
     delete:
       x-onecx:
@@ -176,9 +176,9 @@ paths:
           schema:
             type: string
       responses:
-        '204':
+        "204":
           description: No Content
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -201,7 +201,7 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateProductRequest'
       responses:
-        '201':
+        "201":
           description: New product created
           headers:
             Location:
@@ -213,7 +213,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Product'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -236,13 +236,13 @@ paths:
             schema:
               $ref: '#/components/schemas/ProductSearchCriteria'
       responses:
-        '200':
+        "200":
           description: Corresponding products (by search criteria)
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductPageResult'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -265,19 +265,19 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Product'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-        '404':
+        "404":
           description: Not Found
           content:
             application/json:
@@ -305,15 +305,15 @@ paths:
             schema:
               $ref: '#/components/schemas/UpdateProductRequest'
       responses:
-        '204':
+        "204":
           description: Product updated
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-        '404':
+        "404":
           description: Product not found
           content:
             application/json:
@@ -335,9 +335,9 @@ paths:
           schema:
             type: string
       responses:
-        '204':
+        "204":
           description: No Content
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
@@ -360,24 +360,194 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductAndWorkspaces'
-        '400':
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-        '404':
+        "404":
           description: Not Found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+  /microservices:
+    post:
+      x-onecx:
+        permissions:
+          product-store:
+            - write
+      tags:
+        - Microservices
+      description: Create microservice
+      operationId: createMicroservice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMicroserviceRequest'
+      responses:
+        "201":
+          description: New microservice created
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microservice'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /microservices/search:
+    post:
+      x-onecx:
+        permissions:
+          product-store:
+            - read
+      tags:
+        - Microservices
+      description: Search for microservices by search criteria
+      operationId: searchMicroservice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MfeAndMsSearchCriteria'
+      responses:
+        "200":
+          description: Corresponding micro-services
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicroservicePageResult'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /microservices/{id}:
+    x-onecx:
+      permissions:
+        product-store:
+          - read
+    get:
+      tags:
+        - Microservices
+      description: Return microservices by ID
+      operationId: getMicroservice
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microservice'
+        "404":
+          description: Not found
+    put:
+      x-onecx:
+        permissions:
+          product-store:
+            - write
+      tags:
+        - Microservices
+      description: Update microservice by ID
+      operationId: updateMicroservice
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMicroserviceRequest'
+      responses:
+        "204":
+          description: microservice updated
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        "404":
+          description: microservice not found
+    delete:
+      x-onecx:
+        permissions:
+          product-store:
+            - delete
+      tags:
+        - Microservices
+      description: Delete microservice by ID
+      operationId: deleteMicroservice
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /microservices/appId/{appId}:
+    x-onecx:
+      permissions:
+        product-store:
+          - read
+    get:
+      tags:
+        - Microservices
+      description: Return microservice by its appId
+      operationId: getMicroserviceByAppId
+      parameters:
+        - name: appId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microservice'
+        "404":
+          description: Not found
   /images/{refId}/{refType}:
     post:
       x-onecx:
@@ -404,7 +574,7 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/RefType'
+            $ref: "#/components/schemas/RefType"
       operationId: uploadImage
       requestBody:
         required: true
@@ -414,13 +584,13 @@ paths:
               type: string
               format: binary
       responses:
-        '201':
+        "201":
           description: CREATED
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ImageInfo'
-        '400':
+        "400":
           description: Bad Request
     get:
       x-onecx:
@@ -441,16 +611,16 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/RefType'
+            $ref: "#/components/schemas/RefType"
       responses:
-        '200':
+        "200":
           description: OK
           content:
             image/*:
               schema:
                 type: string
                 format: binary
-        '400':
+        "400":
           description: Bad request
           content:
             application/json:
@@ -481,7 +651,7 @@ paths:
           in: path
           required: true
           schema:
-            $ref: '#/components/schemas/RefType'
+            $ref: "#/components/schemas/RefType"
       requestBody:
         required: true
         content:
@@ -490,13 +660,13 @@ paths:
               type: string
               format: binary
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ImageInfo'
-        '400':
+        "400":
           description: Bad request
           content:
             application/json:
@@ -506,7 +676,7 @@ components:
   schemas:
     RefType:
       type: string
-      enum: [logo, favicon]
+      enum: [ logo, favicon ]
     ImageInfo:
       type: object
       properties:
@@ -780,8 +950,8 @@ components:
           type: array
           description: available endpoints which are exposed by MFE
           items:
-            $ref: '#/components/schemas/UIEndpoint'
-    MicrofrontendSearchCriteria:
+            $ref: "#/components/schemas/UIEndpoint"
+    MfeAndMsSearchCriteria:
       type: object
       properties:
         appId:
@@ -851,7 +1021,7 @@ components:
         endpoints:
           type: array
           items:
-            $ref: '#/components/schemas/CreateUIEndpoint'
+            $ref: "#/components/schemas/CreateUIEndpoint"
     CreateUIEndpoint:
       required:
         - path
@@ -908,7 +1078,7 @@ components:
         endpoints:
           type: array
           items:
-            $ref: '#/components/schemas/UpdateUIEndpoint'
+            $ref: "#/components/schemas/UpdateUIEndpoint"
     UpdateUIEndpoint:
       required:
         - path
@@ -980,7 +1150,7 @@ components:
         endpoints:
           type: array
           items:
-            $ref: '#/components/schemas/UIEndpoint'
+            $ref: "#/components/schemas/UIEndpoint"
     UIEndpoint:
       required:
         - path
@@ -991,3 +1161,82 @@ components:
           type: string
         name:
           type: string
+    Microservice:
+      type: object
+      properties:
+        id:
+          type: string
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        modificationCount:
+          format: int32
+          type: integer
+        appId:
+          type: string
+        appVersion:
+          type: string
+        appName:
+          type: string
+        description:
+          type: string
+        productName:
+          type: string
+    UpdateMicroserviceRequest:
+      type: object
+      properties:
+        appId:
+          type: string
+        appVersion:
+          type: string
+        appName:
+          type: string
+        description:
+          type: string
+        productName:
+          type: string
+        type:
+          type: string
+    CreateMicroserviceRequest:
+      required:
+        - productName
+        - appId
+      type: object
+      properties:
+        appId:
+          type: string
+        appVersion:
+          type: string
+        appName:
+          type: string
+        description:
+          type: string
+        productName:
+          type: string
+        type:
+          type: string
+    MicroservicePageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/Microservice'

@@ -95,7 +95,7 @@ export class ProductSearchComponent implements OnInit {
   private prepareActionButtons(): void {
     this.actions$ = this.translate
       .get([
-        'ACTIONS.CREATE.LABEL',
+        'ACTIONS.CREATE.PRODUCT.LABEL',
         'ACTIONS.CREATE.PRODUCT.TOOLTIP',
         'DIALOG.SEARCH.APPS.LABEL',
         'DIALOG.SEARCH.APPS.TOOLTIP'
@@ -107,12 +107,12 @@ export class ProductSearchComponent implements OnInit {
               label: data['DIALOG.SEARCH.APPS.LABEL'],
               title: data['DIALOG.SEARCH.APPS.TOOLTIP'],
               actionCallback: () => this.onAppSearch(),
-              permission: 'MICROFRONTEND#SEARCH',
+              permission: 'APP#SEARCH',
               icon: 'pi pi-cog',
               show: 'always'
             },
             {
-              label: data['ACTIONS.CREATE.LABEL'],
+              label: data['ACTIONS.CREATE.PRODUCT.LABEL'],
               title: data['ACTIONS.CREATE.PRODUCT.TOOLTIP'],
               actionCallback: () => this.onNewProduct(),
               permission: 'PRODUCT#CREATE',

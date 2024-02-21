@@ -1,4 +1,4 @@
-<ocx-portal-page permission="MICROFRONTEND#SEARCH" helpArticleId="PAGE_MICROFRONTEND_SEARCH">
+<ocx-portal-page permission="APP#SEARCH" helpArticleId="PAGE_APP_SEARCH">
   <ocx-search-criteria
     [header]="'DIALOG.SEARCH.APPS.HEADER' | translate"
     [subheader]="'DIALOG.SEARCH.APPS.SUBHEADER' | translate"
@@ -18,9 +18,9 @@
             formControlName="appId"
             class="w-18rem"
             [clear]="true"
-            [title]="'MFE.APP_ID' | translate"
+            [title]="'APP.APP_ID' | translate"
           />
-          <label for="app_search_app_id">{{ 'MFE.APP_ID' | translate }}</label>
+          <label for="app_search_app_id">{{ 'APP.APP_ID' | translate }}</label>
         </span>
         <span class="p-float-label">
           <input
@@ -30,9 +30,9 @@
             formControlName="appName"
             class="w-18rem"
             [clear]="true"
-            [title]="'MFE.APP_NAME' | translate"
+            [title]="'APP.APP_NAME' | translate"
           />
-          <label for="app_search_app_name">{{ 'MFE.APP_NAME' | translate }}</label>
+          <label for="app_search_app_name">{{ 'APP.APP_NAME' | translate }}</label>
         </span>
         <span class="p-float-label">
           <input
@@ -42,94 +42,103 @@
             formControlName="productName"
             class="w-18rem"
             [clear]="true"
-            [title]="'MFE.PRODUCT_NAME' | translate"
+            [title]="'APP.PRODUCT_NAME' | translate"
           />
-          <label for="app_search_product_name">{{ 'MFE.PRODUCT_NAME' | translate }}</label>
+          <label for="app_search_product_name">{{ 'APP.PRODUCT_NAME' | translate }}</label>
         </span>
       </div>
     </div>
   </ocx-search-criteria>
 
   <ocx-page-content>
-    <div *ngIf="!apps$" class="card px-3 align-items-center">
-      <p-message severity="error" styleClass="p-2" [text]="'ACTIONS.SEARCH.PRODUCT.NOT_EXISTS' | translate"></p-message>
-    </div>
-    <ng-container *ngIf="apps$ | async as apps">
-      <p-dataView
-        id="product_search_dataview"
-        [value]="apps.stream ? apps.stream : []"
-        [paginator]="true"
-        [alwaysShowPaginator]="false"
-        [rowsPerPageOptions]="[10, 20, 50]"
-        [rows]="viewMode === 'grid' ? 24 : 10"
-        [layout]="viewMode"
-        [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
-        filterBy="appId,appName,productName"
-        [sortField]="sortField"
-        [sortOrder]="sortOrder"
-      >
-        <ng-template pTemplate="header">
-          <ocx-data-view-controls
-            [enableFiltering]="true"
-            [enableSorting]="true"
-            [supportedViews]="['grid']"
-            [initialViewMode]="viewMode"
-            [sortingOptions]="[
-              { label: 'MFE.APP_ID' | translate, value: 'appId' },
-              { label: 'MFE.APP_NAME' | translate, value: 'appName' },
-              { label: 'MFE.PRODUCT_NAME' | translate, value: 'productName' }
-            ]"
-            [defaultSortOption]="sortField"
-            [defaultSortDirection]="sortOrder === 1"
-            (dataViewChange)="onLayoutChange($event)"
-            (filterChange)="onFilterChange($event)"
-            [filterColumns]="['MFE.APP_ID' | translate, 'MFE.APP_NAME' | translate, 'MFE.PRODUCT_NAME' | translate]"
-            (sortChange)="onSortChange($event)"
-            (sortDirectionChange)="onSortDirChange($event)"
-            [translations]="dataViewControlsTranslations"
+    <p-dataView
+      id="product_search_dataview"
+      [value]="apps"
+      [paginator]="true"
+      [alwaysShowPaginator]="false"
+      [rowsPerPageOptions]="[10, 20, 50]"
+      [rows]="viewMode === 'grid' ? 24 : 10"
+      [layout]="viewMode"
+      [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
+      filterBy="appId,appName,productName"
+      [sortField]="sortField"
+      [sortOrder]="sortOrder"
+    >
+      <ng-template pTemplate="header">
+        <ocx-data-view-controls
+          [enableFiltering]="true"
+          [enableSorting]="true"
+          [supportedViews]="['grid']"
+          [initialViewMode]="viewMode"
+          [sortingOptions]="[
+            { label: 'APP.APP_ID' | translate, value: 'appId' },
+            { label: 'APP.APP_NAME' | translate, value: 'appName' },
+            { label: 'APP.APP_TYPE' | translate, value: 'appType' },
+            { label: 'APP.PRODUCT_NAME' | translate, value: 'productName' }
+          ]"
+          [defaultSortOption]="sortField"
+          [defaultSortDirection]="sortOrder === 1"
+          (dataViewChange)="onLayoutChange($event)"
+          (filterChange)="onFilterChange($event)"
+          [filterColumns]="[
+            'APP.APP_ID' | translate,
+            'APP.APP_NAME' | translate,
+            'APP.APP_TYPE' | translate,
+            'APP.PRODUCT_NAME' | translate
+          ]"
+          (sortChange)="onSortChange($event)"
+          (sortDirectionChange)="onSortDirChange($event)"
+          [translations]="dataViewControlsTranslations"
+        >
+        </ocx-data-view-controls
+      ></ng-template>
+      <ng-template let-app pTemplate="gridItem">
+        <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3" (click)="onDetail($event, app)">
+          <div
+            class="card relative p-1 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
+            [class.bg-primary]="app.appType === 'MFE'"
           >
-          </ocx-data-view-controls
-        ></ng-template>
-        <ng-template let-app pTemplate="gridItem">
-          <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3" (click)="onDetail($event, app)">
-            <div class="card relative p-1 flex flex-column justify-content-center hover:bg-gray-200 cursor-pointer">
-              <span
-                *ngIf="hasCreatePermission"
-                [id]="'app_search_data_' + app.appId + '_copy_app'"
-                class="card-badge-left badge-1 p-2 pi pi-copy pseudo-button-link"
-                [title]="'ACTIONS.COPY.LABEL' | translate"
-                (click)="onCopy($event, app)"
-              ></span>
-              <span
-                *ngIf="hasDeletePermission"
-                [id]="'app_search_data_' + app.appId + '_delete_app'"
-                class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text pseudo-button-link"
-                [title]="'ACTIONS.DELETE.LABEL' | translate"
-                (click)="onDelete($event, app)"
-              ></span>
-              <span
-                [id]="'app_search_data_' + app.appId + '_goto_product'"
-                class="card-badge-right badge-1 p-2 pi pi-external-link pseudo-button-link"
-                [title]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
-                (click)="onGotoProduct($event, app.productName)"
-              ></span>
-              <div class="flex flex-column justify-content-between gap-1 text-center">
-                <div class="font-bold" [title]="'ID: ' + app.appId">{{ limitText(app.appId, 25) }}</div>
-                <div class="text-sm" [title]="'App Name: ' + app.appName">{{ limitText(app.appName, 30) }}</div>
-                <div [title]="'Product: ' + app.productName">{{ limitText(app.productName, 25) }}</div>
-              </div>
+            <span
+              *ngIf="hasCreatePermission"
+              [id]="'app_search_data_' + app.appId + '_copy_app'"
+              class="card-badge-left badge-1 p-2 pi pi-copy pseudo-button-link"
+              [title]="'ACTIONS.COPY.LABEL' | translate"
+              (click)="onCopy($event, app)"
+            ></span>
+            <span
+              *ngIf="hasDeletePermission"
+              [id]="'app_search_data_' + app.appId + '_delete_app'"
+              class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text pseudo-button-link"
+              [title]="'ACTIONS.DELETE.LABEL' | translate"
+              (click)="onDelete($event, app)"
+            ></span>
+            <span
+              [id]="'app_search_data_' + app.appId + '_goto_product'"
+              class="card-badge-right badge-1 p-2 pi pi-external-link pseudo-button-link"
+              [title]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
+              (click)="onGotoProduct($event, app.productName)"
+            ></span>
+
+            <div class="h-4rem flex flex-column justify-content-between gap-1 text-center">
+              <div class="font-bold" [title]="'ID: ' + app.appId">{{ limitText(app.appId, 25) }}</div>
+              <div class="text-sm" [title]="'APP.APP_TYPE' | translate">{{ app.appType }}</div>
+              <div [title]="'Product: ' + app.productName">{{ limitText(app.productName, 25) }}</div>
             </div>
           </div>
-        </ng-template>
-      </p-dataView>
-    </ng-container>
+        </div>
+      </ng-template>
+    </p-dataView>
   </ocx-page-content>
 </ocx-portal-page>
 
 <app-app-detail
-  [(displayDetailDialog)]="displayDetailDialog"
+  [displayDialog]="displayDetailDialog"
   [appAbstract]="app"
   [changeMode]="changeMode"
+  (appChanged)="appChanged($event)"
 ></app-app-detail>
-
-<app-app-delete [(displayDialog)]="displayDeleteDialog" [appAbstract]="app"></app-app-delete>
+<app-app-delete
+  [displayDialog]="displayDeleteDialog"
+  [appAbstract]="app"
+  (appDeleted)="appDeleted($event)"
+></app-app-delete>
