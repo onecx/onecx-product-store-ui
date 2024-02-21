@@ -19,53 +19,53 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { CreateMicrofrontendRequest } from '../model/createMicrofrontendRequest';
+import { CreateMicroserviceRequest } from '../model/createMicroserviceRequest';
 // @ts-ignore
 import { MfeAndMsSearchCriteria } from '../model/mfeAndMsSearchCriteria';
 // @ts-ignore
-import { Microfrontend } from '../model/microfrontend';
+import { Microservice } from '../model/microservice';
 // @ts-ignore
-import { MicrofrontendPageResult } from '../model/microfrontendPageResult';
+import { MicroservicePageResult } from '../model/microservicePageResult';
 // @ts-ignore
 import { ProblemDetailResponse } from '../model/problemDetailResponse';
 // @ts-ignore
-import { UpdateMicrofrontendRequest } from '../model/updateMicrofrontendRequest';
+import { UpdateMicroserviceRequest } from '../model/updateMicroserviceRequest';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
 
 
-export interface CreateMicrofrontendRequestParams {
-    createMicrofrontendRequest: CreateMicrofrontendRequest;
+export interface CreateMicroserviceRequestParams {
+    createMicroserviceRequest: CreateMicroserviceRequest;
 }
 
-export interface DeleteMicrofrontendRequestParams {
+export interface DeleteMicroserviceRequestParams {
     id: string;
 }
 
-export interface GetMicrofrontendRequestParams {
+export interface GetMicroserviceRequestParams {
     id: string;
 }
 
-export interface GetMicrofrontendByAppIdRequestParams {
+export interface GetMicroserviceByAppIdRequestParams {
     appId: string;
 }
 
-export interface SearchMicrofrontendsRequestParams {
+export interface SearchMicroserviceRequestParams {
     mfeAndMsSearchCriteria: MfeAndMsSearchCriteria;
 }
 
-export interface UpdateMicrofrontendRequestParams {
+export interface UpdateMicroserviceRequestParams {
     id: string;
-    updateMicrofrontendRequest: UpdateMicrofrontendRequest;
+    updateMicroserviceRequest: UpdateMicroserviceRequest;
 }
 
 
 @Injectable({
   providedIn: 'any'
 })
-export class MicrofrontendsAPIService {
+export class MicroservicesAPIService {
 
     protected basePath = 'http://onecx-product-store-bff:8080';
     public defaultHeaders = new HttpHeaders();
@@ -127,18 +127,18 @@ export class MicrofrontendsAPIService {
     }
 
     /**
-     * Create microfrontend
+     * Create microservice
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public createMicrofrontend(requestParameters: CreateMicrofrontendRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Microfrontend>;
-    public createMicrofrontend(requestParameters: CreateMicrofrontendRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Microfrontend>>;
-    public createMicrofrontend(requestParameters: CreateMicrofrontendRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Microfrontend>>;
-    public createMicrofrontend(requestParameters: CreateMicrofrontendRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
-        const createMicrofrontendRequest = requestParameters.createMicrofrontendRequest;
-        if (createMicrofrontendRequest === null || createMicrofrontendRequest === undefined) {
-            throw new Error('Required parameter createMicrofrontendRequest was null or undefined when calling createMicrofrontend.');
+    public createMicroservice(requestParameters: CreateMicroserviceRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Microservice>;
+    public createMicroservice(requestParameters: CreateMicroserviceRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Microservice>>;
+    public createMicroservice(requestParameters: CreateMicroserviceRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Microservice>>;
+    public createMicroservice(requestParameters: CreateMicroserviceRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+        const createMicroserviceRequest = requestParameters.createMicroserviceRequest;
+        if (createMicroserviceRequest === null || createMicroserviceRequest === undefined) {
+            throw new Error('Required parameter createMicroserviceRequest was null or undefined when calling createMicroservice.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -181,11 +181,11 @@ export class MicrofrontendsAPIService {
             }
         }
 
-        let localVarPath = `/microfrontends`;
-        return this.httpClient.request<Microfrontend>('post', `${this.configuration.basePath}${localVarPath}`,
+        let localVarPath = `/microservices`;
+        return this.httpClient.request<Microservice>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: createMicrofrontendRequest,
+                body: createMicroserviceRequest,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -196,18 +196,18 @@ export class MicrofrontendsAPIService {
     }
 
     /**
-     * Delete microfrontend by ID
+     * Delete microservice by ID
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public deleteMicrofrontend(requestParameters: DeleteMicrofrontendRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
-    public deleteMicrofrontend(requestParameters: DeleteMicrofrontendRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
-    public deleteMicrofrontend(requestParameters: DeleteMicrofrontendRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
-    public deleteMicrofrontend(requestParameters: DeleteMicrofrontendRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public deleteMicroservice(requestParameters: DeleteMicroserviceRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public deleteMicroservice(requestParameters: DeleteMicroserviceRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public deleteMicroservice(requestParameters: DeleteMicroserviceRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public deleteMicroservice(requestParameters: DeleteMicroserviceRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         const id = requestParameters.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling deleteMicrofrontend.');
+            throw new Error('Required parameter id was null or undefined when calling deleteMicroservice.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -241,7 +241,7 @@ export class MicrofrontendsAPIService {
             }
         }
 
-        let localVarPath = `/microfrontends/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        let localVarPath = `/microservices/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
         return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -255,18 +255,18 @@ export class MicrofrontendsAPIService {
     }
 
     /**
-     * Return microfrontend by ID
+     * Return microservices by ID
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getMicrofrontend(requestParameters: GetMicrofrontendRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Microfrontend>;
-    public getMicrofrontend(requestParameters: GetMicrofrontendRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Microfrontend>>;
-    public getMicrofrontend(requestParameters: GetMicrofrontendRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Microfrontend>>;
-    public getMicrofrontend(requestParameters: GetMicrofrontendRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public getMicroservice(requestParameters: GetMicroserviceRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Microservice>;
+    public getMicroservice(requestParameters: GetMicroserviceRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Microservice>>;
+    public getMicroservice(requestParameters: GetMicroserviceRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Microservice>>;
+    public getMicroservice(requestParameters: GetMicroserviceRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         const id = requestParameters.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling getMicrofrontend.');
+            throw new Error('Required parameter id was null or undefined when calling getMicroservice.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -300,8 +300,8 @@ export class MicrofrontendsAPIService {
             }
         }
 
-        let localVarPath = `/microfrontends/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<Microfrontend>('get', `${this.configuration.basePath}${localVarPath}`,
+        let localVarPath = `/microservices/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        return this.httpClient.request<Microservice>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -314,18 +314,18 @@ export class MicrofrontendsAPIService {
     }
 
     /**
-     * Return micro-frontend by its appId
+     * Return microservice by its appId
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getMicrofrontendByAppId(requestParameters: GetMicrofrontendByAppIdRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Microfrontend>;
-    public getMicrofrontendByAppId(requestParameters: GetMicrofrontendByAppIdRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Microfrontend>>;
-    public getMicrofrontendByAppId(requestParameters: GetMicrofrontendByAppIdRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Microfrontend>>;
-    public getMicrofrontendByAppId(requestParameters: GetMicrofrontendByAppIdRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public getMicroserviceByAppId(requestParameters: GetMicroserviceByAppIdRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Microservice>;
+    public getMicroserviceByAppId(requestParameters: GetMicroserviceByAppIdRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Microservice>>;
+    public getMicroserviceByAppId(requestParameters: GetMicroserviceByAppIdRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Microservice>>;
+    public getMicroserviceByAppId(requestParameters: GetMicroserviceByAppIdRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         const appId = requestParameters.appId;
         if (appId === null || appId === undefined) {
-            throw new Error('Required parameter appId was null or undefined when calling getMicrofrontendByAppId.');
+            throw new Error('Required parameter appId was null or undefined when calling getMicroserviceByAppId.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -359,8 +359,8 @@ export class MicrofrontendsAPIService {
             }
         }
 
-        let localVarPath = `/microfrontends/appId/${this.configuration.encodeParam({name: "appId", value: appId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<Microfrontend>('get', `${this.configuration.basePath}${localVarPath}`,
+        let localVarPath = `/microservices/appId/${this.configuration.encodeParam({name: "appId", value: appId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        return this.httpClient.request<Microservice>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -373,18 +373,18 @@ export class MicrofrontendsAPIService {
     }
 
     /**
-     * Search for microfrontend(s) by search criteria
+     * Search for microservices by search criteria
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public searchMicrofrontends(requestParameters: SearchMicrofrontendsRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<MicrofrontendPageResult>;
-    public searchMicrofrontends(requestParameters: SearchMicrofrontendsRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<MicrofrontendPageResult>>;
-    public searchMicrofrontends(requestParameters: SearchMicrofrontendsRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<MicrofrontendPageResult>>;
-    public searchMicrofrontends(requestParameters: SearchMicrofrontendsRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public searchMicroservice(requestParameters: SearchMicroserviceRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<MicroservicePageResult>;
+    public searchMicroservice(requestParameters: SearchMicroserviceRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<MicroservicePageResult>>;
+    public searchMicroservice(requestParameters: SearchMicroserviceRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<MicroservicePageResult>>;
+    public searchMicroservice(requestParameters: SearchMicroserviceRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         const mfeAndMsSearchCriteria = requestParameters.mfeAndMsSearchCriteria;
         if (mfeAndMsSearchCriteria === null || mfeAndMsSearchCriteria === undefined) {
-            throw new Error('Required parameter mfeAndMsSearchCriteria was null or undefined when calling searchMicrofrontends.');
+            throw new Error('Required parameter mfeAndMsSearchCriteria was null or undefined when calling searchMicroservice.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -427,8 +427,8 @@ export class MicrofrontendsAPIService {
             }
         }
 
-        let localVarPath = `/microfrontends/search`;
-        return this.httpClient.request<MicrofrontendPageResult>('post', `${this.configuration.basePath}${localVarPath}`,
+        let localVarPath = `/microservices/search`;
+        return this.httpClient.request<MicroservicePageResult>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 body: mfeAndMsSearchCriteria,
@@ -442,22 +442,22 @@ export class MicrofrontendsAPIService {
     }
 
     /**
-     * Update microfrontend by ID
+     * Update microservice by ID
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateMicrofrontend(requestParameters: UpdateMicrofrontendRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
-    public updateMicrofrontend(requestParameters: UpdateMicrofrontendRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
-    public updateMicrofrontend(requestParameters: UpdateMicrofrontendRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
-    public updateMicrofrontend(requestParameters: UpdateMicrofrontendRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public updateMicroservice(requestParameters: UpdateMicroserviceRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public updateMicroservice(requestParameters: UpdateMicroserviceRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public updateMicroservice(requestParameters: UpdateMicroserviceRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public updateMicroservice(requestParameters: UpdateMicroserviceRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         const id = requestParameters.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling updateMicrofrontend.');
+            throw new Error('Required parameter id was null or undefined when calling updateMicroservice.');
         }
-        const updateMicrofrontendRequest = requestParameters.updateMicrofrontendRequest;
-        if (updateMicrofrontendRequest === null || updateMicrofrontendRequest === undefined) {
-            throw new Error('Required parameter updateMicrofrontendRequest was null or undefined when calling updateMicrofrontend.');
+        const updateMicroserviceRequest = requestParameters.updateMicroserviceRequest;
+        if (updateMicroserviceRequest === null || updateMicroserviceRequest === undefined) {
+            throw new Error('Required parameter updateMicroserviceRequest was null or undefined when calling updateMicroservice.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -500,11 +500,11 @@ export class MicrofrontendsAPIService {
             }
         }
 
-        let localVarPath = `/microfrontends/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        let localVarPath = `/microservices/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
         return this.httpClient.request<any>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: updateMicrofrontendRequest,
+                body: updateMicroserviceRequest,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

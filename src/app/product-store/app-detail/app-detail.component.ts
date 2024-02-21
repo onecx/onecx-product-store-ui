@@ -7,16 +7,21 @@ import { TranslateService } from '@ngx-translate/core'
 import { PortalMessageService, UserService } from '@onecx/portal-integration-angular'
 import {
   CreateMicrofrontendRequest,
+  CreateMicroserviceRequest,
   GetMicrofrontendByAppIdRequestParams,
   MicrofrontendsAPIService,
-  MicrofrontendAbstract,
+  Microservice,
   Microfrontend,
-  UpdateMicrofrontendRequest
+  UpdateMicrofrontendRequest,
+  UpdateMicroserviceRequest,
+  MicroservicesAPIService,
+  GetMicroserviceByAppIdRequestParams
 } from 'src/app/shared/generated'
+import { AppAbstract } from '../app-search/app-search.component'
 
 export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
 
-export interface AppDetailForm {
+export interface MfeForm {
   appId: FormControl<string | null>
   appName: FormControl<string | null>
   appVersion: FormControl<string | null>
@@ -31,6 +36,13 @@ export interface AppDetailForm {
   note?: FormControl<string | null>
   exposedModule?: FormControl<string | null>
 }
+export interface MsForm {
+  appId: FormControl<string | null>
+  appName: FormControl<string | null>
+  appVersion: FormControl<string | null>
+  productName: FormControl<string | null>
+  description: FormControl<string | null>
+}
 
 @Component({
   selector: 'app-app-detail',
@@ -38,29 +50,33 @@ export interface AppDetailForm {
   styleUrls: ['./app-detail.component.scss']
 })
 export class AppDetailComponent implements OnChanges {
-  @Input() appAbstract: MicrofrontendAbstract | undefined
+  @Input() appAbstract: AppAbstract | undefined
   @Input() dateFormat = 'medium'
   @Input() changeMode: ChangeMode = 'VIEW'
-  @Input() displayDetailDialog = false
-  @Output() displayDetailDialogChange = new EventEmitter<boolean>()
+  @Input() displayDialog = false
+  @Output() displayDialogChange = new EventEmitter<boolean>()
+  @Output() appChanged = new EventEmitter<boolean>()
 
-  public app: Microfrontend | undefined
-  public formGroup: FormGroup
+  public mfe: Microfrontend | undefined
+  public ms: Microservice | undefined
+  public formGroupMfe: FormGroup
+  public formGroupMs: FormGroup
   public loading = false
   public hasCreatePermission = false
   public hasEditPermission = false
 
   constructor(
     private user: UserService,
-    private appApi: MicrofrontendsAPIService,
+    private msApi: MicroservicesAPIService,
+    private mfeApi: MicrofrontendsAPIService,
     private msgService: PortalMessageService,
     private translate: TranslateService
   ) {
-    this.hasCreatePermission = this.user.hasPermission('MICROFRONTEND#CREATE')
-    this.hasEditPermission = this.user.hasPermission('MICROFRONTEND#EDIT')
+    this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
+    this.hasEditPermission = this.user.hasPermission('APP#EDIT')
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'medium'
 
-    this.formGroup = new FormGroup<AppDetailForm>({
+    this.formGroupMfe = new FormGroup<MfeForm>({
       appId: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
       appName: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
       appVersion: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
@@ -75,21 +91,32 @@ export class AppDetailComponent implements OnChanges {
       iconName: new FormControl(null, [Validators.maxLength(255)]),
       note: new FormControl(null, [Validators.maxLength(255)])
     })
+    this.formGroupMs = new FormGroup<MsForm>({
+      appId: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
+      appName: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
+      appVersion: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
+      productName: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
+      description: new FormControl(null, [Validators.maxLength(255)])
+    })
   }
 
   ngOnChanges() {
-    if (this.appAbstract && this.displayDetailDialog) {
+    if (this.appAbstract?.id && this.displayDialog) {
       if (this.changeMode !== 'CREATE') {
-        this.getApp()
+        if (this.appAbstract.appType === 'MFE') this.getMfe()
+        if (this.appAbstract.appType === 'MS') this.getMs()
       } else if (this.changeMode === 'CREATE') {
-        this.app = undefined
+        this.ms = undefined
+        this.mfe = undefined
+        this.formGroupMs.reset()
+        this.formGroupMfe.reset()
       }
     }
   }
 
-  public getApp() {
+  public getMfe() {
     this.loading = true
-    this.appApi
+    this.mfeApi
       .getMicrofrontendByAppId({ appId: this.appAbstract?.appId } as GetMicrofrontendByAppIdRequestParams)
       .pipe(
         finalize(() => {
@@ -99,13 +126,39 @@ export class AppDetailComponent implements OnChanges {
       .subscribe({
         next: (data: any) => {
           if (data) {
-            this.app = data
-            this.viewForm(this.app)
+            this.mfe = data
+            if (this.mfe) this.viewFormMfe(this.mfe)
             if (this.changeMode === 'COPY') {
-              if (this.app?.id) {
-                this.app.id = undefined
-                this.app.creationDate = undefined
-                this.app.modificationDate = undefined
+              if (this.mfe?.id) {
+                this.mfe.id = undefined
+                this.mfe.creationDate = undefined
+                this.mfe.modificationDate = undefined
+              }
+              this.changeMode = 'CREATE'
+            } else this.changeMode = 'EDIT'
+          }
+        }
+      })
+  }
+  public getMs() {
+    this.loading = true
+    this.msApi
+      .getMicroserviceByAppId({ appId: this.appAbstract?.appId } as GetMicroserviceByAppIdRequestParams)
+      .pipe(
+        finalize(() => {
+          this.loading = false
+        })
+      )
+      .subscribe({
+        next: (data: any) => {
+          if (data) {
+            this.ms = data
+            if (this.ms) this.viewFormMs(this.ms)
+            if (this.changeMode === 'COPY') {
+              if (this.ms?.id) {
+                this.ms.id = undefined
+                this.ms.creationDate = undefined
+                this.ms.modificationDate = undefined
               }
               this.changeMode = 'CREATE'
             } else this.changeMode = 'EDIT'
@@ -114,46 +167,82 @@ export class AppDetailComponent implements OnChanges {
       })
   }
 
-  public viewForm(app?: Microfrontend): void {
-    if (app)
-      this.formGroup.setValue({
-        appId: app['appId'],
-        appName: app['appName'],
-        appVersion: app['appVersion'],
-        productName: app['productName'],
-        description: app['description'],
-        technology: app['technology'],
-        remoteBaseUrl: app['remoteBaseUrl'],
-        remoteEntry: app['remoteEntry'],
-        exposedModule: app['exposedModule'],
-        classifications: app['classifications'],
-        contact: app['contact'],
-        iconName: app['iconName'],
-        note: app['note']
-      })
+  public viewFormMfe(mfe: Microfrontend): void {
+    this.formGroupMfe.setValue({
+      appId: mfe['appId'],
+      appName: mfe['appName'],
+      appVersion: mfe['appVersion'],
+      productName: mfe['productName'],
+      description: mfe['description'],
+      technology: mfe['technology'],
+      remoteBaseUrl: mfe['remoteBaseUrl'],
+      remoteEntry: mfe['remoteEntry'],
+      exposedModule: mfe['exposedModule'],
+      classifications: mfe['classifications'],
+      contact: mfe['contact'],
+      iconName: mfe['iconName'],
+      note: mfe['note']
+    })
+  }
+  public viewFormMs(ms: Microservice): void {
+    this.formGroupMs.setValue({
+      appId: ms['appId'],
+      appName: ms['appName'],
+      appVersion: ms['appVersion'],
+      productName: ms['productName'],
+      description: ms['description']
+    })
   }
 
   public onDialogHide() {
-    this.displayDetailDialogChange.emit(false)
+    this.displayDialogChange.emit(false)
+    this.appChanged.emit(false)
   }
+
   public onSave() {
-    if (!this.formGroup.valid) {
-      this.msgService.error({ summaryKey: 'VALIDATION.FORM_INVALID' })
-      return
-    }
-    this.app = { ...this.formGroup.value, id: this.app?.id }
-    if (this.changeMode === 'CREATE') {
-      this.createApp()
-    } else if (this.changeMode === 'EDIT') {
-      this.updateApp()
+    if (this.appAbstract?.appType === 'MFE') {
+      if (!this.formGroupMfe.valid) {
+        this.msgService.error({ summaryKey: 'VALIDATION.FORM_INVALID' })
+        return
+      }
+      this.mfe = { ...this.formGroupMfe.value, id: this.mfe?.id }
+      if (this.changeMode === 'CREATE') {
+        this.createMfe()
+      } else if (this.changeMode === 'EDIT') {
+        this.updateMfe()
+      }
+    } else if (this.appAbstract?.appType === 'MS') {
+      if (!this.formGroupMs.valid) {
+        this.msgService.error({ summaryKey: 'VALIDATION.FORM_INVALID' })
+        return
+      }
+      this.ms = { ...this.formGroupMs.value, id: this.ms?.id }
+      if (this.changeMode === 'CREATE') {
+        this.createMs()
+      } else if (this.changeMode === 'EDIT') {
+        this.updateMs()
+      }
     }
   }
 
-  private createApp() {
-    this.appApi.createMicrofrontend({ createMicrofrontendRequest: this.app as CreateMicrofrontendRequest }).subscribe({
+  private createMfe() {
+    this.mfeApi.createMicrofrontend({ createMicrofrontendRequest: this.mfe as CreateMicrofrontendRequest }).subscribe({
       next: () => {
         this.msgService.success({ summaryKey: 'ACTIONS.CREATE.APP.OK' })
-        this.displayDetailDialogChange.emit(false)
+        this.displayDialogChange.emit(true)
+        this.appChanged.emit(true)
+      },
+      error: (err) => {
+        this.displaySaveError(err)
+      }
+    })
+  }
+  private createMs() {
+    this.msApi.createMicroservice({ createMicroserviceRequest: this.ms as CreateMicroserviceRequest }).subscribe({
+      next: () => {
+        this.msgService.success({ summaryKey: 'ACTIONS.CREATE.APP.OK' })
+        this.displayDialogChange.emit(true)
+        this.appChanged.emit(true)
       },
       error: (err) => {
         this.displaySaveError(err)
@@ -161,16 +250,34 @@ export class AppDetailComponent implements OnChanges {
     })
   }
 
-  private updateApp() {
-    this.appApi
+  private updateMfe() {
+    this.mfeApi
       .updateMicrofrontend({
-        id: this.app?.id ?? '',
-        updateMicrofrontendRequest: this.app as UpdateMicrofrontendRequest
+        id: this.mfe?.id ?? '',
+        updateMicrofrontendRequest: this.mfe as UpdateMicrofrontendRequest
       })
       .subscribe({
         next: () => {
           this.msgService.success({ summaryKey: 'ACTIONS.EDIT.APP.OK' })
-          this.displayDetailDialogChange.emit(false)
+          //this.displayDialogChange.emit(false)
+          this.appChanged.emit(true)
+        },
+        error: (err) => {
+          this.displaySaveError(err)
+        }
+      })
+  }
+  private updateMs() {
+    this.msApi
+      .updateMicroservice({
+        id: this.ms?.id ?? '',
+        updateMicroserviceRequest: this.ms as UpdateMicroserviceRequest
+      })
+      .subscribe({
+        next: () => {
+          this.msgService.success({ summaryKey: 'ACTIONS.EDIT.APP.OK' })
+          this.displayDialogChange.emit(true)
+          this.appChanged.emit(true)
         },
         error: (err) => {
           this.displaySaveError(err)

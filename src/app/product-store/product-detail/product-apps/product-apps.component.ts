@@ -7,12 +7,16 @@ import {
   Product,
   MicrofrontendsAPIService,
   MicrofrontendPageResult,
-  MicrofrontendAbstract
+  MicrofrontendAbstract,
+  Microservice
 } from 'src/app/shared/generated'
 import { dropDownSortItemsByLabel, limitText } from 'src/app/shared/utils'
 import { IconService } from 'src/app/shared/iconservice'
 
 import { ChangeMode } from '../../app-detail/app-detail.component'
+
+export type AppType = 'MS' | 'MFE'
+export type AppAbstract = MicrofrontendAbstract & Microservice & { appType: AppType }
 
 @Component({
   selector: 'app-product-apps',
@@ -23,8 +27,10 @@ export class ProductAppsComponent implements OnChanges {
   @Input() product: Product | undefined
   @Input() dateFormat = 'medium'
   @Input() changeMode: ChangeMode = 'VIEW'
+
+  private readonly debug = true // to be removed after finalization
   public apps$!: Observable<MicrofrontendPageResult>
-  public app: MicrofrontendAbstract | undefined
+  public app: AppAbstract | undefined
   public iconItems: SelectItem[] = [{ label: '', value: null }]
   public filter: string | undefined
   public viewMode = 'grid'
@@ -41,21 +47,28 @@ export class ProductAppsComponent implements OnChanges {
   public limitText = limitText
 
   constructor(private icon: IconService, private user: UserService, private appApi: MicrofrontendsAPIService) {
-    this.hasCreatePermission = this.user.hasPermission('MICROFRONTEND#CREATE')
-    this.hasDeletePermission = this.user.hasPermission('MICROFRONTEND#DELETE')
+    this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
+    this.hasDeletePermission = this.user.hasPermission('APP#DELETE')
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
     this.iconItems.sort(dropDownSortItemsByLabel)
   }
 
   ngOnChanges(): void {
-    if (this.product) this.loadApps()
+    if (this.product) this.searchApps()
   }
 
-  public loadApps(): void {
+  private log(text: string, obj?: object): void {
+    if (this.debug) {
+      if (obj) console.log('app search: ' + text, obj)
+      else console.log('app search: ' + text)
+    }
+  }
+
+  public searchApps(): void {
     this.searchInProgress = true
     this.apps$ = this.appApi
       .searchMicrofrontends({
-        microfrontendSearchCriteria: { productName: this.product?.name, pageSize: 1000 }
+        mfeAndMsSearchCriteria: { productName: this.product?.name, pageSize: 100 }
       })
       .pipe(finalize(() => (this.searchInProgress = false)))
   }
@@ -74,26 +87,34 @@ export class ProductAppsComponent implements OnChanges {
     this.sortOrder = asc ? -1 : 1
   }
 
-  public onDetail(ev: any, app: MicrofrontendAbstract) {
+  public onDetail(ev: any, app: AppAbstract) {
     ev.stopPropagation()
-    this.app = app
+    //this.app = app
     this.changeMode = 'EDIT'
     this.displayDetailDialog = true
   }
-  public onCopy(ev: any, app: MicrofrontendAbstract) {
+  public onCopy(ev: any, app: AppAbstract) {
     ev.stopPropagation()
-    this.app = app
+    //this.app = app
     this.changeMode = 'COPY'
     this.displayDetailDialog = true
   }
   public onCreate() {
     this.changeMode = 'CREATE'
-    this.app = undefined
+    //this.app = undefined
     this.displayDetailDialog = true
   }
-  public onDelete(ev: any, app: MicrofrontendAbstract) {
+  public onDelete(ev: any, app: AppAbstract) {
     ev.stopPropagation()
-    this.app = app
+    // this.app = app
     this.displayDeleteDialog = true
+  }
+  public appChanged(changed: any) {
+    this.displayDetailDialog = false
+    if (changed) this.searchApps()
+  }
+  public appDeleted(deleted: any) {
+    this.displayDeleteDialog = false
+    if (deleted) this.searchApps()
   }
 }
