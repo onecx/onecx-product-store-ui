@@ -3,8 +3,11 @@ import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { finalize } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
+import { SelectItem } from 'primeng/api'
 
 import { PortalMessageService, UserService } from '@onecx/portal-integration-angular'
+import { IconService } from 'src/app/shared/iconservice'
+import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
 import {
   CreateMicrofrontendRequest,
   CreateMicroserviceRequest,
@@ -63,9 +66,11 @@ export class AppDetailComponent implements OnChanges {
   public loading = false
   public hasCreatePermission = false
   public hasEditPermission = false
+  public iconItems: SelectItem[] = [{ label: '', value: null }] // default value is empty
 
   constructor(
     private user: UserService,
+    private icon: IconService,
     private msApi: MicroservicesAPIService,
     private mfeApi: MicrofrontendsAPIService,
     private msgService: PortalMessageService,
@@ -74,6 +79,8 @@ export class AppDetailComponent implements OnChanges {
     this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
     this.hasEditPermission = this.user.hasPermission('APP#EDIT')
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'medium'
+    this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
+    this.iconItems.sort(dropDownSortItemsByLabel)
 
     this.formGroupMfe = new FormGroup<MfeForm>({
       appId: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
@@ -209,6 +216,19 @@ export class AppDetailComponent implements OnChanges {
         return
       }
       this.mfe = { ...this.formGroupMfe.value, id: this.mfe?.id }
+      // manage classifications => is string array
+      if (this.mfe?.classifications) {
+        const a: string = this.formGroupMfe.controls['classifications'].value
+        let ar: Array<string> | undefined = []
+        if (ar && a?.length > 0) {
+          a.toString()
+            .split(',')
+            .map((a) => ar?.push(a.trim()))
+        } else ar = undefined
+        this.mfe.classifications = ar?.sort()
+      } else if (this.mfe) {
+        this.mfe.classifications = undefined
+      }
       if (this.changeMode === 'CREATE') {
         this.createMfe()
       } else if (this.changeMode === 'EDIT') {

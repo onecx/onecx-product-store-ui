@@ -46,7 +46,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public viewMode = 'grid'
   public changeMode: ChangeMode = 'VIEW'
   public filter: string | undefined
-  public sortField = 'appName'
+  public sortField = 'appId'
   public sortOrder = 1
   public searchInProgress = false
   public displayDetailDialog = false
