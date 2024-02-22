@@ -60,7 +60,7 @@
       [rows]="viewMode === 'grid' ? 24 : 10"
       [layout]="viewMode"
       [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
-      filterBy="appId,appName,productName"
+      filterBy="appId,appName,appType,productName,classifications"
       [sortField]="sortField"
       [sortOrder]="sortOrder"
     >
@@ -84,7 +84,8 @@
             'APP.APP_ID' | translate,
             'APP.APP_NAME' | translate,
             'APP.APP_TYPE' | translate,
-            'APP.PRODUCT_NAME' | translate
+            'APP.PRODUCT_NAME' | translate,
+            'APP.CLASSIFICATIONS' | translate
           ]"
           (sortChange)="onSortChange($event)"
           (sortDirectionChange)="onSortDirChange($event)"
@@ -99,14 +100,14 @@
             [class.bg-primary]="app.appType === 'MFE'"
           >
             <span
-              *ngIf="hasCreatePermission"
+              *ngIf="app.operator === 'MANUELL' && hasCreatePermission"
               [id]="'app_search_data_' + app.appId + '_copy_app'"
               class="card-badge-left badge-1 p-2 pi pi-copy pseudo-button-link"
               [title]="'ACTIONS.COPY.LABEL' | translate"
               (click)="onCopy($event, app)"
             ></span>
             <span
-              *ngIf="hasDeletePermission"
+              *ngIf="app.operator === 'MANUELL' && hasDeletePermission"
               [id]="'app_search_data_' + app.appId + '_delete_app'"
               class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text pseudo-button-link"
               [title]="'ACTIONS.DELETE.LABEL' | translate"
@@ -118,7 +119,13 @@
               [title]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
               (click)="onGotoProduct($event, app.productName)"
             ></span>
-
+            <span
+              *ngIf="app.appType === 'MFE'"
+              [id]="'app_search_data_icon'"
+              class="card-badge-right badge-2 p-2 pi pseudo-button-link"
+              [ngClass]="'pi-' + app.iconName"
+              [title]="'APP.ICON_NAME' | translate"
+            ></span>
             <div class="h-4rem flex flex-column justify-content-between gap-1 text-center">
               <div class="font-bold" [title]="'ID: ' + app.appId">{{ limitText(app.appId, 25) }}</div>
               <div class="text-sm" [title]="'APP.APP_TYPE' | translate">{{ app.appType }}</div>

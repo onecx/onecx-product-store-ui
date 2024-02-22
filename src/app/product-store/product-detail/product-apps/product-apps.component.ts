@@ -3,13 +3,7 @@ import { SelectItem } from 'primeng/api'
 import { Observable, finalize } from 'rxjs'
 
 import { DataViewControlTranslations, UserService } from '@onecx/portal-integration-angular'
-import {
-  Product,
-  MicrofrontendsAPIService,
-  MicrofrontendPageResult,
-  MicrofrontendAbstract,
-  Microservice
-} from 'src/app/shared/generated'
+import { Product, MicrofrontendsAPIService, MicrofrontendPageResult } from 'src/app/shared/generated'
 import { dropDownSortItemsByLabel, limitText } from 'src/app/shared/utils'
 import { IconService } from 'src/app/shared/iconservice'
 

@@ -574,7 +574,11 @@ paths:
           in: path
           required: true
           schema:
+<<<<<<< HEAD
             $ref: "#/components/schemas/RefType"
+=======
+            $ref: '#/components/schemas/RefType'
+>>>>>>> ac27cd1 (feat: update BFF api)
       operationId: uploadImage
       requestBody:
         required: true
@@ -584,13 +588,21 @@ paths:
               type: string
               format: binary
       responses:
+<<<<<<< HEAD
         "201":
+=======
+        '201':
+>>>>>>> ac27cd1 (feat: update BFF api)
           description: CREATED
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ImageInfo'
+<<<<<<< HEAD
         "400":
+=======
+        '400':
+>>>>>>> ac27cd1 (feat: update BFF api)
           description: Bad Request
     get:
       x-onecx:
@@ -611,16 +623,26 @@ paths:
           in: path
           required: true
           schema:
+<<<<<<< HEAD
             $ref: "#/components/schemas/RefType"
       responses:
         "200":
+=======
+            $ref: '#/components/schemas/RefType'
+      responses:
+        '200':
+>>>>>>> ac27cd1 (feat: update BFF api)
           description: OK
           content:
             image/*:
               schema:
                 type: string
                 format: binary
+<<<<<<< HEAD
         "400":
+=======
+        '400':
+>>>>>>> ac27cd1 (feat: update BFF api)
           description: Bad request
           content:
             application/json:
@@ -651,7 +673,11 @@ paths:
           in: path
           required: true
           schema:
+<<<<<<< HEAD
             $ref: "#/components/schemas/RefType"
+=======
+            $ref: '#/components/schemas/RefType'
+>>>>>>> ac27cd1 (feat: update BFF api)
       requestBody:
         required: true
         content:
@@ -660,13 +686,21 @@ paths:
               type: string
               format: binary
       responses:
+<<<<<<< HEAD
         "200":
+=======
+        '200':
+>>>>>>> ac27cd1 (feat: update BFF api)
           description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ImageInfo'
+<<<<<<< HEAD
         "400":
+=======
+        '400':
+>>>>>>> ac27cd1 (feat: update BFF api)
           description: Bad request
           content:
             application/json:
@@ -676,7 +710,11 @@ components:
   schemas:
     RefType:
       type: string
+<<<<<<< HEAD
       enum: [ logo, favicon ]
+=======
+      enum: [logo, favicon]
+>>>>>>> ac27cd1 (feat: update BFF api)
     ImageInfo:
       type: object
       properties:
