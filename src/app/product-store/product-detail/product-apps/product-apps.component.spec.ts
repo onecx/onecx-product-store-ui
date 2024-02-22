@@ -7,7 +7,9 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
 import { ProductAppsComponent } from './product-apps.component'
-import { ProductsAPIService, Product, MicrofrontendAbstract } from 'src/app/shared/generated'
+import { ProductsAPIService, Product } from 'src/app/shared/generated'
+
+import { AppAbstract } from '../../app-search/app-search.component'
 
 const product: Product = {
   id: 'id',
@@ -15,12 +17,13 @@ const product: Product = {
   basePath: 'path'
 }
 
-const mockApp: MicrofrontendAbstract = {
-  appId: 'appId',
-  appName: 'appName',
+const mockApp: AppAbstract = {
   id: 'id',
+  appId: 'appId',
+  appType: 'MFE',
+  appName: 'appName',
   productName: 'prodName',
-  remoteBaseUrl: 'url'
+  remoteBaseUrl: ''
 }
 
 describe('ProductAppsComponent', () => {
@@ -69,16 +72,16 @@ describe('ProductAppsComponent', () => {
     expect(component).toBeTruthy()
   })
 
-  it('should call loadApps onChanges if product exists', () => {
+  it('should call searchApps onChanges if product exists', () => {
     component.product = product
-    spyOn(component, 'loadApps')
+    spyOn(component, 'searchApps')
 
     component.ngOnChanges()
 
-    expect(component.loadApps).toHaveBeenCalled()
+    expect(component.searchApps).toHaveBeenCalled()
   })
 
-  it('should search microfrontends on loadApps', () => {
+  it('should search microfrontends on searchApps', () => {
     const searchSpy = spyOn((component as any).appApi, 'searchMicrofrontends').and.returnValue(
       of({
         totalElements: 0,
@@ -89,7 +92,7 @@ describe('ProductAppsComponent', () => {
       })
     )
 
-    component.loadApps()
+    component.searchApps()
 
     expect(searchSpy).toHaveBeenCalledWith({
       microfrontendSearchCriteria: { productName: component.product?.name, pageSize: 1000 }

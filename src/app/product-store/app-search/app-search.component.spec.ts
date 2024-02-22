@@ -8,10 +8,10 @@ import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { UserService } from '@onecx/portal-integration-angular'
-import { AppSearchComponent, MicrofrontendSearchCriteria } from './app-search.component'
-import { MicrofrontendsAPIService /* , Microfrontend */ } from 'src/app/shared/generated'
+import { AppAbstract, AppSearchComponent, AppSearchCriteria } from './app-search.component'
+import { MicrofrontendsAPIService } from 'src/app/shared/generated'
 
-const form = new FormGroup<MicrofrontendSearchCriteria>({
+const form = new FormGroup<AppSearchCriteria>({
   appId: new FormControl<string | null>(null, Validators.minLength(2)),
   appName: new FormControl<string | null>(null),
   productName: new FormControl<string | null>(null)
@@ -168,9 +168,10 @@ describe('AppSearchComponent', () => {
 
   it('should should assign app to component property and change to edit mode onDetail', () => {
     const event = { stopPropagation: jasmine.createSpy() }
-    const app = {
+    const app: AppAbstract = {
       id: 'id',
       appId: 'appId',
+      appType: 'MFE',
       appName: 'appName',
       remoteBaseUrl: 'url',
       productName: 'product'
@@ -185,9 +186,10 @@ describe('AppSearchComponent', () => {
 
   it('should should assign app to component property and change to copy mode onCopy', () => {
     const event = { stopPropagation: jasmine.createSpy() }
-    const app = {
+    const app: AppAbstract = {
       id: 'id',
       appId: 'appId',
+      appType: 'MFE',
       appName: 'appName',
       remoteBaseUrl: 'url',
       productName: 'product'
@@ -201,7 +203,7 @@ describe('AppSearchComponent', () => {
   })
 
   it('should should assign app to component property and change to copy mode onCreate', () => {
-    component.onCreate()
+    component.onCreate('MFE')
 
     expect(component.app).toBeUndefined()
     expect(component.changeMode).toBe('CREATE')
@@ -210,9 +212,10 @@ describe('AppSearchComponent', () => {
 
   it('should should assign app to component property and change to copy mode onDelete', () => {
     const event = { stopPropagation: jasmine.createSpy() }
-    const app = {
+    const app: AppAbstract = {
       id: 'id',
       appId: 'appId',
+      appType: 'MFE',
       appName: 'appName',
       remoteBaseUrl: 'url',
       productName: 'product'

@@ -7,10 +7,10 @@ import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { PortalMessageService, ConfigurationService, UserService } from '@onecx/portal-integration-angular'
-import { AppDetailComponent, AppDetailForm } from './app-detail.component'
+import { AppDetailComponent, MfeForm } from './app-detail.component'
 import { MicrofrontendsAPIService, Microfrontend } from 'src/app/shared/generated'
 
-const form = new FormGroup<AppDetailForm>({
+const form = new FormGroup<MfeForm>({
   appId: new FormControl('id', Validators.minLength(2)),
   appName: new FormControl(''),
   appVersion: new FormControl(''),
@@ -26,7 +26,7 @@ const form = new FormGroup<AppDetailForm>({
   note: new FormControl('')
 })
 
-const app: Microfrontend = {
+const mfe: Microfrontend = {
   appId: 'appId',
   id: 'id',
   appName: 'name',
@@ -117,70 +117,72 @@ describe('AppDetailComponent', () => {
     expect(component).toBeTruthy()
   })
 
-  it('should get call getApp onChanges if not create mode', () => {
+  it('should get call getMfe onChanges if not create mode', () => {
     component.appAbstract = {
+      id: 'id',
       appId: 'appId',
+      appType: 'MFE',
       appName: 'name',
       remoteBaseUrl: 'url',
-      id: 'id',
       productName: 'productName'
     }
-    component.displayDetailDialog = true
+    component.displayDialog = true
     component.changeMode = 'EDIT'
-    spyOn(component, 'getApp')
+    spyOn(component, 'getMfe')
 
     component.ngOnChanges()
 
-    expect(component.getApp).toHaveBeenCalled()
+    expect(component.getMfe).toHaveBeenCalled()
   })
 
-  it('should set app to undefined onChanges in create mode', () => {
+  it('should set mfe to undefined onChanges in create mode', () => {
     component.appAbstract = {
+      id: 'id',
       appId: 'appId',
+      appType: 'MFE',
       appName: 'name',
       remoteBaseUrl: 'url',
-      id: 'id',
       productName: 'productName'
     }
-    component.displayDetailDialog = true
+    component.displayDialog = true
     component.changeMode = 'CREATE'
-    spyOn(component, 'getApp')
+    spyOn(component, 'getMfe')
 
     component.ngOnChanges()
 
-    expect(component.app).toBeUndefined()
+    expect(component.mfe).toBeUndefined()
   })
 
-  it('should getApp', () => {
-    apiServiceSpy.getMicrofrontendByAppId.and.returnValue(of(app))
-    component.formGroup = form
+  it('should getMfe', () => {
+    apiServiceSpy.getMicrofrontendByAppId.and.returnValue(of(mfe))
+    component.formGroupMfe = form
 
-    component.getApp()
+    component.getMfe()
 
-    expect(component.app).toBe(app)
+    expect(component.mfe).toBe(mfe)
   })
 
-  it('should getApp and prepare copy', () => {
-    apiServiceSpy.getMicrofrontendByAppId.and.returnValue(of(app))
-    component.formGroup = form
+  it('should getMfe and prepare copy', () => {
+    apiServiceSpy.getMicrofrontendByAppId.and.returnValue(of(mfe))
+    component.formGroupMfe = form
     component.changeMode = 'COPY'
-    component.app = app
+    component.mfe = mfe
 
-    component.getApp()
+    component.getMfe()
 
-    expect(component.app.id).toBeUndefined()
+    expect(component.mfe.id).toBeUndefined()
   })
 
   it('should behave correctly onDialogHide', () => {
-    spyOn(component.displayDetailDialogChange, 'emit')
+    spyOn(component.displayDialogChange, 'emit')
 
     component.onDialogHide()
 
-    expect(component.displayDetailDialogChange.emit).toHaveBeenCalledWith(false)
+    expect(component.displayDialogChange.emit).toHaveBeenCalledWith(false)
   })
 
   it('should display error if form is invalid onSave', () => {
-    component.formGroup = new FormGroup<AppDetailForm>({
+    component.formGroupMfe = new FormGroup<MfeForm>({
       appId: new FormControl('i', Validators.minLength(2)),
       appName: new FormControl(''),
       appVersion: new FormControl(''),
@@ -204,7 +206,7 @@ describe('AppDetailComponent', () => {
 
   it('should call createApp onSave in create mode', () => {
     apiServiceSpy.createMicrofrontend.and.returnValue(of({}))
-    component.formGroup = form
+    component.formGroupMfe = form
     component.changeMode = 'CREATE'
 
     component.onSave()
@@ -220,7 +222,7 @@ describe('AppDetailComponent', () => {
       }
     }
     apiServiceSpy.createMicrofrontend.and.returnValue(throwError(() => err))
-    component.formGroup = form
+    component.formGroupMfe = form
     component.changeMode = 'CREATE'
 
     component.onSave()
@@ -234,7 +236,7 @@ describe('AppDetailComponent', () => {
 
   it('should call updateApp onSave in edit mode', () => {
     apiServiceSpy.updateMicrofrontend.and.returnValue(of({}))
-    component.formGroup = form
+    component.formGroupMfe = form
     component.changeMode = 'EDIT'
 
     component.onSave()
@@ -242,7 +244,7 @@ describe('AppDetailComponent', () => {
     expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.EDIT.APP.OK' })
   })
 
-  it('should display save error in edit mode: unique constraint app id', () => {
+  it('should display save error in edit mode: unique constraint mfe id', () => {
     const err = {
       error: {
         detail: 'error: microfrontend_app_id',
@@ -250,7 +252,7 @@ describe('AppDetailComponent', () => {
       }
     }
     apiServiceSpy.updateMicrofrontend.and.returnValue(throwError(() => err))
-    component.formGroup = form
+    component.formGroupMfe = form
     component.changeMode = 'EDIT'
 
     component.onSave()
@@ -262,7 +264,7 @@ describe('AppDetailComponent', () => {
     })
   })
 
-  it('should display save error in edit mode: unique constraint app id', () => {
+  it('should display save error in edit mode: unique constraint mfe id', () => {
     const err = {
       error: {
         detail: 'error: microfrontend_remote_module',
@@ -270,7 +272,7 @@ describe('AppDetailComponent', () => {
       }
     }
     apiServiceSpy.updateMicrofrontend.and.returnValue(throwError(() => err))
-    component.formGroup = form
+    component.formGroupMfe = form
     component.changeMode = 'EDIT'
 
     component.onSave()
@@ -290,7 +292,7 @@ describe('AppDetailComponent', () => {
       }
     }
     apiServiceSpy.updateMicrofrontend.and.returnValue(throwError(() => err))
-    component.formGroup = form
+    component.formGroupMfe = form
     component.changeMode = 'EDIT'
 
     component.onSave()

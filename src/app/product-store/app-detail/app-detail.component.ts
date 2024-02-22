@@ -20,6 +20,7 @@ import {
   MicroservicesAPIService,
   GetMicroserviceByAppIdRequestParams
 } from 'src/app/shared/generated'
+
 import { AppAbstract, ChangeMode } from '../app-search/app-search.component'
 
 export interface MfeForm {

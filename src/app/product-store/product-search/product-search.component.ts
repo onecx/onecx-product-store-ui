@@ -151,7 +151,7 @@ export class ProductSearchComponent implements OnInit {
     this.router.navigate(['./new'], { relativeTo: this.route })
   }
 
-  private getImageUrl(product: any): string {
+  public getImageUrl(product: any): string {
     if (product.imageUrl) {
       return product.imageUrl
     } else {

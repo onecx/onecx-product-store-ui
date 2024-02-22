@@ -34,17 +34,17 @@ describe('AppDeleteComponent', () => {
   })
 
   it('should behave correctly onDialogHide', () => {
-    spyOn(component.displayDialogChange, 'emit')
+    spyOn(component.appDeleted, 'emit')
 
     component.onDialogHide()
 
-    expect(component.displayDialogChange.emit).toHaveBeenCalledWith(false)
+    expect(component.appDeleted.emit).toHaveBeenCalledWith(false)
   })
 
   it('should confirmDeletion', () => {
     spyOn(console, 'log')
 
-    component.confirmDeletion()
+    component.onConfirmDeletion()
 
     expect(console.log).toHaveBeenCalledWith('confirmDeletion')
   })
