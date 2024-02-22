@@ -21,7 +21,7 @@
           '600px': '100vw',
       }"
 >
-  <form *ngIf="appAbstract?.appType === 'MFE'" [formGroup]="formGroupMfe" errorTailor>
+  <form *ngIf="!loading && appAbstract?.appType === 'MFE'" [formGroup]="formGroupMfe" errorTailor>
     <ng-template pTemplate="header">
       <span>{{ 'ACTIONS.' + this.changeMode + '.MFE.HEADER' | translate }}</span>
     </ng-template>
@@ -293,7 +293,7 @@
     </p-fieldset>
   </form>
 
-  <form *ngIf="appAbstract?.appType === 'MS'" [formGroup]="formGroupMs" errorTailor>
+  <form *ngIf="!loading && appAbstract?.appType === 'MS'" [formGroup]="formGroupMs" errorTailor>
     <ng-template pTemplate="header">
       <span>{{ 'ACTIONS.' + this.changeMode + '.MS.HEADER' | translate }}</span>
     </ng-template>

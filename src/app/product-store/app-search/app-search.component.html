@@ -53,7 +53,7 @@
   <ocx-page-content>
     <p-dataView
       id="product_search_dataview"
-      [value]="apps"
+      [value]="(apps$ | async) ?? []"
       [paginator]="true"
       [alwaysShowPaginator]="false"
       [rowsPerPageOptions]="[10, 20, 50]"
