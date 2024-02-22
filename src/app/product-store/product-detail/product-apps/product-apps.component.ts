@@ -13,10 +13,7 @@ import {
 import { dropDownSortItemsByLabel, limitText } from 'src/app/shared/utils'
 import { IconService } from 'src/app/shared/iconservice'
 
-import { ChangeMode } from '../../app-detail/app-detail.component'
-
-export type AppType = 'MS' | 'MFE'
-export type AppAbstract = MicrofrontendAbstract & Microservice & { appType: AppType }
+import { AppAbstract, ChangeMode } from '../../app-search/app-search.component'
 
 @Component({
   selector: 'app-product-apps',
