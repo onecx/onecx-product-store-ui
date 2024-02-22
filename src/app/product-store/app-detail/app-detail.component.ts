@@ -17,9 +17,7 @@ import {
   MicroservicesAPIService,
   GetMicroserviceByAppIdRequestParams
 } from 'src/app/shared/generated'
-import { AppAbstract } from '../app-search/app-search.component'
-
-export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
+import { AppAbstract, ChangeMode } from '../app-search/app-search.component'
 
 export interface MfeForm {
   appId: FormControl<string | null>
@@ -57,6 +55,7 @@ export class AppDetailComponent implements OnChanges {
   @Output() displayDialogChange = new EventEmitter<boolean>()
   @Output() appChanged = new EventEmitter<boolean>()
 
+  private debug = true
   public mfe: Microfrontend | undefined
   public ms: Microservice | undefined
   public formGroupMfe: FormGroup
@@ -101,16 +100,20 @@ export class AppDetailComponent implements OnChanges {
   }
 
   ngOnChanges() {
-    if (this.appAbstract?.id && this.displayDialog) {
-      if (this.changeMode !== 'CREATE') {
-        if (this.appAbstract.appType === 'MFE') this.getMfe()
-        if (this.appAbstract.appType === 'MS') this.getMs()
-      } else if (this.changeMode === 'CREATE') {
-        this.ms = undefined
-        this.mfe = undefined
-        this.formGroupMs.reset()
-        this.formGroupMfe.reset()
-      }
+    if (this.changeMode === 'CREATE') {
+      this.ms = undefined
+      this.mfe = undefined
+      this.formGroupMs.reset()
+      this.formGroupMfe.reset()
+    } else if (this.appAbstract?.id) {
+      if (this.appAbstract.appType === 'MFE') this.getMfe()
+      if (this.appAbstract.appType === 'MS') this.getMs()
+    }
+  }
+  private log(text: string, obj?: object): void {
+    if (this.debug) {
+      if (obj) console.log('app detail: ' + text, obj)
+      else console.log('app detail: ' + text)
     }
   }
 

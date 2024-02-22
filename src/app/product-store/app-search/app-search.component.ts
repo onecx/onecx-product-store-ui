@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core'
-import { HttpErrorResponse } from '@angular/common/http'
 import { FormControl, FormGroup } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 import { DataView } from 'primeng/dataview'
-import { combineLatest, finalize, map, Observable, Subject, takeUntil } from 'rxjs'
+import { combineLatest, finalize, map, of, Observable, Subject, startWith, catchError } from 'rxjs'
 
 import { Action, DataViewControlTranslations, UserService } from '@onecx/portal-integration-angular'
 import {
@@ -16,15 +15,16 @@ import {
   MicroservicesAPIService
 } from 'src/app/shared/generated'
 import { limitText } from 'src/app/shared/utils'
-import { ChangeMode } from '../app-detail/app-detail.component'
 
 export interface AppSearchCriteria {
   appId: FormControl<string | null>
   appName: FormControl<string | null>
+  //  appType: FormControl<AppType | null>
   productName: FormControl<string | null>
 }
 export type AppType = 'MS' | 'MFE'
 export type AppAbstract = MicrofrontendAbstract & Microservice & { appType: AppType }
+export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
 
 @Component({
   templateUrl: './app-search.component.html',
@@ -33,7 +33,6 @@ export type AppAbstract = MicrofrontendAbstract & Microservice & { appType: AppT
 export class AppSearchComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject()
   private readonly debug = true // to be removed after finalization
-  public dataAccessIssue = false
   public exceptionKey = ''
   public loading = true
   public actions$: Observable<Action[]> | undefined
@@ -103,7 +102,15 @@ export class AppSearchComponent implements OnInit, OnDestroy {
           pageSize: 100
         }
       })
-      .pipe(finalize(() => (this.searchInProgress = false)))
+      .pipe(
+        startWith({} as MicrofrontendPageResult),
+        catchError((err) => {
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
+          console.error('searchMicrofrontends():', err)
+          return of({} as MicrofrontendPageResult)
+        }),
+        finalize(() => (this.searchInProgress = false))
+      )
 
     this.mss$ = this.msApi
       .searchMicroservice({
@@ -114,37 +121,36 @@ export class AppSearchComponent implements OnInit, OnDestroy {
           pageSize: 100
         }
       })
-      .pipe(finalize(() => (this.searchInProgress = false)))
+      .pipe(
+        startWith({} as MicroservicePageResult),
+        catchError((err) => {
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
+          console.error('searchMicroservice():', err)
+          return of({} as MicroservicePageResult)
+        }),
+        finalize(() => (this.searchInProgress = false))
+      )
 
-    this.apps = []
-    combineLatest(this.mfes$, this.mss$)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(([microfrontends, microservices]) => {
-        // mfe
-        if (microfrontends instanceof HttpErrorResponse) {
-          this.dataAccessIssue = true
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + microfrontends.status + '.WORKSPACES'
-          console.error('searchMicrofrontends():', microfrontends)
-        } else if (microfrontends instanceof Object) {
-          if (microfrontends?.stream)
-            for (let app of microfrontends.stream) this.apps?.push({ ...app, appType: 'MFE' } as AppAbstract)
-          this.log('searchMicrofrontends():', microfrontends.stream)
-        } else console.error('searchMicrofrontends() => unknown response:', microfrontends)
-        // ms
-        if (!this.dataAccessIssue) {
-          if (microservices instanceof HttpErrorResponse) {
-            this.dataAccessIssue = true
-            this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + microservices.status + '.WORKSPACES'
-            console.error('searchMicroservice():', microservices)
-          } else if (microservices instanceof Object) {
-            if (microservices?.stream)
-              for (let app of microservices.stream) this.apps?.push({ ...app, appType: 'MS' } as AppAbstract)
-            this.log('searchMicroservice():', microservices?.stream)
-          } else console.error('searchMicroservice() => unknown response:', microservices)
-        }
-        this.log('searchApps():', this.apps)
-        this.loading = false
-      })
+    this.apps$ = combineLatest([
+      this.mfes$.pipe(
+        map((a) => {
+          return a.stream
+            ? a.stream?.map((mfe) => {
+                return { ...mfe, appType: 'MFE' } as AppAbstract
+              })
+            : []
+        })
+      ),
+      this.mss$.pipe(
+        map((a) => {
+          return a.stream
+            ? a.stream?.map((ms) => {
+                return { ...ms, appType: 'MS' } as AppAbstract
+              })
+            : []
+        })
+      )
+    ]).pipe(map(([mfes, mss]) => mfes.concat(mss)))
   }
 
   private prepareActionButtons(): void {
@@ -237,14 +243,15 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     this.displayDeleteDialog = true
   }
 
+  /**
+   * trigger search after any change on detail level
+   */
   public appChanged(changed: any) {
     this.displayDetailDialog = false
     if (changed) this.searchApps()
   }
   public appDeleted(deleted: any) {
     this.displayDeleteDialog = false
-    if (deleted && this.app?.id) {
-      this.apps = this.apps.filter((app) => app.id !== this.app?.id)
-    }
+    if (deleted) this.searchApps()
   }
 }

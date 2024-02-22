@@ -47,10 +47,10 @@ export class ProductSearchComponent implements OnInit {
   ngOnInit(): void {
     this.prepareDialogTranslations()
     this.prepareActionButtons()
-    this.searchData()
+    this.searchProducts()
   }
 
-  public searchData(): void {
+  public searchProducts(): void {
     this.searchInProgress = true
     this.products$ = this.productApi
       .searchProducts({
@@ -137,20 +137,21 @@ export class ProductSearchComponent implements OnInit {
   public onSortDirChange(asc: boolean): void {
     this.sortOrder = asc ? -1 : 1
   }
+
   public onSearch() {
-    this.searchData()
+    this.searchProducts()
   }
   public onSearchReset() {
     this.productSearchCriteriaGroup.reset()
   }
-  public onNewProduct() {
-    this.router.navigate(['./new'], { relativeTo: this.route })
-  }
   public onAppSearch() {
     this.router.navigate(['./apps'], { relativeTo: this.route })
   }
+  public onNewProduct() {
+    this.router.navigate(['./new'], { relativeTo: this.route })
+  }
 
-  getImageUrl(product: any) {
+  private getImageUrl(product: any): string {
     if (product.imageUrl) {
       return product.imageUrl
     } else {
