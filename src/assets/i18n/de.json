@@ -143,7 +143,10 @@
       "PLACEHOLDER": "Bild Platzhalter",
       "UPLOAD": "Bild auswählen und hochladen"
     },
-    "UPLOADED": "Datei hochgeladen"
+    "UPLOADED": "Datei hochgeladen",
+    "UPLOAD_FAILED": "Upload fehlgeschlagen",
+    "UPLOAD_FAILED_SIZE": "Upload fehlgeschlagen. Das Bild ist zu groß",
+    "UPLOAD_FAILED_NAME": "Upload fehlgeschlagen. Bitte geben Sie einen Namen an."
   },
   "DIALOG": {
     "SEARCH.HEADER": "Product Store",

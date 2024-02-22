@@ -3,6 +3,7 @@
 README.md
 api.module.ts
 api/api.ts
+api/imagesInternal.service.ts
 api/microfrontends.service.ts
 api/products.service.ts
 configuration.ts
@@ -12,6 +13,7 @@ index.ts
 model/createMicrofrontendRequest.ts
 model/createProductRequest.ts
 model/createUIEndpoint.ts
+model/imageInfo.ts
 model/microfrontend.ts
 model/microfrontendAbstract.ts
 model/microfrontendPageResult.ts
@@ -25,6 +27,7 @@ model/productAbstract.ts
 model/productAndWorkspaces.ts
 model/productPageResult.ts
 model/productSearchCriteria.ts
+model/refType.ts
 model/uIEndpoint.ts
 model/updateMicrofrontendRequest.ts
 model/updateProductRequest.ts

@@ -144,7 +144,10 @@
       "PLACEHOLDER": "Image Placeholder",
       "UPLOAD": "Select and upload image"
     },
-    "UPLOADED": "File uploaded"
+    "UPLOADED": "File uploaded",
+    "UPLOAD_FAILED": "Upload failed",
+    "UPLOAD_FAILED_SIZE": "Upload failed. The image is too large",
+    "UPLOAD_FAILED_NAME": "Upload failed. Please provide a name first"
   },
   "DIALOG": {
     "SEARCH.HEADER": "Product Store",

@@ -65,7 +65,7 @@
             <div class="col-12 md:col-2 lg:col-2 xl:col-2 text-center">
               <div class="flex flex-column justify-content-center align-items-center gap-1 md:gap-2 h-full">
                 <ps-image-container
-                  [imageUrl]="product.imageUrl"
+                  [imageUrl]="getImageUrl(product)"
                   [small]="true"
                   [title]="'LOGO.TOOLTIPS.' + (product.imageUrl ? 'IMAGE' : 'PLACEHOLDER') | translate"
                 ></ps-image-container>
@@ -83,7 +83,7 @@
           <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3" [routerLink]="['./', product.name]">
             <div class="card p-2 flex flex-column justify-content-center hover:bg-gray-200 cursor-pointer">
               <div class="h-3rem md:h-5rem flex flex-column justify-content-center align-items-center text-center">
-                <app-image-container [imageUrl]="product.logoUrl" [small]="false"></app-image-container>
+                <app-image-container [imageUrl]="getImageUrl(product)" [small]="false"></app-image-container>
               </div>
               <div class="h-3rem flex flex-column justify-content-between gap-1 lg:gap-2 mt-0 mb-1 text-center">
                 <div class="font-bold text-xl lg:text-2xl" [title]="limitText(product.name, 100)">
