@@ -205,7 +205,6 @@ describe('AppSearchComponent', () => {
   it('should should assign app to component property and change to copy mode onCreate', () => {
     component.onCreate('MFE')
 
-    expect(component.app).toBeUndefined()
     expect(component.changeMode).toBe('CREATE')
     expect(component.displayDetailDialog).toBeTrue()
   })

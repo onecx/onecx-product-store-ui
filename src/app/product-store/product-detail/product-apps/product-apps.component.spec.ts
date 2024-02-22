@@ -33,6 +33,7 @@ describe('ProductAppsComponent', () => {
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
   const apiServiceSpy = {
     searchMicrofrontends: jasmine.createSpy('searchMicrofrontends').and.returnValue(of({})),
+    searchMicroservice: jasmine.createSpy('searchMicroservice').and.returnValue(of({})),
     updateProduct: jasmine.createSpy('updateProduct').and.returnValue(of({}))
   }
 
@@ -63,6 +64,7 @@ describe('ProductAppsComponent', () => {
 
   afterEach(() => {
     apiServiceSpy.searchMicrofrontends.calls.reset()
+    apiServiceSpy.searchMicroservice.calls.reset()
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
     msgServiceSpy.info.calls.reset()
@@ -95,7 +97,7 @@ describe('ProductAppsComponent', () => {
     component.searchApps()
 
     expect(searchSpy).toHaveBeenCalledWith({
-      microfrontendSearchCriteria: { productName: component.product?.name, pageSize: 1000 }
+      mfeAndMsSearchCriteria: { productName: component.product?.name, pageSize: 1000 }
     })
   })
 

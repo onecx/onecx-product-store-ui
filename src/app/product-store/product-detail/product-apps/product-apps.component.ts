@@ -1,9 +1,16 @@
 import { Component, Input, OnChanges, ViewChild } from '@angular/core'
 import { SelectItem } from 'primeng/api'
-import { Observable, finalize } from 'rxjs'
+import { combineLatest, finalize, map, of, Observable, startWith, catchError } from 'rxjs'
 
 import { DataViewControlTranslations, UserService } from '@onecx/portal-integration-angular'
-import { Product, MicrofrontendsAPIService, MicrofrontendPageResult } from 'src/app/shared/generated'
+import {
+  Product,
+  MfeAndMsSearchCriteria,
+  MicrofrontendPageResult,
+  MicrofrontendsAPIService,
+  MicroservicePageResult,
+  MicroservicesAPIService
+} from 'src/app/shared/generated'
 import { dropDownSortItemsByLabel, limitText } from 'src/app/shared/utils'
 import { IconService } from 'src/app/shared/iconservice'
 
@@ -20,7 +27,10 @@ export class ProductAppsComponent implements OnChanges {
   @Input() changeMode: ChangeMode = 'VIEW'
 
   private readonly debug = true // to be removed after finalization
-  public apps$!: Observable<MicrofrontendPageResult>
+  public exceptionKey = ''
+  public apps$!: Observable<AppAbstract[]>
+  public mfes$!: Observable<MicrofrontendPageResult>
+  public mss$!: Observable<MicroservicePageResult>
   public app: AppAbstract | undefined
   public iconItems: SelectItem[] = [{ label: '', value: null }]
   public filter: string | undefined
@@ -37,7 +47,12 @@ export class ProductAppsComponent implements OnChanges {
   public dataViewControlsTranslations: DataViewControlTranslations = {}
   public limitText = limitText
 
-  constructor(private icon: IconService, private user: UserService, private appApi: MicrofrontendsAPIService) {
+  constructor(
+    private icon: IconService,
+    private user: UserService,
+    private mfeApi: MicrofrontendsAPIService,
+    private msApi: MicroservicesAPIService
+  ) {
     this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
     this.hasDeletePermission = this.user.hasPermission('APP#DELETE')
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
@@ -57,11 +72,50 @@ export class ProductAppsComponent implements OnChanges {
 
   public searchApps(): void {
     this.searchInProgress = true
-    this.apps$ = this.appApi
-      .searchMicrofrontends({
-        mfeAndMsSearchCriteria: { productName: this.product?.name, pageSize: 100 }
-      })
-      .pipe(finalize(() => (this.searchInProgress = false)))
+    this.mfes$ = this.mfeApi
+      .searchMicrofrontends({ mfeAndMsSearchCriteria: { productName: this.product } as MfeAndMsSearchCriteria })
+      .pipe(
+        startWith({} as MicrofrontendPageResult),
+        catchError((err) => {
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
+          console.error('searchMicrofrontends():', err)
+          return of({} as MicrofrontendPageResult)
+        }),
+        finalize(() => (this.searchInProgress = false))
+      )
+
+    this.mss$ = this.msApi
+      .searchMicroservice({ mfeAndMsSearchCriteria: { productName: this.product } as MfeAndMsSearchCriteria })
+      .pipe(
+        startWith({} as MicroservicePageResult),
+        catchError((err) => {
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
+          console.error('searchMicroservice():', err)
+          return of({} as MicroservicePageResult)
+        }),
+        finalize(() => (this.searchInProgress = false))
+      )
+
+    this.apps$ = combineLatest([
+      this.mfes$.pipe(
+        map((a) => {
+          return a.stream
+            ? a.stream?.map((mfe) => {
+                return { ...mfe, appType: 'MFE' } as AppAbstract
+              })
+            : []
+        })
+      ),
+      this.mss$.pipe(
+        map((a) => {
+          return a.stream
+            ? a.stream?.map((ms) => {
+                return { ...ms, appType: 'MS' } as AppAbstract
+              })
+            : []
+        })
+      )
+    ]).pipe(map(([mfes, mss]) => mfes.concat(mss)))
   }
 
   public onLayoutChange(viewMode: string): void {
@@ -80,26 +134,27 @@ export class ProductAppsComponent implements OnChanges {
 
   public onDetail(ev: any, app: AppAbstract) {
     ev.stopPropagation()
-    //this.app = app
+    this.app = app
     this.changeMode = 'EDIT'
     this.displayDetailDialog = true
   }
   public onCopy(ev: any, app: AppAbstract) {
     ev.stopPropagation()
-    //this.app = app
+    this.app = app
     this.changeMode = 'COPY'
     this.displayDetailDialog = true
   }
   public onCreate() {
     this.changeMode = 'CREATE'
-    //this.app = undefined
+    this.app = undefined
     this.displayDetailDialog = true
   }
   public onDelete(ev: any, app: AppAbstract) {
     ev.stopPropagation()
-    // this.app = app
+    this.app = app
     this.displayDeleteDialog = true
   }
+
   public appChanged(changed: any) {
     this.displayDetailDialog = false
     if (changed) this.searchApps()

@@ -9,7 +9,7 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { ProductSearchComponent } from './product-search.component'
 
-fdescribe('ProductSearchComponent', () => {
+describe('ProductSearchComponent', () => {
   let component: ProductSearchComponent
   let fixture: ComponentFixture<ProductSearchComponent>
   let router: Router

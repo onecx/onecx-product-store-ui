@@ -6,7 +6,7 @@
 <ng-container *ngIf="apps$ | async as apps">
   <p-dataView
     id="product_detail_apps_dataview"
-    [value]="apps.stream ? apps.stream : []"
+    [value]="(apps$ | async) ?? []"
     [paginator]="true"
     [alwaysShowPaginator]="false"
     [rowsPerPageOptions]="[10, 20, 50]"

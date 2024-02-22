@@ -40,7 +40,6 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public apps$!: Observable<AppAbstract[]>
   public mfes$!: Observable<MicrofrontendPageResult>
   public mss$!: Observable<MicroservicePageResult>
-  public apps: AppAbstract[] = []
   public app: AppAbstract | undefined
   public appSearchCriteriaGroup!: FormGroup<AppSearchCriteria>
   public viewMode = 'grid'
@@ -77,7 +76,6 @@ export class AppSearchComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.prepareActionButtons()
-    this.apps = [{ id: 'id', appId: '123', appType: 'MS', productName: 'test', description: 'bla' } as AppAbstract]
     this.searchApps()
   }
   public ngOnDestroy(): void {

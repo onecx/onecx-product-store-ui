@@ -9,6 +9,7 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 import { PortalMessageService, ConfigurationService, UserService } from '@onecx/portal-integration-angular'
 import { AppDetailComponent, MfeForm } from './app-detail.component'
 import { MicrofrontendsAPIService, Microfrontend } from 'src/app/shared/generated'
+import { AppAbstract } from '../app-search/app-search.component'
 
 const form = new FormGroup<MfeForm>({
   appId: new FormControl('id', Validators.minLength(2)),
@@ -46,6 +47,15 @@ const mfe: Microfrontend = {
 describe('AppDetailComponent', () => {
   let component: AppDetailComponent
   let fixture: ComponentFixture<AppDetailComponent>
+
+  const appMfe: AppAbstract = {
+    id: 'id',
+    appId: 'appId',
+    appType: 'MFE',
+    appName: 'name',
+    remoteBaseUrl: 'url',
+    productName: 'productName'
+  }
 
   const apiServiceSpy = {
     getMicrofrontendByAppId: jasmine.createSpy('getMicrofrontendByAppId').and.returnValue(of({})),
@@ -182,6 +192,7 @@ describe('AppDetailComponent', () => {
   })
 
   it('should display error if form is invalid onSave', () => {
+    component.appAbstract = appMfe
     component.formGroupMfe = new FormGroup<MfeForm>({
       appId: new FormControl('i', Validators.minLength(2)),
       appName: new FormControl(''),
@@ -206,6 +217,7 @@ describe('AppDetailComponent', () => {
 
   it('should call createApp onSave in create mode', () => {
     apiServiceSpy.createMicrofrontend.and.returnValue(of({}))
+    component.appAbstract = appMfe
     component.formGroupMfe = form
     component.changeMode = 'CREATE'
 
@@ -222,6 +234,7 @@ describe('AppDetailComponent', () => {
       }
     }
     apiServiceSpy.createMicrofrontend.and.returnValue(throwError(() => err))
+    component.appAbstract = appMfe
     component.formGroupMfe = form
     component.changeMode = 'CREATE'
 
@@ -236,6 +249,7 @@ describe('AppDetailComponent', () => {
 
   it('should call updateApp onSave in edit mode', () => {
     apiServiceSpy.updateMicrofrontend.and.returnValue(of({}))
+    component.appAbstract = appMfe
     component.formGroupMfe = form
     component.changeMode = 'EDIT'
 
@@ -252,6 +266,7 @@ describe('AppDetailComponent', () => {
       }
     }
     apiServiceSpy.updateMicrofrontend.and.returnValue(throwError(() => err))
+    component.appAbstract = appMfe
     component.formGroupMfe = form
     component.changeMode = 'EDIT'
 
@@ -272,6 +287,7 @@ describe('AppDetailComponent', () => {
       }
     }
     apiServiceSpy.updateMicrofrontend.and.returnValue(throwError(() => err))
+    component.appAbstract = appMfe
     component.formGroupMfe = form
     component.changeMode = 'EDIT'
 
@@ -292,6 +308,7 @@ describe('AppDetailComponent', () => {
       }
     }
     apiServiceSpy.updateMicrofrontend.and.returnValue(throwError(() => err))
+    component.appAbstract = appMfe
     component.formGroupMfe = form
     component.changeMode = 'EDIT'
 

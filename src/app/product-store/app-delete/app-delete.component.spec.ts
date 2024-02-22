@@ -41,11 +41,11 @@ describe('AppDeleteComponent', () => {
     expect(component.appDeleted.emit).toHaveBeenCalledWith(false)
   })
 
-  it('should confirmDeletion', () => {
+  it('should onConfirmDeletion', () => {
     spyOn(console, 'log')
 
     component.onConfirmDeletion()
 
-    expect(console.log).toHaveBeenCalledWith('confirmDeletion')
+    expect(console.log).toHaveBeenCalledWith('onConfirmDeletion')
   })
 })
