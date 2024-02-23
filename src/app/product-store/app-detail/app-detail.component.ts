@@ -108,12 +108,14 @@ export class AppDetailComponent implements OnChanges {
   }
 
   ngOnChanges() {
+    this.enableForms()
     if (this.changeMode === 'CREATE') {
       this.ms = undefined
       this.mfe = undefined
       this.formGroupMs.reset()
       this.formGroupMfe.reset()
-    } else if (this.appAbstract?.id) {
+    }
+    if (this.appAbstract?.id) {
       if (this.appAbstract.appType === 'MFE') this.getMfe()
       if (this.appAbstract.appType === 'MS') this.getMs()
     }
@@ -122,6 +124,22 @@ export class AppDetailComponent implements OnChanges {
     if (this.debug) {
       if (obj) console.log('app detail: ' + text, obj)
       else console.log('app detail: ' + text)
+    }
+  }
+
+  public allowEditing(): boolean {
+    return (
+      (this.hasEditPermission && this.changeMode === 'EDIT') ||
+      (this.hasCreatePermission && this.changeMode === 'CREATE')
+    )
+  }
+  private enableForms(): void {
+    if (this.allowEditing()) {
+      this.formGroupMs.enable()
+      this.formGroupMfe.enable()
+    } else {
+      this.formGroupMs.disable()
+      this.formGroupMfe.disable()
     }
   }
 
@@ -146,7 +164,7 @@ export class AppDetailComponent implements OnChanges {
                 this.mfe.modificationDate = undefined
               }
               this.changeMode = 'CREATE'
-            } else this.changeMode = 'EDIT'
+            } else this.enableForms()
           }
         }
       })
@@ -172,7 +190,7 @@ export class AppDetailComponent implements OnChanges {
                 this.ms.modificationDate = undefined
               }
               this.changeMode = 'CREATE'
-            } else this.changeMode = 'EDIT'
+            } else this.enableForms()
           }
         }
       })

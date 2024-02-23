@@ -464,24 +464,24 @@
   <ng-template pTemplate="footer">
     <div class="flex flex-wrap justify-content-end gap-2 mb-1">
       <p-button
-        *ocxIfNotPermission="'APP#EDIT'"
-        id="app_search_button_close"
+        *ngIf="!allowEditing()"
+        id="app_detail_button_close"
         [label]="'ACTIONS.NAVIGATION.CLOSE' | translate"
         [title]="'ACTIONS.NAVIGATION.CLOSE.TOOLTIP' | translate"
         (onClick)="onDialogHide()"
         icon="pi pi-times"
       ></p-button>
       <p-button
-        *ocxIfPermission="'APP#EDIT'"
-        id="app_search_button_cancel"
+        *ngIf="allowEditing()"
+        id="app_detail_button_cancel"
         [label]="'ACTIONS.CANCEL' | translate"
         [title]="'ACTIONS.TOOLTIPS.CANCEL' | translate"
         (onClick)="onDialogHide()"
         icon="pi pi-times"
       ></p-button>
       <p-button
-        *ocxIfPermission="'APP#EDIT'"
-        id="app_search_button_save"
+        *ngIf="allowEditing()"
+        id="app_detail_button_save"
         [label]="'ACTIONS.SAVE' | translate"
         [title]="'ACTIONS.TOOLTIPS.SAVE' | translate"
         (onClick)="onSave()"

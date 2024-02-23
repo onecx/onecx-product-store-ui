@@ -58,6 +58,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public displayDetailDialog = false
   public displayDeleteDialog = false
   public hasCreatePermission = false
+  public hasEditPermission = false
   public hasDeletePermission = false
   public limitText = limitText
 
@@ -74,6 +75,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   ) {
     this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
     this.hasDeletePermission = this.user.hasPermission('APP#DELETE')
+    this.hasEditPermission = this.user.hasPermission('APP#EDIT')
     this.appSearchCriteriaGroup = new FormGroup<AppSearchCriteria>({
       appId: new FormControl<string | null>(null),
       //appName: new FormControl<string | null>(null),
@@ -287,7 +289,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public onDetail(ev: any, app: AppAbstract) {
     ev.stopPropagation()
     this.app = app
-    this.changeMode = 'EDIT'
+    this.changeMode = this.hasEditPermission ? 'EDIT' : 'VIEW'
     this.displayDetailDialog = true
   }
   public onCopy(ev: any, app: AppAbstract) {
