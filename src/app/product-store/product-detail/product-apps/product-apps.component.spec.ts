@@ -84,7 +84,7 @@ describe('ProductAppsComponent', () => {
   })
 
   it('should search microfrontends on searchApps', () => {
-    const searchSpy = spyOn((component as any).appApi, 'searchMicrofrontends').and.returnValue(
+    const searchSpy = spyOn((component as any).mfeApi, 'searchMicrofrontends').and.returnValue(
       of({
         totalElements: 0,
         number: 0,
@@ -97,7 +97,7 @@ describe('ProductAppsComponent', () => {
     component.searchApps()
 
     expect(searchSpy).toHaveBeenCalledWith({
-      mfeAndMsSearchCriteria: { productName: component.product?.name, pageSize: 1000 }
+      mfeAndMsSearchCriteria: { productName: component.product?.name }
     })
   })
 

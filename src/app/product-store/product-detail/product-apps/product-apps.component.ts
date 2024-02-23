@@ -73,7 +73,7 @@ export class ProductAppsComponent implements OnChanges {
   public searchApps(): void {
     this.searchInProgress = true
     this.mfes$ = this.mfeApi
-      .searchMicrofrontends({ mfeAndMsSearchCriteria: { productName: this.product } as MfeAndMsSearchCriteria })
+      .searchMicrofrontends({ mfeAndMsSearchCriteria: { productName: this.product?.name } as MfeAndMsSearchCriteria })
       .pipe(
         startWith({} as MicrofrontendPageResult),
         catchError((err) => {
@@ -85,7 +85,7 @@ export class ProductAppsComponent implements OnChanges {
       )
 
     this.mss$ = this.msApi
-      .searchMicroservice({ mfeAndMsSearchCriteria: { productName: this.product } as MfeAndMsSearchCriteria })
+      .searchMicroservice({ mfeAndMsSearchCriteria: { productName: this.product?.name } as MfeAndMsSearchCriteria })
       .pipe(
         startWith({} as MicroservicePageResult),
         catchError((err) => {
