@@ -98,7 +98,13 @@
       "APP": {
         "NOT_EXISTS": "Eine App mit diesem Namen konnte nicht gefunden werden.",
         "LOAD_ERROR": "App konnte nicht geladen werden",
-        "NOT_FOUND": "Das Produkt hat noch keine Apps"
+        "NOT_FOUND": "Das Produkt hat noch keine Apps",
+        "QUICK_FILTER": {
+          "TOOLTIP": "Filterwert",
+          "ALL": "Alle",
+          "MS": "Microservices",
+          "MFE": "Microfrontends"
+        }
       },
       "PRODUCT": {
         "NOT_EXISTS": "Ein Produkt mit diesem Namen konnte nicht gefunden werden.",

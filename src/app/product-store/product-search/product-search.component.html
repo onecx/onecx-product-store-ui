@@ -64,11 +64,11 @@
           >
             <div class="col-12 md:col-2 lg:col-2 xl:col-2 text-center">
               <div class="flex flex-column justify-content-center align-items-center gap-1 md:gap-2 h-full">
-                <ps-image-container
+                <app-image-container
                   [imageUrl]="getImageUrl(product)"
                   [small]="true"
                   [title]="'LOGO.TOOLTIPS.' + (product.imageUrl ? 'IMAGE' : 'PLACEHOLDER') | translate"
-                ></ps-image-container>
+                ></app-image-container>
               </div>
             </div>
             <div class="col-12 md:col-5 lg:col-5 xl:col-6">
@@ -86,10 +86,10 @@
                 <app-image-container [imageUrl]="getImageUrl(product)" [small]="false"></app-image-container>
               </div>
               <div class="h-3rem flex flex-column justify-content-between gap-1 lg:gap-2 mt-0 mb-1 text-center">
-                <div class="font-bold text-xl lg:text-2xl" [title]="limitText(product.name, 100)">
-                  {{ limitText(product.name, 15) }}
+                <div class="font-bold text-xl" [title]="limitText(product.displayName, 100)">
+                  {{ limitText(product.displayName, 20) }}
                 </div>
-                <div [title]="limitText(product.displayName, 100)">{{ limitText(product.displayName, 25) }}</div>
+                <div class="" [title]="limitText(product.name, 100)">{{ limitText(product.name, 25) }}</div>
               </div>
             </div>
           </div>

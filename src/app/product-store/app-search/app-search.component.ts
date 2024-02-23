@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
+import { SelectItem } from 'primeng/api'
 import { DataView } from 'primeng/dataview'
 import { combineLatest, finalize, map, of, Observable, Subject, startWith, catchError } from 'rxjs'
 
@@ -23,6 +24,7 @@ export interface AppSearchCriteria {
   productName: FormControl<string | null>
 }
 export type AppType = 'MS' | 'MFE'
+export type AppFilterType = 'ALL' | 'MS' | 'MFE'
 export type AppAbstract = MicrofrontendAbstract & Microservice & { appType: AppType }
 export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
 
@@ -44,6 +46,11 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public appSearchCriteriaGroup!: FormGroup<AppSearchCriteria>
   public viewMode = 'grid'
   public changeMode: ChangeMode = 'VIEW'
+  public quickFilterValue: AppFilterType = 'ALL'
+  public quickFilterItems: SelectItem[]
+  public filterValue: string | undefined
+  public filterValueDefault = 'appId,appType,productName,classifications'
+  public filterBy = 'name,type' || 'type'
   public filter: string | undefined
   public sortField = 'appId'
   public sortOrder = 1
@@ -72,6 +79,11 @@ export class AppSearchComponent implements OnInit, OnDestroy {
       //appName: new FormControl<string | null>(null),
       productName: new FormControl<string | null>(null)
     })
+    this.quickFilterItems = [
+      { label: 'ACTIONS.SEARCH.APP.QUICK_FILTER.ALL', value: 'ALL' },
+      { label: 'ACTIONS.SEARCH.APP.QUICK_FILTER.MFE', value: 'MFE' },
+      { label: 'ACTIONS.SEARCH.APP.QUICK_FILTER.MS', value: 'MS' }
+    ]
   }
 
   ngOnInit(): void {
@@ -177,7 +189,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
               actionCallback: () => this.onCreate('MFE'),
               permission: 'APP#CREATE',
               icon: 'pi pi-plus',
-              show: 'always'
+              show: 'asOverflow'
             },
             {
               label: data['ACTIONS.CREATE.MS.LABEL'],
@@ -185,7 +197,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
               actionCallback: () => this.onCreate('MS'),
               permission: 'APP#CREATE',
               icon: 'pi pi-plus',
-              show: 'always'
+              show: 'asOverflow'
             }
           ]
         })
@@ -233,6 +245,20 @@ export class AppSearchComponent implements OnInit, OnDestroy {
 
   public onLayoutChange(viewMode: string): void {
     this.viewMode = viewMode
+  }
+  public onQuickFilterChange(ev: any): void {
+    this.log('onQuickFilterChange ')
+    if (ev.value === 'ALL') {
+      this.filterBy = this.filterValueDefault
+      this.filterValue = ''
+      this.dv?.filter(this.filterValue, 'contains')
+    } else {
+      this.filterBy = 'appType'
+      if (ev.value) {
+        this.filterValue = ev.value
+        this.dv?.filter(ev.value, 'equals')
+      }
+    }
   }
   public onFilterChange(filter: string): void {
     this.filter = filter

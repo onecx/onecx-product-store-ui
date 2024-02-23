@@ -99,7 +99,13 @@
       "APP": {
         "NOT_EXISTS": "An App with this name could not be found.",
         "LOAD_ERROR": "Failed to load App",
-        "NOT_FOUND": "The product does not have an App"
+        "NOT_FOUND": "The product does not have an App",
+        "QUICK_FILTER": {
+          "TOOLTIP": "Set filter value",
+          "ALL": "All",
+          "MS": "Microservices",
+          "MFE": "Microfrontends"
+        }
       },
       "PRODUCT": {
         "NOT_EXISTS": "A Product with this name could not be found.",
