@@ -13,7 +13,7 @@
     [rows]="viewMode === 'grid' ? 12 : 10"
     [layout]="viewMode"
     [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
-    filterBy="app_name"
+    filterBy="appId,appType"
     [sortField]="sortField"
     [sortOrder]="sortOrder"
   >
@@ -23,12 +23,15 @@
         [enableSorting]="true"
         [supportedViews]="['grid']"
         [initialViewMode]="viewMode"
-        [sortingOptions]="[{ label: 'APP.APP_NAME' | translate, value: 'app_name' }]"
+        [sortingOptions]="[
+          { label: 'APP.APP_ID' | translate, value: 'appId' },
+          { label: 'APP.APP_TYPE' | translate, value: 'appType' }
+        ]"
         [defaultSortOption]="sortField"
         [defaultSortDirection]="sortOrder === 1"
         (dataViewChange)="onLayoutChange($event)"
         (filterChange)="onFilterChange($event)"
-        [filterColumns]="['APP.APP_NAME' | translate]"
+        [filterColumns]="['APP.APP_ID' | translate, 'APP.APP_TYPE' | translate]"
         (sortChange)="onSortChange($event)"
         (sortDirectionChange)="onSortDirChange($event)"
         [translations]="dataViewControlsTranslations"

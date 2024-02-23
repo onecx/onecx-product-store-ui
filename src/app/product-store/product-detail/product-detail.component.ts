@@ -30,6 +30,7 @@ export class ProductDetailComponent implements OnInit {
   public headerImageUrl?: string
   public productDeleteVisible = false
   public productDeleteMessage = ''
+  public selectedTabIndex = 0
 
   constructor(
     private router: Router,
@@ -52,6 +53,11 @@ export class ProductDetailComponent implements OnInit {
       this.product = undefined
       this.prepareActionButtons()
     }
+  }
+
+  public onTabChange($event: any) {
+    this.selectedTabIndex = $event.index
+    this.prepareActionButtons()
   }
 
   public getProduct() {
@@ -111,7 +117,7 @@ export class ProductDetailComponent implements OnInit {
               icon: 'pi pi-pencil',
               show: 'always',
               conditional: true,
-              showCondition: this.changeMode === 'VIEW' && this.product !== undefined,
+              showCondition: this.changeMode === 'VIEW' && this.product !== undefined && this.selectedTabIndex === 0,
               permission: 'PRODUCT#EDIT'
             },
             {
@@ -121,7 +127,7 @@ export class ProductDetailComponent implements OnInit {
               icon: 'pi pi-copy',
               show: 'always',
               conditional: true,
-              showCondition: this.changeMode === 'VIEW' && this.product !== undefined,
+              showCondition: this.changeMode === 'VIEW' && this.product !== undefined && this.selectedTabIndex === 0,
               permission: 'PRODUCT#CREATE'
             },
             {

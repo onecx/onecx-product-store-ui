@@ -18,8 +18,8 @@ import { limitText } from 'src/app/shared/utils'
 
 export interface AppSearchCriteria {
   appId: FormControl<string | null>
-  appName: FormControl<string | null>
-  //  appType: FormControl<AppType | null>
+  // appName: FormControl<string | null>
+  // appType: FormControl<AppType | null>
   productName: FormControl<string | null>
 }
 export type AppType = 'MS' | 'MFE'
@@ -69,12 +69,13 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     this.hasDeletePermission = this.user.hasPermission('APP#DELETE')
     this.appSearchCriteriaGroup = new FormGroup<AppSearchCriteria>({
       appId: new FormControl<string | null>(null),
-      appName: new FormControl<string | null>(null),
+      //appName: new FormControl<string | null>(null),
       productName: new FormControl<string | null>(null)
     })
   }
 
   ngOnInit(): void {
+    this.prepareDialogTranslations()
     this.prepareActionButtons()
     this.searchApps()
   }
@@ -95,7 +96,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
       .searchMicrofrontends({
         mfeAndMsSearchCriteria: {
           appId: this.appSearchCriteriaGroup.controls['appId'].value,
-          appName: this.appSearchCriteriaGroup.controls['appName'].value,
+          //appName: this.appSearchCriteriaGroup.controls['appName'].value,
           productName: this.appSearchCriteriaGroup.controls['productName'].value,
           pageSize: 100
         }
@@ -114,7 +115,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
       .searchMicroservice({
         mfeAndMsSearchCriteria: {
           appId: this.appSearchCriteriaGroup.controls['appId'].value,
-          appName: this.appSearchCriteriaGroup.controls['appName'].value,
+          // appName: this.appSearchCriteriaGroup.controls['appName'].value,
           productName: this.appSearchCriteriaGroup.controls['productName'].value,
           pageSize: 100
         }
@@ -189,6 +190,45 @@ export class AppSearchComponent implements OnInit, OnDestroy {
           ]
         })
       )
+  }
+
+  private prepareDialogTranslations(): void {
+    this.translate
+      .get([
+        'APP.APP_ID',
+        'APP.APP_TYPE',
+        'PRODUCT.NAME',
+        'ACTIONS.DATAVIEW.VIEW_MODE_GRID',
+        'ACTIONS.DATAVIEW.VIEW_MODE_LIST',
+        'ACTIONS.DATAVIEW.VIEW_MODE_TABLE',
+        'ACTIONS.DATAVIEW.SORT_BY',
+        'ACTIONS.DATAVIEW.FILTER',
+        'ACTIONS.DATAVIEW.FILTER_OF',
+        'ACTIONS.DATAVIEW.SORT_DIRECTION_ASC',
+        'ACTIONS.DATAVIEW.SORT_DIRECTION_DESC'
+      ])
+      .subscribe((data) => {
+        this.dataViewControlsTranslations = {
+          sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY'],
+          filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
+          filterInputTooltip:
+            data['ACTIONS.DATAVIEW.FILTER_OF'] +
+            data['APP.APP_ID'] +
+            ', ' +
+            data['APP.APP_TYPE'] +
+            ', ' +
+            data['PRODUCT.NAME'],
+          viewModeToggleTooltips: {
+            grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID'],
+            list: data['ACTIONS.DATAVIEW.VIEW_MODE_LIST']
+          },
+          sortOrderTooltips: {
+            ascending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_ASC'],
+            descending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_DESC']
+          },
+          sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY']
+        }
+      })
   }
 
   public onLayoutChange(viewMode: string): void {

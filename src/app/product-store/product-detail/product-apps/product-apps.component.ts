@@ -1,6 +1,7 @@
 import { Component, Input, OnChanges, ViewChild } from '@angular/core'
 import { SelectItem } from 'primeng/api'
 import { combineLatest, finalize, map, of, Observable, startWith, catchError } from 'rxjs'
+import { DataView } from 'primeng/dataview'
 
 import { DataViewControlTranslations, UserService } from '@onecx/portal-integration-angular'
 import {
@@ -35,7 +36,7 @@ export class ProductAppsComponent implements OnChanges {
   public iconItems: SelectItem[] = [{ label: '', value: null }]
   public filter: string | undefined
   public viewMode = 'grid'
-  public sortField = 'name'
+  public sortField = 'appId'
   public sortOrder = 1
   public searchInProgress = false
   public displayDetailDialog = false
@@ -43,8 +44,8 @@ export class ProductAppsComponent implements OnChanges {
   public hasCreatePermission = false
   public hasDeletePermission = false
 
-  @ViewChild(DataView) dv: DataView | undefined
   public dataViewControlsTranslations: DataViewControlTranslations = {}
+  @ViewChild(DataView) dv: DataView | undefined
   public limitText = limitText
 
   constructor(
@@ -123,7 +124,7 @@ export class ProductAppsComponent implements OnChanges {
   }
   public onFilterChange(filter: string): void {
     this.filter = filter
-    //this.dv?.filter(filter, 'contains')
+    this.dv?.filter(filter, 'contains')
   }
   public onSortChange(field: string): void {
     this.sortField = field

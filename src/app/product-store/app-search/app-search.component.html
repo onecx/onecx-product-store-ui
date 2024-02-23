@@ -22,7 +22,7 @@
           />
           <label for="app_search_app_id">{{ 'APP.APP_ID' | translate }}</label>
         </span>
-        <span class="p-float-label">
+        <!--span class="p-float-label">
           <input
             id="app_search_app_name"
             pInputText
@@ -33,7 +33,7 @@
             [title]="'APP.APP_NAME' | translate"
           />
           <label for="app_search_app_name">{{ 'APP.APP_NAME' | translate }}</label>
-        </span>
+        </span-->
         <span class="p-float-label">
           <input
             id="app_search_product_name"
@@ -60,7 +60,7 @@
       [rows]="viewMode === 'grid' ? 24 : 10"
       [layout]="viewMode"
       [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
-      filterBy="appId,appName,appType,productName,classifications"
+      filterBy="appId,appType,productName,classifications"
       [sortField]="sortField"
       [sortOrder]="sortOrder"
     >
@@ -72,7 +72,6 @@
           [initialViewMode]="viewMode"
           [sortingOptions]="[
             { label: 'APP.APP_ID' | translate, value: 'appId' },
-            { label: 'APP.APP_NAME' | translate, value: 'appName' },
             { label: 'APP.APP_TYPE' | translate, value: 'appType' },
             { label: 'APP.PRODUCT_NAME' | translate, value: 'productName' }
           ]"
@@ -82,7 +81,6 @@
           (filterChange)="onFilterChange($event)"
           [filterColumns]="[
             'APP.APP_ID' | translate,
-            'APP.APP_NAME' | translate,
             'APP.APP_TYPE' | translate,
             'APP.PRODUCT_NAME' | translate,
             'APP.CLASSIFICATIONS' | translate

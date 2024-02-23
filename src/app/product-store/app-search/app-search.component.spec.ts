@@ -13,7 +13,7 @@ import { MicrofrontendsAPIService } from 'src/app/shared/generated'
 
 const form = new FormGroup<AppSearchCriteria>({
   appId: new FormControl<string | null>(null, Validators.minLength(2)),
-  appName: new FormControl<string | null>(null),
+  //appName: new FormControl<string | null>(null),
   productName: new FormControl<string | null>(null)
 })
 
