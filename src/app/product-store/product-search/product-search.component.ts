@@ -117,7 +117,7 @@ export class ProductSearchComponent implements OnInit {
               actionCallback: () => this.onNewProduct(),
               permission: 'PRODUCT#CREATE',
               icon: 'pi pi-plus',
-              show: 'always'
+              show: 'asOverflow'
             }
           ]
         })
