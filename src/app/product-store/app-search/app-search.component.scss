@@ -1,24 +1,11 @@
 @import '/src/_mixins.scss';
 
 @include card-badges;
+@include correct-data-view-control;
 
 :host ::ng-deep {
   .danger-action-text {
     color: var(--danger-button-bg);
-  }
-  .pseudo-button-link {
-    border-radius: var(--border-radius);
-    &:hover {
-      color: var(--primary-color-text);
-      background: var(--button-hover-bg);
-      cursor: pointer;
-    }
-  }
-
-  // correction for data-view-control component
-  .data-view-control-border.p-dropdown:last-of-type {
-    border-top-left-radius: var(--border-radius);
-    border-bottom-left-radius: var(--border-radius);
   }
 
   .p-dataview-content .p-grid > div {
@@ -29,6 +16,7 @@
       }
     }
   }
+
   .h-05rem {
     height: 0.5rem;
   }

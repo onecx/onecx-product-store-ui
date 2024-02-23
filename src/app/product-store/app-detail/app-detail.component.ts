@@ -108,6 +108,7 @@ export class AppDetailComponent implements OnChanges {
   }
 
   ngOnChanges() {
+    this.log('ngOnChanges() ' + this.changeMode)
     this.enableForms()
     if (this.changeMode === 'CREATE') {
       this.ms = undefined
@@ -135,9 +136,11 @@ export class AppDetailComponent implements OnChanges {
   }
   private enableForms(): void {
     if (this.allowEditing()) {
+      this.log('allowEditing() true')
       this.formGroupMs.enable()
       this.formGroupMfe.enable()
     } else {
+      this.log('allowEditing() false')
       this.formGroupMs.disable()
       this.formGroupMfe.disable()
     }
@@ -164,7 +167,8 @@ export class AppDetailComponent implements OnChanges {
                 this.mfe.modificationDate = undefined
               }
               this.changeMode = 'CREATE'
-            } else this.enableForms()
+            }
+            this.enableForms()
           }
         }
       })
@@ -190,7 +194,8 @@ export class AppDetailComponent implements OnChanges {
                 this.ms.modificationDate = undefined
               }
               this.changeMode = 'CREATE'
-            } else this.enableForms()
+            }
+            this.enableForms()
           }
         }
       })

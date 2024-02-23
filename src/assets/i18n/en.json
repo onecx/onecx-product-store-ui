@@ -165,9 +165,9 @@
     "SEARCH.SUBHEADER": "Viewing and Managing Products and their Apps",
     "DETAIL.SUBHEADER": "Product Details",
     "SEARCH.APPS.LABEL": "Apps",
-    "SEARCH.APPS.TOOLTIP": "Search and Display Apps",
+    "SEARCH.APPS.TOOLTIP": "Search and Management of Microfrontends and Microservices",
     "SEARCH.APPS.HEADER": "Apps",
-    "SEARCH.APPS.SUBHEADER": "Searching and Viewing of Microfrontends and Microservices",
+    "SEARCH.APPS.SUBHEADER": "Searching and Management of Microfrontends and Microservices",
     "TABS": {
       "APPS": "Apps",
       "INTERN": "Internal",

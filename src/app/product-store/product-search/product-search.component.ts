@@ -108,7 +108,7 @@ export class ProductSearchComponent implements OnInit {
               title: data['DIALOG.SEARCH.APPS.TOOLTIP'],
               actionCallback: () => this.onAppSearch(),
               permission: 'APP#SEARCH',
-              icon: 'pi pi-cog',
+              icon: 'pi pi-bars',
               show: 'always'
             },
             {

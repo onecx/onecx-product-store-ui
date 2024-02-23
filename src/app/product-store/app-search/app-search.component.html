@@ -136,12 +136,12 @@
             <span
               *ngIf="app.appType === 'MFE'"
               [id]="'app_search_data_icon'"
-              class="card-badge-right badge-2 p-2 pi pseudo-button-link"
+              class="card-badge-right badge-2 p-2 pi"
               [ngClass]="'pi-' + app.iconName"
-              [title]="'APP.ICON_NAME' | translate"
+              title="Icon"
             ></span>
             <div class="h-4rem flex flex-column justify-content-between gap-1 text-center">
-              <div class="font-bold" [title]="'ID: ' + app.appId">{{ limitText(app.appId, 25) }}</div>
+              <div class="font-bold" [title]="'APP ID: ' + app.appId">{{ limitText(app.appId, 25) }}</div>
               <div class="text-sm" [title]="'APP.APP_TYPE' | translate">{{ app.appType }}</div>
               <div [title]="'Product: ' + app.productName">{{ limitText(app.productName, 25) }}</div>
             </div>

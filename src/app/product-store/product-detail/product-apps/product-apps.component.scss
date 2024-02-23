@@ -4,17 +4,10 @@
 @include make-disabled-form-readable-dropdown;
 @include prepare-inputgroup;
 @include card-badges;
+@include correct-data-view-control;
 
 :host ::ng-deep {
   .danger-action-text {
     color: var(--danger-button-bg);
-  }
-  .pseudo-button-link {
-    border-radius: var(--border-radius);
-    &:hover {
-      color: var(--primary-color-text);
-      background: var(--button-hover-bg);
-      cursor: pointer;
-    }
   }
 }
