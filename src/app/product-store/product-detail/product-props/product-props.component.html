@@ -46,14 +46,13 @@
       <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
         <div class="flex flex-wrap sm:flex-nowrap align-items-center row-gap-2 column-gap-4">
           <input hidden type="file" accept="image/*" #selectedFileInputLogo (change)="onFileUpload($event, 'logo')" />
-          <ps-image-container
+          <app-image-container
             *ngIf="fetchingLogoUrl"
             [id]="'product_detail_item_logo_image'"
             [imageUrl]="fetchingLogoUrl"
             [small]="true"
             [title]="'LOGO.TOOLTIPS.' + (fetchingLogoUrl ? 'IMAGE' : 'PLACEHOLDER') | translate"
-          ></ps-image-container>
-          <app-image-container [imageUrl]="fetchingLogoUrl" [small]="false"></app-image-container>
+          ></app-image-container>
           <div class="flex flex-column w-full">
             <div class="p-inputgroup mb-1" controlErrorAnchor>
               <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.IMAGE_URL' | translate">
