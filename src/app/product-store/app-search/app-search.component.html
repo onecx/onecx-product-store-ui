@@ -114,14 +114,14 @@
             [class.bg-primary]="app.appType === 'MFE'"
           >
             <span
-              *ngIf="app.operator === 'MANUELL' && hasCreatePermission"
+              *ngIf="!app.operator && hasCreatePermission"
               [id]="'app_search_data_' + app.appId + '_copy_app'"
               class="card-badge-left badge-1 p-2 pi pi-copy pseudo-button-link"
               [title]="'ACTIONS.COPY.LABEL' | translate"
               (click)="onCopy($event, app)"
             ></span>
             <span
-              *ngIf="app.operator === 'MANUELL' && hasDeletePermission"
+              *ngIf="!app.operator && hasDeletePermission"
               [id]="'app_search_data_' + app.appId + '_delete_app'"
               class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text pseudo-button-link"
               [title]="'ACTIONS.DELETE.LABEL' | translate"

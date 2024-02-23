@@ -164,7 +164,7 @@
     "SEARCH.HEADER": "Product Store",
     "SEARCH.SUBHEADER": "Viewing and Managing Products and their Apps",
     "DETAIL.SUBHEADER": "Product Details",
-    "SEARCH.APPS.LABEL": "Aps",
+    "SEARCH.APPS.LABEL": "Apps",
     "SEARCH.APPS.TOOLTIP": "Search and Display Apps",
     "SEARCH.APPS.HEADER": "Apps",
     "SEARCH.APPS.SUBHEADER": "Searching and Viewing of Microfrontends and Microservices",
