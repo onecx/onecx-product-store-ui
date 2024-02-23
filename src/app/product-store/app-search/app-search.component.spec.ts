@@ -80,20 +80,6 @@ describe('AppSearchComponent', () => {
     expect(component).toBeTruthy()
   })
 
-  it('should call onCreate when actionCallback is executed', () => {
-    spyOn(component, 'onCreate')
-
-    component.ngOnInit()
-
-    if (component.actions$) {
-      component.actions$.subscribe((actions) => {
-        const firstAction = actions[1]
-        firstAction.actionCallback()
-        expect(component.onCreate).toHaveBeenCalled()
-      })
-    }
-  })
-
   it('should call onBack when actionCallback is executed', () => {
     spyOn(component, 'onBack')
 
@@ -104,6 +90,34 @@ describe('AppSearchComponent', () => {
         const firstAction = actions[0]
         firstAction.actionCallback()
         expect(component.onBack).toHaveBeenCalled()
+      })
+    }
+  })
+
+  it('should call onCreate when actionCallback is executed', () => {
+    spyOn(component, 'onCreate')
+
+    component.ngOnInit()
+
+    if (component.actions$) {
+      component.actions$.subscribe((actions) => {
+        const firstAction = actions[1]
+        firstAction.actionCallback()
+        expect(component.onCreate).toHaveBeenCalledWith('MFE')
+      })
+    }
+  })
+
+  it('should call onCreate when actionCallback is executed', () => {
+    spyOn(component, 'onCreate')
+
+    component.ngOnInit()
+
+    if (component.actions$) {
+      component.actions$.subscribe((actions) => {
+        const firstAction = actions[2]
+        firstAction.actionCallback()
+        expect(component.onCreate).toHaveBeenCalledWith('MS')
       })
     }
   })
@@ -120,6 +134,20 @@ describe('AppSearchComponent', () => {
     component.onFilterChange(filter)
 
     expect(component.filter).toBe(filter)
+  })
+
+  it('should update filterBy and filterValue onQuickFilterChange: ALL', () => {
+    component.onQuickFilterChange({ value: 'ALL' })
+
+    expect(component.filterBy).toBe(component.filterValueDefault)
+    expect(component.filterValue).toBe('')
+  })
+
+  it('should update filterBy and filterValue onQuickFilterChange: other', () => {
+    component.onQuickFilterChange({ value: 'other' })
+
+    expect(component.filterValue).toBe('other')
+    expect(component.filterBy).toBe('appType')
   })
 
   it('should update sortField onSortChange', () => {
@@ -144,7 +172,7 @@ describe('AppSearchComponent', () => {
     expect(component.searchApps).toHaveBeenCalled()
   })
 
-  it('should catch error on searchApps', () => {
+  it('should catch error on searchApps: mfes', () => {
     const err = {
       status: 404
     }
@@ -164,6 +192,43 @@ describe('AppSearchComponent', () => {
     component.searchApps()
 
     expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_404.APPS')
+  })
+
+  it('should combine mfe and ms streams into apps$ with appType: only mfes', (done: DoneFn) => {
+    apiServiceSpy.searchMicrofrontends.and.returnValue(
+      of({
+        stream: [
+          { id: 'mfe1', name: 'Microfrontend 1' },
+          { id: 'mfe2', name: 'Microfrontend 2' }
+        ]
+      })
+    )
+    apiServiceSpy.searchMicroservice.and.returnValue(
+      of({
+        stream: [
+          { id: 'ms1', name: 'Microservice 1' },
+          { id: 'ms2', name: 'Microservice 2' }
+        ]
+      })
+    )
+
+    component.searchApps()
+
+    component.apps$.subscribe({
+      next: (result) => {
+        expect(result.length).toBe(2) // should be 4
+        expect(result).toEqual(
+          jasmine.arrayContaining([
+            jasmine.objectContaining({ id: 'mfe1', name: 'Microfrontend 1', appType: 'MFE' }),
+            jasmine.objectContaining({ id: 'mfe2', name: 'Microfrontend 2', appType: 'MFE' })
+            // jasmine.objectContaining({ id: 'ms1', name: 'Microservice 1', appType: 'MS' }),
+            // jasmine.objectContaining({ id: 'ms2', name: 'Microservice 2', appType: 'MS' })
+          ])
+        )
+        done()
+      },
+      error: done.fail
+    })
   })
 
   it('should reset appSearchCriteriaGroup onSearchReset is called', () => {
@@ -190,7 +255,7 @@ describe('AppSearchComponent', () => {
     expect(routerSpy.navigate).toHaveBeenCalledWith(['../', 'product'], { relativeTo: routeMock })
   })
 
-  it('should should assign app to component property and change to edit mode onDetail', () => {
+  it('should assign app to component property and change to edit mode onDetail', () => {
     const event = { stopPropagation: jasmine.createSpy() }
     const app: AppAbstract = {
       id: 'id',
@@ -206,6 +271,23 @@ describe('AppSearchComponent', () => {
     expect(event.stopPropagation).toHaveBeenCalled()
     expect(component.app).toBe(app)
     expect(component.changeMode).toBe('EDIT')
+  })
+
+  it('should change to view mode if no editPermission onDetail', () => {
+    const event = { stopPropagation: jasmine.createSpy() }
+    const app: AppAbstract = {
+      id: 'id',
+      appId: 'appId',
+      appType: 'MFE',
+      appName: 'appName',
+      remoteBaseUrl: 'url',
+      productName: 'product'
+    }
+    component.hasEditPermission = false
+
+    component.onDetail(event as any, app)
+
+    expect(component.changeMode).toBe('VIEW')
   })
 
   it('should should assign app to component property and change to copy mode onCopy', () => {
