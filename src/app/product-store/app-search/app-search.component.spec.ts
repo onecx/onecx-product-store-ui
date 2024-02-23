@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { RouterTestingModule } from '@angular/router/testing'
 import { Router, ActivatedRoute } from '@angular/router'
-import { of } from 'rxjs'
+import { of, throwError } from 'rxjs'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
@@ -25,7 +25,8 @@ describe('AppSearchComponent', () => {
 
   const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
   const apiServiceSpy = {
-    searchMicrofrontends: jasmine.createSpy('searchMicrofrontends').and.returnValue(of({}))
+    searchMicrofrontends: jasmine.createSpy('searchMicrofrontends').and.returnValue(of({})),
+    searchMicroservice: jasmine.createSpy('searchMicroservice').and.returnValue(of({}))
   }
   const mockUserService = {
     lang$: {
@@ -71,6 +72,7 @@ describe('AppSearchComponent', () => {
 
   afterEach(() => {
     apiServiceSpy.searchMicrofrontends.calls.reset()
+    apiServiceSpy.searchMicroservice.calls.reset()
     translateServiceSpy.get.calls.reset()
   })
 
@@ -140,6 +142,28 @@ describe('AppSearchComponent', () => {
     component.onSearch()
 
     expect(component.searchApps).toHaveBeenCalled()
+  })
+
+  it('should catch error on searchApps', () => {
+    const err = {
+      status: 404
+    }
+    apiServiceSpy.searchMicrofrontends.and.returnValue(throwError(() => err))
+
+    component.searchApps()
+
+    expect(component.exceptionKey).toEqual('')
+  })
+
+  it('should catch error on searchApps: mss', () => {
+    const err = {
+      status: 404
+    }
+    apiServiceSpy.searchMicroservice.and.returnValue(throwError(() => err))
+
+    component.searchApps()
+
+    expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_404.APPS')
   })
 
   it('should reset appSearchCriteriaGroup onSearchReset is called', () => {
@@ -224,5 +248,23 @@ describe('AppSearchComponent', () => {
 
     expect(event.stopPropagation).toHaveBeenCalled()
     expect(component.app).toBe(app)
+  })
+
+  it('should call searchApps if app changed', () => {
+    spyOn(component, 'searchApps')
+
+    component.appChanged(true)
+
+    expect(component.searchApps).toHaveBeenCalled()
+    expect(component.displayDetailDialog).toBeFalse()
+  })
+
+  it('should call searchApps if app deleted', () => {
+    spyOn(component, 'searchApps')
+
+    component.appDeleted(true)
+
+    expect(component.searchApps).toHaveBeenCalled()
+    expect(component.displayDetailDialog).toBeFalse()
   })
 })

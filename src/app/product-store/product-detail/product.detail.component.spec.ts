@@ -17,7 +17,7 @@ const product = {
   name: 'name',
   basePath: 'path'
 }
-// test comment
+
 class MockProductPropertyComponent {
   onSubmit = jasmine.createSpy('onSubmit')
 }
