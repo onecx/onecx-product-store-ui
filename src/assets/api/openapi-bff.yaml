@@ -64,7 +64,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MicrofrontendSearchCriteria'
+              $ref: '#/components/schemas/MfeAndMsSearchCriteria'
       responses:
         '200':
           description: Corresponding microfrontends
@@ -378,6 +378,176 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+  /microservices:
+    post:
+      x-onecx:
+        permissions:
+          product-store:
+            - write
+      tags:
+        - Microservices
+      description: Create microservice
+      operationId: createMicroservice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMicroserviceRequest'
+      responses:
+        '201':
+          description: New microservice created
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microservice'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /microservices/search:
+    post:
+      x-onecx:
+        permissions:
+          product-store:
+            - read
+      tags:
+        - Microservices
+      description: Search for microservices by search criteria
+      operationId: searchMicroservice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MfeAndMsSearchCriteria'
+      responses:
+        '200':
+          description: Corresponding micro-services
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicroservicePageResult'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /microservices/{id}:
+    x-onecx:
+      permissions:
+        product-store:
+          - read
+    get:
+      tags:
+        - Microservices
+      description: Return microservices by ID
+      operationId: getMicroservice
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microservice'
+        '404':
+          description: Not found
+    put:
+      x-onecx:
+        permissions:
+          product-store:
+            - write
+      tags:
+        - Microservices
+      description: Update microservice by ID
+      operationId: updateMicroservice
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMicroserviceRequest'
+      responses:
+        '204':
+          description: microservice updated
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        '404':
+          description: microservice not found
+    delete:
+      x-onecx:
+        permissions:
+          product-store:
+            - delete
+      tags:
+        - Microservices
+      description: Delete microservice by ID
+      operationId: deleteMicroservice
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /microservices/appId/{appId}:
+    x-onecx:
+      permissions:
+        product-store:
+          - read
+    get:
+      tags:
+        - Microservices
+      description: Return microservice by its appId
+      operationId: getMicroserviceByAppId
+      parameters:
+        - name: appId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Microservice'
+        '404':
+          description: Not found
   /images/{refId}/{refType}:
     post:
       x-onecx:
@@ -781,7 +951,7 @@ components:
           description: available endpoints which are exposed by MFE
           items:
             $ref: '#/components/schemas/UIEndpoint'
-    MicrofrontendSearchCriteria:
+    MfeAndMsSearchCriteria:
       type: object
       properties:
         appId:
@@ -991,3 +1161,82 @@ components:
           type: string
         name:
           type: string
+    Microservice:
+      type: object
+      properties:
+        id:
+          type: string
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        modificationCount:
+          format: int32
+          type: integer
+        appId:
+          type: string
+        appVersion:
+          type: string
+        appName:
+          type: string
+        description:
+          type: string
+        productName:
+          type: string
+    UpdateMicroserviceRequest:
+      type: object
+      properties:
+        appId:
+          type: string
+        appVersion:
+          type: string
+        appName:
+          type: string
+        description:
+          type: string
+        productName:
+          type: string
+        type:
+          type: string
+    CreateMicroserviceRequest:
+      required:
+        - productName
+        - appId
+      type: object
+      properties:
+        appId:
+          type: string
+        appVersion:
+          type: string
+        appName:
+          type: string
+        description:
+          type: string
+        productName:
+          type: string
+        type:
+          type: string
+    MicroservicePageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/Microservice'

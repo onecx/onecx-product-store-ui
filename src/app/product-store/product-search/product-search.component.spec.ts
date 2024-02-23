@@ -95,11 +95,11 @@ describe('ProductSearchComponent', () => {
 
   it('should call loadProducts onSearch', () => {
     translateServiceSpy.get.and.returnValue(of({ 'ACTIONS.CREATE.LABEL': 'Create' }))
-    spyOn(component, 'searchData')
+    spyOn(component, 'searchProducts')
 
     component.onSearch()
 
-    expect(component.searchData).toHaveBeenCalled()
+    expect(component.searchProducts).toHaveBeenCalled()
   })
 
   it('should reset productSearchCriteriaGroup onSearchReset', () => {

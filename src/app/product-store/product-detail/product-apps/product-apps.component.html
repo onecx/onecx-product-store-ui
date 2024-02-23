@@ -6,14 +6,14 @@
 <ng-container *ngIf="apps$ | async as apps">
   <p-dataView
     id="product_detail_apps_dataview"
-    [value]="apps.stream ? apps.stream : []"
+    [value]="(apps$ | async) ?? []"
     [paginator]="true"
     [alwaysShowPaginator]="false"
     [rowsPerPageOptions]="[10, 20, 50]"
     [rows]="viewMode === 'grid' ? 12 : 10"
     [layout]="viewMode"
     [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
-    filterBy="app_name"
+    filterBy="appId,appType"
     [sortField]="sortField"
     [sortOrder]="sortOrder"
   >
@@ -23,12 +23,15 @@
         [enableSorting]="true"
         [supportedViews]="['grid']"
         [initialViewMode]="viewMode"
-        [sortingOptions]="[{ label: 'MFE.APP_NAME' | translate, value: 'app_name' }]"
+        [sortingOptions]="[
+          { label: 'APP.APP_ID' | translate, value: 'appId' },
+          { label: 'APP.APP_TYPE' | translate, value: 'appType' }
+        ]"
         [defaultSortOption]="sortField"
         [defaultSortDirection]="sortOrder === 1"
         (dataViewChange)="onLayoutChange($event)"
         (filterChange)="onFilterChange($event)"
-        [filterColumns]="['MFE.APP_NAME' | translate]"
+        [filterColumns]="['APP.APP_ID' | translate, 'APP.APP_TYPE' | translate]"
         (sortChange)="onSortChange($event)"
         (sortDirectionChange)="onSortDirChange($event)"
         [translations]="dataViewControlsTranslations"
@@ -37,24 +40,34 @@
     ></ng-template>
     <ng-template let-app pTemplate="gridItem">
       <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3" (click)="onDetail($event, app)">
-        <div class="card relative p-1 flex flex-column justify-content-center hover:bg-gray-200 cursor-pointer">
+        <div
+          class="card relative p-1 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
+          [class.bg-primary]="app.appType === 'MFE'"
+        >
           <span
-            *ngIf="hasCreatePermission"
+            *ngIf="app.operator === 'MANUELL' && hasCreatePermission"
             [id]="'app_search_data_' + app.appId + '_copy_app'"
             class="card-badge-left badge-1 p-2 pi pi-copy pseudo-button-link"
             [title]="'ACTIONS.COPY.LABEL' | translate"
             (click)="onCopy($event, app)"
           ></span>
           <span
-            *ngIf="hasDeletePermission"
+            *ngIf="app.operator === 'MANUELL' && hasDeletePermission"
             [id]="'app_search_data_' + app.appId + '_delete_app'"
             class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text pseudo-button-link"
             [title]="'ACTIONS.DELETE.LABEL' | translate"
             (click)="onDelete($event, app)"
           ></span>
-          <div class="flex flex-column justify-content-between gap-1 text-center">
+          <span
+            *ngIf="app.appType === 'MFE'"
+            [id]="'app_search_data_icon'"
+            class="card-badge-right badge-2 p-2 pi pseudo-button-link"
+            [ngClass]="'pi-' + app.iconName"
+            [title]="'APP.ICON_NAME' | translate"
+          ></span>
+          <div class="h-4rem flex flex-column justify-content-between gap-1 text-center">
             <div class="font-bold" [title]="'ID: ' + app.appId">{{ limitText(app.appId, 25) }}</div>
-            <div class="text-sm" [title]="'App Name: ' + app.appName">{{ limitText(app.appName, 30) }}</div>
+            <div class="text-sm" [title]="'APP.APP_TYPE' | translate">{{ app.appType }}</div>
             <div [title]="'Product: ' + app.productName">{{ limitText(app.productName, 25) }}</div>
           </div>
         </div>
@@ -64,9 +77,14 @@
 </ng-container>
 
 <app-app-detail
-  [(displayDetailDialog)]="displayDetailDialog"
+  [displayDialog]="displayDetailDialog"
   [appAbstract]="app"
   [changeMode]="changeMode"
+  (appChanged)="appChanged($event)"
 ></app-app-detail>
 
-<app-app-delete [(displayDialog)]="displayDeleteDialog" [appAbstract]="app"></app-app-delete>
+<app-app-delete
+  [displayDialog]="displayDeleteDialog"
+  [appAbstract]="app"
+  (appDeleted)="appDeleted($event)"
+></app-app-delete>

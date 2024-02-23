@@ -47,10 +47,10 @@ export class ProductSearchComponent implements OnInit {
   ngOnInit(): void {
     this.prepareDialogTranslations()
     this.prepareActionButtons()
-    this.searchData()
+    this.searchProducts()
   }
 
-  public searchData(): void {
+  public searchProducts(): void {
     this.searchInProgress = true
     this.products$ = this.productApi
       .searchProducts({
@@ -95,7 +95,7 @@ export class ProductSearchComponent implements OnInit {
   private prepareActionButtons(): void {
     this.actions$ = this.translate
       .get([
-        'ACTIONS.CREATE.LABEL',
+        'ACTIONS.CREATE.PRODUCT.LABEL',
         'ACTIONS.CREATE.PRODUCT.TOOLTIP',
         'DIALOG.SEARCH.APPS.LABEL',
         'DIALOG.SEARCH.APPS.TOOLTIP'
@@ -107,17 +107,17 @@ export class ProductSearchComponent implements OnInit {
               label: data['DIALOG.SEARCH.APPS.LABEL'],
               title: data['DIALOG.SEARCH.APPS.TOOLTIP'],
               actionCallback: () => this.onAppSearch(),
-              permission: 'MICROFRONTEND#SEARCH',
+              permission: 'APP#SEARCH',
               icon: 'pi pi-cog',
               show: 'always'
             },
             {
-              label: data['ACTIONS.CREATE.LABEL'],
+              label: data['ACTIONS.CREATE.PRODUCT.LABEL'],
               title: data['ACTIONS.CREATE.PRODUCT.TOOLTIP'],
               actionCallback: () => this.onNewProduct(),
               permission: 'PRODUCT#CREATE',
               icon: 'pi pi-plus',
-              show: 'always'
+              show: 'asOverflow'
             }
           ]
         })
@@ -137,20 +137,21 @@ export class ProductSearchComponent implements OnInit {
   public onSortDirChange(asc: boolean): void {
     this.sortOrder = asc ? -1 : 1
   }
+
   public onSearch() {
-    this.searchData()
+    this.searchProducts()
   }
   public onSearchReset() {
     this.productSearchCriteriaGroup.reset()
   }
-  public onNewProduct() {
-    this.router.navigate(['./new'], { relativeTo: this.route })
-  }
   public onAppSearch() {
     this.router.navigate(['./apps'], { relativeTo: this.route })
   }
+  public onNewProduct() {
+    this.router.navigate(['./new'], { relativeTo: this.route })
+  }
 
-  getImageUrl(product: any) {
+  public getImageUrl(product: any): string {
     if (product.imageUrl) {
       return product.imageUrl
     } else {

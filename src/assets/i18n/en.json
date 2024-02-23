@@ -17,14 +17,18 @@
     },
     "CREATE": {
       "LABEL": "Create",
+      "MFE.LABEL": "Create Microfrontend",
+      "MS.LABEL": "Create Microservice",
+      "MFE.HEADER": "Create Microfrontend",
+      "MS.HEADER": "Create Microservice",
       "APP": {
-        "HEADER": "Create App",
         "TOOLTIP": "Create a new App",
         "ALREADY_EXISTS": "App with that name already exists",
         "OK": "The App was created successfully",
         "NOK": "An error has occurred. The App was not created."
       },
       "PRODUCT": {
+        "LABEL": "Create Product",
         "HEADER": "Create Product",
         "TOOLTIP": "Create a new Product",
         "ALREADY_EXISTS": "A Product with that name already exists",
@@ -34,9 +38,10 @@
     },
     "DELETE": {
       "LABEL": "Delete",
+      "MFE.HEADER": "Delete Microfrontend",
+      "MS.HEADER": "Delete Microservice",
       "APP": {
         "TOOLTIP": "Delete App",
-        "HEADER": "Delete App",
         "NOK": "App could not be deleted",
         "OK": "App deleted successfully"
       },
@@ -51,8 +56,9 @@
     },
     "EDIT": {
       "LABEL": "Edit",
+      "MFE.HEADER": "Edit Microfrontend",
+      "MS.HEADER": "Edit Microservice",
       "APP": {
-        "HEADER": "Edit App",
         "TOOLTIP": "Edit App properties",
         "OK": "Das App wurde erfolgreich geändert",
         "NOK": "Ein Fehler ist aufgetreten. Das App wurde nicht geändert."
@@ -93,7 +99,13 @@
       "APP": {
         "NOT_EXISTS": "An App with this name could not be found.",
         "LOAD_ERROR": "Failed to load App",
-        "NOT_FOUND": "The product does not have an App"
+        "NOT_FOUND": "The product does not have an App",
+        "QUICK_FILTER": {
+          "TOOLTIP": "Set filter value",
+          "ALL": "All",
+          "MS": "Microservices",
+          "MFE": "Microfrontends"
+        }
       },
       "PRODUCT": {
         "NOT_EXISTS": "A Product with this name could not be found.",
@@ -103,9 +115,8 @@
     },
     "VIEW": {
       "LABEL": "View",
-      "APP": {
-        "HEADER": "App Details"
-      },
+      "MFE.HEADER": "Microfrontend Details",
+      "MS.HEADER": "Microservice Details",
       "PRODUCT": {
         "HEADER": "Edit Product"
       }
@@ -153,19 +164,20 @@
     "SEARCH.HEADER": "Product Store",
     "SEARCH.SUBHEADER": "Viewing and Managing Products and their Apps",
     "DETAIL.SUBHEADER": "Product Details",
-    "SEARCH.APPS.LABEL": "Microfrontends",
-    "SEARCH.APPS.TOOLTIP": "Search and Display Microfrontends",
-    "SEARCH.APPS.HEADER": "Microfrontends",
-    "SEARCH.APPS.SUBHEADER": "Searching and Viewing Microfrontends",
+    "SEARCH.APPS.LABEL": "Aps",
+    "SEARCH.APPS.TOOLTIP": "Search and Display Apps",
+    "SEARCH.APPS.HEADER": "Apps",
+    "SEARCH.APPS.SUBHEADER": "Searching and Viewing of Microfrontends and Microservices",
     "TABS": {
       "APPS": "Apps",
       "INTERN": "Internal",
       "PROPERTIES": "Properties"
     }
   },
-  "MFE": {
+  "APP": {
     "APP_ID": "App ID",
     "APP_NAME": "App Name",
+    "APP_TYPE": "Type",
     "APP_VERSION": "Version",
     "DESCRIPTION": "Description",
     "PRODUCT_NAME": "Product",
@@ -182,11 +194,12 @@
     "GROUP.LOCAL_MODULE": "Module Management Details",
     "GROUP.INTERNALS": "More Details",
     "TOOLTIPS": {
-      "APP_ID": "Unique ID - base identifier for this Microfrontend",
-      "APP_NAME": "Business name of the Microfrontend",
+      "APP_ID": "Unique ID - base identifier for this App",
+      "APP_NAME": "Business name of the App",
+      "APP_TYPE": "Type of the App",
       "APP_VERSION": "Version",
       "DESCRIPTION": "Description",
-      "PRODUCT_NAME": "Name of the Produkt the Microfrontend is assigned to",
+      "PRODUCT_NAME": "Name of the Produkt the App is assigned to",
       "TECHNOLOGY": "Technology",
       "REMOTE_BASE_URL": "Remote Base URL",
       "REMOTE_ENTRY": "Remote Entry",
