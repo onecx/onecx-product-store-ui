@@ -8,12 +8,12 @@ import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { UserService } from '@onecx/portal-integration-angular'
-import { AppAbstract, AppSearchComponent, AppSearchCriteria } from './app-search.component'
+import { AppAbstract, AppType, AppSearchComponent, AppSearchCriteria } from './app-search.component'
 import { MicrofrontendsAPIService } from 'src/app/shared/generated'
 
 const form = new FormGroup<AppSearchCriteria>({
   appId: new FormControl<string | null>(null, Validators.minLength(2)),
-  //appName: new FormControl<string | null>(null),
+  appType: new FormControl<AppType | null>(null),
   productName: new FormControl<string | null>(null)
 })
 

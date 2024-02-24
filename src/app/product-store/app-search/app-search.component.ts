@@ -166,7 +166,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     ]).pipe(map(([mfes, mss]) => mfes.concat(mss)))
   }
 
-  private searchApps(): void {
+  public searchApps(): void {
     this.searchInProgress = true
     this.declareMfeObservable()
     this.declareMsObservable()
