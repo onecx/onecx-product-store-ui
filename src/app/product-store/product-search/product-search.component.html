@@ -1,12 +1,11 @@
 <ocx-portal-page permission="PRODUCT#SEARCH" helpArticleId="PAGE_PRODUCT_SEARCH">
-  <ocx-search-criteria
+  <ocx-search-header
     [header]="'DIALOG.SEARCH.HEADER' | translate"
     [subheader]="'DIALOG.SEARCH.SUBHEADER' | translate"
+    (searched)="onSearch()"
+    (resetted)="onSearchReset()"
+    [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
-    [disableAdvancedToggle]="true"
-    [disableAdvancedToggle]="true"
-    (search)="onSearch()"
-    (reset)="onSearchReset()"
   >
     <div simpleCriteria>
       <div [formGroup]="productSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-3 px-2">
@@ -16,7 +15,7 @@
         </span>
       </div>
     </div>
-  </ocx-search-criteria>
+  </ocx-search-header>
 
   <ocx-page-content>
     <div *ngIf="!products$" class="card px-3 align-items-center">

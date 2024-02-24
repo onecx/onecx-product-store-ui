@@ -7,15 +7,6 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <!--ocx-search-criteria
-    [header]="'DIALOG.SEARCH.APPS.HEADER' | translate"
-    [subheader]="'DIALOG.SEARCH.APPS.SUBHEADER' | translate"
-    [actions]="(actions$ | async) ?? []"
-    [disableAdvancedToggle]="true"
-    [disableAdvancedToggle]="true"
-    (search)="onSearch()"
-    (reset)="onSearchReset()"
-  -->
     <div simpleCriteria>
       <div [formGroup]="appSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-3 px-2">
         <span class="p-float-label">
