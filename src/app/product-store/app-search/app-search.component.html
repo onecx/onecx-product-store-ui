@@ -1,5 +1,13 @@
 <ocx-portal-page permission="APP#SEARCH" helpArticleId="PAGE_APP_SEARCH">
-  <ocx-search-criteria
+  <ocx-search-header
+    [header]="'DIALOG.SEARCH.APPS.HEADER' | translate"
+    [subheader]="'DIALOG.SEARCH.APPS.SUBHEADER' | translate"
+    (searched)="onSearch()"
+    (resetted)="onSearchReset()"
+    [manualBreadcrumbs]="false"
+    [actions]="(actions$ | async) ?? []"
+  >
+    <!--ocx-search-criteria
     [header]="'DIALOG.SEARCH.APPS.HEADER' | translate"
     [subheader]="'DIALOG.SEARCH.APPS.SUBHEADER' | translate"
     [actions]="(actions$ | async) ?? []"
@@ -7,7 +15,7 @@
     [disableAdvancedToggle]="true"
     (search)="onSearch()"
     (reset)="onSearchReset()"
-  >
+  -->
     <div simpleCriteria>
       <div [formGroup]="appSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-3 px-2">
         <span class="p-float-label">
@@ -18,22 +26,10 @@
             formControlName="appId"
             class="w-18rem"
             [clear]="true"
-            [title]="'APP.APP_ID' | translate"
+            [title]="'APP.TOOLTIPS.APP_ID' | translate"
           />
           <label for="app_search_app_id">{{ 'APP.APP_ID' | translate }}</label>
         </span>
-        <!--span class="p-float-label">
-          <input
-            id="app_search_app_name"
-            pInputText
-            type="text"
-            formControlName="appName"
-            class="w-18rem"
-            [clear]="true"
-            [title]="'APP.APP_NAME' | translate"
-          />
-          <label for="app_search_app_name">{{ 'APP.APP_NAME' | translate }}</label>
-        </span-->
         <span class="p-float-label">
           <input
             id="app_search_product_name"
@@ -42,13 +38,14 @@
             formControlName="productName"
             class="w-18rem"
             [clear]="true"
-            [title]="'APP.PRODUCT_NAME' | translate"
+            [title]="'APP.TOOLTIPS.PRODUCT_NAME' | translate"
           />
           <label for="app_search_product_name">{{ 'APP.PRODUCT_NAME' | translate }}</label>
         </span>
       </div>
     </div>
-  </ocx-search-criteria>
+    <!--/ocx-search-criteria-->
+  </ocx-search-header>
 
   <ocx-page-content>
     <p-dataView

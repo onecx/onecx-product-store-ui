@@ -91,3 +91,21 @@
     }
   }
 }
+
+@mixin correct-search-criteria {
+  :host ::ng-deep {
+    .search-criteria-container > div {
+      display: flex;
+      flex-wrap: wrap;
+      align-content: center;
+      row-gap: 0.5rem;
+      column-gap: 3rem;
+      .search-criteria-buttons {
+        flex-wrap: wrap;
+        align-content: center;
+        margin-left: 0.5rem;
+        margin-top: unset;
+      }
+    }
+  }
+}

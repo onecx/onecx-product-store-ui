@@ -19,8 +19,7 @@ import { limitText } from 'src/app/shared/utils'
 
 export interface AppSearchCriteria {
   appId: FormControl<string | null>
-  // appName: FormControl<string | null>
-  // appType: FormControl<AppType | null>
+  appType: FormControl<AppType | null>
   productName: FormControl<string | null>
 }
 export type AppType = 'MS' | 'MFE'
@@ -78,7 +77,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     this.hasEditPermission = this.user.hasPermission('APP#EDIT')
     this.appSearchCriteriaGroup = new FormGroup<AppSearchCriteria>({
       appId: new FormControl<string | null>(null),
-      //appName: new FormControl<string | null>(null),
+      appType: new FormControl<AppType | null>(null),
       productName: new FormControl<string | null>(null)
     })
     this.quickFilterItems = [
@@ -104,13 +103,11 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  public searchApps(): void {
-    this.searchInProgress = true
+  private declareMfeObservable(): void {
     this.mfes$ = this.mfeApi
       .searchMicrofrontends({
         mfeAndMsSearchCriteria: {
           appId: this.appSearchCriteriaGroup.controls['appId'].value,
-          //appName: this.appSearchCriteriaGroup.controls['appName'].value,
           productName: this.appSearchCriteriaGroup.controls['productName'].value,
           pageSize: 100
         }
@@ -124,12 +121,12 @@ export class AppSearchComponent implements OnInit, OnDestroy {
         }),
         finalize(() => (this.searchInProgress = false))
       )
-
+  }
+  private declareMsObservable(): void {
     this.mss$ = this.msApi
       .searchMicroservice({
         mfeAndMsSearchCriteria: {
           appId: this.appSearchCriteriaGroup.controls['appId'].value,
-          // appName: this.appSearchCriteriaGroup.controls['appName'].value,
           productName: this.appSearchCriteriaGroup.controls['productName'].value,
           pageSize: 100
         }
@@ -143,7 +140,10 @@ export class AppSearchComponent implements OnInit, OnDestroy {
         }),
         finalize(() => (this.searchInProgress = false))
       )
-
+  }
+  // private searchMfes() {}
+  // private searchMss() {}
+  private searchMfesAndMss() {
     this.apps$ = combineLatest([
       this.mfes$.pipe(
         map((a) => {
@@ -164,6 +164,13 @@ export class AppSearchComponent implements OnInit, OnDestroy {
         })
       )
     ]).pipe(map(([mfes, mss]) => mfes.concat(mss)))
+  }
+
+  private searchApps(): void {
+    this.searchInProgress = true
+    this.declareMfeObservable()
+    this.declareMsObservable()
+    this.searchMfesAndMss()
   }
 
   private prepareActionButtons(): void {

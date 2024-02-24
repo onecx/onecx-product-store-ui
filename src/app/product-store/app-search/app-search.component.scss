@@ -2,6 +2,7 @@
 
 @include card-badges;
 @include correct-data-view-control;
+@include correct-search-criteria;
 
 :host ::ng-deep {
   .danger-action-text {

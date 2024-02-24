@@ -64,12 +64,13 @@ export class ProductSearchComponent implements OnInit {
       .get([
         'PRODUCT.NAME',
         'PRODUCT.DISPLAY_NAME',
+        'PRODUCT.CLASSIFICATIONS',
         'ACTIONS.DATAVIEW.VIEW_MODE_GRID',
         'ACTIONS.DATAVIEW.VIEW_MODE_LIST',
         'ACTIONS.DATAVIEW.VIEW_MODE_TABLE',
-        'ACTIONS.DATAVIEW.SORT_BY',
         'ACTIONS.DATAVIEW.FILTER',
         'ACTIONS.DATAVIEW.FILTER_OF',
+        'ACTIONS.DATAVIEW.SORT_BY',
         'ACTIONS.DATAVIEW.SORT_DIRECTION_ASC',
         'ACTIONS.DATAVIEW.SORT_DIRECTION_DESC'
       ])
@@ -78,7 +79,12 @@ export class ProductSearchComponent implements OnInit {
           sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY'],
           filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
           filterInputTooltip:
-            data['ACTIONS.DATAVIEW.FILTER_OF'] + data['PRODUCT.NAME'] + ', ' + data['PRODUCT.DISPLAY_NAME'],
+            data['ACTIONS.DATAVIEW.FILTER_OF'] +
+            data['PRODUCT.NAME'] +
+            ', ' +
+            data['PRODUCT.DISPLAY_NAME'] +
+            ', ' +
+            data['PRODUCT.CLASSIFICATIONS'],
           viewModeToggleTooltips: {
             grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID'],
             list: data['ACTIONS.DATAVIEW.VIEW_MODE_LIST']

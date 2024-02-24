@@ -32,7 +32,7 @@
         [rows]="viewMode === 'grid' ? 12 : 10"
         [layout]="viewMode"
         [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
-        filterBy="name,displayName"
+        filterBy="name,displayName,classification"
         [sortField]="sortField"
         [sortOrder]="sortOrder"
       >
@@ -50,7 +50,11 @@
             [defaultSortDirection]="sortOrder === 1"
             (dataViewChange)="onLayoutChange($event)"
             (filterChange)="onFilterChange($event)"
-            [filterColumns]="['PRODUCT.NAME' | translate, 'PRODUCT.DISPLAY_NAME' | translate]"
+            [filterColumns]="[
+              'PRODUCT.NAME' | translate,
+              'PRODUCT.DISPLAY_NAME' | translate,
+              'PRODUCT.CLASSIFICATIONS' | translate
+            ]"
             (sortChange)="onSortChange($event)"
             (sortDirectionChange)="onSortDirChange($event)"
             [translations]="dataViewControlsTranslations"

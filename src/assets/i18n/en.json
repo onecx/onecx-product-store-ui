@@ -180,7 +180,7 @@
     "APP_TYPE": "Type",
     "APP_VERSION": "Version",
     "DESCRIPTION": "Description",
-    "PRODUCT_NAME": "Product",
+    "PRODUCT_NAME": "Product Name",
     "TECHNOLOGY": "Technology",
     "REMOTE_BASE_URL": "Remote Base URL",
     "REMOTE_ENTRY": "Remote Entry",
@@ -196,7 +196,7 @@
     "TOOLTIPS": {
       "APP_ID": "Unique ID - base identifier for this App",
       "APP_NAME": "Business name of the App",
-      "APP_TYPE": "Type of the App",
+      "APP_TYPE": "Type of the App: Microfrontend or Microservice",
       "APP_VERSION": "Version",
       "DESCRIPTION": "Description",
       "PRODUCT_NAME": "Name of the Produkt the App is assigned to",
