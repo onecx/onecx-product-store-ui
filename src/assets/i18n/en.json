@@ -100,6 +100,12 @@
         "NOT_EXISTS": "An App with this name could not be found.",
         "LOAD_ERROR": "Failed to load App",
         "NOT_FOUND": "The product does not have an App",
+        "FILTER": {
+          "TOOLTIP": "Filter value",
+          "ALL": "All",
+          "MS": "MS",
+          "MFE": "MFE"
+        },
         "QUICK_FILTER": {
           "TOOLTIP": "Set filter value",
           "ALL": "All",

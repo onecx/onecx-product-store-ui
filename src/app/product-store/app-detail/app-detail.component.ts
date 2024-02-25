@@ -108,7 +108,6 @@ export class AppDetailComponent implements OnChanges {
   }
 
   ngOnChanges() {
-    this.log('ngOnChanges() ' + this.changeMode)
     this.enableForms()
     if (this.changeMode === 'CREATE') {
       this.ms = undefined
@@ -136,11 +135,9 @@ export class AppDetailComponent implements OnChanges {
   }
   private enableForms(): void {
     if (this.allowEditing()) {
-      this.log('allowEditing() true')
       this.formGroupMs.enable()
       this.formGroupMfe.enable()
     } else {
-      this.log('allowEditing() false')
       this.formGroupMs.disable()
       this.formGroupMfe.disable()
     }

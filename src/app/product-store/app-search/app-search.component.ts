@@ -19,11 +19,12 @@ import { limitText } from 'src/app/shared/utils'
 
 export interface AppSearchCriteria {
   appId: FormControl<string | null>
-  appType: FormControl<AppType | null>
+  appType: FormControl<AppFilterType | null>
   productName: FormControl<string | null>
 }
 export type AppType = 'MS' | 'MFE'
-export type AppFilterType = 'ALL' | 'MS' | 'MFE'
+export type AppName = 'Microservice' | 'Microfrontend'
+export type AppFilterType = 'ALL' | AppType
 export type AppAbstract = MicrofrontendAbstract & Microservice & { appType: AppType }
 export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
 
@@ -45,11 +46,12 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public appSearchCriteriaGroup!: FormGroup<AppSearchCriteria>
   public viewMode = 'grid'
   public changeMode: ChangeMode = 'VIEW'
+  public appTypeItems: SelectItem[]
   public quickFilterValue: AppFilterType = 'ALL'
   public quickFilterItems: SelectItem[]
   public filterValue: string | undefined
   public filterValueDefault = 'appId,appType,productName,classifications'
-  public filterBy = 'name,type' || 'type'
+  public filterBy = this.filterValueDefault || 'appType'
   public filter: string | undefined
   public sortField = 'appId'
   public sortOrder = 1
@@ -75,11 +77,19 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
     this.hasDeletePermission = this.user.hasPermission('APP#DELETE')
     this.hasEditPermission = this.user.hasPermission('APP#EDIT')
+    // search criteria
+    this.appTypeItems = [
+      { label: 'ACTIONS.SEARCH.APP.FILTER.ALL', value: 'ALL' },
+      { label: 'ACTIONS.SEARCH.APP.FILTER.MFE', value: 'MFE' },
+      { label: 'ACTIONS.SEARCH.APP.FILTER.MS', value: 'MS' }
+    ]
     this.appSearchCriteriaGroup = new FormGroup<AppSearchCriteria>({
       appId: new FormControl<string | null>(null),
-      appType: new FormControl<AppType | null>(null),
+      appType: new FormControl<AppFilterType | null>('ALL'),
       productName: new FormControl<string | null>(null)
     })
+    this.appSearchCriteriaGroup.controls['appType'].setValue('ALL') // default: all app types
+    // quick filter
     this.quickFilterItems = [
       { label: 'ACTIONS.SEARCH.APP.QUICK_FILTER.ALL', value: 'ALL' },
       { label: 'ACTIONS.SEARCH.APP.QUICK_FILTER.MFE', value: 'MFE' },
@@ -90,19 +100,18 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.prepareDialogTranslations()
     this.prepareActionButtons()
+    this.declareMfeObservable()
+    this.declareMsObservable()
     this.searchApps()
   }
   public ngOnDestroy(): void {
     this.destroy$.next(undefined)
     this.destroy$.complete()
   }
-  private log(text: string, obj?: object): void {
-    if (this.debug) {
-      if (obj) console.log('app search: ' + text, obj)
-      else console.log('app search: ' + text)
-    }
-  }
 
+  /**
+   * DECLARE Observables
+   */
   private declareMfeObservable(): void {
     this.mfes$ = this.mfeApi
       .searchMicrofrontends({
@@ -141,8 +150,32 @@ export class AppSearchComponent implements OnInit, OnDestroy {
         finalize(() => (this.searchInProgress = false))
       )
   }
-  // private searchMfes() {}
-  // private searchMss() {}
+
+  /**
+   * SEARCH
+   */
+  private searchMfes() {
+    this.apps$ = this.mfes$.pipe(
+      map((a) => {
+        return a.stream
+          ? a.stream?.map((mfe) => {
+              return { ...mfe, appType: 'MFE' } as AppAbstract
+            })
+          : []
+      })
+    )
+  }
+  private searchMss() {
+    this.apps$ = this.mss$.pipe(
+      map((a) => {
+        return a.stream
+          ? a.stream?.map((ms) => {
+              return { ...ms, appType: 'MS' } as AppAbstract
+            })
+          : []
+      })
+    )
+  }
   private searchMfesAndMss() {
     this.apps$ = combineLatest([
       this.mfes$.pipe(
@@ -168,11 +201,22 @@ export class AppSearchComponent implements OnInit, OnDestroy {
 
   public searchApps(): void {
     this.searchInProgress = true
-    this.declareMfeObservable()
-    this.declareMsObservable()
-    this.searchMfesAndMss()
+    switch (this.appSearchCriteriaGroup.controls['appType'].value) {
+      case 'ALL':
+        this.searchMfesAndMss()
+        break
+      case 'MFE':
+        this.searchMfes()
+        break
+      case 'MS':
+        this.searchMss()
+        break
+    }
   }
 
+  /**
+   * DIALOG
+   */
   private prepareActionButtons(): void {
     this.actions$ = this.translate
       .get([
@@ -212,13 +256,12 @@ export class AppSearchComponent implements OnInit, OnDestroy {
         })
       )
   }
-
   private prepareDialogTranslations(): void {
     this.translate
       .get([
         'APP.APP_ID',
         'APP.APP_TYPE',
-        'PRODUCT.NAME',
+        'APP.PRODUCT_NAME',
         'ACTIONS.DATAVIEW.VIEW_MODE_GRID',
         'ACTIONS.DATAVIEW.VIEW_MODE_LIST',
         'ACTIONS.DATAVIEW.VIEW_MODE_TABLE',
@@ -238,7 +281,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
             ', ' +
             data['APP.APP_TYPE'] +
             ', ' +
-            data['PRODUCT.NAME'],
+            data['APP.PRODUCT_NAME'],
           viewModeToggleTooltips: {
             grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID'],
             list: data['ACTIONS.DATAVIEW.VIEW_MODE_LIST']
@@ -252,11 +295,13 @@ export class AppSearchComponent implements OnInit, OnDestroy {
       })
   }
 
+  /**
+   * UI EVENTS
+   */
   public onLayoutChange(viewMode: string): void {
     this.viewMode = viewMode
   }
   public onQuickFilterChange(ev: any): void {
-    this.log('onQuickFilterChange ')
     if (ev.value === 'ALL') {
       this.filterBy = this.filterValueDefault
       this.filterValue = ''
@@ -283,7 +328,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     this.searchApps()
   }
   public onSearchReset() {
-    this.appSearchCriteriaGroup.reset()
+    this.appSearchCriteriaGroup.reset({ appType: 'ALL' })
   }
   public onBack() {
     this.router.navigate(['../'], { relativeTo: this.route })
@@ -317,7 +362,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * trigger search after any change on detail level
+   * MODAL Dialog feedback => trigger search after changes on detail level
    */
   public appChanged(changed: any) {
     this.displayDetailDialog = false

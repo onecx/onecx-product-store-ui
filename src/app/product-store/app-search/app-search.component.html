@@ -7,35 +7,46 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <div simpleCriteria>
-      <div [formGroup]="appSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-3 px-2">
-        <span class="p-float-label">
-          <input
-            id="app_search_app_id"
-            pInputText
-            type="text"
-            formControlName="appId"
-            class="w-18rem"
-            [clear]="true"
-            [title]="'APP.TOOLTIPS.APP_ID' | translate"
-          />
-          <label for="app_search_app_id">{{ 'APP.APP_ID' | translate }}</label>
-        </span>
-        <span class="p-float-label">
-          <input
-            id="app_search_product_name"
-            pInputText
-            type="text"
-            formControlName="productName"
-            class="w-18rem"
-            [clear]="true"
-            [title]="'APP.TOOLTIPS.PRODUCT_NAME' | translate"
-          />
-          <label for="app_search_product_name">{{ 'APP.PRODUCT_NAME' | translate }}</label>
-        </span>
+    <div [formGroup]="appSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-3 px-2">
+      <span class="p-float-label">
+        <input
+          pInputText
+          id="app_search_app_id"
+          type="text"
+          class="w-18rem"
+          [clear]="true"
+          [title]="'APP.TOOLTIPS.APP_ID' | translate"
+          formControlName="appId"
+        />
+        <label for="app_search_app_id">{{ 'APP.APP_ID' | translate }}</label>
+      </span>
+      <span class="p-float-label">
+        <input
+          pInputText
+          id="app_search_criteria_product_name"
+          type="text"
+          class="w-18rem"
+          [clear]="true"
+          [title]="'APP.TOOLTIPS.PRODUCT_NAME' | translate"
+          formControlName="productName"
+        />
+        <label for="app_search_criteria_product_name">{{ 'APP.PRODUCT_NAME' | translate }}</label>
+      </span>
+      <div class="flex flex-column flex-wrap align-items-center row-gap-05">
+        <p-selectButton
+          inputid="app_search_criteria_app_type"
+          styleClass="data-view-control"
+          [options]="appTypeItems"
+          formControlName="appType"
+          [title]="'ACTIONS.SEARCH.APP.FILTER.TOOLTIP' | translate"
+        >
+          <ng-template let-item>{{ item.label | translate }}</ng-template>
+        </p-selectButton>
+        <div class="text-sm">
+          {{ 'ACTIONS.SEARCH.APP.QUICK_FILTER.' + appSearchCriteriaGroup.controls['appType'].value | translate }}
+        </div>
       </div>
     </div>
-    <!--/ocx-search-criteria-->
   </ocx-search-header>
 
   <ocx-page-content>

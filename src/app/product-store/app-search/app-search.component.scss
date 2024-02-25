@@ -18,6 +18,23 @@
     }
   }
 
+  .row-gap-05 {
+    row-gap: 0.125rem !important;
+  }
+  .search-criteria-container .p-selectbutton .p-button {
+    text-align: center;
+    padding: 0.3rem 0.8rem;
+    border: var(--input-border);
+    &.p-highlight {
+      color: var(--primary-text-color);
+      background-color: var(--primary-color);
+    }
+    &:hover {
+      color: var(--primary-text-color);
+      border-color: var(--emphasis-high);
+      background-color: var(--button-hover-bg);
+    }
+  }
   .h-05rem {
     height: 0.5rem;
   }

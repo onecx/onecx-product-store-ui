@@ -99,6 +99,12 @@
         "NOT_EXISTS": "Eine App mit diesem Namen konnte nicht gefunden werden.",
         "LOAD_ERROR": "App konnte nicht geladen werden",
         "NOT_FOUND": "Das Produkt hat noch keine Apps",
+        "FILTER": {
+          "TOOLTIP": "Filterwert",
+          "ALL": "Alle",
+          "MS": "MS",
+          "MFE": "MFE"
+        },
         "QUICK_FILTER": {
           "TOOLTIP": "Filterwert",
           "ALL": "Alle",
