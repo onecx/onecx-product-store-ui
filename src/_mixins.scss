@@ -112,10 +112,13 @@
 
 @mixin search-criteria-select-button {
   :host ::ng-deep {
-    .row-gap-05 {
-      row-gap: 0.1rem !important;
-    }
-    .search-criteria-container {
+    .search-criteria-selectbutton {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: column;
+      row-gap: 0.1rem;
+      align-items: center;
+
       .p-selectbutton .p-button {
         text-align: center;
         display: inline-block;
@@ -123,6 +126,7 @@
         font-weight: var(--font-weight);
         padding: 0.3rem 0.8rem;
         border: var(--input-border);
+
         &.p-highlight {
           color: var(--primary-text-color);
           background-color: var(--primary-color);

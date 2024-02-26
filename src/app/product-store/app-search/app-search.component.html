@@ -32,14 +32,14 @@
         />
         <label for="app_search_criteria_product_name">{{ 'APP.PRODUCT_NAME' | translate }}</label>
       </span>
-      <div class="flex flex-column flex-wrap align-items-center row-gap-05">
+      <div class="search-criteria-selectbutton">
         <p-selectButton
           inputid="app_search_criteria_app_type"
           [options]="appTypeItems"
           formControlName="appType"
           [title]="'ACTIONS.SEARCH.APP.FILTER.TOOLTIP' | translate"
         >
-          <ng-template styleClass="henry" let-item>{{ item.label | translate }}</ng-template>
+          <ng-template let-item>{{ item.label | translate }}</ng-template>
         </p-selectButton>
         <div class="p-selectbutton-subtitle">
           {{ 'ACTIONS.SEARCH.APP.QUICK_FILTER.' + appSearchCriteriaGroup.controls['appType'].value | translate }}
