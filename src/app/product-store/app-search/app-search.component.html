@@ -35,14 +35,13 @@
       <div class="flex flex-column flex-wrap align-items-center row-gap-05">
         <p-selectButton
           inputid="app_search_criteria_app_type"
-          styleClass="data-view-control"
           [options]="appTypeItems"
           formControlName="appType"
           [title]="'ACTIONS.SEARCH.APP.FILTER.TOOLTIP' | translate"
         >
-          <ng-template let-item>{{ item.label | translate }}</ng-template>
+          <ng-template styleClass="henry" let-item>{{ item.label | translate }}</ng-template>
         </p-selectButton>
-        <div class="text-sm">
+        <div class="p-selectbutton-subtitle">
           {{ 'ACTIONS.SEARCH.APP.QUICK_FILTER.' + appSearchCriteriaGroup.controls['appType'].value | translate }}
         </div>
       </div>

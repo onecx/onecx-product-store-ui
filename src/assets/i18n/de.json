@@ -30,7 +30,6 @@
         "LABEL": "Produkt erstellen",
         "HEADER": "Produkt erstellen",
         "TOOLTIP": "Ein neues Produkt erstellen",
-        "ALREADY_EXISTS": "Ein Produkt mit diesem Namen existert schon",
         "OK": "Das Produkt wurde erfolgreich erstellt",
         "NOK": "Das Produkt konnte nicht erstellt werden."
       }

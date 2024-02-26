@@ -23,7 +23,6 @@
       "MS.HEADER": "Create Microservice",
       "APP": {
         "TOOLTIP": "Create a new App",
-        "ALREADY_EXISTS": "App with that name already exists",
         "OK": "The App was created successfully",
         "NOK": "An error has occurred. The App was not created."
       },
@@ -31,7 +30,6 @@
         "LABEL": "Create Product",
         "HEADER": "Create Product",
         "TOOLTIP": "Create a new Product",
-        "ALREADY_EXISTS": "A Product with that name already exists",
         "OK": "The Product was created successfully",
         "NOK": "An error has occurred. The Product was not created."
       }

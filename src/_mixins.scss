@@ -113,20 +113,29 @@
 @mixin search-criteria-select-button {
   :host ::ng-deep {
     .row-gap-05 {
-      row-gap: 0.125rem !important;
+      row-gap: 0.1rem !important;
     }
-    .search-criteria-container .p-selectbutton .p-button {
-      text-align: center;
-      padding: 0.3rem 0.8rem;
-      border: var(--input-border);
-      &.p-highlight {
-        color: var(--primary-text-color);
-        background-color: var(--primary-color);
+    .search-criteria-container {
+      .p-selectbutton .p-button {
+        text-align: center;
+        display: inline-block;
+        color: var(--emphasis-medium);
+        font-weight: var(--font-weight);
+        padding: 0.3rem 0.8rem;
+        border: var(--input-border);
+        &.p-highlight {
+          color: var(--primary-text-color);
+          background-color: var(--primary-color);
+        }
+        &:hover {
+          color: var(--primary-text-color);
+          border-color: var(--emphasis-high);
+          background-color: var(--button-hover-bg);
+        }
       }
-      &:hover {
-        color: var(--primary-text-color);
-        border-color: var(--emphasis-high);
-        background-color: var(--button-hover-bg);
+      .p-selectbutton-subtitle {
+        color: var(--emphasis-medium);
+        font-size: 0.8rem;
       }
     }
   }
