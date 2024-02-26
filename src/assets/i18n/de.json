@@ -30,7 +30,6 @@
         "LABEL": "Produkt erstellen",
         "HEADER": "Produkt erstellen",
         "TOOLTIP": "Ein neues Produkt erstellen",
-        "ALREADY_EXISTS": "Ein Produkt mit diesem Namen existert schon",
         "OK": "Das Produkt wurde erfolgreich erstellt",
         "NOK": "Das Produkt konnte nicht erstellt werden."
       }
@@ -99,8 +98,14 @@
         "NOT_EXISTS": "Eine App mit diesem Namen konnte nicht gefunden werden.",
         "LOAD_ERROR": "App konnte nicht geladen werden",
         "NOT_FOUND": "Das Produkt hat noch keine Apps",
+        "FILTER": {
+          "TOOLTIP": "App Typ",
+          "ALL": "Alle",
+          "MS": "MS",
+          "MFE": "MFE"
+        },
         "QUICK_FILTER": {
-          "TOOLTIP": "Filterwert",
+          "TOOLTIP": "Quickfilter für App Typ",
           "ALL": "Alle",
           "MS": "Microservices",
           "MFE": "Microfrontends"
@@ -164,7 +169,7 @@
     "SEARCH.SUBHEADER": "Produkte und deren Apps verwalten",
     "DETAIL.SUBHEADER": "Produkt Details",
     "SEARCH.APPS.LABEL": "Apps",
-    "SEARCH.APPS.TOOLTIP": "Apps suchen und anzeigen",
+    "SEARCH.APPS.TOOLTIP": "Microfrontends und Microservices suchen und verwalten",
     "SEARCH.APPS.HEADER": "Apps",
     "SEARCH.APPS.SUBHEADER": "Suchen und verwalten von Microfrontends und Microservices",
     "TABS": {
@@ -179,7 +184,7 @@
     "APP_TYPE": "Typ",
     "APP_VERSION": "Version",
     "DESCRIPTION": "Beschreibung",
-    "PRODUCT_NAME": "Produkt",
+    "PRODUCT_NAME": "Produktname",
     "TECHNOLOGY": "Technologie",
     "REMOTE_BASE_URL": "Remote Base URL",
     "REMOTE_ENTRY": "Remote Entry",

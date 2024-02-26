@@ -23,7 +23,6 @@
       "MS.HEADER": "Create Microservice",
       "APP": {
         "TOOLTIP": "Create a new App",
-        "ALREADY_EXISTS": "App with that name already exists",
         "OK": "The App was created successfully",
         "NOK": "An error has occurred. The App was not created."
       },
@@ -31,7 +30,6 @@
         "LABEL": "Create Product",
         "HEADER": "Create Product",
         "TOOLTIP": "Create a new Product",
-        "ALREADY_EXISTS": "A Product with that name already exists",
         "OK": "The Product was created successfully",
         "NOK": "An error has occurred. The Product was not created."
       }
@@ -100,8 +98,14 @@
         "NOT_EXISTS": "An App with this name could not be found.",
         "LOAD_ERROR": "Failed to load App",
         "NOT_FOUND": "The product does not have an App",
+        "FILTER": {
+          "TOOLTIP": "App Type",
+          "ALL": "All",
+          "MS": "MS",
+          "MFE": "MFE"
+        },
         "QUICK_FILTER": {
-          "TOOLTIP": "Set filter value",
+          "TOOLTIP": "Quick Filter for App type",
           "ALL": "All",
           "MS": "Microservices",
           "MFE": "Microfrontends"
@@ -165,9 +169,9 @@
     "SEARCH.SUBHEADER": "Viewing and Managing Products and their Apps",
     "DETAIL.SUBHEADER": "Product Details",
     "SEARCH.APPS.LABEL": "Apps",
-    "SEARCH.APPS.TOOLTIP": "Search and Display Apps",
+    "SEARCH.APPS.TOOLTIP": "Search and Management of Microfrontends and Microservices",
     "SEARCH.APPS.HEADER": "Apps",
-    "SEARCH.APPS.SUBHEADER": "Searching and Viewing of Microfrontends and Microservices",
+    "SEARCH.APPS.SUBHEADER": "Searching and Management of Microfrontends and Microservices",
     "TABS": {
       "APPS": "Apps",
       "INTERN": "Internal",
@@ -180,7 +184,7 @@
     "APP_TYPE": "Type",
     "APP_VERSION": "Version",
     "DESCRIPTION": "Description",
-    "PRODUCT_NAME": "Product",
+    "PRODUCT_NAME": "Product Name",
     "TECHNOLOGY": "Technology",
     "REMOTE_BASE_URL": "Remote Base URL",
     "REMOTE_ENTRY": "Remote Entry",
@@ -196,7 +200,7 @@
     "TOOLTIPS": {
       "APP_ID": "Unique ID - base identifier for this App",
       "APP_NAME": "Business name of the App",
-      "APP_TYPE": "Type of the App",
+      "APP_TYPE": "Type of the App: Microfrontend or Microservice",
       "APP_VERSION": "Version",
       "DESCRIPTION": "Description",
       "PRODUCT_NAME": "Name of the Produkt the App is assigned to",

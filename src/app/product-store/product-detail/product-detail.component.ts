@@ -1,12 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { Location } from '@angular/common'
-//import { DatePipe } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
 import { Observable, finalize, map } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 
 import { Action, PortalMessageService, UserService } from '@onecx/portal-integration-angular'
-import { Product, ProductsAPIService } from 'src/app/shared/generated'
+import { Product, ProductAndWorkspaces, ProductsAPIService } from 'src/app/shared/generated'
 import { prepareUrl } from 'src/app/shared/utils'
 import { ProductPropertyComponent } from './product-props/product-props.component'
 
@@ -21,8 +20,7 @@ export class ProductDetailComponent implements OnInit {
 
   public actions$: Observable<Action[]> | undefined
   public productName: string
-  public product: Product | undefined
-  //  usedInWorkspace: Workspace[] | undefined
+  public product: ProductAndWorkspaces | undefined
   public changeMode: ChangeMode = 'CREATE'
   public loading = false
   public dateFormat = 'medium'
@@ -75,7 +73,6 @@ export class ProductDetailComponent implements OnInit {
             this.product = data
             this.prepareActionButtons()
             this.headerImageUrl = prepareUrl(this.product?.imageUrl)
-            //this.usedInWorkspace = data.workspaces
           }
         }
       })

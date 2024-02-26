@@ -164,7 +164,8 @@ export class AppDetailComponent implements OnChanges {
                 this.mfe.modificationDate = undefined
               }
               this.changeMode = 'CREATE'
-            } else this.enableForms()
+            }
+            this.enableForms()
           }
         }
       })
@@ -190,7 +191,8 @@ export class AppDetailComponent implements OnChanges {
                 this.ms.modificationDate = undefined
               }
               this.changeMode = 'CREATE'
-            } else this.enableForms()
+            }
+            this.enableForms()
           }
         }
       })

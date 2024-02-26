@@ -1,12 +1,11 @@
 <ocx-portal-page permission="PRODUCT#SEARCH" helpArticleId="PAGE_PRODUCT_SEARCH">
-  <ocx-search-criteria
+  <ocx-search-header
     [header]="'DIALOG.SEARCH.HEADER' | translate"
     [subheader]="'DIALOG.SEARCH.SUBHEADER' | translate"
+    (searched)="onSearch()"
+    (resetted)="onSearchReset()"
+    [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
-    [disableAdvancedToggle]="true"
-    [disableAdvancedToggle]="true"
-    (search)="onSearch()"
-    (reset)="onSearchReset()"
   >
     <div simpleCriteria>
       <div [formGroup]="productSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-3 px-2">
@@ -16,7 +15,7 @@
         </span>
       </div>
     </div>
-  </ocx-search-criteria>
+  </ocx-search-header>
 
   <ocx-page-content>
     <div *ngIf="!products$" class="card px-3 align-items-center">
@@ -32,7 +31,7 @@
         [rows]="viewMode === 'grid' ? 12 : 10"
         [layout]="viewMode"
         [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
-        filterBy="name,displayName"
+        filterBy="name,displayName,classification"
         [sortField]="sortField"
         [sortOrder]="sortOrder"
       >
@@ -50,7 +49,11 @@
             [defaultSortDirection]="sortOrder === 1"
             (dataViewChange)="onLayoutChange($event)"
             (filterChange)="onFilterChange($event)"
-            [filterColumns]="['PRODUCT.NAME' | translate, 'PRODUCT.DISPLAY_NAME' | translate]"
+            [filterColumns]="[
+              'PRODUCT.NAME' | translate,
+              'PRODUCT.DISPLAY_NAME' | translate,
+              'PRODUCT.CLASSIFICATIONS' | translate
+            ]"
             (sortChange)="onSortChange($event)"
             (sortDirectionChange)="onSortDirChange($event)"
             [translations]="dataViewControlsTranslations"
