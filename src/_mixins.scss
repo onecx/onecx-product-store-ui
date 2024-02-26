@@ -113,7 +113,7 @@
 @mixin search-criteria-select-button {
   :host ::ng-deep {
     .p-selectbutton-title {
-      width: 2.2rem;
+      width: 2rem;
     }
     .slim-selectbutton {
       display: flex;
@@ -151,6 +151,7 @@
     .filter-selectbutton {
       .p-selectbutton .p-button {
         opacity: 0.9 !important;
+        border: var(--toggle-button-border);
         &.p-highlight {
           background: var(--toggle-button-active-bg);
           //border-color: var(--toggle-button-active-border-color);
