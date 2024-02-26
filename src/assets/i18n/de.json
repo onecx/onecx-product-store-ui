@@ -99,13 +99,13 @@
         "LOAD_ERROR": "App konnte nicht geladen werden",
         "NOT_FOUND": "Das Produkt hat noch keine Apps",
         "FILTER": {
-          "TOOLTIP": "Filterwert",
+          "TOOLTIP": "App Typ",
           "ALL": "Alle",
           "MS": "MS",
           "MFE": "MFE"
         },
         "QUICK_FILTER": {
-          "TOOLTIP": "Filterwert",
+          "TOOLTIP": "Quickfilter für App Typ",
           "ALL": "Alle",
           "MS": "Microservices",
           "MFE": "Microfrontends"

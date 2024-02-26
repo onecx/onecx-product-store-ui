@@ -32,17 +32,25 @@
         />
         <label for="app_search_criteria_product_name">{{ 'APP.PRODUCT_NAME' | translate }}</label>
       </span>
-      <div class="search-criteria-selectbutton">
-        <p-selectButton
-          inputid="app_search_criteria_app_type"
-          [options]="appTypeItems"
-          formControlName="appType"
-          [title]="'ACTIONS.SEARCH.APP.FILTER.TOOLTIP' | translate"
+      <div class="flex flex-wrap align-items-center ml-1 gap-2">
+        <div
+          class="p-selectbutton-title opacity-90 text-sm"
+          [title]="'ACTIONS.SEARCH.APP.QUICK_FILTER.TOOLTIP' | translate"
         >
-          <ng-template let-item>{{ item.label | translate }}</ng-template>
-        </p-selectButton>
-        <div class="p-selectbutton-subtitle">
-          {{ 'ACTIONS.SEARCH.APP.QUICK_FILTER.' + appSearchCriteriaGroup.controls['appType'].value | translate }}
+          {{ 'ACTIONS.SEARCH.APP.FILTER.TOOLTIP' | translate }}
+        </div>
+        <div class="slim-selectbutton search-criteria-selectbutton">
+          <p-selectButton
+            inputid="app_search_criteria_app_type"
+            [options]="appTypeItems"
+            formControlName="appType"
+            [title]="'ACTIONS.SEARCH.APP.FILTER.TOOLTIP' | translate"
+          >
+            <ng-template let-item>{{ item.value }}</ng-template>
+          </p-selectButton>
+          <div class="p-selectbutton-subtitle">
+            {{ 'ACTIONS.SEARCH.APP.QUICK_FILTER.' + appSearchCriteriaGroup.controls['appType'].value | translate }}
+          </div>
         </div>
       </div>
     </div>
@@ -65,17 +73,26 @@
       <ng-template pTemplate="header">
         <div class="flex flex-wrap align-items-center mx-1">
           <div class="flex flex-wrap align-items-center ml-1 gap-2">
-            <div class="data-view-control opacity-90 text-sm">Quick<br />Filter</div>
-            <p-selectButton
-              inputid="app_search_quick_filter"
-              styleClass="data-view-control opacity-90"
-              [options]="quickFilterItems"
-              [(ngModel)]="quickFilterValue"
-              (onChange)="onQuickFilterChange($event)"
+            <div
+              class="p-selectbutton-title data-view-control opacity-90 text-sm"
               [title]="'ACTIONS.SEARCH.APP.QUICK_FILTER.TOOLTIP' | translate"
             >
-              <ng-template let-item>{{ item.label | translate }}</ng-template>
-            </p-selectButton>
+              {{ 'ACTIONS.SEARCH.APP.FILTER.TOOLTIP' | translate }}
+            </div>
+            <div class="slim-selectbutton filter-selectbutton">
+              <p-selectButton
+                inputid="app_search_quick_filter"
+                styleClass="data-view-control opacity-90a"
+                [options]="quickFilterItems"
+                [(ngModel)]="quickFilterValue"
+                (onChange)="onQuickFilterChange($event)"
+              >
+                <ng-template let-item>{{ item.value }}</ng-template>
+              </p-selectButton>
+              <div class="p-selectbutton-subtitle">
+                {{ 'ACTIONS.SEARCH.APP.QUICK_FILTER.' + quickFilterValue | translate }}
+              </div>
+            </div>
           </div>
           <ocx-data-view-controls
             class="flex-grow-1"

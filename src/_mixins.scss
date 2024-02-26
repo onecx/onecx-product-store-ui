@@ -112,7 +112,10 @@
 
 @mixin search-criteria-select-button {
   :host ::ng-deep {
-    .search-criteria-selectbutton {
+    .p-selectbutton-title {
+      width: 2.2rem;
+    }
+    .slim-selectbutton {
       display: flex;
       flex-wrap: wrap;
       flex-direction: column;
@@ -126,20 +129,37 @@
         font-weight: var(--font-weight);
         padding: 0.3rem 0.8rem;
         border: var(--input-border);
-
+      }
+      .p-selectbutton-subtitle {
+        color: var(--emphasis-medium);
+        font-size: 0.8rem;
+      }
+    }
+    .search-criteria-selectbutton {
+      .p-selectbutton .p-button {
         &.p-highlight {
           color: var(--primary-text-color);
           background-color: var(--primary-color);
         }
-        &:hover {
+        &:not(.p-disabled):not(.p-highlight):hover {
           color: var(--primary-text-color);
           border-color: var(--emphasis-high);
           background-color: var(--button-hover-bg);
         }
       }
-      .p-selectbutton-subtitle {
-        color: var(--emphasis-medium);
-        font-size: 0.8rem;
+    }
+    .filter-selectbutton {
+      .p-selectbutton .p-button {
+        opacity: 0.9 !important;
+        &.p-highlight {
+          background: var(--toggle-button-active-bg);
+          //border-color: var(--toggle-button-active-border-color);
+        }
+        &:not(.p-disabled):not(.p-highlight):hover {
+          color: var(--text-color);
+          border-color: var(--toggle-button-hover-border-color);
+          background-color: var(--toggle-button-hover-bg);
+        }
       }
     }
   }
