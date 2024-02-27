@@ -172,7 +172,51 @@ describe('AppSearchComponent', () => {
     expect(component.searchApps).toHaveBeenCalled()
   })
 
+  it('should search mfes: one mfe', (done) => {
+    component.appSearchCriteriaGroup.controls['appType'].setValue('MFE')
+    component.mfes$ = of({
+      stream: [
+        {
+          id: 'mfe1',
+          appId: 'appId1',
+          appName: 'Microfrontend 1',
+          productName: 'p1',
+          remoteBaseUrl: 'url'
+        }
+      ]
+    })
+
+    component.searchApps()
+
+    component.apps$.subscribe({
+      next: (apps) => {
+        expect(apps.length).toBe(1)
+        apps.forEach((app) => {
+          expect(app.appType).toEqual('MFE')
+        })
+        done()
+      },
+      error: done.fail
+    })
+  })
+
+  it('should search mfes: empty', (done) => {
+    component.appSearchCriteriaGroup.controls['appType'].setValue('MFE')
+    component.mfes$ = of({})
+
+    component.searchApps()
+
+    component.apps$.subscribe({
+      next: (apps) => {
+        expect(apps.length).toBe(0)
+        done()
+      },
+      error: done.fail
+    })
+  })
+
   it('should catch error on searchApps: mfes', () => {
+    component.appSearchCriteriaGroup.controls['appType'].setValue('MFE')
     const err = {
       status: 404
     }
@@ -182,8 +226,45 @@ describe('AppSearchComponent', () => {
 
     expect(component.exceptionKey).toEqual('')
   })
+  // expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_404.APPS')
+
+  it('should search mss: one ms', (done) => {
+    component.appSearchCriteriaGroup.controls['appType'].setValue('MS')
+    component.mss$ = of({
+      stream: [{ id: 'ms1', appId: 'appId3', appName: 'Microservice 1', productName: 'p1' }]
+    })
+
+    component.searchApps()
+
+    component.apps$.subscribe({
+      next: (apps) => {
+        expect(apps.length).toBe(1)
+        apps.forEach((app) => {
+          expect(app.appType).toEqual('MS')
+        })
+        done()
+      },
+      error: done.fail
+    })
+  })
+
+  it('should search mss: empty', (done) => {
+    component.appSearchCriteriaGroup.controls['appType'].setValue('MS')
+    component.mss$ = of({})
+
+    component.searchApps()
+
+    component.apps$.subscribe({
+      next: (apps) => {
+        expect(apps.length).toBe(0)
+        done()
+      },
+      error: done.fail
+    })
+  })
 
   it('should catch error on searchApps: mss', () => {
+    component.appSearchCriteriaGroup.controls['appType'].setValue('MS')
     const err = {
       status: 404
     }
@@ -195,36 +276,27 @@ describe('AppSearchComponent', () => {
   })
 
   it('should combine mfe and ms streams into apps$ with appType: only mfes', (done: DoneFn) => {
-    apiServiceSpy.searchMicrofrontends.and.returnValue(
-      of({
-        stream: [
-          { id: 'mfe1', name: 'Microfrontend 1', productName: 'p1' },
-          { id: 'mfe2', name: 'Microfrontend 2', productName: 'p1' }
-        ]
-      })
-    )
-    apiServiceSpy.searchMicroservice.and.returnValue(
-      of({
-        stream: [
-          { id: 'ms1', name: 'Microservice 1', productName: 'p1' },
-          { id: 'ms2', name: 'Microservice 2', productName: 'p1' }
-        ]
-      })
-    )
+    component.appSearchCriteriaGroup.controls['appType'].setValue('ALL')
+    component.mfes$ = of({
+      stream: [
+        {
+          id: 'mfe1',
+          appId: 'appId1',
+          appName: 'Microfrontend 1',
+          productName: 'p1',
+          remoteBaseUrl: 'url'
+        }
+      ]
+    })
+    component.mss$ = of({
+      stream: [{ id: 'ms1', appId: 'appId3', appName: 'Microservice 1', productName: 'p1' }]
+    })
 
     component.searchApps()
 
     component.apps$.subscribe({
       next: (result) => {
-        expect(result.length).toBe(0) // should be 4
-        /*        expect(result).toEqual(
-          jasmine.arrayContaining([
-            jasmine.objectContaining({ id: 'mfe1', name: 'Microfrontend 1', appType: 'MFE' }),
-            jasmine.objectContaining({ id: 'mfe2', name: 'Microfrontend 2', appType: 'MFE' })
-            // jasmine.objectContaining({ id: 'ms1', name: 'Microservice 1', appType: 'MS' }),
-            // jasmine.objectContaining({ id: 'ms2', name: 'Microservice 2', appType: 'MS' })
-          ])
-        ) */
+        expect(result.length).toBe(2)
         done()
       },
       error: done.fail

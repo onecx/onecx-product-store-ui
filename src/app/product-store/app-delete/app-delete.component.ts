@@ -27,7 +27,7 @@ export class AppDeleteComponent {
 
   public onConfirmDeletion(): void {
     if (this.appAbstract?.id) {
-      if (this.appAbstract?.appType === 'MFE')
+      if (this.appAbstract?.appType === 'MFE') {
         this.mfeApi.deleteMicrofrontend({ id: this.appAbstract?.id }).subscribe({
           next: () => {
             this.msgService.success({ summaryKey: 'ACTIONS.DELETE.APP.OK' })
@@ -35,7 +35,9 @@ export class AppDeleteComponent {
           },
           error: () => this.msgService.error({ summaryKey: 'ACTIONS.DELETE.APP.NOK' })
         })
-      if (this.appAbstract?.appType === 'MS')
+      }
+      if (this.appAbstract?.appType === 'MS') {
+        // console.log('NEXT MS', this.appAbstract?.id)
         this.msApi.deleteMicroservice({ id: this.appAbstract?.id }).subscribe({
           next: () => {
             this.msgService.success({ summaryKey: 'ACTIONS.DELETE.APP.OK' })
@@ -43,6 +45,7 @@ export class AppDeleteComponent {
           },
           error: () => this.msgService.error({ summaryKey: 'ACTIONS.DELETE.APP.NOK' })
         })
+      }
     }
   }
 }
