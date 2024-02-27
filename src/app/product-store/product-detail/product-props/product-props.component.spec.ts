@@ -7,8 +7,30 @@ import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
-import { ProductPropertyComponent, ProductDetailForm } from './product-props.component'
-import { ProductsAPIService } from 'src/app/shared/generated'
+import { ProductPropertyComponent, ProductDetailForm, productNameValidator } from './product-props.component'
+import { ProductsAPIService, ImagesInternalAPIService } from 'src/app/shared/generated'
+
+const mockForm = new FormGroup<ProductDetailForm>({
+  id: new FormControl<string | null>(null), // Assuming ID might not be needed or can be null for new entries
+  name: new FormControl<string | null>(null, [
+    Validators.required,
+    Validators.minLength(2),
+    Validators.maxLength(255),
+    productNameValidator()
+  ]),
+  operator: new FormControl<boolean | null>(null),
+  version: new FormControl<string | null>(null, [Validators.required, Validators.maxLength(255)]),
+  description: new FormControl<string | null>(null, [Validators.maxLength(255)]),
+  imageUrl: new FormControl<string | null>(null, [Validators.maxLength(255)]),
+  basePath: new FormControl<string | null>(null, [Validators.required, Validators.maxLength(255)]),
+  displayName: new FormControl<string | null>(null, [
+    Validators.required,
+    Validators.minLength(2),
+    Validators.maxLength(255)
+  ]),
+  iconName: new FormControl<string | null>(null, [Validators.maxLength(255)]),
+  classifications: new FormControl<string[] | null>(null, [Validators.maxLength(255)]) // Assuming this validation makes sense for your use case
+})
 
 describe('ProductPropertyComponent', () => {
   let component: ProductPropertyComponent
@@ -19,6 +41,14 @@ describe('ProductPropertyComponent', () => {
     updateProduct: jasmine.createSpy('updateProduct').and.returnValue(of({}))
   }
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
+  const imgServiceSpy = {
+    getImage: jasmine.createSpy('getImage').and.returnValue(of({})),
+    updateImage: jasmine.createSpy('updateImage').and.returnValue(of({})),
+    uploadImage: jasmine.createSpy('uploadImage').and.returnValue(of({})),
+    configuration: {
+      basePath: 'basepath'
+    }
+  }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -33,7 +63,8 @@ describe('ProductPropertyComponent', () => {
       ],
       providers: [
         { provide: ProductsAPIService, useValue: apiServiceSpy },
-        { provide: PortalMessageService, useValue: msgServiceSpy }
+        { provide: PortalMessageService, useValue: msgServiceSpy },
+        { provide: ImagesInternalAPIService, useValue: imgServiceSpy }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents()
@@ -51,10 +82,36 @@ describe('ProductPropertyComponent', () => {
     msgServiceSpy.info.calls.reset()
     apiServiceSpy.createProduct.calls.reset()
     apiServiceSpy.updateProduct.calls.reset()
+    imgServiceSpy.getImage.calls.reset()
+    imgServiceSpy.uploadImage.calls.reset()
+    imgServiceSpy.updateImage.calls.reset()
   })
 
   it('should create', () => {
     expect(component).toBeTruthy()
+  })
+
+  it('should validate a product name', () => {
+    const control = new FormControl('', [productNameValidator()])
+
+    control.setValue('new')
+    expect(control.errors).toEqual({ invalidProductName: true })
+
+    control.setValue('apps')
+    expect(control.errors).toEqual({ invalidProductName: true })
+
+    control.setValue('validName')
+    expect(control.errors).toBeNull()
+  })
+
+  fit('should getImage onInit', () => {
+    imgServiceSpy.getImage.and.returnValue(of({}))
+    component.formGroup = mockForm
+    component.formGroup.controls['name'].setValue('name')
+
+    component.ngOnInit()
+
+    expect(component.logoImageWasUploaded).toBeTrue()
   })
 
   it('should patchValue in formGroup onChanges if product', () => {
