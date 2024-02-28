@@ -1,5 +1,5 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { RouterTestingModule } from '@angular/router/testing'
 import { of, throwError } from 'rxjs'
@@ -104,7 +104,7 @@ describe('ProductPropertyComponent', () => {
     expect(control.errors).toBeNull()
   })
 
-  fit('should getImage onInit', () => {
+  it('should getImage onInit', () => {
     imgServiceSpy.getImage.and.returnValue(of({}))
     component.formGroup = mockForm
     component.formGroup.controls['name'].setValue('name')
@@ -127,6 +127,21 @@ describe('ProductPropertyComponent', () => {
 
     expect(component.formGroup.patchValue).toHaveBeenCalledWith({ ...product })
     expect(component.product.name).toEqual(product.name)
+  })
+
+  it('should set product.id to undefined onChanges if product and changeMode is COPY', () => {
+    const product = {
+      id: 'id',
+      name: 'name',
+      basePath: 'path'
+    }
+    component.product = product
+    spyOn(component.formGroup, 'patchValue')
+    component.changeMode = 'COPY'
+
+    component.ngOnChanges()
+
+    expect(component.productId).toBeUndefined()
   })
 
   it('should reset formGroup onChanges if no product', () => {
@@ -198,6 +213,7 @@ describe('ProductPropertyComponent', () => {
       classifications: new FormControl<string[] | null>(null)
     })
     component.formGroup = formGroup as FormGroup<ProductDetailForm>
+    component.formGroup.controls['name'].setValue('')
     component.changeMode = 'EDIT'
 
     component.onSubmit()
@@ -206,6 +222,51 @@ describe('ProductPropertyComponent', () => {
     expect(msgServiceSpy.error).toHaveBeenCalledWith({
       summaryKey: 'ACTIONS.EDIT.PRODUCT.NOK'
     })
+  })
+
+  it('should display unique constraint error if error code points to it', () => {
+    const error = {
+      error: {
+        errorCode: 'PERSIST_ENTITY_FAILED'
+      }
+    }
+    apiServiceSpy.updateProduct.and.returnValue(throwError(() => error))
+    const formGroup = new FormGroup<ProductDetailForm>({
+      id: new FormControl<string | null>('id'),
+      name: new FormControl<string | null>('name'),
+      operator: new FormControl<boolean | null>(null),
+      version: new FormControl<string | null>('version'),
+      description: new FormControl<string | null>(null),
+      imageUrl: new FormControl<string | null>(null),
+      basePath: new FormControl<string | null>('path'),
+      displayName: new FormControl<string | null>('display'),
+      iconName: new FormControl<string | null>('icon'),
+      classifications: new FormControl<string[] | null>(null)
+    })
+    component.formGroup = formGroup as FormGroup<ProductDetailForm>
+    component.formGroup.controls['name'].setValue('')
+    component.changeMode = 'EDIT'
+
+    component.onSubmit()
+
+    expect(component.formGroup.valid).toBeTrue()
+    expect(msgServiceSpy.error).toHaveBeenCalledWith({
+      summaryKey: 'ACTIONS.EDIT.PRODUCT.NOK',
+      detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT'
+    })
+  })
+
+  it('should display error and set focus to first invalid field if form is invalid', () => {
+    component.formGroup.controls['name'].setValue('')
+
+    const focusSpy = jasmine.createSpy('focus')
+    spyOn((component as any).elements.nativeElement, 'querySelector').and.returnValue({ focus: focusSpy })
+
+    component.onSubmit()
+
+    expect(component.formGroup.valid).toBeFalse()
+    expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'VALIDATION.FORM_INVALID' })
+    expect(focusSpy).toHaveBeenCalled()
   })
 
   it('should display error if createProduct fails', () => {
@@ -256,15 +317,132 @@ describe('ProductPropertyComponent', () => {
     })
   })
 
-  it('should display error onSubmit if formGroup invalid', () => {
+  it('should not upload a file if productName is empty', () => {
     const event = {
       target: {
         files: ['file']
       }
     }
+    component.formGroup.controls['name'].setValue('')
+
+    component.onFileUpload(event as any, 'logo')
+
+    expect(msgServiceSpy.error).toHaveBeenCalledWith({
+      summaryKey: 'LOGO.UPLOAD_FAILED_NAME'
+    })
+  })
+
+  it('should not upload a file if productName is null', () => {
+    const event = {
+      target: {
+        files: ['file']
+      }
+    }
+    component.formGroup.controls['name'].setValue(null)
+
+    component.onFileUpload(event as any, 'logo')
+
+    expect(msgServiceSpy.error).toHaveBeenCalledWith({
+      summaryKey: 'LOGO.UPLOAD_FAILED_NAME'
+    })
+  })
+
+  it('should not upload a file that is too large', () => {
+    const largeBlob = new Blob(['a'.repeat(120000)], { type: 'image/png' })
+    const largeFile = new File([largeBlob], 'test.png', { type: 'image/png' })
+    const event = {
+      target: {
+        files: [largeFile]
+      }
+    }
+    component.formGroup.controls['name'].setValue('name')
 
     component.onFileUpload(event as any, 'logo')
 
     expect(component.formGroup.valid).toBeFalse()
   })
+
+  it('should not upload a file that is too large', () => {
+    const largeBlob = new Blob(['a'.repeat(120000)], { type: 'image/png' })
+    const largeFile = new File([largeBlob], 'test.png', { type: 'image/png' })
+    const event = {
+      target: {
+        files: [largeFile]
+      }
+    }
+    component.formGroup.controls['name'].setValue('name')
+
+    component.onFileUpload(event as any, 'logo')
+
+    expect(component.formGroup.valid).toBeFalse()
+  })
+
+  it('should upload a file', () => {
+    imgServiceSpy.updateImage.and.returnValue(of({}))
+    const blob = new Blob(['a'.repeat(10)], { type: 'image/png' })
+    const file = new File([blob], 'test.png', { type: 'image/png' })
+    const event = {
+      target: {
+        files: [file]
+      }
+    }
+    component.formGroup.controls['name'].setValue('name')
+
+    component.onFileUpload(event as any, 'logo')
+
+    expect(msgServiceSpy.info).toHaveBeenCalledWith({
+      summaryKey: 'LOGO.UPLOADED'
+    })
+  })
+
+  it('should display error if upload fails', () => {
+    imgServiceSpy.getImage.and.returnValue(throwError(() => new Error()))
+    const blob = new Blob(['a'.repeat(10)], { type: 'image/png' })
+    const file = new File([blob], 'test.png', { type: 'image/png' })
+    const event = {
+      target: {
+        files: [file]
+      }
+    }
+    component.formGroup.controls['name'].setValue('name')
+
+    component.onFileUpload(event as any, 'logo')
+
+    expect(msgServiceSpy.info).toHaveBeenCalledWith({
+      summaryKey: 'LOGO.UPLOADED'
+    })
+  })
+
+  it('should return an image url', () => {
+    component.formGroup.controls['imageUrl'].setValue('url')
+
+    const result = component.getImageUrl()
+
+    expect(result).toEqual('url')
+  })
+
+  it('should change fetchingLogoUrl on inputChange: valid value', fakeAsync(() => {
+    const event = {
+      target: { value: 'newLogoValue' }
+    } as unknown as Event
+
+    component.inputChange(event)
+
+    tick(1000)
+
+    expect(component.fetchingLogoUrl).toBe('newLogoValue')
+  }))
+
+  it('should change fetchingLogoUrl on inputChange: empty value', fakeAsync(() => {
+    const event = {
+      target: { value: '' }
+    } as unknown as Event
+    component.formGroup.controls['name'].setValue('name')
+
+    component.inputChange(event)
+
+    tick(1000)
+
+    expect(component.fetchingLogoUrl).toBe('basepath/images/name/logo')
+  }))
 })
