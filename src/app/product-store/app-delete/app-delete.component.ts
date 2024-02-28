@@ -37,7 +37,6 @@ export class AppDeleteComponent {
         })
       }
       if (this.appAbstract?.appType === 'MS') {
-        // console.log('NEXT MS', this.appAbstract?.id)
         this.msApi.deleteMicroservice({ id: this.appAbstract?.id }).subscribe({
           next: () => {
             this.msgService.success({ summaryKey: 'ACTIONS.DELETE.APP.OK' })

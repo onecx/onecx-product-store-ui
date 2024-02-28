@@ -131,6 +131,33 @@ describe('ProductAppsComponent', () => {
     // tick()
   }))
 
+  xit('should combine mfe and ms streams into apps$ with appType', (done: DoneFn) => {
+    component.mfes$ = of({
+      stream: [
+        {
+          id: 'mfe1',
+          appId: 'appId1',
+          appName: 'Microfrontend 1',
+          productName: 'p1',
+          remoteBaseUrl: 'url'
+        }
+      ]
+    })
+    component.mss$ = of({
+      stream: [{ id: 'ms1', appId: 'appId3', appName: 'Microservice 1', productName: 'p1' }]
+    })
+
+    component.searchApps()
+
+    component.apps$.subscribe({
+      next: (result) => {
+        expect(result.length).toBe(2)
+        done()
+      },
+      error: done.fail
+    })
+  })
+
   it('should set correct value onLayoutChange', () => {
     const viewMode = 'EDIT'
 

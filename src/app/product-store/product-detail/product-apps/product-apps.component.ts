@@ -64,12 +64,12 @@ export class ProductAppsComponent implements OnChanges {
     if (this.product) this.searchApps()
   }
 
-  private log(text: string, obj?: object): void {
-    if (this.debug) {
-      if (obj) console.log('app search: ' + text, obj)
-      else console.log('app search: ' + text)
-    }
-  }
+  // private log(text: string, obj?: object): void {
+  //   if (this.debug) {
+  //     if (obj) console.log('app search: ' + text, obj)
+  //     else console.log('app search: ' + text)
+  //   }
+  // }
 
   public searchApps(): void {
     this.searchInProgress = true

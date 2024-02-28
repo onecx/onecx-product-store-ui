@@ -275,7 +275,7 @@ describe('AppSearchComponent', () => {
     expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_404.APPS')
   })
 
-  it('should combine mfe and ms streams into apps$ with appType: only mfes', (done: DoneFn) => {
+  it('should combine mfe and ms streams into apps$ with appType', (done: DoneFn) => {
     component.appSearchCriteriaGroup.controls['appType'].setValue('ALL')
     component.mfes$ = of({
       stream: [
