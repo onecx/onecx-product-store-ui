@@ -334,7 +334,6 @@ describe('AppSearchComponent', () => {
       appId: 'appId',
       appType: 'MFE',
       appName: 'appName',
-      remoteBaseUrl: 'url',
       productName: 'product'
     }
 
@@ -352,7 +351,6 @@ describe('AppSearchComponent', () => {
       appId: 'appId',
       appType: 'MFE',
       appName: 'appName',
-      remoteBaseUrl: 'url',
       productName: 'product'
     }
     component.hasEditPermission = false
@@ -369,7 +367,6 @@ describe('AppSearchComponent', () => {
       appId: 'appId',
       appType: 'MFE',
       appName: 'appName',
-      remoteBaseUrl: 'url',
       productName: 'product'
     }
 
@@ -394,7 +391,6 @@ describe('AppSearchComponent', () => {
       appId: 'appId',
       appType: 'MFE',
       appName: 'appName',
-      remoteBaseUrl: 'url',
       productName: 'product'
     }
 

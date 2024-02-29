@@ -8,7 +8,6 @@ import { combineLatest, finalize, map, of, Observable, Subject, startWith, catch
 
 import { Action, DataViewControlTranslations, UserService } from '@onecx/portal-integration-angular'
 import {
-  MicrofrontendAbstract,
   MicrofrontendPageResult,
   MicrofrontendsAPIService,
   Microservice,
@@ -25,7 +24,7 @@ export interface AppSearchCriteria {
 export type AppType = 'MS' | 'MFE'
 export type AppName = 'Microservice' | 'Microfrontend'
 export type AppFilterType = 'ALL' | AppType
-export type AppAbstract = MicrofrontendAbstract & Microservice & { appType: AppType }
+export type AppAbstract = Microservice & { appType: AppType }
 export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
 
 @Component({

@@ -22,8 +22,7 @@ const mockApp: AppAbstract = {
   appId: 'appId',
   appType: 'MFE',
   appName: 'appName',
-  productName: 'prodName',
-  remoteBaseUrl: ''
+  productName: 'prodName'
 }
 
 describe('ProductAppsComponent', () => {
