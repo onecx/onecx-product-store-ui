@@ -120,12 +120,12 @@ export class AppDetailComponent implements OnChanges {
       if (this.appAbstract.appType === 'MS') this.getMs()
     }
   }
-  private log(text: string, obj?: object): void {
-    if (this.debug) {
-      if (obj) console.log('app detail: ' + text, obj)
-      else console.log('app detail: ' + text)
-    }
-  }
+  // private log(text: string, obj?: object): void {
+  //   if (this.debug) {
+  //     if (obj) console.log('app detail: ' + text, obj)
+  //     else console.log('app detail: ' + text)
+  //   }
+  // }
 
   public allowEditing(): boolean {
     return (

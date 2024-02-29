@@ -125,4 +125,24 @@ describe('ProductSearchComponent', () => {
 
     expect(routerSpy).toHaveBeenCalledWith(['./apps'], jasmine.any(Object))
   })
+
+  it('should getImageUrl from existing product', () => {
+    const product = {
+      imageUrl: 'url'
+    }
+
+    const result = component.getImageUrl(product)
+
+    expect(result).toEqual(product.imageUrl)
+  })
+
+  it('should getImageUrl from image api if not from existing product', () => {
+    const product = {
+      id: 'id'
+    }
+
+    const result = component.getImageUrl(product)
+
+    expect(result).toEqual('http://onecx-product-store-bff:8080/images/undefined/logo')
+  })
 })

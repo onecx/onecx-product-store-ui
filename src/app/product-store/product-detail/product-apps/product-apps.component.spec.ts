@@ -1,8 +1,8 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { ComponentFixture, TestBed, fakeAsync, waitForAsync } from '@angular/core/testing'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { RouterTestingModule } from '@angular/router/testing'
-import { of } from 'rxjs'
+import { of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
@@ -101,6 +101,63 @@ describe('ProductAppsComponent', () => {
     })
   })
 
+  xit('should display console error msg on searchApps', fakeAsync((done: DoneFn) => {
+    const searchSpy = spyOn((component as any).mfeApi, 'searchMicrofrontends').and.returnValue(
+      throwError(() => new Error())
+    )
+    // apiServiceSpy.searchMicrofrontends.and.callFake(() => {
+    //   throw error
+    // })
+    spyOn(console, 'error')
+
+    component.searchApps()
+
+    component.mfes$.subscribe({
+      next: (obj) => {
+        console.log('NEXT', obj)
+        done()
+      },
+      error: (err) => {
+        console.log('ERROR', err)
+        // expect(console.error).toHaveBeenCalled()
+      }
+    })
+
+    expect(searchSpy).toHaveBeenCalledWith({
+      mfeAndMsSearchCriteria: { productName: component.product?.name }
+    })
+    expect(console.error).toHaveBeenCalled()
+
+    // tick()
+  }))
+
+  xit('should combine mfe and ms streams into apps$ with appType', (done: DoneFn) => {
+    component.mfes$ = of({
+      stream: [
+        {
+          id: 'mfe1',
+          appId: 'appId1',
+          appName: 'Microfrontend 1',
+          productName: 'p1',
+          remoteBaseUrl: 'url'
+        }
+      ]
+    })
+    component.mss$ = of({
+      stream: [{ id: 'ms1', appId: 'appId3', appName: 'Microservice 1', productName: 'p1' }]
+    })
+
+    component.searchApps()
+
+    component.apps$.subscribe({
+      next: (result) => {
+        expect(result.length).toBe(2)
+        done()
+      },
+      error: done.fail
+    })
+  })
+
   it('should set correct value onLayoutChange', () => {
     const viewMode = 'EDIT'
 
@@ -170,5 +227,23 @@ describe('ProductAppsComponent', () => {
 
     expect(component.app).toEqual(mockApp)
     expect(component.displayDeleteDialog).toBeTrue()
+  })
+
+  it('should call searchApps if app changed', () => {
+    spyOn(component, 'searchApps')
+
+    component.appChanged(true)
+
+    expect(component.searchApps).toHaveBeenCalled()
+    expect(component.displayDetailDialog).toBeFalse()
+  })
+
+  it('should call searchApps if app deleted', () => {
+    spyOn(component, 'searchApps')
+
+    component.appDeleted(true)
+
+    expect(component.searchApps).toHaveBeenCalled()
+    expect(component.displayDetailDialog).toBeFalse()
   })
 })
