@@ -153,8 +153,8 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   /**
    * SEARCH
    */
-  private searchMfes() {
-    this.apps$ = this.mfes$.pipe(
+  private searchMfes(): Observable<AppAbstract[]> {
+    return this.mfes$.pipe(
       map((a) => {
         return a.stream
           ? a.stream?.map((mfe) => {
@@ -164,8 +164,8 @@ export class AppSearchComponent implements OnInit, OnDestroy {
       })
     )
   }
-  private searchMss() {
-    this.apps$ = this.mss$.pipe(
+  private searchMss(): Observable<AppAbstract[]> {
+    return this.mss$.pipe(
       map((a) => {
         return a.stream
           ? a.stream?.map((ms) => {
@@ -175,42 +175,27 @@ export class AppSearchComponent implements OnInit, OnDestroy {
       })
     )
   }
-  private searchMfesAndMss() {
-    this.apps$ = combineLatest([
-      this.mfes$.pipe(
-        map((a) => {
-          return a.stream
-            ? a.stream?.map((mfe) => {
-                return { ...mfe, appType: 'MFE' } as AppAbstract
-              })
-            : []
-        })
-      ),
-      this.mss$.pipe(
-        map((a) => {
-          return a.stream
-            ? a.stream?.map((ms) => {
-                return { ...ms, appType: 'MS' } as AppAbstract
-              })
-            : []
-        })
-      )
-    ]).pipe(map(([mfes, mss]) => mfes.concat(mss)))
-  }
 
   public searchApps(): void {
     this.searchInProgress = true
     switch (this.appSearchCriteriaGroup.controls['appType'].value) {
       case 'ALL':
-        this.searchMfesAndMss()
+        this.apps$ = combineLatest([this.searchMfes(), this.searchMss()]).pipe(
+          map(([mfes, mss]) => mfes.concat(mss).sort(this.sortAppsByAppId))
+        )
         break
       case 'MFE':
-        this.searchMfes()
+        this.apps$ = this.searchMfes()
         break
       case 'MS':
-        this.searchMss()
+        this.apps$ = this.searchMss()
         break
     }
+  }
+  private sortAppsByAppId(a: AppAbstract, b: AppAbstract): number {
+    return (a.appId ? (a.appId as string).toUpperCase() : '').localeCompare(
+      b.appId ? (b.appId as string).toUpperCase() : ''
+    )
   }
 
   /**

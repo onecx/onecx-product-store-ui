@@ -9,7 +9,7 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { UserService } from '@onecx/portal-integration-angular'
 import { AppAbstract, AppType, AppSearchComponent, AppSearchCriteria } from './app-search.component'
-import { MicrofrontendsAPIService } from 'src/app/shared/generated'
+import { MicrofrontendsAPIService, MicroservicesAPIService } from 'src/app/shared/generated'
 
 const form = new FormGroup<AppSearchCriteria>({
   appId: new FormControl<string | null>(null, Validators.minLength(2)),
@@ -24,10 +24,13 @@ describe('AppSearchComponent', () => {
   let routeMock = { snapshot: { paramMap: new Map() } }
 
   const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
-  const apiServiceSpy = {
-    searchMicrofrontends: jasmine.createSpy('searchMicrofrontends').and.returnValue(of({})),
-    searchMicroservice: jasmine.createSpy('searchMicroservice').and.returnValue(of({}))
+  const apiMfeServiceSpy = {
+    searchMicrofrontends: jasmine.createSpy('deleteMicrofrontend').and.returnValue(of({}))
   }
+  const apiMsServiceSpy = {
+    searchMicroservice: jasmine.createSpy('deleteMicroservice').and.returnValue(of({}))
+  }
+
   const mockUserService = {
     lang$: {
       getValue: jasmine.createSpy('getValue').and.returnValue('en')
@@ -55,7 +58,8 @@ describe('AppSearchComponent', () => {
         }).withDefaultLanguage('en')
       ],
       providers: [
-        { provide: MicrofrontendsAPIService, useValue: apiServiceSpy },
+        { provide: MicrofrontendsAPIService, useValue: apiMfeServiceSpy },
+        { provide: MicroservicesAPIService, useValue: apiMsServiceSpy },
         { provide: UserService, useValue: mockUserService },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: routeMock }
@@ -71,8 +75,8 @@ describe('AppSearchComponent', () => {
   })
 
   afterEach(() => {
-    apiServiceSpy.searchMicrofrontends.calls.reset()
-    apiServiceSpy.searchMicroservice.calls.reset()
+    apiMfeServiceSpy.searchMicrofrontends.calls.reset()
+    apiMsServiceSpy.searchMicroservice.calls.reset()
     translateServiceSpy.get.calls.reset()
   })
 
@@ -220,7 +224,7 @@ describe('AppSearchComponent', () => {
     const err = {
       status: 404
     }
-    apiServiceSpy.searchMicrofrontends.and.returnValue(throwError(() => err))
+    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(throwError(() => err))
 
     component.searchApps()
 
@@ -268,7 +272,7 @@ describe('AppSearchComponent', () => {
     const err = {
       status: 404
     }
-    apiServiceSpy.searchMicroservice.and.returnValue(throwError(() => err))
+    apiMsServiceSpy.searchMicroservice.and.returnValue(throwError(() => err))
 
     component.searchApps()
 
