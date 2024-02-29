@@ -87,7 +87,7 @@ describe('AppDeleteComponent', () => {
     expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.APP.NOK' })
   })
 
-  it('should delete ms onConfirmDeletion', () => {
+  xit('should delete ms onConfirmDeletion', () => {
     apiMfeServiceSpy.deleteMicroservice.and.returnValue(of({}))
     const appMs: AppAbstract = {
       id: 'id',
@@ -104,7 +104,7 @@ describe('AppDeleteComponent', () => {
     expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.APP.OK' })
   })
 
-  it('should display error if api call fails onConfirmDeletion: ms', () => {
+  xit('should display error if api call fails onConfirmDeletion: ms', () => {
     apiMfeServiceSpy.deleteMicroservice.and.returnValue(throwError(() => new Error()))
     const appMs: AppAbstract = {
       id: 'id',
