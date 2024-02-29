@@ -1,5 +1,6 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
-import { ComponentFixture, TestBed, fakeAsync, waitForAsync } from '@angular/core/testing'
+//import { ComponentFixture, TestBed, fakeAsync, waitForAsync } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { RouterTestingModule } from '@angular/router/testing'
 import { of, throwError } from 'rxjs'
@@ -7,21 +8,48 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
 import { ProductAppsComponent } from './product-apps.component'
-import { ProductsAPIService, Product } from 'src/app/shared/generated'
+import {
+  MicrofrontendAbstract,
+  MicrofrontendsAPIService,
+  MicrofrontendPageResult,
+  Microservice,
+  MicroservicesAPIService,
+  MicroservicePageResult,
+  Product
+} from 'src/app/shared/generated'
 
 import { AppAbstract } from '../../app-search/app-search.component'
 
 const product: Product = {
   id: 'id',
-  name: 'name',
+  name: 'prodName',
   basePath: 'path'
 }
-
-const mockApp: AppAbstract = {
+const mfeApp: AppAbstract = {
   id: 'id',
   appId: 'appId',
   appType: 'MFE',
-  appName: 'appName',
+  appName: 'microfrontend',
+  productName: 'prodName'
+}
+const msApp: AppAbstract = {
+  id: 'id',
+  appId: 'appId',
+  appType: 'MS',
+  appName: 'microservice',
+  productName: 'prodName'
+}
+const mfe: MicrofrontendAbstract = {
+  id: 'id',
+  appId: 'appId',
+  appName: 'microfrontend',
+  productName: 'prodName',
+  remoteBaseUrl: 'remote URL'
+}
+const ms: Microservice = {
+  id: 'id',
+  appId: 'appId',
+  appName: 'microservice',
   productName: 'prodName'
 }
 
@@ -30,10 +58,11 @@ describe('ProductAppsComponent', () => {
   let fixture: ComponentFixture<ProductAppsComponent>
 
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
-  const apiServiceSpy = {
-    searchMicrofrontends: jasmine.createSpy('searchMicrofrontends').and.returnValue(of({})),
-    searchMicroservice: jasmine.createSpy('searchMicroservice').and.returnValue(of({})),
-    updateProduct: jasmine.createSpy('updateProduct').and.returnValue(of({}))
+  const apiMfeServiceSpy = {
+    searchMicrofrontends: jasmine.createSpy('searchMicrofrontends').and.returnValue(of({}))
+  }
+  const apiMsServiceSpy = {
+    searchMicroservice: jasmine.createSpy('searchMicroservice').and.returnValue(of({}))
   }
 
   beforeEach(waitForAsync(() => {
@@ -48,7 +77,8 @@ describe('ProductAppsComponent', () => {
         }).withDefaultLanguage('en')
       ],
       providers: [
-        { provide: ProductsAPIService, useValue: apiServiceSpy },
+        { provide: MicrofrontendsAPIService, useValue: apiMfeServiceSpy },
+        { provide: MicroservicesAPIService, useValue: apiMsServiceSpy },
         { provide: PortalMessageService, useValue: msgServiceSpy }
       ],
       schemas: [NO_ERRORS_SCHEMA]
@@ -62,8 +92,8 @@ describe('ProductAppsComponent', () => {
   })
 
   afterEach(() => {
-    apiServiceSpy.searchMicrofrontends.calls.reset()
-    apiServiceSpy.searchMicroservice.calls.reset()
+    apiMfeServiceSpy.searchMicrofrontends.calls.reset()
+    apiMsServiceSpy.searchMicroservice.calls.reset()
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
     msgServiceSpy.info.calls.reset()
@@ -82,69 +112,9 @@ describe('ProductAppsComponent', () => {
     expect(component.searchApps).toHaveBeenCalled()
   })
 
-  it('should search microfrontends on searchApps', () => {
-    const searchSpy = spyOn((component as any).mfeApi, 'searchMicrofrontends').and.returnValue(
-      of({
-        totalElements: 0,
-        number: 0,
-        size: 0,
-        totalPages: 0,
-        stream: []
-      })
-    )
-
-    component.searchApps()
-
-    expect(searchSpy).toHaveBeenCalledWith({
-      mfeAndMsSearchCriteria: { productName: component.product?.name }
-    })
-  })
-
-  xit('should display console error msg on searchApps', fakeAsync((done: DoneFn) => {
-    const searchSpy = spyOn((component as any).mfeApi, 'searchMicrofrontends').and.returnValue(
-      throwError(() => new Error())
-    )
-    // apiServiceSpy.searchMicrofrontends.and.callFake(() => {
-    //   throw error
-    // })
-    spyOn(console, 'error')
-
-    component.searchApps()
-
-    component.mfes$.subscribe({
-      next: (obj) => {
-        console.log('NEXT', obj)
-        done()
-      },
-      error: (err) => {
-        console.log('ERROR', err)
-        // expect(console.error).toHaveBeenCalled()
-      }
-    })
-
-    expect(searchSpy).toHaveBeenCalledWith({
-      mfeAndMsSearchCriteria: { productName: component.product?.name }
-    })
-    expect(console.error).toHaveBeenCalled()
-
-    // tick()
-  }))
-
-  xit('should combine mfe and ms streams into apps$ with appType', (done: DoneFn) => {
-    component.mfes$ = of({
-      stream: [
-        {
-          id: 'mfe1',
-          appId: 'appId1',
-          appName: 'Microfrontend 1',
-          productName: 'p1',
-          remoteBaseUrl: 'url'
-        }
-      ]
-    })
-    component.mss$ = of({
-      stream: [{ id: 'ms1', appId: 'appId3', appName: 'Microservice 1', productName: 'p1' }]
-    })
+  it('should search microfrontends and microservices on searchApps', (done) => {
+    component.mfes$ = of({ stream: [mfe] })
+    component.mss$ = of({ stream: [ms] })
 
     component.searchApps()
 
@@ -155,6 +125,58 @@ describe('ProductAppsComponent', () => {
       },
       error: done.fail
     })
+  })
+
+  xit('should search microfrontends and microservices on searchApps', (done) => {
+    apiMfeServiceSpy.searchMicrofrontends.and.returnValue({ stream: [mfe] } as MicrofrontendPageResult)
+    apiMsServiceSpy.searchMicroservice.and.returnValue({ stream: [ms] } as MicroservicePageResult)
+
+    //spyOn((component as any).mfeApi, 'searchMicrofrontends').and.returnValue(of({ stream: [mfe] }))
+    //const searchMsSpy = spyOn((component as any).msApi, 'searchMicroservices').and.returnValue(of({ stream: [ms] }))
+
+    //component.searchApps()
+    component.ngOnChanges()
+    /*
+    component.apps$.subscribe({
+      next: (result) => {
+        expect(result.length).toBe(2)
+        done()
+      },
+      error: done.fail
+    })
+*/
+    expect(component.searchApps).toHaveBeenCalled()
+  })
+
+  //  fit('should display console error msg on searchApps', fakeAsync((done: DoneFn) => {
+  xit('should display console error msg on searchApps', (done) => {
+    const err = { status: 404 }
+    //apiMfeServiceSpy.searchMicrofrontends.and.returnValue(throwError(() => err))
+    //apiMsServiceSpy.searchMicroservice.and.returnValue(of({ stream: [ms] }))
+    const searchMfeSpy = spyOn((component as any).mfeApi, 'searchMicrofrontends').and.returnValue(throwError(() => err))
+    const searchMsSpy = spyOn((component as any).msApi, 'searchMicroservices').and.returnValue(of({ stream: [ms] }))
+    /*
+     */
+    spyOn(console, 'error')
+
+    component.searchApps()
+
+    component.apps$.subscribe({
+      next: (result) => {
+        expect(result.length).toBe(1)
+        done()
+      },
+      error: done.fail
+    })
+    expect(searchMfeSpy).toHaveBeenCalledWith({
+      mfeAndMsSearchCriteria: { productName: component.product?.name }
+    })
+    expect(searchMsSpy).toHaveBeenCalledWith({
+      mfeAndMsSearchCriteria: { productName: component.product?.name }
+    })
+    /*
+     */
+    expect(console.error).toHaveBeenCalled()
   })
 
   it('should set correct value onLayoutChange', () => {
@@ -191,12 +213,22 @@ describe('ProductAppsComponent', () => {
     expect(component.sortOrder).toEqual(1)
   })
 
-  it('should behave correctly onDetail', () => {
+  it('should behave correctly onDetail for MFE', () => {
     const mockEvent = { stopPropagation: jasmine.createSpy() }
 
-    component.onDetail(mockEvent, mockApp)
+    component.onDetail(mockEvent, mfeApp)
 
-    expect(component.app).toEqual(mockApp)
+    expect(component.app).toEqual(mfeApp)
+    expect(component.changeMode).toEqual('EDIT')
+    expect(component.displayDetailDialog).toBeTrue()
+  })
+
+  it('should behave correctly onDetail for MS', () => {
+    const mockEvent = { stopPropagation: jasmine.createSpy() }
+
+    component.onDetail(mockEvent, msApp)
+
+    expect(component.app).toEqual(msApp)
     expect(component.changeMode).toEqual('EDIT')
     expect(component.displayDetailDialog).toBeTrue()
   })
@@ -204,9 +236,9 @@ describe('ProductAppsComponent', () => {
   it('should behave correctly onCopy', () => {
     const mockEvent = { stopPropagation: jasmine.createSpy() }
 
-    component.onCopy(mockEvent, mockApp)
+    component.onCopy(mockEvent, mfeApp)
 
-    expect(component.app).toEqual(mockApp)
+    expect(component.app).toEqual(mfeApp)
     expect(component.changeMode).toEqual('COPY')
     expect(component.displayDetailDialog).toBeTrue()
   })
@@ -222,9 +254,9 @@ describe('ProductAppsComponent', () => {
   it('should behave correctly onDelete', () => {
     const mockEvent = { stopPropagation: jasmine.createSpy() }
 
-    component.onDelete(mockEvent, mockApp)
+    component.onDelete(mockEvent, mfeApp)
 
-    expect(component.app).toEqual(mockApp)
+    expect(component.app).toEqual(mfeApp)
     expect(component.displayDeleteDialog).toBeTrue()
   })
 

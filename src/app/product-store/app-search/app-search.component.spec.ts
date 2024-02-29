@@ -25,10 +25,10 @@ describe('AppSearchComponent', () => {
 
   const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
   const apiMfeServiceSpy = {
-    searchMicrofrontends: jasmine.createSpy('deleteMicrofrontend').and.returnValue(of({}))
+    searchMicrofrontends: jasmine.createSpy('searchMicrofrontends').and.returnValue(of({}))
   }
   const apiMsServiceSpy = {
-    searchMicroservice: jasmine.createSpy('deleteMicroservice').and.returnValue(of({}))
+    searchMicroservice: jasmine.createSpy('searchMicroservice').and.returnValue(of({}))
   }
 
   const mockUserService = {
@@ -221,9 +221,7 @@ describe('AppSearchComponent', () => {
 
   it('should catch error on searchApps: mfes', () => {
     component.appSearchCriteriaGroup.controls['appType'].setValue('MFE')
-    const err = {
-      status: 404
-    }
+    const err = { status: 404 }
     apiMfeServiceSpy.searchMicrofrontends.and.returnValue(throwError(() => err))
 
     component.searchApps()

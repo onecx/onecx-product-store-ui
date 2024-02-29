@@ -61,18 +61,15 @@ export class ProductAppsComponent implements OnChanges {
   }
 
   ngOnChanges(): void {
+    this.declareMfeObservable()
+    this.declareMsObservable()
     if (this.product) this.searchApps()
   }
 
-  // private log(text: string, obj?: object): void {
-  //   if (this.debug) {
-  //     if (obj) console.log('app search: ' + text, obj)
-  //     else console.log('app search: ' + text)
-  //   }
-  // }
-
-  public searchApps(): void {
-    this.searchInProgress = true
+  /**
+   * DECLARE Observables
+   */
+  private declareMfeObservable(): void {
     this.mfes$ = this.mfeApi
       .searchMicrofrontends({ mfeAndMsSearchCriteria: { productName: this.product?.name } as MfeAndMsSearchCriteria })
       .pipe(
@@ -84,7 +81,8 @@ export class ProductAppsComponent implements OnChanges {
         }),
         finalize(() => (this.searchInProgress = false))
       )
-
+  }
+  private declareMsObservable(): void {
     this.mss$ = this.msApi
       .searchMicroservice({ mfeAndMsSearchCriteria: { productName: this.product?.name } as MfeAndMsSearchCriteria })
       .pipe(
@@ -96,29 +94,48 @@ export class ProductAppsComponent implements OnChanges {
         }),
         finalize(() => (this.searchInProgress = false))
       )
-
-    this.apps$ = combineLatest([
-      this.mfes$.pipe(
-        map((a) => {
-          return a.stream
-            ? a.stream?.map((mfe) => {
-                return { ...mfe, appType: 'MFE' } as AppAbstract
-              })
-            : []
-        })
-      ),
-      this.mss$.pipe(
-        map((a) => {
-          return a.stream
-            ? a.stream?.map((ms) => {
-                return { ...ms, appType: 'MS' } as AppAbstract
-              })
-            : []
-        })
-      )
-    ]).pipe(map(([mfes, mss]) => mfes.concat(mss)))
   }
 
+  /**
+   * SEARCH
+   */
+  private searchMfes(): Observable<AppAbstract[]> {
+    return this.mfes$.pipe(
+      map((a) => {
+        return a.stream
+          ? a.stream?.map((mfe) => {
+              return { ...mfe, appType: 'MFE' } as AppAbstract
+            })
+          : []
+      })
+    )
+  }
+  private searchMss(): Observable<AppAbstract[]> {
+    return this.mss$.pipe(
+      map((a) => {
+        return a.stream
+          ? a.stream?.map((ms) => {
+              return { ...ms, appType: 'MS' } as AppAbstract
+            })
+          : []
+      })
+    )
+  }
+  public searchApps(): void {
+    this.searchInProgress = true
+    this.apps$ = combineLatest([this.searchMfes(), this.searchMss()]).pipe(
+      map(([mfes, mss]) => mfes.concat(mss).sort(this.sortAppsByAppId))
+    )
+  }
+  private sortAppsByAppId(a: AppAbstract, b: AppAbstract): number {
+    return (a.appId ? (a.appId as string).toUpperCase() : '').localeCompare(
+      b.appId ? (b.appId as string).toUpperCase() : ''
+    )
+  }
+
+  /**
+   * UI EVENTS
+   */
   public onLayoutChange(viewMode: string): void {
     this.viewMode = viewMode
   }
