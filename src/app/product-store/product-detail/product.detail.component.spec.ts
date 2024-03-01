@@ -271,9 +271,11 @@ describe('ProductDetailComponent', () => {
     expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm:ss')
   })
 
-  it('should behave correctly onTabChange: 1', () => {
-    component.onTabChange({ index: 1 })
+  it('should behave correctly onTabChange: 2', () => {
+    component.product = product
+    component.onTabChange({ index: 2 })
 
-    expect(component.selectedTabIndex).toEqual(1)
+    expect(component.selectedTabIndex).toEqual(2)
+    expect(component.product_for_apps).toEqual(product)
   })
 })
