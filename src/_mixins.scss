@@ -154,7 +154,6 @@
         border: var(--toggle-button-border);
         &.p-highlight {
           background: var(--toggle-button-active-bg);
-          //border-color: var(--toggle-button-active-border-color);
         }
         &:not(.p-disabled):not(.p-highlight):hover {
           color: var(--text-color);

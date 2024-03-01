@@ -1,12 +1,7 @@
-<div *ngIf="!apps$">
-  <div class="surface-section my-3">
-    <p-message severity="error" styleClass="p-2" [text]="'ACTIONS.SEARCH.APP.NOT_FOUND' | translate"></p-message>
-  </div>
-</div>
 <ng-container *ngIf="apps$ | async as apps">
   <p-dataView
     id="product_detail_apps_dataview"
-    [value]="(apps$ | async) ?? []"
+    [value]="apps"
     [paginator]="true"
     [alwaysShowPaginator]="false"
     [rowsPerPageOptions]="[10, 20, 50]"

@@ -21,6 +21,7 @@ export class ProductDetailComponent implements OnInit {
   public actions$: Observable<Action[]> | undefined
   public productName: string
   public product: ProductAndWorkspaces | undefined
+  public product_for_apps: ProductAndWorkspaces | undefined
   public changeMode: ChangeMode = 'CREATE'
   public loading = false
   public dateFormat = 'medium'
@@ -56,6 +57,7 @@ export class ProductDetailComponent implements OnInit {
   public onTabChange($event: any) {
     this.selectedTabIndex = $event.index
     this.prepareActionButtons()
+    if (this.selectedTabIndex === 2) this.product_for_apps = this.product // lazy load
   }
 
   public getProduct() {

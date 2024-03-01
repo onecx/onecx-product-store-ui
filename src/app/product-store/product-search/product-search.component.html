@@ -7,19 +7,34 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <div simpleCriteria>
-      <div [formGroup]="productSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-3 px-2">
-        <span class="p-float-label">
-          <input id="productName" pInputText type="text" formControlName="productName" class="w-18rem" [clear]="true" />
-          <label for="productName">{{ 'PRODUCT.NAME' | translate }}</label>
-        </span>
-      </div>
+    <div
+      id="product_search_criteria"
+      [formGroup]="productSearchCriteriaGroup"
+      class="flex flex-wrap gap-4 row-gap-3 px-2"
+    >
+      <span class="p-float-label">
+        <input
+          id="product_search_criteria_product_name"
+          pInputText
+          type="text"
+          formControlName="productName"
+          class="w-18rem"
+          [clear]="true"
+          [title]="'PRODUCT.TOOLTIPS.NAME' | translate"
+        />
+        <label for="product_search_criteria_product_name">{{ 'PRODUCT.NAME' | translate }}</label>
+      </span>
     </div>
   </ocx-search-header>
 
   <ocx-page-content>
-    <div *ngIf="!products$" class="card px-3 align-items-center">
-      <p-message severity="error" styleClass="p-2" [text]="'ACTIONS.SEARCH.PRODUCT.NOT_EXISTS' | translate"></p-message>
+    <div *ngIf="!products$" id="product_search_criteria_error" class="card px-3 align-items-center">
+      <p-message
+        id="product_search_criteria_error_message"
+        severity="error"
+        styleClass="p-2"
+        [text]="'ACTIONS.SEARCH.PRODUCT.NOT_EXISTS' | translate"
+      ></p-message>
     </div>
     <ng-container *ngIf="products$ | async as products">
       <p-dataView
@@ -37,6 +52,7 @@
       >
         <ng-template pTemplate="header">
           <ocx-data-view-controls
+            id="product_search_dataview_controls"
             [enableFiltering]="true"
             [enableSorting]="true"
             [supportedViews]="['grid', 'list']"
@@ -60,39 +76,67 @@
           >
           </ocx-data-view-controls
         ></ng-template>
-        <ng-template let-product pTemplate="listItem">
+        <ng-template let-product let-idx="rowIndex" pTemplate="listItem">
           <div
+            [id]="'product_search_data_list_' + idx"
             class="col-12 grid grid-nogutter align-items-center row-gap-1 listview-row p-1 hover:bg-gray-200 cursor-pointer"
             [routerLink]="['./', product.name]"
           >
             <div class="col-12 md:col-2 lg:col-2 xl:col-2 text-center">
               <div class="flex flex-column justify-content-center align-items-center gap-1 md:gap-2 h-full">
                 <app-image-container
+                  [id]="'product_search_data_list_' + idx + '_image'"
                   [imageUrl]="getImageUrl(product)"
-                  [small]="true"
                   [title]="'LOGO.TOOLTIPS.' + (product.imageUrl ? 'IMAGE' : 'PLACEHOLDER') | translate"
+                  [small]="true"
                 ></app-image-container>
               </div>
             </div>
             <div class="col-12 md:col-5 lg:col-5 xl:col-6">
               <div class="flex flex-column justify-content-center gap-1 text-center md:text-left">
-                <div class="font-bold" [title]="product.displayName">{{ limitText(product.displayName, 100) }}</div>
-                <div [title]="'PRODUCT.NAME' | translate">{{ limitText(product.name, 75) }}</div>
+                <div
+                  [id]="'product_search_data_list_' + idx + '_product_display_name'"
+                  class="font-bold"
+                  [title]="'PRODUCT.DISPLAY_NAME' | translate"
+                >
+                  {{ limitText(product.displayName, 100) }}
+                </div>
+                <div [id]="'product_search_data_list_' + idx + '_product_name'" [title]="'PRODUCT.NAME' | translate">
+                  {{ limitText(product.name, 100) }}
+                </div>
               </div>
             </div>
           </div>
         </ng-template>
-        <ng-template let-product pTemplate="gridItem">
-          <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3" [routerLink]="['./', product.name]">
+        <ng-template let-product let-idx="rowIndex" pTemplate="gridItem">
+          <div
+            [id]="'product_search_data_grid_' + idx"
+            class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3"
+            [routerLink]="['./', product.name]"
+          >
             <div class="card p-2 flex flex-column justify-content-center hover:bg-gray-200 cursor-pointer">
               <div class="h-3rem md:h-5rem flex flex-column justify-content-center align-items-center text-center">
-                <app-image-container [imageUrl]="getImageUrl(product)" [small]="false"></app-image-container>
+                <app-image-container
+                  [id]="'product_search_data_grid_' + idx + '_image'"
+                  [imageUrl]="getImageUrl(product)"
+                  [title]="'LOGO.TOOLTIPS.' + (product.imageUrl ? 'IMAGE' : 'PLACEHOLDER') | translate"
+                  [small]="false"
+                ></app-image-container>
               </div>
               <div class="h-3rem flex flex-column justify-content-between gap-1 lg:gap-2 mt-0 mb-1 text-center">
-                <div class="font-bold text-xl" [title]="limitText(product.displayName, 100)">
+                <div
+                  [id]="'product_search_data_grid_' + idx + '_product_display_name'"
+                  class="font-bold text-xl"
+                  [title]="('PRODUCT.DISPLAY_NAME' | translate) + ': ' + limitText(product.displayName, 100)"
+                >
                   {{ limitText(product.displayName, 20) }}
                 </div>
-                <div class="" [title]="limitText(product.name, 100)">{{ limitText(product.name, 25) }}</div>
+                <div
+                  [id]="'product_search_data_grid_' + idx + '_product_name'"
+                  [title]="('PRODUCT.NAME' | translate) + ': ' + product.name"
+                >
+                  {{ limitText(product.name, 25) }}
+                </div>
               </div>
             </div>
           </div>

@@ -55,7 +55,6 @@ export class AppDetailComponent implements OnChanges {
   @Input() dateFormat = 'medium'
   @Input() changeMode: ChangeMode = 'VIEW'
   @Input() displayDialog = false
-  @Output() displayDialogChange = new EventEmitter<boolean>()
   @Output() appChanged = new EventEmitter<boolean>()
 
   private debug = true
@@ -119,12 +118,6 @@ export class AppDetailComponent implements OnChanges {
       if (this.appAbstract.appType === 'MS') this.getMs()
     }
   }
-  // private log(text: string, obj?: object): void {
-  //   if (this.debug) {
-  //     if (obj) console.log('app detail: ' + text, obj)
-  //     else console.log('app detail: ' + text)
-  //   }
-  // }
 
   public allowEditing(): boolean {
     return (
@@ -225,7 +218,6 @@ export class AppDetailComponent implements OnChanges {
   }
 
   public onDialogHide() {
-    this.displayDialogChange.emit(false)
     this.appChanged.emit(false)
   }
 
@@ -236,43 +228,37 @@ export class AppDetailComponent implements OnChanges {
         return
       }
       this.mfe = { ...this.formGroupMfe.value, id: this.mfe?.id }
-      // manage classifications => is string array
-      if (this.mfe?.classifications) {
-        const a: string = this.formGroupMfe.controls['classifications'].value
-        let ar: Array<string> | undefined = []
-        if (ar && a?.length > 0) {
-          a.toString()
-            .split(',')
-            .map((a) => ar?.push(a.trim()))
-        } else ar = undefined
-        this.mfe.classifications = ar?.sort()
-      } else if (this.mfe) {
-        this.mfe.classifications = undefined
-      }
-      if (this.changeMode === 'CREATE') {
-        this.createMfe()
-      } else if (this.changeMode === 'EDIT') {
-        this.updateMfe()
-      }
-    } else if (this.appAbstract?.appType === 'MS') {
+      if (this.mfe)
+        this.mfe.classifications = this.makeStringArrayUnique(this.formGroupMfe.controls['classifications'].value)
+      this.changeMode === 'CREATE' ? this.createMfe() : this.updateMfe()
+    }
+    if (this.appAbstract?.appType === 'MS') {
       if (!this.formGroupMs.valid) {
         this.msgService.error({ summaryKey: 'VALIDATION.FORM_INVALID' })
         return
       }
       this.ms = { ...this.formGroupMs.value, id: this.ms?.id }
-      if (this.changeMode === 'CREATE') {
-        this.createMs()
-      } else if (this.changeMode === 'EDIT') {
-        this.updateMs()
-      }
+      this.changeMode === 'CREATE' ? this.createMs() : this.updateMs()
     }
+  }
+
+  private makeStringArrayUnique(unsorted: string | undefined): string[] | undefined {
+    if (!unsorted || unsorted?.length === 0) return undefined
+    let ar: Array<string> = []
+    unsorted
+      .toString()
+      .split(',')
+      .map((a) => ar?.push(a.trim()))
+    return ar.sort(this.sortStrings)
+  }
+  private sortStrings(a: string, b: string): number {
+    return (a as String).toUpperCase().localeCompare((b as String).toUpperCase())
   }
 
   private createMfe() {
     this.mfeApi.createMicrofrontend({ createMicrofrontendRequest: this.mfe as CreateMicrofrontendRequest }).subscribe({
       next: () => {
         this.msgService.success({ summaryKey: 'ACTIONS.CREATE.APP.OK' })
-        this.displayDialogChange.emit(true)
         this.appChanged.emit(true)
       },
       error: (err) => {
@@ -284,7 +270,6 @@ export class AppDetailComponent implements OnChanges {
     this.msApi.createMicroservice({ createMicroserviceRequest: this.ms as CreateMicroserviceRequest }).subscribe({
       next: () => {
         this.msgService.success({ summaryKey: 'ACTIONS.CREATE.APP.OK' })
-        this.displayDialogChange.emit(true)
         this.appChanged.emit(true)
       },
       error: (err) => {
@@ -302,7 +287,6 @@ export class AppDetailComponent implements OnChanges {
       .subscribe({
         next: () => {
           this.msgService.success({ summaryKey: 'ACTIONS.EDIT.APP.OK' })
-          //this.displayDialogChange.emit(false)
           this.appChanged.emit(true)
         },
         error: (err) => {
@@ -319,7 +303,6 @@ export class AppDetailComponent implements OnChanges {
       .subscribe({
         next: () => {
           this.msgService.success({ summaryKey: 'ACTIONS.EDIT.APP.OK' })
-          this.displayDialogChange.emit(true)
           this.appChanged.emit(true)
         },
         error: (err) => {
