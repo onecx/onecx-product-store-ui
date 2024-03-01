@@ -76,8 +76,8 @@
             </div>
             <div class="col-12 md:col-5 lg:col-5 xl:col-6">
               <div class="flex flex-column justify-content-center gap-1 text-center md:text-left">
-                <div class="font-bold">{{ product.name }}</div>
-                <div>{{ limitText(product.displayName, 75) }}</div>
+                <div class="font-bold" [title]="product.displayName">{{ limitText(product.displayName, 100) }}</div>
+                <div [title]="'PRODUCT.NAME' | translate">{{ limitText(product.name, 75) }}</div>
               </div>
             </div>
           </div>
