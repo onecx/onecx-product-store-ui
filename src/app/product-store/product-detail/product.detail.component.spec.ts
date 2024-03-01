@@ -270,4 +270,10 @@ describe('ProductDetailComponent', () => {
     fixture.detectChanges()
     expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm:ss')
   })
+
+  it('should behave correctly onTabChange: 1', () => {
+    component.onTabChange({ index: 1 })
+
+    expect(component.selectedTabIndex).toEqual(1)
+  })
 })

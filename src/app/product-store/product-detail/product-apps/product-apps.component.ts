@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, ViewChild } from '@angular/core'
 import { SelectItem } from 'primeng/api'
-import { combineLatest, finalize, map, of, Observable, startWith, catchError } from 'rxjs'
+import { combineLatest, finalize, map, of, Observable, catchError } from 'rxjs'
 import { DataView } from 'primeng/dataview'
 
 import { DataViewControlTranslations, UserService } from '@onecx/portal-integration-angular'
@@ -61,8 +61,6 @@ export class ProductAppsComponent implements OnChanges {
   }
 
   ngOnChanges(): void {
-    this.declareMfeObservable()
-    this.declareMsObservable()
     if (this.product) this.searchApps()
   }
 
@@ -73,7 +71,6 @@ export class ProductAppsComponent implements OnChanges {
     this.mfes$ = this.mfeApi
       .searchMicrofrontends({ mfeAndMsSearchCriteria: { productName: this.product?.name } as MfeAndMsSearchCriteria })
       .pipe(
-        startWith({} as MicrofrontendPageResult),
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
           console.error('searchMicrofrontends():', err)
@@ -86,7 +83,6 @@ export class ProductAppsComponent implements OnChanges {
     this.mss$ = this.msApi
       .searchMicroservice({ mfeAndMsSearchCriteria: { productName: this.product?.name } as MfeAndMsSearchCriteria })
       .pipe(
-        startWith({} as MicroservicePageResult),
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
           console.error('searchMicroservice():', err)
@@ -100,23 +96,29 @@ export class ProductAppsComponent implements OnChanges {
    * SEARCH
    */
   private searchMfes(): Observable<AppAbstract[]> {
+    this.declareMfeObservable()
     return this.mfes$.pipe(
       map((a) => {
         return a.stream
-          ? a.stream?.map((mfe) => {
-              return { ...mfe, appType: 'MFE' } as AppAbstract
-            })
+          ? a.stream
+              ?.map((mfe) => {
+                return { ...mfe, appType: 'MFE' } as AppAbstract
+              })
+              .sort(this.sortAppsByAppId)
           : []
       })
     )
   }
   private searchMss(): Observable<AppAbstract[]> {
+    this.declareMsObservable()
     return this.mss$.pipe(
       map((a) => {
         return a.stream
-          ? a.stream?.map((ms) => {
-              return { ...ms, appType: 'MS' } as AppAbstract
-            })
+          ? a.stream
+              ?.map((ms) => {
+                return { ...ms, appType: 'MS' } as AppAbstract
+              })
+              .sort(this.sortAppsByAppId)
           : []
       })
     )
@@ -128,9 +130,7 @@ export class ProductAppsComponent implements OnChanges {
     )
   }
   private sortAppsByAppId(a: AppAbstract, b: AppAbstract): number {
-    return (a.appId ? (a.appId as string).toUpperCase() : '').localeCompare(
-      b.appId ? (b.appId as string).toUpperCase() : ''
-    )
+    return (a.appId as string).toUpperCase().localeCompare((b.appId as string).toUpperCase())
   }
 
   /**

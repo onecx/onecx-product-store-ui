@@ -20,42 +20,33 @@ import {
 
 import { AppAbstract } from '../../app-search/app-search.component'
 
-const product: Product = {
-  id: 'id',
-  name: 'prodName',
-  basePath: 'path'
-}
-const mfeApp: AppAbstract = {
-  id: 'id',
-  appId: 'appId',
-  appType: 'MFE',
-  appName: 'microfrontend',
-  productName: 'prodName'
-}
-const msApp: AppAbstract = {
-  id: 'id',
-  appId: 'appId',
-  appType: 'MS',
-  appName: 'microservice',
-  productName: 'prodName'
-}
-const mfe: MicrofrontendAbstract = {
-  id: 'id',
-  appId: 'appId',
-  appName: 'microfrontend',
-  productName: 'prodName',
-  remoteBaseUrl: 'remote URL'
-}
-const ms: Microservice = {
-  id: 'id',
-  appId: 'appId',
-  appName: 'microservice',
-  productName: 'prodName'
-}
-
 describe('ProductAppsComponent', () => {
   let component: ProductAppsComponent
   let fixture: ComponentFixture<ProductAppsComponent>
+
+  const product: Product = { id: 'id', name: 'prodName', basePath: 'path' }
+  const mfeApp: AppAbstract = {
+    id: 'id',
+    appId: 'appId',
+    appType: 'MFE',
+    appName: 'microfrontend',
+    productName: 'prodName'
+  }
+  const msApp: AppAbstract = {
+    id: 'id',
+    appId: 'appId',
+    appType: 'MS',
+    appName: 'microservice',
+    productName: 'prodName'
+  }
+  const mfe: MicrofrontendAbstract = {
+    id: 'id',
+    appId: 'appId',
+    appName: 'microfrontend',
+    productName: 'prodName',
+    remoteBaseUrl: 'remote URL'
+  }
+  const ms: Microservice = { id: 'id', appId: 'appId', appName: 'microservice', productName: 'prodName' }
 
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
   const apiMfeServiceSpy = {
@@ -89,6 +80,10 @@ describe('ProductAppsComponent', () => {
     fixture = TestBed.createComponent(ProductAppsComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
+    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of({} as MicrofrontendPageResult))
+    apiMsServiceSpy.searchMicroservice.and.returnValue(of({} as MicroservicePageResult))
+    component.product = product
+    component.exceptionKey = ''
   })
 
   afterEach(() => {
@@ -113,70 +108,127 @@ describe('ProductAppsComponent', () => {
   })
 
   it('should search microfrontends and microservices on searchApps', (done) => {
-    component.mfes$ = of({ stream: [mfe] })
-    component.mss$ = of({ stream: [ms] })
+    component.product = product
+    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: [mfe] } as MicrofrontendPageResult))
+    apiMsServiceSpy.searchMicroservice.and.returnValue(of({ stream: [ms] } as MicroservicePageResult))
 
     component.searchApps()
 
     component.apps$.subscribe({
       next: (result) => {
         expect(result.length).toBe(2)
+        result.forEach((result, i) => {
+          if (i === 0) expect(result.appType).toEqual('MFE')
+          if (i === 1) expect(result.appType).toEqual('MS')
+        })
         done()
       },
       error: done.fail
     })
   })
 
-  xit('should search microfrontends and microservices on searchApps', (done) => {
-    apiMfeServiceSpy.searchMicrofrontends.and.returnValue({ stream: [mfe] } as MicrofrontendPageResult)
-    apiMsServiceSpy.searchMicroservice.and.returnValue({ stream: [ms] } as MicroservicePageResult)
-
-    //spyOn((component as any).mfeApi, 'searchMicrofrontends').and.returnValue(of({ stream: [mfe] }))
-    //const searchMsSpy = spyOn((component as any).msApi, 'searchMicroservices').and.returnValue(of({ stream: [ms] }))
-
-    //component.searchApps()
-    component.ngOnChanges()
-    /*
-    component.apps$.subscribe({
-      next: (result) => {
-        expect(result.length).toBe(2)
-        done()
-      },
-      error: done.fail
-    })
-*/
-    expect(component.searchApps).toHaveBeenCalled()
-  })
-
-  //  fit('should display console error msg on searchApps', fakeAsync((done: DoneFn) => {
-  xit('should display console error msg on searchApps', (done) => {
-    const err = { status: 404 }
-    //apiMfeServiceSpy.searchMicrofrontends.and.returnValue(throwError(() => err))
-    //apiMsServiceSpy.searchMicroservice.and.returnValue(of({ stream: [ms] }))
-    const searchMfeSpy = spyOn((component as any).mfeApi, 'searchMicrofrontends').and.returnValue(throwError(() => err))
-    const searchMsSpy = spyOn((component as any).msApi, 'searchMicroservices').and.returnValue(of({ stream: [ms] }))
-    /*
-     */
-    spyOn(console, 'error')
+  it('should search microfrontends only on searchApps', (done) => {
+    component.product = product
+    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: [mfe] } as MicrofrontendPageResult))
 
     component.searchApps()
 
     component.apps$.subscribe({
       next: (result) => {
         expect(result.length).toBe(1)
+        result.forEach((result, i) => {
+          if (i === 0) expect(result.appType).toEqual('MFE')
+        })
         done()
       },
       error: done.fail
     })
-    expect(searchMfeSpy).toHaveBeenCalledWith({
-      mfeAndMsSearchCriteria: { productName: component.product?.name }
+  })
+
+  it('should search microservices only on searchApps', (done) => {
+    component.product = product
+    apiMsServiceSpy.searchMicroservice.and.returnValue(of({ stream: [ms] } as MicroservicePageResult))
+
+    component.searchApps()
+
+    component.apps$.subscribe({
+      next: (result) => {
+        expect(result.length).toBe(1)
+        result.forEach((result, i) => {
+          if (i === 0) expect(result.appType).toEqual('MS')
+        })
+        done()
+      },
+      error: done.fail
     })
-    expect(searchMsSpy).toHaveBeenCalledWith({
-      mfeAndMsSearchCriteria: { productName: component.product?.name }
+  })
+
+  it('should catch error on searchApps: mfes', (done) => {
+    const err = { status: 404 }
+    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(throwError(() => err))
+
+    component.searchApps()
+
+    component.apps$.subscribe({
+      next: (result) => {
+        expect(result.length).toBe(0)
+        expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_404.APPS')
+        done()
+      },
+      error: done.fail
     })
-    /*
-     */
-    expect(console.error).toHaveBeenCalled()
+  })
+
+  it('should catch error on searchApps: ms', (done) => {
+    const err = { status: 404 }
+    apiMsServiceSpy.searchMicroservice.and.returnValue(throwError(() => err))
+
+    component.searchApps()
+
+    component.apps$.subscribe({
+      next: (result) => {
+        expect(result.length).toBe(0)
+        expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_404.APPS')
+        done()
+      },
+      error: done.fail
+    })
+  })
+
+  it('should search microfrontends and microservices on searchApps with ms error', (done) => {
+    const err = { status: 404 }
+    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: [mfe] } as MicrofrontendPageResult))
+    apiMsServiceSpy.searchMicroservice.and.returnValue(of(throwError(() => err)))
+
+    component.searchApps()
+
+    component.apps$.subscribe({
+      next: (result) => {
+        expect(result.length).toBe(1)
+        result.forEach((result, i) => {
+          if (i === 0) expect(result.appType).toEqual('MFE')
+        })
+        done()
+      },
+      error: done.fail
+    })
+  })
+
+  it('should search microfrontends and microservices on searchApps with mfe and ms error', (done) => {
+    component.product = product
+    const err = { status: 404 }
+    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of(throwError(() => err)))
+    apiMsServiceSpy.searchMicroservice.and.returnValue(of(throwError(() => err)))
+
+    component.searchApps()
+
+    component.apps$.subscribe({
+      next: (result) => {
+        expect(result.length).toBe(0)
+        done()
+      },
+      error: done.fail
+    })
   })
 
   it('should set correct value onLayoutChange', () => {

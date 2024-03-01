@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 import { SelectItem } from 'primeng/api'
 import { DataView } from 'primeng/dataview'
-import { combineLatest, finalize, map, of, Observable, Subject, startWith, catchError } from 'rxjs'
+import { combineLatest, finalize, map, of, Observable, Subject, catchError } from 'rxjs'
 
 import { Action, DataViewControlTranslations, UserService } from '@onecx/portal-integration-angular'
 import {
@@ -50,7 +50,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public quickFilterItems: SelectItem[]
   public filterValue: string | undefined
   public filterValueDefault = 'appId,appType,productName,classifications'
-  public filterBy = this.filterValueDefault || 'appType'
+  public filterBy = this.filterValueDefault
   public filter: string | undefined
   public sortField = 'appId'
   public sortOrder = 1
@@ -99,8 +99,6 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.prepareDialogTranslations()
     this.prepareActionButtons()
-    this.declareMfeObservable()
-    this.declareMsObservable()
     this.searchApps()
   }
   public ngOnDestroy(): void {
@@ -121,7 +119,6 @@ export class AppSearchComponent implements OnInit, OnDestroy {
         }
       })
       .pipe(
-        startWith({} as MicrofrontendPageResult),
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
           console.error('searchMicrofrontends():', err)
@@ -140,7 +137,6 @@ export class AppSearchComponent implements OnInit, OnDestroy {
         }
       })
       .pipe(
-        startWith({} as MicroservicePageResult),
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
           console.error('searchMicroservice():', err)
@@ -154,23 +150,29 @@ export class AppSearchComponent implements OnInit, OnDestroy {
    * SEARCH
    */
   private searchMfes(): Observable<AppAbstract[]> {
+    this.declareMfeObservable()
     return this.mfes$.pipe(
       map((a) => {
         return a.stream
-          ? a.stream?.map((mfe) => {
-              return { ...mfe, appType: 'MFE' } as AppAbstract
-            })
+          ? a.stream
+              ?.map((mfe) => {
+                return { ...mfe, appType: 'MFE' } as AppAbstract
+              })
+              .sort(this.sortAppsByAppId)
           : []
       })
     )
   }
-  private searchMss(): Observable<AppAbstract[]> {
+  public searchMss(): Observable<AppAbstract[]> {
+    this.declareMsObservable()
     return this.mss$.pipe(
       map((a) => {
         return a.stream
-          ? a.stream?.map((ms) => {
-              return { ...ms, appType: 'MS' } as AppAbstract
-            })
+          ? a.stream
+              ?.map((ms) => {
+                return { ...ms, appType: 'MS' } as AppAbstract
+              })
+              .sort(this.sortAppsByAppId)
           : []
       })
     )
@@ -178,6 +180,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
 
   public searchApps(): void {
     this.searchInProgress = true
+    this.exceptionKey = ''
     switch (this.appSearchCriteriaGroup.controls['appType'].value) {
       case 'ALL':
         this.apps$ = combineLatest([this.searchMfes(), this.searchMss()]).pipe(
@@ -193,9 +196,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     }
   }
   private sortAppsByAppId(a: AppAbstract, b: AppAbstract): number {
-    return (a.appId ? (a.appId as string).toUpperCase() : '').localeCompare(
-      b.appId ? (b.appId as string).toUpperCase() : ''
-    )
+    return (a.appId as string).toUpperCase().localeCompare((b.appId as string).toUpperCase())
   }
 
   /**
