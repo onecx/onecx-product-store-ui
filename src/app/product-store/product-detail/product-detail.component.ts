@@ -78,7 +78,7 @@ export class ProductDetailComponent implements OnInit {
       })
   }
 
-  private prepareActionButtons(): void {
+  public prepareActionButtons(): void {
     this.actions$ = this.translate
       .get([
         'ACTIONS.COPY.LABEL',
@@ -114,7 +114,7 @@ export class ProductDetailComponent implements OnInit {
               icon: 'pi pi-pencil',
               show: 'always',
               conditional: true,
-              showCondition: this.changeMode === 'VIEW' && this.product !== undefined && this.selectedTabIndex === 0,
+              showCondition: this.selectedTabIndex === 0 && this.changeMode === 'VIEW' && this.product !== undefined,
               permission: 'PRODUCT#EDIT'
             },
             {
@@ -124,7 +124,7 @@ export class ProductDetailComponent implements OnInit {
               icon: 'pi pi-copy',
               show: 'always',
               conditional: true,
-              showCondition: this.changeMode === 'VIEW' && this.product !== undefined && this.selectedTabIndex === 0,
+              showCondition: this.selectedTabIndex === 0 && this.changeMode === 'VIEW' && this.product !== undefined,
               permission: 'PRODUCT#CREATE'
             },
             {

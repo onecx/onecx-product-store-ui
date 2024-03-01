@@ -44,4 +44,15 @@ describe('LabelResolver', () => {
     expect(result).toBe('path')
     expect(translateServiceSpy.get).toHaveBeenCalledTimes(0)
   })
+
+  it('should return an empty string if neither breadcrumb nor route.routeConfig.path are present', () => {
+    const routeConfigSpy = Object.getOwnPropertyDescriptor(activatedRouteSpy, 'routeConfig')?.get as jasmine.Spy<
+      () => {}
+    >
+    routeConfigSpy.and.returnValue({})
+    const result = labelResolver.resolve(activatedRouteSpy, routerStateSpy)
+
+    expect(result).toBe('')
+    expect(translateServiceSpy.get).toHaveBeenCalledTimes(0)
+  })
 })

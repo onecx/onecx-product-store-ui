@@ -9,7 +9,14 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { UserService } from '@onecx/portal-integration-angular'
 import { AppAbstract, AppType, AppSearchComponent, AppSearchCriteria } from './app-search.component'
-import { MicrofrontendsAPIService } from 'src/app/shared/generated'
+import {
+  MicrofrontendAbstract,
+  MicrofrontendsAPIService,
+  MicrofrontendPageResult,
+  Microservice,
+  MicroservicePageResult,
+  MicroservicesAPIService
+} from 'src/app/shared/generated'
 
 const form = new FormGroup<AppSearchCriteria>({
   appId: new FormControl<string | null>(null, Validators.minLength(2)),
@@ -23,11 +30,42 @@ describe('AppSearchComponent', () => {
   let routerSpy = jasmine.createSpyObj('Router', ['navigate'])
   let routeMock = { snapshot: { paramMap: new Map() } }
 
+  const mfeApp: AppAbstract = {
+    id: 'id',
+    appId: 'appId',
+    appType: 'MFE',
+    appName: 'microfrontend',
+    productName: 'prodName'
+  }
+  const msApp: AppAbstract = {
+    id: 'id',
+    appId: 'appId',
+    appType: 'MS',
+    appName: 'microservice',
+    productName: 'prodName'
+  }
+  const mfe: MicrofrontendAbstract = {
+    id: 'id',
+    appId: 'appId',
+    appName: 'microfrontend',
+    productName: 'prodName',
+    remoteBaseUrl: 'remote URL'
+  }
+  const ms: Microservice = {
+    id: 'id',
+    appId: 'appId',
+    appName: 'microservice',
+    productName: 'prodName'
+  }
+
   const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
-  const apiServiceSpy = {
-    searchMicrofrontends: jasmine.createSpy('searchMicrofrontends').and.returnValue(of({})),
+  const apiMfeServiceSpy = {
+    searchMicrofrontends: jasmine.createSpy('searchMicrofrontends').and.returnValue(of({}))
+  }
+  const apiMsServiceSpy = {
     searchMicroservice: jasmine.createSpy('searchMicroservice').and.returnValue(of({}))
   }
+
   const mockUserService = {
     lang$: {
       getValue: jasmine.createSpy('getValue').and.returnValue('en')
@@ -55,7 +93,8 @@ describe('AppSearchComponent', () => {
         }).withDefaultLanguage('en')
       ],
       providers: [
-        { provide: MicrofrontendsAPIService, useValue: apiServiceSpy },
+        { provide: MicrofrontendsAPIService, useValue: apiMfeServiceSpy },
+        { provide: MicroservicesAPIService, useValue: apiMsServiceSpy },
         { provide: UserService, useValue: mockUserService },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: routeMock }
@@ -68,11 +107,13 @@ describe('AppSearchComponent', () => {
     fixture = TestBed.createComponent(AppSearchComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
+    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of({} as MicrofrontendPageResult))
+    apiMsServiceSpy.searchMicroservice.and.returnValue(of({} as MicroservicePageResult))
   })
 
   afterEach(() => {
-    apiServiceSpy.searchMicrofrontends.calls.reset()
-    apiServiceSpy.searchMicroservice.calls.reset()
+    apiMfeServiceSpy.searchMicrofrontends.calls.reset()
+    apiMsServiceSpy.searchMicroservice.calls.reset()
     translateServiceSpy.get.calls.reset()
   })
 
@@ -174,17 +215,7 @@ describe('AppSearchComponent', () => {
 
   it('should search mfes: one mfe', (done) => {
     component.appSearchCriteriaGroup.controls['appType'].setValue('MFE')
-    component.mfes$ = of({
-      stream: [
-        {
-          id: 'mfe1',
-          appId: 'appId1',
-          appName: 'Microfrontend 1',
-          productName: 'p1',
-          remoteBaseUrl: 'url'
-        }
-      ]
-    })
+    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: [mfe] } as MicrofrontendPageResult))
 
     component.searchApps()
 
@@ -202,7 +233,7 @@ describe('AppSearchComponent', () => {
 
   it('should search mfes: empty', (done) => {
     component.appSearchCriteriaGroup.controls['appType'].setValue('MFE')
-    component.mfes$ = of({})
+    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of({} as MicrofrontendPageResult))
 
     component.searchApps()
 
@@ -215,24 +246,9 @@ describe('AppSearchComponent', () => {
     })
   })
 
-  it('should catch error on searchApps: mfes', () => {
-    component.appSearchCriteriaGroup.controls['appType'].setValue('MFE')
-    const err = {
-      status: 404
-    }
-    apiServiceSpy.searchMicrofrontends.and.returnValue(throwError(() => err))
-
-    component.searchApps()
-
-    expect(component.exceptionKey).toEqual('')
-  })
-  // expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_404.APPS')
-
   it('should search mss: one ms', (done) => {
     component.appSearchCriteriaGroup.controls['appType'].setValue('MS')
-    component.mss$ = of({
-      stream: [{ id: 'ms1', appId: 'appId3', appName: 'Microservice 1', productName: 'p1' }]
-    })
+    apiMsServiceSpy.searchMicroservice.and.returnValue(of({ stream: [ms] } as MicroservicePageResult))
 
     component.searchApps()
 
@@ -250,7 +266,7 @@ describe('AppSearchComponent', () => {
 
   it('should search mss: empty', (done) => {
     component.appSearchCriteriaGroup.controls['appType'].setValue('MS')
-    component.mss$ = of({})
+    apiMsServiceSpy.searchMicroservice.and.returnValue(of({} as MicroservicePageResult))
 
     component.searchApps()
 
@@ -263,40 +279,54 @@ describe('AppSearchComponent', () => {
     })
   })
 
-  it('should catch error on searchApps: mss', () => {
-    component.appSearchCriteriaGroup.controls['appType'].setValue('MS')
-    const err = {
-      status: 404
-    }
-    apiServiceSpy.searchMicroservice.and.returnValue(throwError(() => err))
+  it('should catch error on searchApps: mfes', (done) => {
+    component.appSearchCriteriaGroup.controls['appType'].setValue('MFE')
+    const err = { status: 404 }
+    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(throwError(() => err))
 
     component.searchApps()
 
-    expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_404.APPS')
+    component.apps$.subscribe({
+      next: (result) => {
+        expect(result.length).toBe(0)
+        expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_404.APPS')
+        done()
+      },
+      error: done.fail
+    })
   })
 
-  it('should combine mfe and ms streams into apps$ with appType', (done: DoneFn) => {
+  it('should catch error on searchApps: mss', (done) => {
+    component.appSearchCriteriaGroup.controls['appType'].setValue('MS')
+    const err = { status: '404' }
+    apiMsServiceSpy.searchMicroservice.and.returnValue(throwError(() => err))
+
+    component.searchApps()
+
+    component.apps$.subscribe({
+      next: (result) => {
+        expect(result.length).toBe(0)
+        expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_404.APPS')
+        done()
+      },
+      error: done.fail
+    })
+  })
+
+  it('should combine mfe and ms streams into apps$', (done) => {
     component.appSearchCriteriaGroup.controls['appType'].setValue('ALL')
-    component.mfes$ = of({
-      stream: [
-        {
-          id: 'mfe1',
-          appId: 'appId1',
-          appName: 'Microfrontend 1',
-          productName: 'p1',
-          remoteBaseUrl: 'url'
-        }
-      ]
-    })
-    component.mss$ = of({
-      stream: [{ id: 'ms1', appId: 'appId3', appName: 'Microservice 1', productName: 'p1' }]
-    })
+    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: [mfe] } as MicrofrontendPageResult))
+    apiMsServiceSpy.searchMicroservice.and.returnValue(of({ stream: [ms] } as MicroservicePageResult))
 
     component.searchApps()
 
     component.apps$.subscribe({
       next: (result) => {
         expect(result.length).toBe(2)
+        result.forEach((result, i) => {
+          if (i === 0) expect(result.appType).toEqual('MFE')
+          if (i === 1) expect(result.appType).toEqual('MS')
+        })
         done()
       },
       error: done.fail
@@ -329,54 +359,29 @@ describe('AppSearchComponent', () => {
 
   it('should assign app to component property and change to edit mode onDetail', () => {
     const event = { stopPropagation: jasmine.createSpy() }
-    const app: AppAbstract = {
-      id: 'id',
-      appId: 'appId',
-      appType: 'MFE',
-      appName: 'appName',
-      remoteBaseUrl: 'url',
-      productName: 'product'
-    }
-
-    component.onDetail(event as any, app)
+    component.onDetail(event as any, mfeApp)
 
     expect(event.stopPropagation).toHaveBeenCalled()
-    expect(component.app).toBe(app)
+    expect(component.app).toBe(mfeApp)
     expect(component.changeMode).toBe('EDIT')
   })
 
   it('should change to view mode if no editPermission onDetail', () => {
     const event = { stopPropagation: jasmine.createSpy() }
-    const app: AppAbstract = {
-      id: 'id',
-      appId: 'appId',
-      appType: 'MFE',
-      appName: 'appName',
-      remoteBaseUrl: 'url',
-      productName: 'product'
-    }
     component.hasEditPermission = false
 
-    component.onDetail(event as any, app)
+    component.onDetail(event as any, mfeApp)
 
     expect(component.changeMode).toBe('VIEW')
   })
 
   it('should should assign app to component property and change to copy mode onCopy', () => {
     const event = { stopPropagation: jasmine.createSpy() }
-    const app: AppAbstract = {
-      id: 'id',
-      appId: 'appId',
-      appType: 'MFE',
-      appName: 'appName',
-      remoteBaseUrl: 'url',
-      productName: 'product'
-    }
 
-    component.onCopy(event as any, app)
+    component.onCopy(event as any, mfeApp)
 
     expect(event.stopPropagation).toHaveBeenCalled()
-    expect(component.app).toBe(app)
+    expect(component.app).toBe(mfeApp)
     expect(component.changeMode).toBe('COPY')
   })
 
@@ -389,19 +394,11 @@ describe('AppSearchComponent', () => {
 
   it('should should assign app to component property and change to copy mode onDelete', () => {
     const event = { stopPropagation: jasmine.createSpy() }
-    const app: AppAbstract = {
-      id: 'id',
-      appId: 'appId',
-      appType: 'MFE',
-      appName: 'appName',
-      remoteBaseUrl: 'url',
-      productName: 'product'
-    }
 
-    component.onDelete(event as any, app)
+    component.onDelete(event as any, msApp)
 
     expect(event.stopPropagation).toHaveBeenCalled()
-    expect(component.app).toBe(app)
+    expect(component.app).toBe(msApp)
   })
 
   it('should call searchApps if app changed', () => {

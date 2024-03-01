@@ -941,6 +941,10 @@ components:
         productName:
           type: string
           description: reference to the product entity as a weak reference
+        iconName:
+          type: string
+        operator:
+          type: boolean
         classifications:
           type: array
           uniqueItems: true
@@ -1187,6 +1191,8 @@ components:
           type: string
         productName:
           type: string
+        operator:
+          type: boolean
     UpdateMicroserviceRequest:
       type: object
       properties:

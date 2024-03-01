@@ -23,5 +23,6 @@ export interface Microservice {
     appName?: string;
     description?: string;
     productName?: string;
+    operator?: boolean;
 }
 

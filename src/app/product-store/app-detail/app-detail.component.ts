@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
-//import { DatePipe } from '@angular/common'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { finalize } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'

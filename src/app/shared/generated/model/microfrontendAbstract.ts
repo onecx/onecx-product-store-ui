@@ -39,6 +39,8 @@ export interface MicrofrontendAbstract {
      * reference to the product entity as a weak reference
      */
     productName: string;
+    iconName?: string;
+    operator?: boolean;
     classifications?: Array<string>;
     /**
      * available endpoints which are exposed by MFE
