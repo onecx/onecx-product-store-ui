@@ -57,7 +57,16 @@
   </ocx-search-header>
 
   <ocx-page-content>
+    <div *ngIf="exceptionKey" id="app_search_criteria_error" class="card px-3 align-items-center">
+      <p-message
+        id="app_search_criteria_error_message"
+        severity="error"
+        styleClass="p-2"
+        [text]="exceptionKey | translate"
+      ></p-message>
+    </div>
     <p-dataView
+      *ngIf="!exceptionKey"
       id="product_search_dataview"
       [value]="(apps$ | async) ?? []"
       [paginator]="true"

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { FormControl, FormGroup } from '@angular/forms'
-import { Observable, finalize, map } from 'rxjs'
+import { finalize, map, of, Observable, catchError } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 import { DataView } from 'primeng/dataview'
 
@@ -19,6 +19,8 @@ export interface ProductSearchCriteria {
   styleUrls: ['./product-search.component.scss']
 })
 export class ProductSearchComponent implements OnInit {
+  public exceptionKey: string | undefined
+  public searchInProgress = false
   public products$!: Observable<ProductPageResult>
   public productSearchCriteriaGroup!: FormGroup<ProductSearchCriteria>
   public actions$: Observable<Action[]> | undefined
@@ -26,7 +28,6 @@ export class ProductSearchComponent implements OnInit {
   public filter: string | undefined
   public sortField = 'name'
   public sortOrder = 1
-  public searchInProgress = false
   public limitText = limitText
 
   public dataViewControlsTranslations: DataViewControlTranslations = {}
@@ -56,7 +57,14 @@ export class ProductSearchComponent implements OnInit {
       .searchProducts({
         productSearchCriteria: { name: this.productSearchCriteriaGroup.controls['productName'].value, pageSize: 1000 }
       })
-      .pipe(finalize(() => (this.searchInProgress = false)))
+      .pipe(
+        catchError((err) => {
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+          console.error('searchProducts():', err)
+          return of({ stream: [] } as ProductPageResult)
+        }),
+        finalize(() => (this.searchInProgress = false))
+      )
   }
 
   private prepareDialogTranslations(): void {

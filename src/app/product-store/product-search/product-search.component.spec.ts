@@ -3,9 +3,10 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { RouterTestingModule } from '@angular/router/testing'
 import { Router } from '@angular/router'
-import { of } from 'rxjs'
+import { of, throwError } from 'rxjs'
 import { DataViewModule } from 'primeng/dataview'
 import { TranslateTestingModule } from 'ngx-translate-testing'
+import { Product, ProductPageResult, ProductsAPIService } from 'src/app/shared/generated'
 
 import { ProductSearchComponent } from './product-search.component'
 
@@ -14,7 +15,16 @@ describe('ProductSearchComponent', () => {
   let fixture: ComponentFixture<ProductSearchComponent>
   let router: Router
 
+  const product: Product = {
+    id: 'id',
+    name: 'name',
+    basePath: 'basePath',
+    displayName: 'displayName'
+  }
   const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
+  const apiProductServiceSpy = {
+    searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of({ stream: [] }))
+  }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -28,15 +38,21 @@ describe('ProductSearchComponent', () => {
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
+      providers: [{ provide: ProductsAPIService, useValue: apiProductServiceSpy }],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents()
   }))
 
-  beforeEach(() => {
+  beforeEach(async () => {
     fixture = TestBed.createComponent(ProductSearchComponent)
     component = fixture.componentInstance
     router = TestBed.inject(Router)
-    fixture.detectChanges()
+    //fixture.detectChanges()
+    fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
+  })
+
+  afterEach(() => {
+    apiProductServiceSpy.searchProducts.calls.reset(), translateServiceSpy.get.calls.reset()
   })
 
   it('should create', () => {
@@ -93,13 +109,57 @@ describe('ProductSearchComponent', () => {
     expect(component.sortOrder).toEqual(1)
   })
 
-  it('should call loadProducts onSearch', () => {
-    translateServiceSpy.get.and.returnValue(of({ 'ACTIONS.CREATE.LABEL': 'Create' }))
-    spyOn(component, 'searchProducts')
+  it('should search products - successful found', (done) => {
+    apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product] } as ProductPageResult))
 
     component.onSearch()
 
-    expect(component.searchProducts).toHaveBeenCalled()
+    component.products$.subscribe({
+      next: (result) => {
+        if (result.stream) {
+          expect(result.stream.length).toBe(1)
+          result.stream.forEach((product) => {
+            expect(product.id).toEqual('id')
+          })
+        }
+        done()
+      },
+      error: done.fail
+    })
+  })
+
+  it('should search products - successful not found', (done) => {
+    apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [] } as ProductPageResult))
+
+    component.onSearch()
+
+    component.products$.subscribe({
+      next: (result) => {
+        if (result.stream) {
+          expect(result.stream.length).toBe(0)
+        }
+        done()
+      },
+      error: done.fail
+    })
+  })
+
+  it('should search products - failed', (done) => {
+    const err = { status: 403 }
+    apiProductServiceSpy.searchProducts.and.returnValue(throwError(() => err))
+
+    component.onSearch()
+
+    component.products$.subscribe({
+      next: (result) => {
+        if (result.stream) {
+          expect(result.stream.length).toBe(0)
+          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_403.PRODUCTS')
+        }
+        done()
+      },
+      error: done.fail
+    })
   })
 
   it('should reset productSearchCriteriaGroup onSearchReset', () => {

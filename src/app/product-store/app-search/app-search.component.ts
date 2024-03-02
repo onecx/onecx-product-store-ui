@@ -34,7 +34,7 @@ export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
 export class AppSearchComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject()
   private readonly debug = true // to be removed after finalization
-  public exceptionKey = ''
+  public exceptionKey: string | undefined
   public loading = true
   public actions$: Observable<Action[]> | undefined
 
@@ -180,7 +180,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
 
   public searchApps(): void {
     this.searchInProgress = true
-    this.exceptionKey = ''
+    this.exceptionKey = undefined
     switch (this.appSearchCriteriaGroup.controls['appType'].value) {
       case 'ALL':
         this.apps$ = combineLatest([this.searchMfes(), this.searchMss()]).pipe(
