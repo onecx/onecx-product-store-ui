@@ -39,7 +39,7 @@
     <p-dataView
       *ngIf="!exceptionKey"
       id="product_search_dataview"
-      [value]="(products$ | async)?.stream!"
+      [value]="(products$ | async)?.stream!.sort(sortProductsByDisplayName)"
       [paginator]="true"
       [alwaysShowPaginator]="false"
       [rowsPerPageOptions]="[10, 20, 50]"

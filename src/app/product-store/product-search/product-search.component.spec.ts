@@ -6,7 +6,7 @@ import { Router } from '@angular/router'
 import { of, throwError } from 'rxjs'
 import { DataViewModule } from 'primeng/dataview'
 import { TranslateTestingModule } from 'ngx-translate-testing'
-import { Product, ProductPageResult, ProductsAPIService } from 'src/app/shared/generated'
+import { Product, ProductAbstract, ProductPageResult, ProductsAPIService } from 'src/app/shared/generated'
 
 import { ProductSearchComponent } from './product-search.component'
 
@@ -186,10 +186,17 @@ describe('ProductSearchComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith(['./apps'], jasmine.any(Object))
   })
 
+  it('should sort products by display name', () => {
+    const p1 = { displayName: 'b product' }
+    const p2 = { displayName: 'a product' }
+
+    const result = component.sortProductsByDisplayName(p1 as ProductAbstract, p2 as ProductAbstract)
+
+    expect(result).toBe(1)
+  })
+
   it('should getImageUrl from existing product', () => {
-    const product = {
-      imageUrl: 'url'
-    }
+    const product = { imageUrl: 'url' }
 
     const result = component.getImageUrl(product)
 

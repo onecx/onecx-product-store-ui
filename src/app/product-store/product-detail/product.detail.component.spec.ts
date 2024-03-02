@@ -19,7 +19,7 @@ const product = {
 }
 
 class MockProductPropertyComponent {
-  onSubmit = jasmine.createSpy('onSubmit')
+  onSave = jasmine.createSpy('onSave')
 }
 
 describe('ProductDetailComponent', () => {
@@ -208,7 +208,7 @@ describe('ProductDetailComponent', () => {
 
     component.onSave()
 
-    expect(component.productPropsComponent.onSubmit).toHaveBeenCalled()
+    expect(component.productPropsComponent.onSave).toHaveBeenCalled()
   })
 
   it('should behave correctly onCreate', () => {

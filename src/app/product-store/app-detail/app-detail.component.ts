@@ -19,6 +19,7 @@ import {
   MicroservicesAPIService,
   GetMicroserviceByAppIdRequestParams
 } from 'src/app/shared/generated'
+import { convertToUniqueStringArray } from 'src/app/shared/utils'
 
 import { AppAbstract, ChangeMode } from '../app-search/app-search.component'
 
@@ -57,7 +58,6 @@ export class AppDetailComponent implements OnChanges {
   @Input() displayDialog = false
   @Output() appChanged = new EventEmitter<boolean>()
 
-  private debug = true
   public mfe: Microfrontend | undefined
   public ms: Microservice | undefined
   public formGroupMfe: FormGroup
@@ -66,6 +66,7 @@ export class AppDetailComponent implements OnChanges {
   public hasCreatePermission = false
   public hasEditPermission = false
   public iconItems: SelectItem[] = [{ label: '', value: null }] // default value is empty
+  public convertToUniqueStringArray = convertToUniqueStringArray
 
   constructor(
     private user: UserService,
@@ -139,11 +140,7 @@ export class AppDetailComponent implements OnChanges {
     this.loading = true
     this.mfeApi
       .getMicrofrontendByAppId({ appId: this.appAbstract?.appId } as GetMicrofrontendByAppIdRequestParams)
-      .pipe(
-        finalize(() => {
-          this.loading = false
-        })
-      )
+      .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: (data: any) => {
           if (data) {
@@ -166,11 +163,7 @@ export class AppDetailComponent implements OnChanges {
     this.loading = true
     this.msApi
       .getMicroserviceByAppId({ appId: this.appAbstract?.appId } as GetMicroserviceByAppIdRequestParams)
-      .pipe(
-        finalize(() => {
-          this.loading = false
-        })
-      )
+      .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: (data: any) => {
           if (data) {
@@ -229,7 +222,7 @@ export class AppDetailComponent implements OnChanges {
       }
       this.mfe = { ...this.formGroupMfe.value, id: this.mfe?.id }
       if (this.mfe)
-        this.mfe.classifications = this.makeStringArrayUnique(this.formGroupMfe.controls['classifications'].value)
+        this.mfe.classifications = this.convertToUniqueStringArray(this.formGroupMfe.controls['classifications'].value)
       this.changeMode === 'CREATE' ? this.createMfe() : this.updateMfe()
     }
     if (this.appAbstract?.appType === 'MS') {
@@ -240,19 +233,6 @@ export class AppDetailComponent implements OnChanges {
       this.ms = { ...this.formGroupMs.value, id: this.ms?.id }
       this.changeMode === 'CREATE' ? this.createMs() : this.updateMs()
     }
-  }
-
-  private makeStringArrayUnique(unsorted: string | undefined): string[] | undefined {
-    if (!unsorted || unsorted?.length === 0) return undefined
-    let ar: Array<string> = []
-    unsorted
-      .toString()
-      .split(',')
-      .map((a) => ar?.push(a.trim()))
-    return ar.sort(this.sortStrings)
-  }
-  private sortStrings(a: string, b: string): number {
-    return (a as String).toUpperCase().localeCompare((b as String).toUpperCase())
   }
 
   private createMfe() {

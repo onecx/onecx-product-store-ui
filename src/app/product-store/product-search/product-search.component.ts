@@ -7,7 +7,12 @@ import { DataView } from 'primeng/dataview'
 
 import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 
-import { ImagesInternalAPIService, ProductPageResult, ProductsAPIService } from 'src/app/shared/generated'
+import {
+  ImagesInternalAPIService,
+  ProductAbstract,
+  ProductPageResult,
+  ProductsAPIService
+} from 'src/app/shared/generated'
 import { limitText } from 'src/app/shared/utils'
 
 export interface ProductSearchCriteria {
@@ -26,7 +31,7 @@ export class ProductSearchComponent implements OnInit {
   public actions$: Observable<Action[]> | undefined
   public viewMode = 'grid'
   public filter: string | undefined
-  public sortField = 'name'
+  public sortField = 'displayName'
   public sortOrder = 1
   public limitText = limitText
 
@@ -66,7 +71,13 @@ export class ProductSearchComponent implements OnInit {
         finalize(() => (this.searchInProgress = false))
       )
   }
+  public sortProductsByDisplayName(a: ProductAbstract, b: ProductAbstract): number {
+    return (a.displayName as string).toUpperCase().localeCompare((b.displayName as string).toUpperCase())
+  }
 
+  /**
+   * DIALOG
+   */
   private prepareDialogTranslations(): void {
     this.translate
       .get([
@@ -138,6 +149,9 @@ export class ProductSearchComponent implements OnInit {
       )
   }
 
+  /**
+   * UI EVENTS
+   */
   public onLayoutChange(viewMode: string): void {
     this.viewMode = viewMode
   }

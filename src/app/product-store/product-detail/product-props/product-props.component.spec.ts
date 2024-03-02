@@ -152,7 +152,7 @@ describe('ProductPropertyComponent', () => {
     expect(component.formGroup.reset).toHaveBeenCalled()
   })
 
-  it('should call createProduct onSubmit in new mode', () => {
+  it('should call createProduct onSave in new mode', () => {
     apiServiceSpy.createProduct.and.returnValue(of({}))
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>('id'),
@@ -169,13 +169,13 @@ describe('ProductPropertyComponent', () => {
     component.formGroup = formGroup as FormGroup<ProductDetailForm>
     component.changeMode = 'CREATE'
 
-    component.onSubmit()
+    component.onSave()
 
     expect(apiServiceSpy.createProduct).toHaveBeenCalled()
     expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.PRODUCT.OK' })
   })
 
-  it('should call updateProduct onSubmit in edit mode', () => {
+  it('should call updateProduct onSave in edit mode', () => {
     apiServiceSpy.updateProduct.and.returnValue(of({}))
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>('id'),
@@ -192,7 +192,7 @@ describe('ProductPropertyComponent', () => {
     component.formGroup = formGroup as FormGroup<ProductDetailForm>
     component.changeMode = 'EDIT'
 
-    component.onSubmit()
+    component.onSave()
 
     expect(apiServiceSpy.updateProduct).toHaveBeenCalled()
     expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.EDIT.PRODUCT.OK' })
@@ -216,7 +216,7 @@ describe('ProductPropertyComponent', () => {
     component.formGroup.controls['name'].setValue('')
     component.changeMode = 'EDIT'
 
-    component.onSubmit()
+    component.onSave()
 
     expect(component.formGroup.valid).toBeTrue()
     expect(msgServiceSpy.error).toHaveBeenCalledWith({
@@ -247,7 +247,7 @@ describe('ProductPropertyComponent', () => {
     component.formGroup.controls['name'].setValue('')
     component.changeMode = 'EDIT'
 
-    component.onSubmit()
+    component.onSave()
 
     expect(component.formGroup.valid).toBeTrue()
     expect(msgServiceSpy.error).toHaveBeenCalledWith({
@@ -262,7 +262,7 @@ describe('ProductPropertyComponent', () => {
     const focusSpy = jasmine.createSpy('focus')
     spyOn((component as any).elements.nativeElement, 'querySelector').and.returnValue({ focus: focusSpy })
 
-    component.onSubmit()
+    component.onSave()
 
     expect(component.formGroup.valid).toBeFalse()
     expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'VALIDATION.FORM_INVALID' })
@@ -286,7 +286,7 @@ describe('ProductPropertyComponent', () => {
     component.formGroup = formGroup as FormGroup<ProductDetailForm>
     component.changeMode = 'CREATE'
 
-    component.onSubmit()
+    component.onSave()
 
     expect(component.formGroup.valid).toBeTrue()
     expect(msgServiceSpy.error).toHaveBeenCalledWith({
@@ -294,7 +294,7 @@ describe('ProductPropertyComponent', () => {
     })
   })
 
-  it('should display error onSubmit if formGroup invalid', () => {
+  it('should display error onSave if formGroup invalid', () => {
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>(null, Validators.required),
       name: new FormControl<string | null>('name'),
@@ -309,7 +309,7 @@ describe('ProductPropertyComponent', () => {
     })
     component.formGroup = formGroup as FormGroup<ProductDetailForm>
 
-    component.onSubmit()
+    component.onSave()
 
     expect(component.formGroup.valid).toBeFalse()
     expect(msgServiceSpy.error).toHaveBeenCalledWith({
