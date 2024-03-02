@@ -6,7 +6,7 @@ import { SelectItem } from 'primeng/api'
 
 import { PortalMessageService, UserService } from '@onecx/portal-integration-angular'
 import { IconService } from 'src/app/shared/iconservice'
-import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
+import { dropDownSortItemsByLabel, convertToUniqueStringArray } from 'src/app/shared/utils'
 import {
   CreateMicrofrontendRequest,
   CreateMicroserviceRequest,
@@ -19,7 +19,6 @@ import {
   MicroservicesAPIService,
   GetMicroserviceByAppIdRequestParams
 } from 'src/app/shared/generated'
-import { convertToUniqueStringArray } from 'src/app/shared/utils'
 
 import { AppAbstract, ChangeMode } from '../app-search/app-search.component'
 
