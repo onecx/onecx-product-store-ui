@@ -86,7 +86,7 @@
             <div class="flex flex-column justify-content-center align-items-center gap-1 md:gap-2 h-full">
               <app-image-container
                 [id]="'product_search_data_list_' + idx + '_image'"
-                [imageUrl]="getImageUrl(product)"
+                [imageUrl]="prepareImageUrl(product)"
                 [title]="'LOGO.TOOLTIPS.' + (product.imageUrl ? 'IMAGE' : 'PLACEHOLDER') | translate"
                 [small]="true"
               ></app-image-container>
@@ -118,7 +118,7 @@
             <div class="h-3rem md:h-5rem flex flex-column justify-content-center align-items-center text-center">
               <app-image-container
                 [id]="'product_search_data_grid_' + idx + '_image'"
-                [imageUrl]="getImageUrl(product)"
+                [imageUrl]="prepareImageUrl(product)"
                 [title]="'LOGO.TOOLTIPS.' + (product.imageUrl ? 'IMAGE' : 'PLACEHOLDER') | translate"
                 [small]="false"
               ></app-image-container>

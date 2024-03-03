@@ -135,17 +135,13 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
   }
 
   private createProduct() {
-    let imgUrl = this.formGroup.controls['imageUrl'].value
-    if ((imgUrl == '' || imgUrl == null) && !this.logoImageWasUploaded) {
-      imgUrl = 'http://pragmaticscrum.info/wp-content/uploads/2016/06/t1.jpg'
-    }
     this.productApi
       .createProduct({
         createProductRequest: {
           name: this.formGroup.value['name'],
           version: this.formGroup.value['version'],
           description: this.formGroup.value['description'],
-          imageUrl: imgUrl,
+          imageUrl: this.formGroup.controls['imageUrl'].value,
           basePath: this.formGroup.value['basePath'],
           displayName: this.formGroup.value['displayName'],
           iconName: this.formGroup.value['iconName'],
@@ -162,10 +158,6 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
   }
 
   private updateProduct() {
-    let imgUrl = this.formGroup.controls['imageUrl'].value
-    if ((imgUrl == '' || imgUrl == null) && !this.logoImageWasUploaded) {
-      imgUrl = 'http://pragmaticscrum.info/wp-content/uploads/2016/06/t1.jpg'
-    }
     this.productApi
       .updateProduct({
         id: this.productId!,
@@ -173,7 +165,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
           name: this.formGroup.value['name'],
           version: this.formGroup.value['version'],
           description: this.formGroup.value['description'],
-          imageUrl: imgUrl,
+          imageUrl: this.formGroup.controls['imageUrl'].value,
           basePath: this.formGroup.value['basePath'],
           displayName: this.formGroup.value['displayName'],
           iconName: this.formGroup.value['iconName'],

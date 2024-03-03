@@ -8,5 +8,6 @@ export const environment = {
   KEYCLOAK_URL: 'http://keycloak-app/',
   KEYCLOAK_REALM: 'OneCX',
   skipRemoteConfigLoad: true,
-  apiPrefix: 'bff'
+  apiPrefix: 'bff',
+  DEFAULT_LOGO_URL: 'http://pragmaticscrum.info/wp-content/uploads/2016/06/t1.jpg'
 }
