@@ -173,7 +173,9 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
     if (err.error?.errorCode === 'PERSIST_ENTITY_FAILED') {
       this.msgService.error({
         summaryKey: 'ACTIONS.' + this.changeMode + '.PRODUCT.NOK',
-        detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT'
+        detailKey:
+          'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT.' +
+          (err.error?.detail.indexOf('ui_product_base_path') > 0 ? 'BASEPATH' : 'NAME')
       })
     } else {
       this.msgService.error({ summaryKey: 'ACTIONS.' + this.changeMode + '.PRODUCT.NOK' })

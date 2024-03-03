@@ -247,7 +247,7 @@ describe('ProductPropertyComponent', () => {
     expect(component.formGroup.valid).toBeTrue()
     expect(msgServiceSpy.error).toHaveBeenCalledWith({
       summaryKey: 'ACTIONS.EDIT.PRODUCT.NOK',
-      detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT'
+      detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT.NAME'
     })
   })
 

@@ -268,7 +268,8 @@
     "FORM_INVALID": "Die Daten sind nicht bereit zum Speichern.",
     "APP.UNIQUE_CONSTRAINT.REMOTE_MODULE": "Eine App mit dieser Remote Konfiguration existiert bereits für das Produkt.",
     "APP.UNIQUE_CONSTRAINT.APP_ID": "Eine App mit dieser ID existiert bereits für das Produkt.",
-    "PRODUCT.UNIQUE_CONSTRAINT": "Ein Produkt mit diesem Namen existiert bereits.",
+    "PRODUCT.UNIQUE_CONSTRAINT.NAME": "Ein Produkt mit diesem Namen existiert bereits.",
+    "PRODUCT.UNIQUE_CONSTRAINT.BASEPATH": "Ein Produkt mit diesem Basepath existiert bereits.",
     "PRODUCT.INVALID_NAME": "Dieser Name ist reserviert und kann nicht verwendet werden.",
     "ERRORS": {
       "PARSE_ERROR": "Parserfehler: Die enthaltene Struktur entspricht nicht dem erwarteten Format.",
