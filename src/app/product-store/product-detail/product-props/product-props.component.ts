@@ -14,7 +14,7 @@ import {
   UploadImageRequestParams
 } from 'src/app/shared/generated'
 import { IconService } from 'src/app/shared/iconservice'
-import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
+import { dropDownSortItemsByLabel, convertToUniqueStringArray } from 'src/app/shared/utils'
 import { ChangeMode } from '../product-detail.component'
 
 export interface ProductDetailForm {
@@ -56,8 +56,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
   public fetchingLogoUrl: string | undefined
   public iconItems: SelectItem[] = [{ label: '', value: null }]
   public logoImageWasUploaded: boolean | undefined
-
-  //private productNamePattern = '^(?!new$)(.*)$' // matching for valid product names
+  public convertToUniqueStringArray = convertToUniqueStringArray
 
   constructor(
     private icon: IconService,
@@ -124,7 +123,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
 
   /** CREATE/UPDATE product
    */
-  public onSubmit() {
+  public onSave() {
     if (this.formGroup.valid) {
       this.changeMode === 'EDIT' ? this.updateProduct() : this.createProduct()
     } else {
@@ -150,7 +149,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
           basePath: this.formGroup.value['basePath'],
           displayName: this.formGroup.value['displayName'],
           iconName: this.formGroup.value['iconName'],
-          classifications: this.formGroup.value['classifications']?.toString().split(',')
+          classifications: this.convertToUniqueStringArray(this.formGroup.value['classifications']?.toString())
         } as CreateProductRequest
       })
       .subscribe({
@@ -178,7 +177,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
           basePath: this.formGroup.value['basePath'],
           displayName: this.formGroup.value['displayName'],
           iconName: this.formGroup.value['iconName'],
-          classifications: this.formGroup.value['classifications']?.toString().split(',')
+          classifications: this.convertToUniqueStringArray(this.formGroup.value['classifications']?.toString())
         } as UpdateProductRequest
       })
       .subscribe({

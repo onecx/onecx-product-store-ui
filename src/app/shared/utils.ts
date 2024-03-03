@@ -32,3 +32,13 @@ export function dropDownGetLabelByValue(ddArray: SelectItem[], val: string): str
 export function sortByLocale(a: any, b: any): number {
   return a.toUpperCase().localeCompare(b.toUpperCase())
 }
+
+export function convertToUniqueStringArray(unsorted: string | undefined | null): string[] | undefined {
+  if (!unsorted || unsorted?.length === 0) return undefined
+  let ar: Array<string> = []
+  unsorted
+    .toString()
+    .split(',')
+    .map((a) => ar?.push(a.trim()))
+  return ar.sort(sortByLocale)
+}

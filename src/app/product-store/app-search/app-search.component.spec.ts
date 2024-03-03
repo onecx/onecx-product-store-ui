@@ -106,9 +106,8 @@ describe('AppSearchComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AppSearchComponent)
     component = fixture.componentInstance
-    fixture.detectChanges()
-    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of({} as MicrofrontendPageResult))
-    apiMsServiceSpy.searchMicroservice.and.returnValue(of({} as MicroservicePageResult))
+    // fixture.detectChanges()
+    fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
   })
 
   afterEach(() => {

@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, ViewChild } from '@angular/core'
-import { SelectItem } from 'primeng/api'
 import { combineLatest, finalize, map, of, Observable, catchError } from 'rxjs'
+import { SelectItem } from 'primeng/api'
 import { DataView } from 'primeng/dataview'
 
 import { DataViewControlTranslations, UserService } from '@onecx/portal-integration-angular'
@@ -29,6 +29,7 @@ export class ProductAppsComponent implements OnChanges {
 
   private readonly debug = true // to be removed after finalization
   public exceptionKey = ''
+  public searchInProgress = false
   public apps$!: Observable<AppAbstract[]>
   public mfes$!: Observable<MicrofrontendPageResult>
   public mss$!: Observable<MicroservicePageResult>
@@ -38,7 +39,6 @@ export class ProductAppsComponent implements OnChanges {
   public viewMode = 'grid'
   public sortField = 'appId'
   public sortOrder = 1
-  public searchInProgress = false
   public displayDetailDialog = false
   public displayDeleteDialog = false
   public hasCreatePermission = false

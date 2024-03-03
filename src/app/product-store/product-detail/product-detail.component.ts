@@ -16,8 +16,6 @@ export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
   styleUrls: ['./product-detail.component.scss']
 })
 export class ProductDetailComponent implements OnInit {
-  @ViewChild(ProductPropertyComponent, { static: false }) productPropsComponent!: ProductPropertyComponent
-
   public actions$: Observable<Action[]> | undefined
   public productName: string
   public product: ProductAndWorkspaces | undefined
@@ -25,11 +23,12 @@ export class ProductDetailComponent implements OnInit {
   public changeMode: ChangeMode = 'CREATE'
   public loading = false
   public dateFormat = 'medium'
-  public actions: Action[] = []
   public headerImageUrl?: string
   public productDeleteVisible = false
   public productDeleteMessage = ''
   public selectedTabIndex = 0
+
+  @ViewChild(ProductPropertyComponent, { static: false }) productPropsComponent!: ProductPropertyComponent
 
   constructor(
     private router: Router,
@@ -190,7 +189,7 @@ export class ProductDetailComponent implements OnInit {
     if (this.changeMode === 'CREATE') this.close()
   }
   public onSave() {
-    this.productPropsComponent.onSubmit()
+    this.productPropsComponent.onSave()
   }
 
   public onCreate(data: any) {
