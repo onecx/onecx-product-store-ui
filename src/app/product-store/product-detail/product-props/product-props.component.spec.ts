@@ -18,7 +18,6 @@ const mockForm = new FormGroup<ProductDetailForm>({
     Validators.maxLength(255),
     productNameValidator()
   ]),
-  operator: new FormControl<boolean | null>(null),
   version: new FormControl<string | null>(null, [Validators.required, Validators.maxLength(255)]),
   description: new FormControl<string | null>(null, [Validators.maxLength(255)]),
   imageUrl: new FormControl<string | null>(null, [Validators.maxLength(255)]),
@@ -157,7 +156,6 @@ describe('ProductPropertyComponent', () => {
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
-      operator: new FormControl<boolean | null>(null),
       version: new FormControl<string | null>('version'),
       description: new FormControl<string | null>(null),
       imageUrl: new FormControl<string | null>(null),
@@ -180,7 +178,6 @@ describe('ProductPropertyComponent', () => {
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
-      operator: new FormControl<boolean | null>(null),
       version: new FormControl<string | null>('version'),
       description: new FormControl<string | null>(null),
       imageUrl: new FormControl<string | null>(null),
@@ -203,7 +200,6 @@ describe('ProductPropertyComponent', () => {
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
-      operator: new FormControl<boolean | null>(null),
       version: new FormControl<string | null>('version'),
       description: new FormControl<string | null>(null),
       imageUrl: new FormControl<string | null>(null),
@@ -234,7 +230,6 @@ describe('ProductPropertyComponent', () => {
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
-      operator: new FormControl<boolean | null>(null),
       version: new FormControl<string | null>('version'),
       description: new FormControl<string | null>(null),
       imageUrl: new FormControl<string | null>(null),
@@ -274,7 +269,6 @@ describe('ProductPropertyComponent', () => {
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
-      operator: new FormControl<boolean | null>(null),
       version: new FormControl<string | null>('version'),
       description: new FormControl<string | null>(null),
       imageUrl: new FormControl<string | null>(null),
@@ -298,7 +292,6 @@ describe('ProductPropertyComponent', () => {
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>(null, Validators.required),
       name: new FormControl<string | null>('name'),
-      operator: new FormControl<boolean | null>(null),
       version: new FormControl<string | null>('version'),
       description: new FormControl<string | null>(null),
       imageUrl: new FormControl<string | null>(null),

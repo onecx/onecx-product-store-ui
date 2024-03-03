@@ -45,7 +45,7 @@
         </span>
       </div>
 
-      <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
+      <div class="w-full sm:w-12 md:w-9 lg:w-12 px-3">
         <div class="flex flex-wrap sm:flex-nowrap align-items-center row-gap-2 column-gap-4">
           <input hidden type="file" accept="image/*" #selectedFileInputLogo (change)="onFileUpload($event, 'logo')" />
           <app-image-container
@@ -86,18 +86,6 @@
           </div>
         </div>
       </div>
-      <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
-        <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.CLASSIFICATIONS' | translate">
-          <input
-            pInputText
-            type="text"
-            class="w-full"
-            id="product_detail_item_classifications"
-            formControlName="classifications"
-          />
-          <label for="product_detail_item_classifications">{{ 'PRODUCT.CLASSIFICATIONS' | translate }}</label>
-        </span>
-      </div>
 
       <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
         <span class="p-float-label" controlErrorAnchor>
@@ -124,16 +112,15 @@
         </span>
       </div>
       <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
-        <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.OPERATOR' | translate" controlErrorAnchor>
+        <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.CLASSIFICATIONS' | translate">
           <input
-            readonly
             pInputText
             type="text"
             class="w-full"
-            id="product_detail_item_operator"
-            [value]="'PRODUCT.OPERATOR.' + (product?.operator ? 'DEPLOYMENT' : 'MANUAL') | translate"
+            id="product_detail_item_classifications"
+            formControlName="classifications"
           />
-          <label for="product_detail_item_operator">{{ 'PRODUCT.OPERATOR' | translate }}</label>
+          <label for="product_detail_item_classifications">{{ 'PRODUCT.CLASSIFICATIONS' | translate }}</label>
         </span>
       </div>
 

@@ -20,7 +20,6 @@ import { ChangeMode } from '../product-detail.component'
 export interface ProductDetailForm {
   id: FormControl<string | null>
   name: FormControl<string | null>
-  operator: FormControl<boolean | null>
   version: FormControl<string | null>
   description: FormControl<string | null>
   imageUrl: FormControl<string | null>
@@ -74,7 +73,6 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
         productNameValidator()
       ]),
       displayName: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
-      operator: new FormControl(null),
       version: new FormControl(null, [Validators.required, Validators.maxLength(255)]),
       description: new FormControl(null, [Validators.maxLength(255)]),
       imageUrl: new FormControl(null, [Validators.maxLength(255)]),
