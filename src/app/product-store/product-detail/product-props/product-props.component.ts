@@ -88,29 +88,19 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
 
   ngOnInit(): void {
     let productName = this.formGroup.controls['name'].value!
-    let requestParametersGet: GetImageRequestParams = {
-      refId: productName,
-      refType: RefType.Logo
-    }
-    if (
-      requestParametersGet.refId === undefined ||
-      requestParametersGet.refId === '' ||
-      requestParametersGet.refId === null
-    ) {
+    if (!productName) {
       this.logoImageWasUploaded = false
     } else {
-      this.imageApi.getImage(requestParametersGet).subscribe(() => {
+      this.imageApi.getImage({ refId: productName, refType: RefType.Logo }).subscribe(() => {
         this.logoImageWasUploaded = true
       })
     }
-    this.fetchingLogoUrl = this.getImageUrl()
+    this.fetchingLogoUrl = this.prepareImageUrl()
   }
 
   ngOnChanges(): void {
     if (this.product) {
-      this.formGroup.patchValue({
-        ...this.product
-      })
+      this.formGroup.patchValue({ ...this.product })
       this.productId = this.changeMode !== 'COPY' ? this.product.id : undefined
       this.productName = this.product.name // business key => manage the change!
     } else {
@@ -251,7 +241,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
     }
   }
 
-  getImageUrl(): string {
+  prepareImageUrl(): string {
     let imgUrl = this.formGroup.controls['imageUrl'].value
     if (imgUrl == '' || imgUrl == null) {
       return this.imageApi.configuration.basePath + '/images/' + this.formGroup.controls['name'].value + '/logo'

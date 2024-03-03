@@ -416,7 +416,7 @@ describe('ProductPropertyComponent', () => {
   it('should return an image url', () => {
     component.formGroup.controls['imageUrl'].setValue('url')
 
-    const result = component.getImageUrl()
+    const result = component.prepareImageUrl()
 
     expect(result).toEqual('url')
   })
