@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core'
 import { prepareUrl } from 'src/app/shared/utils'
+import { environment } from 'src/environments/environment'
 
 @Component({
   selector: 'app-image-container',
@@ -11,6 +12,7 @@ export class ImageContainerComponent implements OnChanges {
   @Input() public imageUrl: string | undefined
   @Input() public small = false
 
+  public defaultImageUrl = environment.DEFAULT_LOGO_URL
   public displayPlaceHolder = false
 
   public onImageError() {

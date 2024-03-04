@@ -18,7 +18,6 @@ const mockForm = new FormGroup<ProductDetailForm>({
     Validators.maxLength(255),
     productNameValidator()
   ]),
-  operator: new FormControl<boolean | null>(null),
   version: new FormControl<string | null>(null, [Validators.required, Validators.maxLength(255)]),
   description: new FormControl<string | null>(null, [Validators.maxLength(255)]),
   imageUrl: new FormControl<string | null>(null, [Validators.maxLength(255)]),
@@ -157,7 +156,6 @@ describe('ProductPropertyComponent', () => {
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
-      operator: new FormControl<boolean | null>(null),
       version: new FormControl<string | null>('version'),
       description: new FormControl<string | null>(null),
       imageUrl: new FormControl<string | null>(null),
@@ -180,7 +178,6 @@ describe('ProductPropertyComponent', () => {
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
-      operator: new FormControl<boolean | null>(null),
       version: new FormControl<string | null>('version'),
       description: new FormControl<string | null>(null),
       imageUrl: new FormControl<string | null>(null),
@@ -203,7 +200,6 @@ describe('ProductPropertyComponent', () => {
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
-      operator: new FormControl<boolean | null>(null),
       version: new FormControl<string | null>('version'),
       description: new FormControl<string | null>(null),
       imageUrl: new FormControl<string | null>(null),
@@ -224,17 +220,26 @@ describe('ProductPropertyComponent', () => {
     })
   })
 
-  it('should display unique constraint error if error code points to it', () => {
+  it('should display unique constraint error if name already exists', () => {
     const error = {
       error: {
-        errorCode: 'PERSIST_ENTITY_FAILED'
+        errorCode: 'PERSIST_ENTITY_FAILED',
+        detail:
+          "could not execute statement [ERROR: duplicate key value violates unique constraint 'ui_product_name' ...",
+        params: [
+          {
+            key: 'constraint',
+            value:
+              "could not execute statement [ERROR: duplicate key value violates unique constraint 'ui_product_name' ..."
+          },
+          { key: 'constraintName', value: 'ui_product_name' }
+        ]
       }
     }
     apiServiceSpy.updateProduct.and.returnValue(throwError(() => error))
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
-      operator: new FormControl<boolean | null>(null),
       version: new FormControl<string | null>('version'),
       description: new FormControl<string | null>(null),
       imageUrl: new FormControl<string | null>(null),
@@ -244,15 +249,56 @@ describe('ProductPropertyComponent', () => {
       classifications: new FormControl<string[] | null>(null)
     })
     component.formGroup = formGroup as FormGroup<ProductDetailForm>
-    component.formGroup.controls['name'].setValue('')
     component.changeMode = 'EDIT'
+    component.formGroup.controls['name'].setValue('')
 
     component.onSave()
 
     expect(component.formGroup.valid).toBeTrue()
     expect(msgServiceSpy.error).toHaveBeenCalledWith({
       summaryKey: 'ACTIONS.EDIT.PRODUCT.NOK',
-      detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT'
+      detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT.NAME'
+    })
+  })
+
+  it('should display unique constraint error if basepath already exists', () => {
+    const error = {
+      error: {
+        errorCode: 'PERSIST_ENTITY_FAILED',
+        detail:
+          "could not execute statement [ERROR: duplicate key value violates unique constraint 'ui_product_base_path' ...",
+        params: [
+          {
+            key: 'constraint',
+            value:
+              "could not execute statement [ERROR: duplicate key value violates unique constraint 'ui_product_base_path' ..."
+          },
+          { key: 'constraintName', value: 'ui_product_base_path' }
+        ]
+      }
+    }
+    apiServiceSpy.updateProduct.and.returnValue(throwError(() => error))
+    const formGroup = new FormGroup<ProductDetailForm>({
+      id: new FormControl<string | null>('id'),
+      name: new FormControl<string | null>('name'),
+      version: new FormControl<string | null>('version'),
+      description: new FormControl<string | null>(null),
+      imageUrl: new FormControl<string | null>(null),
+      basePath: new FormControl<string | null>('path'),
+      displayName: new FormControl<string | null>('display'),
+      iconName: new FormControl<string | null>('icon'),
+      classifications: new FormControl<string[] | null>(null)
+    })
+    component.formGroup = formGroup as FormGroup<ProductDetailForm>
+    component.changeMode = 'EDIT'
+    component.formGroup.controls['basePath'].setValue('')
+
+    component.onSave()
+
+    expect(component.formGroup.valid).toBeTrue()
+    expect(msgServiceSpy.error).toHaveBeenCalledWith({
+      summaryKey: 'ACTIONS.EDIT.PRODUCT.NOK',
+      detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT.BASEPATH'
     })
   })
 
@@ -274,7 +320,6 @@ describe('ProductPropertyComponent', () => {
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
-      operator: new FormControl<boolean | null>(null),
       version: new FormControl<string | null>('version'),
       description: new FormControl<string | null>(null),
       imageUrl: new FormControl<string | null>(null),
@@ -298,7 +343,6 @@ describe('ProductPropertyComponent', () => {
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>(null, Validators.required),
       name: new FormControl<string | null>('name'),
-      operator: new FormControl<boolean | null>(null),
       version: new FormControl<string | null>('version'),
       description: new FormControl<string | null>(null),
       imageUrl: new FormControl<string | null>(null),
@@ -416,7 +460,7 @@ describe('ProductPropertyComponent', () => {
   it('should return an image url', () => {
     component.formGroup.controls['imageUrl'].setValue('url')
 
-    const result = component.getImageUrl()
+    const result = component.prepareImageUrl()
 
     expect(result).toEqual('url')
   })

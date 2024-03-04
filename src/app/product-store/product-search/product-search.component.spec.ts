@@ -195,20 +195,20 @@ describe('ProductSearchComponent', () => {
     expect(result).toBe(1)
   })
 
-  it('should getImageUrl from existing product', () => {
+  it('should prepareImageUrl from existing product', () => {
     const product = { imageUrl: 'url' }
 
-    const result = component.getImageUrl(product)
+    const result = component.prepareImageUrl(product)
 
     expect(result).toEqual(product.imageUrl)
   })
 
-  it('should getImageUrl from image api if not from existing product', () => {
+  it('should prepareImageUrl from image api if not from existing product', () => {
     const product = {
       id: 'id'
     }
 
-    const result = component.getImageUrl(product)
+    const result = component.prepareImageUrl(product)
 
     expect(result).toEqual('http://onecx-product-store-bff:8080/images/undefined/logo')
   })

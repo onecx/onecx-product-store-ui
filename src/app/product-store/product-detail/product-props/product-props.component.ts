@@ -20,7 +20,6 @@ import { ChangeMode } from '../product-detail.component'
 export interface ProductDetailForm {
   id: FormControl<string | null>
   name: FormControl<string | null>
-  operator: FormControl<boolean | null>
   version: FormControl<string | null>
   description: FormControl<string | null>
   imageUrl: FormControl<string | null>
@@ -74,7 +73,6 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
         productNameValidator()
       ]),
       displayName: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
-      operator: new FormControl(null),
       version: new FormControl(null, [Validators.required, Validators.maxLength(255)]),
       description: new FormControl(null, [Validators.maxLength(255)]),
       imageUrl: new FormControl(null, [Validators.maxLength(255)]),
@@ -88,29 +86,19 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
 
   ngOnInit(): void {
     let productName = this.formGroup.controls['name'].value!
-    let requestParametersGet: GetImageRequestParams = {
-      refId: productName,
-      refType: RefType.Logo
-    }
-    if (
-      requestParametersGet.refId === undefined ||
-      requestParametersGet.refId === '' ||
-      requestParametersGet.refId === null
-    ) {
+    if (!productName) {
       this.logoImageWasUploaded = false
     } else {
-      this.imageApi.getImage(requestParametersGet).subscribe(() => {
+      this.imageApi.getImage({ refId: productName, refType: RefType.Logo }).subscribe(() => {
         this.logoImageWasUploaded = true
       })
     }
-    this.fetchingLogoUrl = this.getImageUrl()
+    this.fetchingLogoUrl = this.prepareImageUrl()
   }
 
   ngOnChanges(): void {
     if (this.product) {
-      this.formGroup.patchValue({
-        ...this.product
-      })
+      this.formGroup.patchValue({ ...this.product })
       this.productId = this.changeMode !== 'COPY' ? this.product.id : undefined
       this.productName = this.product.name // business key => manage the change!
     } else {
@@ -135,17 +123,13 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
   }
 
   private createProduct() {
-    let imgUrl = this.formGroup.controls['imageUrl'].value
-    if ((imgUrl == '' || imgUrl == null) && !this.logoImageWasUploaded) {
-      imgUrl = 'http://pragmaticscrum.info/wp-content/uploads/2016/06/t1.jpg'
-    }
     this.productApi
       .createProduct({
         createProductRequest: {
           name: this.formGroup.value['name'],
           version: this.formGroup.value['version'],
           description: this.formGroup.value['description'],
-          imageUrl: imgUrl,
+          imageUrl: this.formGroup.controls['imageUrl'].value,
           basePath: this.formGroup.value['basePath'],
           displayName: this.formGroup.value['displayName'],
           iconName: this.formGroup.value['iconName'],
@@ -162,10 +146,6 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
   }
 
   private updateProduct() {
-    let imgUrl = this.formGroup.controls['imageUrl'].value
-    if ((imgUrl == '' || imgUrl == null) && !this.logoImageWasUploaded) {
-      imgUrl = 'http://pragmaticscrum.info/wp-content/uploads/2016/06/t1.jpg'
-    }
     this.productApi
       .updateProduct({
         id: this.productId!,
@@ -173,7 +153,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
           name: this.formGroup.value['name'],
           version: this.formGroup.value['version'],
           description: this.formGroup.value['description'],
-          imageUrl: imgUrl,
+          imageUrl: this.formGroup.controls['imageUrl'].value,
           basePath: this.formGroup.value['basePath'],
           displayName: this.formGroup.value['displayName'],
           iconName: this.formGroup.value['iconName'],
@@ -193,7 +173,9 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
     if (err.error?.errorCode === 'PERSIST_ENTITY_FAILED') {
       this.msgService.error({
         summaryKey: 'ACTIONS.' + this.changeMode + '.PRODUCT.NOK',
-        detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT'
+        detailKey:
+          'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT.' +
+          (err.error?.detail.indexOf('ui_product_base_path') > 0 ? 'BASEPATH' : 'NAME')
       })
     } else {
       this.msgService.error({ summaryKey: 'ACTIONS.' + this.changeMode + '.PRODUCT.NOK' })
@@ -259,7 +241,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
     }
   }
 
-  getImageUrl(): string {
+  prepareImageUrl(): string {
     let imgUrl = this.formGroup.controls['imageUrl'].value
     if (imgUrl == '' || imgUrl == null) {
       return this.imageApi.configuration.basePath + '/images/' + this.formGroup.controls['name'].value + '/logo'

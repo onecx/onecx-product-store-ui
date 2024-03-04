@@ -45,9 +45,8 @@
         </span>
       </div>
 
-      <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
+      <div class="w-full sm:w-12 md:w-9 lg:w-12 px-3">
         <div class="flex flex-wrap sm:flex-nowrap align-items-center row-gap-2 column-gap-4">
-          <input hidden type="file" accept="image/*" #selectedFileInputLogo (change)="onFileUpload($event, 'logo')" />
           <app-image-container
             *ngIf="fetchingLogoUrl"
             [id]="'product_detail_item_logo_image'"
@@ -55,48 +54,34 @@
             [small]="true"
             [title]="'LOGO.TOOLTIPS.' + (fetchingLogoUrl ? 'IMAGE' : 'PLACEHOLDER') | translate"
           ></app-image-container>
-          <div class="flex flex-column w-full">
-            <div class="p-inputgroup mb-1" controlErrorAnchor>
-              <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.IMAGE_URL' | translate">
-                <input
-                  pInputText
-                  type="text"
-                  id="product_detail_item_imageUrl"
-                  formControlName="imageUrl"
-                  (input)="inputChange($event)"
-                />
-                <label for="product_detail_item_imageUrl">{{ 'PRODUCT.IMAGE_URL' | translate }}</label>
-              </span>
-              <span
-                id="product_detail_item_upload_logo2"
-                class="p-inputgroup-addon bg-primary pseudo-button"
-                [ngClass]="
-                  changeMode === 'VIEW' ||
-                  this.formGroup.controls['name'].value === '' ||
-                  this.formGroup.controls['name'].value === null
-                    ? 'p-disabled'
-                    : 'cursor-pointer'
-                "
-                [title]="'LOGO.TOOLTIPS.UPLOAD' | translate"
-                (click)="changeMode !== 'VIEW' ? selectedFileInputLogo.click() : null"
-              >
-                <span class="pi pi-upload"></span>
-              </span>
-            </div>
-          </div>
+          <input hidden type="file" accept="image/*" #selectedFileInputLogo (change)="onFileUpload($event, 'logo')" />
+          <button
+            pButton
+            id="product_detail_item_upload_logo2"
+            icon="pi pi-upload"
+            class="action-button p-button-icon-only"
+            [ngClass]="
+              changeMode === 'VIEW' ||
+              this.formGroup.controls['name'].value === '' ||
+              this.formGroup.controls['name'].value === null
+                ? 'p-disabled'
+                : 'cursor-pointer'
+            "
+            [title]="'LOGO.TOOLTIPS.UPLOAD' | translate"
+            (click)="changeMode !== 'VIEW' ? selectedFileInputLogo.click() : null"
+          ></button>
+          <span class="p-float-label w-full" [title]="'PRODUCT.TOOLTIPS.IMAGE_URL' | translate">
+            <input
+              pInputText
+              type="text"
+              class="w-full"
+              id="product_detail_item_image_url"
+              formControlName="imageUrl"
+              (input)="inputChange($event)"
+            />
+            <label for="product_detail_item_image_url">{{ 'PRODUCT.IMAGE_URL' | translate }}</label>
+          </span>
         </div>
-      </div>
-      <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
-        <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.CLASSIFICATIONS' | translate">
-          <input
-            pInputText
-            type="text"
-            class="w-full"
-            id="product_detail_item_classifications"
-            formControlName="classifications"
-          />
-          <label for="product_detail_item_classifications">{{ 'PRODUCT.CLASSIFICATIONS' | translate }}</label>
-        </span>
       </div>
 
       <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
@@ -124,16 +109,15 @@
         </span>
       </div>
       <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
-        <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.OPERATOR' | translate" controlErrorAnchor>
+        <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.CLASSIFICATIONS' | translate">
           <input
-            readonly
             pInputText
             type="text"
             class="w-full"
-            id="product_detail_item_operator"
-            [value]="'PRODUCT.OPERATOR.' + (product?.operator ? 'DEPLOYMENT' : 'MANUAL') | translate"
+            id="product_detail_item_classifications"
+            formControlName="classifications"
           />
-          <label for="product_detail_item_operator">{{ 'PRODUCT.OPERATOR' | translate }}</label>
+          <label for="product_detail_item_classifications">{{ 'PRODUCT.CLASSIFICATIONS' | translate }}</label>
         </span>
       </div>
 
