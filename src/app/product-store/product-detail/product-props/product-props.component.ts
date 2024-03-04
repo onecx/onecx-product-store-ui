@@ -85,6 +85,9 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
   }
 
   ngOnInit(): void {
+    if (this.changeMode === 'EDIT') {
+      this.formGroup.controls['name'].disable()
+    }
     let productName = this.formGroup.controls['name'].value!
     if (!productName) {
       this.logoImageWasUploaded = false
