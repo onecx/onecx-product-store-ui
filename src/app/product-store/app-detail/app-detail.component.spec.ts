@@ -1,331 +1,360 @@
-// import { NO_ERRORS_SCHEMA } from '@angular/core'
-// import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-// import { HttpClientTestingModule } from '@angular/common/http/testing'
-// import { RouterTestingModule } from '@angular/router/testing'
-// import { of, throwError } from 'rxjs'
-// import { FormControl, FormGroup, Validators } from '@angular/forms'
-// import { TranslateTestingModule } from 'ngx-translate-testing'
+import { NO_ERRORS_SCHEMA } from '@angular/core'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { HttpClientTestingModule } from '@angular/common/http/testing'
+import { RouterTestingModule } from '@angular/router/testing'
+import { of, throwError } from 'rxjs'
+import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { TranslateTestingModule } from 'ngx-translate-testing'
 
-// import { PortalMessageService, ConfigurationService, UserService } from '@onecx/portal-integration-angular'
-// import { AppDetailComponent, MfeForm } from './app-detail.component'
-// import { MicrofrontendsAPIService, Microfrontend } from 'src/app/shared/generated'
-// import { AppAbstract } from '../app-search/app-search.component'
+import { PortalMessageService, ConfigurationService, UserService } from '@onecx/portal-integration-angular'
+import { AppDetailComponent, MfeForm } from './app-detail.component'
+import {
+  MicrofrontendsAPIService,
+  MicroservicesAPIService,
+  Microfrontend,
+  Microservice
+} from 'src/app/shared/generated'
+import { AppAbstract } from '../app-search/app-search.component'
 
-// const form = new FormGroup<MfeForm>({
-//   appId: new FormControl('id', Validators.minLength(2)),
-//   appName: new FormControl(''),
-//   appVersion: new FormControl(''),
-//   productName: new FormControl(''),
-//   description: new FormControl(''),
-//   technology: new FormControl(''),
-//   remoteBaseUrl: new FormControl(''),
-//   remoteEntry: new FormControl(''),
-//   exposedModule: new FormControl(''),
-//   classifications: new FormControl(''),
-//   contact: new FormControl(''),
-//   iconName: new FormControl(''),
-//   note: new FormControl('')
-// })
+const form = new FormGroup<MfeForm>({
+  appId: new FormControl('id', Validators.minLength(2)),
+  appName: new FormControl(''),
+  appVersion: new FormControl(''),
+  productName: new FormControl(''),
+  description: new FormControl(''),
+  technology: new FormControl(''),
+  remoteBaseUrl: new FormControl(''),
+  remoteEntry: new FormControl(''),
+  exposedModule: new FormControl(''),
+  classifications: new FormControl(''),
+  contact: new FormControl(''),
+  iconName: new FormControl(''),
+  note: new FormControl('')
+})
 
-// const mfe: Microfrontend = {
-//   appId: 'appId',
-//   id: 'id',
-//   appName: 'name',
-//   remoteBaseUrl: 'url',
-//   productName: 'productName',
-//   appVersion: 'version',
-//   remoteEntry: 'entry',
-//   description: 'description',
-//   technology: 'technology',
-//   contact: 'contact',
-//   iconName: 'iconName',
-//   note: 'note',
-//   exposedModule: 'exposedModule',
-//   classifications: ['classifications']
-// }
+const mfe: Microfrontend = {
+  appId: 'appId',
+  id: 'id',
+  appName: 'name',
+  remoteBaseUrl: 'url',
+  productName: 'productName',
+  appVersion: 'version',
+  remoteEntry: 'entry',
+  description: 'description',
+  technology: 'technology',
+  contact: 'contact',
+  iconName: 'iconName',
+  note: 'note',
+  exposedModule: 'exposedModule',
+  classifications: ['classifications']
+}
 
-// describe('AppDetailComponent', () => {
-//   let component: AppDetailComponent
-//   let fixture: ComponentFixture<AppDetailComponent>
+const ms: Microservice = {
+  appId: 'appId',
+  id: 'id',
+  appName: 'name',
+  productName: 'productName',
+  appVersion: 'version',
+  description: 'description'
+}
 
-//   const appMfe: AppAbstract = {
-//     id: 'id',
-//     appId: 'appId',
-//     appType: 'MFE',
-//     appName: 'name',
-//     remoteBaseUrl: 'url',
-//     productName: 'productName'
-//   }
+describe('AppDetailComponent', () => {
+  let component: AppDetailComponent
+  let fixture: ComponentFixture<AppDetailComponent>
 
-//   const apiServiceSpy = {
-//     getMicrofrontendByAppId: jasmine.createSpy('getMicrofrontendByAppId').and.returnValue(of({})),
-//     createMicrofrontend: jasmine.createSpy('createMicrofrontend').and.returnValue(of({})),
-//     updateMicrofrontend: jasmine.createSpy('updateMicrofrontend').and.returnValue(of({}))
-//   }
-//   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error'])
-//   const configServiceSpy = {
-//     lang: 'en',
-//     getProperty: jasmine.createSpy('getProperty').and.returnValue('123'),
-//     getPortal: jasmine.createSpy('getPortal').and.returnValue({
-//       themeId: '1234',
-//       portalName: 'test',
-//       baseUrl: '/',
-//       microfrontendRegistrations: []
-//     })
-//   }
-//   const mockUserService = {
-//     lang$: {
-//       getValue: jasmine.createSpy('getValue').and.returnValue('en')
-//     },
-//     hasPermission: jasmine.createSpy('hasPermission').and.callFake((permissionName) => {
-//       if (permissionName === 'APP#CREATE') {
-//         return true
-//       } else if (permissionName === 'APP#EDIT') {
-//         return true
-//       } else {
-//         return false
-//       }
-//     })
-//   }
+  const appMfe: AppAbstract = {
+    id: 'id',
+    appId: 'appId',
+    appType: 'MFE',
+    appName: 'name',
+    productName: 'productName'
+  }
 
-//   beforeEach(waitForAsync(() => {
-//     TestBed.configureTestingModule({
-//       declarations: [AppDetailComponent],
-//       imports: [
-//         RouterTestingModule,
-//         HttpClientTestingModule,
-//         TranslateTestingModule.withTranslations({
-//           de: require('src/assets/i18n/de.json'),
-//           en: require('src/assets/i18n/en.json')
-//         }).withDefaultLanguage('en')
-//       ],
-//       providers: [
-//         { provide: MicrofrontendsAPIService, useValue: apiServiceSpy },
-//         { provide: PortalMessageService, useValue: msgServiceSpy },
-//         { provide: ConfigurationService, useValue: configServiceSpy },
-//         { provide: UserService, useValue: mockUserService }
-//       ],
-//       schemas: [NO_ERRORS_SCHEMA]
-//     }).compileComponents()
-//   }))
+  const mfeApiServiceSpy = {
+    getMicrofrontendByAppId: jasmine.createSpy('getMicrofrontendByAppId').and.returnValue(of({})),
+    createMicrofrontend: jasmine.createSpy('createMicrofrontend').and.returnValue(of({})),
+    updateMicrofrontend: jasmine.createSpy('updateMicrofrontend').and.returnValue(of({}))
+  }
+  const msApiServiceSpy = {
+    getMicroserviceByAppId: jasmine.createSpy('getMicroserviceByAppId').and.returnValue(of({})),
+    createMicroservice: jasmine.createSpy('createMicroservice').and.returnValue(of({})),
+    updateMicroservice: jasmine.createSpy('updateMicroservice').and.returnValue(of({}))
+  }
+  const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error'])
+  const configServiceSpy = {
+    lang: 'en',
+    getProperty: jasmine.createSpy('getProperty').and.returnValue('123'),
+    getPortal: jasmine.createSpy('getPortal').and.returnValue({
+      themeId: '1234',
+      portalName: 'test',
+      baseUrl: '/',
+      microfrontendRegistrations: []
+    })
+  }
+  const mockUserService = {
+    lang$: {
+      getValue: jasmine.createSpy('getValue').and.returnValue('en')
+    },
+    hasPermission: jasmine.createSpy('hasPermission').and.callFake((permissionName) => {
+      if (permissionName === 'APP#CREATE') {
+        return true
+      } else if (permissionName === 'APP#EDIT') {
+        return true
+      } else {
+        return false
+      }
+    })
+  }
 
-//   beforeEach(() => {
-//     fixture = TestBed.createComponent(AppDetailComponent)
-//     component = fixture.componentInstance
-//     fixture.detectChanges()
-//   })
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      declarations: [AppDetailComponent],
+      imports: [
+        RouterTestingModule,
+        HttpClientTestingModule,
+        TranslateTestingModule.withTranslations({
+          de: require('src/assets/i18n/de.json'),
+          en: require('src/assets/i18n/en.json')
+        }).withDefaultLanguage('en')
+      ],
+      providers: [
+        { provide: MicrofrontendsAPIService, useValue: mfeApiServiceSpy },
+        { provide: MicroservicesAPIService, useValue: msApiServiceSpy },
+        { provide: PortalMessageService, useValue: msgServiceSpy },
+        { provide: ConfigurationService, useValue: configServiceSpy },
+        { provide: UserService, useValue: mockUserService }
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents()
+  }))
 
-//   afterEach(() => {
-//     msgServiceSpy.success.calls.reset()
-//     msgServiceSpy.error.calls.reset()
-//     apiServiceSpy.getMicrofrontendByAppId.calls.reset()
-//     apiServiceSpy.createMicrofrontend.calls.reset()
-//     apiServiceSpy.updateMicrofrontend.calls.reset()
-//   })
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AppDetailComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
-//   it('should create', () => {
-//     expect(component).toBeTruthy()
-//   })
+  afterEach(() => {
+    msgServiceSpy.success.calls.reset()
+    msgServiceSpy.error.calls.reset()
+    mfeApiServiceSpy.getMicrofrontendByAppId.calls.reset()
+    mfeApiServiceSpy.createMicrofrontend.calls.reset()
+    mfeApiServiceSpy.updateMicrofrontend.calls.reset()
+    msApiServiceSpy.getMicroserviceByAppId.calls.reset()
+    msApiServiceSpy.createMicroservice.calls.reset()
+    msApiServiceSpy.updateMicroservice.calls.reset()
+  })
 
-//   it('should get call getMfe onChanges if not create mode', () => {
-//     component.appAbstract = {
-//       id: 'id',
-//       appId: 'appId',
-//       appType: 'MFE',
-//       appName: 'name',
-//       remoteBaseUrl: 'url',
-//       productName: 'productName'
-//     }
-//     component.displayDialog = true
-//     component.changeMode = 'EDIT'
-//     spyOn(component, 'getMfe')
+  it('should create', () => {
+    expect(component).toBeTruthy()
+  })
 
-//     component.ngOnChanges()
+  it('should get call getMfe onChanges if not create mode', () => {
+    component.appAbstract = {
+      id: 'id',
+      appId: 'appId',
+      appType: 'MFE',
+      appName: 'name',
+      productName: 'productName'
+    }
+    component.displayDialog = true
+    component.changeMode = 'EDIT'
+    spyOn(component, 'getMfe')
 
-//     expect(component.getMfe).toHaveBeenCalled()
-//   })
+    component.ngOnChanges()
 
-//   it('should set mfe to undefined onChanges in create mode', () => {
-//     component.appAbstract = {
-//       id: 'id',
-//       appId: 'appId',
-//       appType: 'MFE',
-//       appName: 'name',
-//       remoteBaseUrl: 'url',
-//       productName: 'productName'
-//     }
-//     component.displayDialog = true
-//     component.changeMode = 'CREATE'
-//     spyOn(component, 'getMfe')
+    expect(component.getMfe).toHaveBeenCalled()
+  })
 
-//     component.ngOnChanges()
+  it('should set mfe to undefined onChanges in create mode', () => {
+    component.appAbstract = {
+      id: 'id',
+      appId: 'appId',
+      appType: 'MS',
+      appName: 'name',
+      productName: 'productName'
+    }
+    component.displayDialog = true
+    component.changeMode = 'CREATE'
+    spyOn(component, 'getMfe')
 
-//     expect(component.mfe).toBeUndefined()
-//   })
+    component.ngOnChanges()
 
-//   it('should getMfe', () => {
-//     apiServiceSpy.getMicrofrontendByAppId.and.returnValue(of(mfe))
-//     component.formGroupMfe = form
+    expect(component.mfe).toBeUndefined()
+  })
 
-//     component.getMfe()
+  it('should getMfe', () => {
+    mfeApiServiceSpy.getMicrofrontendByAppId.and.returnValue(of(mfe))
+    component.formGroupMfe = form
 
-//     expect(component.mfe).toBe(mfe)
-//   })
+    component.getMfe()
 
-//   it('should getMfe and prepare copy', () => {
-//     apiServiceSpy.getMicrofrontendByAppId.and.returnValue(of(mfe))
-//     component.formGroupMfe = form
-//     component.changeMode = 'COPY'
-//     component.mfe = mfe
+    expect(component.mfe).toBe(mfe)
+  })
 
-//     component.getMfe()
+  it('should getMfe and prepare copy', () => {
+    mfeApiServiceSpy.getMicrofrontendByAppId.and.returnValue(of(mfe))
+    component.formGroupMfe = form
+    component.changeMode = 'COPY'
+    component.mfe = mfe
 
-//     expect(component.mfe.id).toBeUndefined()
-//   })
+    component.getMfe()
 
-//   it('should behave correctly onDialogHide', () => {
-//     spyOn(component.displayDialogChange, 'emit')
+    expect(component.mfe.id).toBeUndefined()
+  })
 
-//     component.onDialogHide()
+  fit('should getMs', () => {
+    msApiServiceSpy.getMicroserviceByAppId.and.returnValue(of(ms))
+    component.changeMode = 'COPY'
 
-//     expect(component.displayDialogChange.emit).toHaveBeenCalledWith(false)
-//   })
+    component.getMs()
 
-//   it('should display error if form is invalid onSave', () => {
-//     component.appAbstract = appMfe
-//     component.formGroupMfe = new FormGroup<MfeForm>({
-//       appId: new FormControl('i', Validators.minLength(2)),
-//       appName: new FormControl(''),
-//       appVersion: new FormControl(''),
-//       productName: new FormControl(''),
-//       description: new FormControl(''),
-//       technology: new FormControl(''),
-//       remoteBaseUrl: new FormControl(''),
-//       remoteEntry: new FormControl(''),
-//       exposedModule: new FormControl(''),
-//       classifications: new FormControl(''),
-//       contact: new FormControl(''),
-//       iconName: new FormControl(''),
-//       note: new FormControl('')
-//     })
-//     component.changeMode = 'CREATE'
+    expect(component.ms).toBe(ms)
+  })
 
-//     component.onSave()
+  it('should behave correctly onDialogHide', () => {
+    spyOn(component.appChanged, 'emit')
 
-//     expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'VALIDATION.FORM_INVALID' })
-//   })
+    component.onDialogHide()
 
-//   it('should call createApp onSave in create mode', () => {
-//     apiServiceSpy.createMicrofrontend.and.returnValue(of({}))
-//     component.appAbstract = appMfe
-//     component.formGroupMfe = form
-//     component.changeMode = 'CREATE'
+    expect(component.appChanged.emit).toHaveBeenCalledWith(false)
+  })
 
-//     component.onSave()
+  it('should display error if form is invalid onSave', () => {
+    component.appAbstract = appMfe
+    component.formGroupMfe = new FormGroup<MfeForm>({
+      appId: new FormControl('i', Validators.minLength(2)),
+      appName: new FormControl(''),
+      appVersion: new FormControl(''),
+      productName: new FormControl(''),
+      description: new FormControl(''),
+      technology: new FormControl(''),
+      remoteBaseUrl: new FormControl(''),
+      remoteEntry: new FormControl(''),
+      exposedModule: new FormControl(''),
+      classifications: new FormControl(''),
+      contact: new FormControl(''),
+      iconName: new FormControl(''),
+      note: new FormControl('')
+    })
+    component.changeMode = 'CREATE'
 
-//     expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.APP.OK' })
-//   })
+    component.onSave()
 
-//   it('should display save error in create mode', () => {
-//     const err = {
-//       error: {
-//         detail: 'Error',
-//         errorCode: 'PERSIST_ENTITY_FAILED'
-//       }
-//     }
-//     apiServiceSpy.createMicrofrontend.and.returnValue(throwError(() => err))
-//     component.appAbstract = appMfe
-//     component.formGroupMfe = form
-//     component.changeMode = 'CREATE'
+    expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'VALIDATION.FORM_INVALID' })
+  })
 
-//     component.onSave()
+  it('should call createApp onSave in create mode', () => {
+    mfeApiServiceSpy.createMicrofrontend.and.returnValue(of({}))
+    component.appAbstract = appMfe
+    component.formGroupMfe = form
+    component.changeMode = 'CREATE'
 
-//     const expectedKey = ''
-//     expect(msgServiceSpy.error).toHaveBeenCalledWith({
-//       summaryKey: 'ACTIONS.CREATE.APP.NOK',
-//       detailKey: expectedKey
-//     })
-//   })
+    component.onSave()
 
-//   it('should call updateApp onSave in edit mode', () => {
-//     apiServiceSpy.updateMicrofrontend.and.returnValue(of({}))
-//     component.appAbstract = appMfe
-//     component.formGroupMfe = form
-//     component.changeMode = 'EDIT'
+    expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.APP.OK' })
+  })
 
-//     component.onSave()
+  it('should display save error in create mode', () => {
+    const err = {
+      error: {
+        detail: 'Error',
+        errorCode: 'PERSIST_ENTITY_FAILED'
+      }
+    }
+    mfeApiServiceSpy.createMicrofrontend.and.returnValue(throwError(() => err))
+    component.appAbstract = appMfe
+    component.formGroupMfe = form
+    component.changeMode = 'CREATE'
 
-//     expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.EDIT.APP.OK' })
-//   })
+    component.onSave()
 
-//   it('should display save error in edit mode: unique constraint mfe id', () => {
-//     const err = {
-//       error: {
-//         detail: 'error: microfrontend_app_id',
-//         errorCode: 'PERSIST_ENTITY_FAILED'
-//       }
-//     }
-//     apiServiceSpy.updateMicrofrontend.and.returnValue(throwError(() => err))
-//     component.appAbstract = appMfe
-//     component.formGroupMfe = form
-//     component.changeMode = 'EDIT'
+    const expectedKey = ''
+    expect(msgServiceSpy.error).toHaveBeenCalledWith({
+      summaryKey: 'ACTIONS.CREATE.APP.NOK',
+      detailKey: expectedKey
+    })
+  })
 
-//     component.onSave()
+  it('should call updateApp onSave in edit mode', () => {
+    mfeApiServiceSpy.updateMicrofrontend.and.returnValue(of({}))
+    component.appAbstract = appMfe
+    component.formGroupMfe = form
+    component.changeMode = 'EDIT'
 
-//     const expectedKey = 'VALIDATION.APP.UNIQUE_CONSTRAINT.APP_ID'
-//     expect(msgServiceSpy.error).toHaveBeenCalledWith({
-//       summaryKey: 'ACTIONS.EDIT.APP.NOK',
-//       detailKey: expectedKey
-//     })
-//   })
+    component.onSave()
 
-//   it('should display save error in edit mode: unique constraint mfe id', () => {
-//     const err = {
-//       error: {
-//         detail: 'error: microfrontend_remote_module',
-//         errorCode: 'PERSIST_ENTITY_FAILED'
-//       }
-//     }
-//     apiServiceSpy.updateMicrofrontend.and.returnValue(throwError(() => err))
-//     component.appAbstract = appMfe
-//     component.formGroupMfe = form
-//     component.changeMode = 'EDIT'
+    expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.EDIT.APP.OK' })
+  })
 
-//     component.onSave()
+  it('should display save error in edit mode: unique constraint mfe id', () => {
+    const err = {
+      error: {
+        detail: 'error: microfrontend_app_id',
+        errorCode: 'PERSIST_ENTITY_FAILED'
+      }
+    }
+    mfeApiServiceSpy.updateMicrofrontend.and.returnValue(throwError(() => err))
+    component.appAbstract = appMfe
+    component.formGroupMfe = form
+    component.changeMode = 'EDIT'
 
-//     const expectedKey = 'VALIDATION.APP.UNIQUE_CONSTRAINT.REMOTE_MODULE'
-//     expect(msgServiceSpy.error).toHaveBeenCalledWith({
-//       summaryKey: 'ACTIONS.EDIT.APP.NOK',
-//       detailKey: expectedKey
-//     })
-//   })
+    component.onSave()
 
-//   it('should display save error in edit mode: other internal error', () => {
-//     const err = {
-//       error: {
-//         detail: 'error: microfrontend_remote_module',
-//         errorCode: 'other'
-//       }
-//     }
-//     apiServiceSpy.updateMicrofrontend.and.returnValue(throwError(() => err))
-//     component.appAbstract = appMfe
-//     component.formGroupMfe = form
-//     component.changeMode = 'EDIT'
+    const expectedKey = 'VALIDATION.APP.UNIQUE_CONSTRAINT.APP_ID'
+    expect(msgServiceSpy.error).toHaveBeenCalledWith({
+      summaryKey: 'ACTIONS.EDIT.APP.NOK',
+      detailKey: expectedKey
+    })
+  })
 
-//     component.onSave()
+  it('should display save error in edit mode: unique constraint mfe id', () => {
+    const err = {
+      error: {
+        detail: 'error: microfrontend_remote_module',
+        errorCode: 'PERSIST_ENTITY_FAILED'
+      }
+    }
+    mfeApiServiceSpy.updateMicrofrontend.and.returnValue(throwError(() => err))
+    component.appAbstract = appMfe
+    component.formGroupMfe = form
+    component.changeMode = 'EDIT'
 
-//     const expectedKey = 'VALIDATION.ERRORS.INTERNAL_ERROR'
-//     expect(msgServiceSpy.error).toHaveBeenCalledWith({
-//       summaryKey: 'ACTIONS.EDIT.APP.NOK',
-//       detailKey: expectedKey
-//     })
-//   })
+    component.onSave()
 
-//   it('should call this.user.lang$ from the constructor and set this.dateFormat to the default format if user.lang$ is not de', () => {
-//     mockUserService.lang$.getValue.and.returnValue('de')
-//     fixture = TestBed.createComponent(AppDetailComponent)
-//     component = fixture.componentInstance
-//     fixture.detectChanges()
-//     expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm:ss')
-//   })
-// })
+    const expectedKey = 'VALIDATION.APP.UNIQUE_CONSTRAINT.REMOTE_MODULE'
+    expect(msgServiceSpy.error).toHaveBeenCalledWith({
+      summaryKey: 'ACTIONS.EDIT.APP.NOK',
+      detailKey: expectedKey
+    })
+  })
+
+  it('should display save error in edit mode: other internal error', () => {
+    const err = {
+      error: {
+        detail: 'error: microfrontend_remote_module',
+        errorCode: 'other'
+      }
+    }
+    mfeApiServiceSpy.updateMicrofrontend.and.returnValue(throwError(() => err))
+    component.appAbstract = appMfe
+    component.formGroupMfe = form
+    component.changeMode = 'EDIT'
+
+    component.onSave()
+
+    const expectedKey = 'VALIDATION.ERRORS.INTERNAL_ERROR'
+    expect(msgServiceSpy.error).toHaveBeenCalledWith({
+      summaryKey: 'ACTIONS.EDIT.APP.NOK',
+      detailKey: expectedKey
+    })
+  })
+
+  it('should call this.user.lang$ from the constructor and set this.dateFormat to the default format if user.lang$ is not de', () => {
+    mockUserService.lang$.getValue.and.returnValue('de')
+    fixture = TestBed.createComponent(AppDetailComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+    expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm:ss')
+  })
+})
