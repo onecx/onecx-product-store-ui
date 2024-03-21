@@ -1,6 +1,9 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core'
-import { prepareUrl } from 'src/app/shared/utils'
+import { map } from 'rxjs'
+
+import { prepareUrl, prepareUrlPath } from 'src/app/shared/utils'
 import { environment } from 'src/environments/environment'
+import { AppStateService, MfeInfo } from '@onecx/portal-integration-angular'
 
 @Component({
   selector: 'app-image-container',
@@ -12,10 +15,23 @@ export class ImageContainerComponent implements OnChanges {
   @Input() public imageUrl: string | undefined
   @Input() public small = false
 
-  public defaultImageUrl = environment.DEFAULT_LOGO_URL
+  public defaultImageUrl = ''
   public displayPlaceHolder = false
 
-  public onImageError() {
+  prepareUrl = prepareUrl
+  prepareUrlPath = prepareUrlPath
+
+  constructor(private appState: AppStateService) {
+    appState.currentMfe$
+      .pipe(
+        map((mfe) => {
+          this.defaultImageUrl = this.prepareUrlPath(mfe.remoteBaseUrl, environment.DEFAULT_LOGO_URL)
+        })
+      )
+      .subscribe()
+  }
+
+  public onImageError(): void {
     this.displayPlaceHolder = true
   }
 

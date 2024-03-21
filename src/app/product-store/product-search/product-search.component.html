@@ -123,10 +123,10 @@
                 [small]="false"
               ></app-image-container>
             </div>
-            <div class="h-3rem flex flex-column justify-content-between gap-1 lg:gap-2 mt-0 mb-1 text-center">
+            <div class="h-3rem flex flex-column justify-content-between gap-1 text-center">
               <div
                 [id]="'product_search_data_grid_' + idx + '_product_display_name'"
-                class="font-bold text-xl"
+                class="mt-2 font-bold text-lg"
                 [title]="('PRODUCT.DISPLAY_NAME' | translate) + ': ' + limitText(product.displayName, 100)"
               >
                 {{ limitText(product.displayName, 20) }}
