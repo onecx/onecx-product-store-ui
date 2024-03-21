@@ -3,7 +3,7 @@ import { map } from 'rxjs'
 
 import { prepareUrl, prepareUrlPath } from 'src/app/shared/utils'
 import { environment } from 'src/environments/environment'
-import { AppStateService, MfeInfo } from '@onecx/portal-integration-angular'
+import { AppStateService } from '@onecx/portal-integration-angular'
 
 @Component({
   selector: 'app-image-container',
