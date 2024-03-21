@@ -6,6 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { of, throwError } from 'rxjs'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { TranslateTestingModule } from 'ngx-translate-testing'
+import { TranslateService } from '@ngx-translate/core'
 
 import { UserService } from '@onecx/portal-integration-angular'
 import { AppAbstract, AppType, AppSearchComponent, AppSearchCriteria } from './app-search.component'
@@ -118,6 +119,37 @@ describe('AppSearchComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy()
+  })
+
+  xit('should prepare dialog translations', async () => {
+    const translateService = TestBed.inject(TranslateService)
+    const actionsTranslations = {
+      'ACTIONS.NAVIGATION.BACK': 'back',
+      'ACTIONS.NAVIGATION.BACK.TOOLTIP': 'backTooltip',
+      'ACTIONS.CREATE.MS.LABEL': 'msLabel',
+      'ACTIONS.CREATE.MFE.LABEL': 'mfeLabel',
+      'ACTIONS.CREATE.APP.TOOLTIP': 'appTooltip'
+    }
+    const dialogTranslations = {
+      'ACTIONS.DATAVIEW.FILTER_OF': 'searchFilterOf',
+      'APP.APP_ID': 'appId',
+      'APP.APP_TYPE': 'appType',
+      'APP.PRODUCT_NAME': 'productName'
+    }
+    spyOn(translateService, 'get').and.returnValues(of(actionsTranslations), of(dialogTranslations))
+
+    await component.ngOnInit()
+
+    expect(component.dataViewControlsTranslations).toEqual({
+      filterInputTooltip:
+        dialogTranslations['ACTIONS.DATAVIEW.FILTER_OF'] +
+        ': ' +
+        dialogTranslations['APP.APP_ID'] +
+        ', ' +
+        dialogTranslations['APP.APP_TYPE'] +
+        ', ' +
+        dialogTranslations['APP.PRODUCT_NAME']
+    })
   })
 
   it('should call onBack when actionCallback is executed', () => {
