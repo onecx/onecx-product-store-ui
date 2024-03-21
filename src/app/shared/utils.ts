@@ -17,7 +17,7 @@ export function prepareUrl(url: string | undefined): string | undefined {
     return url
   }
 }
-export function prepareUrlPath(url: string | undefined, path: string | undefined): string {
+export function prepareUrlPath(url?: string, path?: string): string {
   if (url && path) return Location.joinWithSlash(url, path)
   else if (url) return url
   else return ''

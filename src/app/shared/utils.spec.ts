@@ -5,7 +5,9 @@ import {
   dropDownSortItemsByLabel,
   dropDownGetLabelByValue,
   sortByLocale,
-  convertToUniqueStringArray
+  convertToUniqueStringArray,
+  prepareUrl,
+  prepareUrlPath
 } from './utils'
 
 describe('utils', () => {
@@ -80,6 +82,45 @@ describe('utils', () => {
       const sortedArray = convertToUniqueStringArray(s) ?? []
 
       expect(sortedArray[0]).toEqual('a')
+    })
+  })
+
+  describe('prepareUrl', () => {
+    it('should prepare internal url', () => {
+      const url = 'url'
+
+      const preparedUrl = prepareUrl(url) ?? ''
+
+      expect(preparedUrl).toEqual('bff/url')
+    })
+  })
+
+  describe('prepareUrl', () => {
+    it('should prepare external url', () => {
+      const url = 'http://url'
+
+      const preparedUrl = prepareUrl(url) ?? ''
+
+      expect(preparedUrl).toEqual(url)
+    })
+  })
+
+  describe('prepareUrlPath', () => {
+    it('should prepare urls', () => {
+      const url = 'http://url'
+      const path = 'path'
+
+      let urlPath = prepareUrlPath(url, path)
+
+      expect(urlPath).toEqual(url + '/' + path)
+
+      urlPath = prepareUrlPath(url)
+
+      expect(urlPath).toEqual(urlPath)
+
+      urlPath = prepareUrlPath()
+
+      expect(urlPath).toEqual('')
     })
   })
 })

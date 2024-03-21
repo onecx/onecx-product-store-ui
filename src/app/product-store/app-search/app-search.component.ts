@@ -242,12 +242,13 @@ export class AppSearchComponent implements OnInit, OnDestroy {
       )
   }
 
-  private prepareDialogTranslations(): void {
+  public prepareDialogTranslations(): void {
     this.translate.get(['APP.APP_ID', 'APP.APP_TYPE', 'APP.PRODUCT_NAME', 'ACTIONS.DATAVIEW.FILTER_OF']).pipe(
       map((data) => {
         this.dataViewControlsTranslations = {
           filterInputTooltip:
             data['ACTIONS.DATAVIEW.FILTER_OF'] +
+            ': ' +
             data['APP.APP_ID'] +
             ', ' +
             data['APP.APP_TYPE'] +
@@ -256,44 +257,6 @@ export class AppSearchComponent implements OnInit, OnDestroy {
         }
       })
     )
-  }
-  private prepareDialogTranslations22(): void {
-    this.translate
-      .get([
-        'APP.APP_ID',
-        'APP.APP_TYPE',
-        'APP.PRODUCT_NAME',
-        'ACTIONS.DATAVIEW.VIEW_MODE_GRID',
-        'ACTIONS.DATAVIEW.VIEW_MODE_LIST',
-        'ACTIONS.DATAVIEW.VIEW_MODE_TABLE',
-        'ACTIONS.DATAVIEW.SORT_BY',
-        'ACTIONS.DATAVIEW.FILTER',
-        'ACTIONS.DATAVIEW.FILTER_OF',
-        'ACTIONS.DATAVIEW.SORT_DIRECTION_ASC',
-        'ACTIONS.DATAVIEW.SORT_DIRECTION_DESC'
-      ])
-      .subscribe((data) => {
-        this.dataViewControlsTranslations = {
-          sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY'],
-          filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
-          filterInputTooltip:
-            data['ACTIONS.DATAVIEW.FILTER_OF'] +
-            data['APP.APP_ID'] +
-            ', ' +
-            data['APP.APP_TYPE'] +
-            ', ' +
-            data['APP.PRODUCT_NAME'],
-          viewModeToggleTooltips: {
-            grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID'],
-            list: data['ACTIONS.DATAVIEW.VIEW_MODE_LIST']
-          },
-          sortOrderTooltips: {
-            ascending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_ASC'],
-            descending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_DESC']
-          },
-          sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY']
-        }
-      })
   }
 
   /**
