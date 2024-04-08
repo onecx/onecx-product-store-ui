@@ -64,6 +64,10 @@ export class AppDetailComponent implements OnChanges {
   public loading = false
   public hasCreatePermission = false
   public hasEditPermission = false
+  public technologies: SelectItem[] = [
+    { label: 'Angular', value: 'ANGULAR' },
+    { label: 'WebComponent', value: 'WEBCOMPONENT' }
+  ]
   public iconItems: SelectItem[] = [{ label: '', value: null }] // default value is empty
   public convertToUniqueStringArray = convertToUniqueStringArray
 

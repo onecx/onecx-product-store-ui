@@ -51,16 +51,16 @@
         </div>
         <div class="col-12 md:col-6" style="min-width: 15rem" [title]="'APP.TOOLTIPS.TECHNOLOGY' | translate">
           <span class="p-float-label" controlErrorAnchor>
-            <input
-              pInputText
-              type="text"
+            <p-dropdown
               id="app_detail_form_mfe_technology"
-              class="w-full pt-3 pb-2"
-              formControlName="exposedModule"
+              styleClass="w-full min-w-min input-field-correction"
+              formControlName="technology"
               [pTooltip]="'APP.TOOLTIPS.TECHNOLOGY' | translate"
               tooltipPosition="top"
               tooltipEvent="focus"
-            />
+              [options]="technologies"
+            >
+            </p-dropdown>
             <label class="ocx-required-label" for="app_detail_form_mfe_technology">
               {{ 'APP.TECHNOLOGY' | translate }}
             </label>
