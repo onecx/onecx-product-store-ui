@@ -2,13 +2,26 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { ImageContainerComponent } from './image-container.component'
 import { prepareUrl } from 'src/app/shared/utils'
 
+import { AppStateService } from '@onecx/portal-integration-angular'
+import { of } from 'rxjs'
+
+class MockAppStateService {
+  currentMfe$ = of({
+    remoteBaseUrl: '/base/'
+  })
+}
+
 describe('ImageContainerComponent', () => {
   let component: ImageContainerComponent
   let fixture: ComponentFixture<ImageContainerComponent>
+  let mockAppStateService: MockAppStateService
 
   beforeEach(waitForAsync(() => {
+    mockAppStateService = new MockAppStateService()
+
     TestBed.configureTestingModule({
-      declarations: [ImageContainerComponent]
+      declarations: [ImageContainerComponent],
+      providers: [{ provide: AppStateService, useValue: mockAppStateService }]
     }).compileComponents()
   }))
 
@@ -20,6 +33,7 @@ describe('ImageContainerComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy()
+    expect(component.defaultImageUrl).toEqual('/base/./assets/images/product.jpg')
   })
 
   describe('ngOnChanges', () => {
