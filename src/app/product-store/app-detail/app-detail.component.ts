@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
-import { finalize } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
+import { finalize } from 'rxjs'
 import { SelectItem } from 'primeng/api'
 
 import { PortalMessageService, UserService } from '@onecx/portal-integration-angular'
@@ -10,14 +10,14 @@ import { dropDownSortItemsByLabel, convertToUniqueStringArray } from 'src/app/sh
 import {
   CreateMicrofrontendRequest,
   CreateMicroserviceRequest,
-  GetMicrofrontendByAppIdRequestParams,
+  GetMicrofrontendRequestParams,
+  GetMicroserviceRequestParams,
   MicrofrontendsAPIService,
-  Microservice,
-  Microfrontend,
-  UpdateMicrofrontendRequest,
-  UpdateMicroserviceRequest,
   MicroservicesAPIService,
-  GetMicroserviceByAppIdRequestParams
+  Microfrontend,
+  Microservice,
+  UpdateMicrofrontendRequest,
+  UpdateMicroserviceRequest
 } from 'src/app/shared/generated'
 
 import { AppAbstract, ChangeMode } from '../app-search/app-search.component'
@@ -142,7 +142,7 @@ export class AppDetailComponent implements OnChanges {
   public getMfe() {
     this.loading = true
     this.mfeApi
-      .getMicrofrontendByAppId({ appId: this.appAbstract?.appId } as GetMicrofrontendByAppIdRequestParams)
+      .getMicrofrontend({ id: this.appAbstract?.id ?? '' } as GetMicrofrontendRequestParams)
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: (data: any) => {
@@ -165,7 +165,7 @@ export class AppDetailComponent implements OnChanges {
   public getMs() {
     this.loading = true
     this.msApi
-      .getMicroserviceByAppId({ appId: this.appAbstract?.appId } as GetMicroserviceByAppIdRequestParams)
+      .getMicroservice({ id: this.appAbstract?.id } as GetMicroserviceRequestParams)
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: (data: any) => {
