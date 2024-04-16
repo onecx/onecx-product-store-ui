@@ -87,12 +87,12 @@ describe('AppDetailComponent', () => {
   }
 
   const mfeApiServiceSpy = {
-    getMicrofrontendByAppId: jasmine.createSpy('getMicrofrontendByAppId').and.returnValue(of({})),
+    getMicrofrontend: jasmine.createSpy('getMicrofrontend').and.returnValue(of({})),
     createMicrofrontend: jasmine.createSpy('createMicrofrontend').and.returnValue(of({})),
     updateMicrofrontend: jasmine.createSpy('updateMicrofrontend').and.returnValue(of({}))
   }
   const msApiServiceSpy = {
-    getMicroserviceByAppId: jasmine.createSpy('getMicroserviceByAppId').and.returnValue(of({})),
+    getMicroservice: jasmine.createSpy('getMicroservice').and.returnValue(of({})),
     createMicroservice: jasmine.createSpy('createMicroservice').and.returnValue(of({})),
     updateMicroservice: jasmine.createSpy('updateMicroservice').and.returnValue(of({}))
   }
@@ -153,10 +153,10 @@ describe('AppDetailComponent', () => {
   afterEach(() => {
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
-    mfeApiServiceSpy.getMicrofrontendByAppId.calls.reset()
+    mfeApiServiceSpy.getMicrofrontend.calls.reset()
     mfeApiServiceSpy.createMicrofrontend.calls.reset()
     mfeApiServiceSpy.updateMicrofrontend.calls.reset()
-    msApiServiceSpy.getMicroserviceByAppId.calls.reset()
+    msApiServiceSpy.getMicroservice.calls.reset()
     msApiServiceSpy.createMicroservice.calls.reset()
     msApiServiceSpy.updateMicroservice.calls.reset()
   })
@@ -200,7 +200,7 @@ describe('AppDetailComponent', () => {
   })
 
   it('should getMfe', () => {
-    mfeApiServiceSpy.getMicrofrontendByAppId.and.returnValue(of(mfe))
+    mfeApiServiceSpy.getMicrofrontend.and.returnValue(of(mfe))
     component.formGroupMfe = form
 
     component.getMfe()
@@ -209,7 +209,7 @@ describe('AppDetailComponent', () => {
   })
 
   it('should getMfe and prepare copy', () => {
-    mfeApiServiceSpy.getMicrofrontendByAppId.and.returnValue(of(mfe))
+    mfeApiServiceSpy.getMicrofrontend.and.returnValue(of(mfe))
     component.formGroupMfe = form
     component.changeMode = 'COPY'
     component.mfe = mfe
@@ -220,7 +220,7 @@ describe('AppDetailComponent', () => {
   })
 
   it('should getMs', () => {
-    msApiServiceSpy.getMicroserviceByAppId.and.returnValue(of(ms))
+    msApiServiceSpy.getMicroservice.and.returnValue(of(ms))
     component.changeMode = 'COPY'
 
     component.getMs()
