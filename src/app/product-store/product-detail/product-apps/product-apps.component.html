@@ -61,11 +61,10 @@
           ></span>
           <span
             *ngIf="app?.deprecated && !app?.undeployed"
-            [id]="'app_search_data_' + app.appId + '_undeployed'"
+            [id]="'app_search_data_' + app.appId + '_deprecated'"
             class="card-badge-right badge-1 p-2 pi pi-exclamation-circle danger-action-bg"
             [title]="'APP.TOOLTIPS.DEPRECATED_SEARCH' | translate"
           ></span>
-
           <span
             *ngIf="app.appType === 'MFE'"
             [id]="'app_search_data_' + app.appId + '_icon'"
@@ -75,7 +74,9 @@
           ></span>
           <div class="h-4rem flex flex-column justify-content-between gap-1 text-center">
             <div class="font-bold" [title]="'ID: ' + app.appId">{{ limitText(app.appId, 25) }}</div>
-            <div class="text-sm" [title]="'APP.APP_TYPE' | translate">{{ app.appType }}</div>
+            <div class="text-sm" [title]="'APP.APP_TYPE' | translate">
+              {{ app.appType + (app.appType === 'MFE' ? ' - ' + app.type : '') }}
+            </div>
             <div [title]="'Product: ' + app.productName">{{ limitText(app.productName, 25) }}</div>
           </div>
         </div>

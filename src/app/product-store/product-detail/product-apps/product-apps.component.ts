@@ -10,7 +10,8 @@ import {
   MicrofrontendPageResult,
   MicrofrontendsAPIService,
   MicroservicePageResult,
-  MicroservicesAPIService
+  MicroservicesAPIService,
+  MicrofrontendType
 } from 'src/app/shared/generated'
 import { dropDownSortItemsByLabel, limitText } from 'src/app/shared/utils'
 import { IconService } from 'src/app/shared/iconservice'
@@ -131,6 +132,10 @@ export class ProductAppsComponent implements OnChanges {
   }
   private sortAppsByAppId(a: AppAbstract, b: AppAbstract): number {
     return (a.appId as string).toUpperCase().localeCompare((b.appId as string).toUpperCase())
+  }
+
+  public displayAppType(appType: string, type: MicrofrontendType): string {
+    return appType + (appType === 'MFE' ? ' ' + type : '')
   }
 
   /**
