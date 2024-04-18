@@ -231,6 +231,7 @@
     "BASE_PATH": "Basispfad",
     "ICON_NAME": "Iconname",
     "CLASSIFICATIONS": "Klassifizierungen",
+    "UNDEPLOYED": "Undeployed",
     "WORKSPACES": "Verwendet in Workspaces",
     "TOOLTIPS": {
       "ID": "Eindeutige technische ID des Produkts",
@@ -243,6 +244,7 @@
       "BASE_PATH": "Der Basispfad wie das Produkt erreichbar ist. Muss eindeutig über alle Produkte sein",
       "ICON_NAME": "Name eines Icons aus der PrimeNG Icon Bibliothek. Wird z.b. als Default bei Menüeinträgen benutzt",
       "CLASSIFICATIONS": "Kommaseparierte Liste von Begriffen zur Klassifizierungen des Produkts, z.b. Game, Tool etc.. Kann zur Filterung benutzt werden",
+      "UNDEPLOYED": "Wenn gesetzt, dann ist dieses Produkt nicht länger benutzbar. Eine weitere Benutzung von dessen Apps führt zu Fehlermeldungen.",
       "WORKSPACES": "Workspaces, die das Produkt benutzen"
     }
   },

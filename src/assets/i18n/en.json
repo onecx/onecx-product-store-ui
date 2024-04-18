@@ -231,6 +231,7 @@
     "BASE_PATH": "Base Path",
     "ICON_NAME": "Icon Name",
     "CLASSIFICATIONS": "Classifications",
+    "UNDEPLOYED": "Undeployed",
     "WORKSPACES": "Used in Workspaces",
     "TOOLTIPS": {
       "ID": "Unique technical ID of the Product",
@@ -243,6 +244,7 @@
       "BASE_PATH": "The basic path through which the product can be accessed. It must be unique across all products",
       "ICON_NAME": "Name of the icons from the PrimeNG icon library. Used, for example, as a default icon for menu entries",
       "CLASSIFICATIONS": "Comma-separated list of terms to classify the product, e.g. Game, Tool etc. Can be used for filtering",
+      "UNDEPLOYED": "If set, then this product can no longer be used. Further use of its apps leads to error messages.",
       "WORKSPACES": "Workspaces using the Product"
     }
   },
