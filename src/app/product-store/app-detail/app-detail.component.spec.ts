@@ -12,7 +12,8 @@ import {
   MicrofrontendsAPIService,
   MicroservicesAPIService,
   Microfrontend,
-  Microservice
+  Microservice,
+  MicrofrontendType
 } from 'src/app/shared/generated'
 import { AppAbstract } from '../app-search/app-search.component'
 
@@ -23,6 +24,7 @@ const form = new FormGroup<MfeForm>({
   productName: new FormControl(''),
   description: new FormControl(''),
   technology: new FormControl(''),
+  type: new FormControl(''),
   remoteBaseUrl: new FormControl(''),
   remoteEntry: new FormControl(''),
   exposedModule: new FormControl(''),
@@ -50,6 +52,7 @@ const mfe: Microfrontend = {
   remoteEntry: 'entry',
   description: 'description',
   technology: 'technology',
+  type: MicrofrontendType.Module,
   contact: 'contact',
   iconName: 'iconName',
   note: 'note',
@@ -75,7 +78,8 @@ describe('AppDetailComponent', () => {
     appId: 'appId',
     appType: 'MFE',
     appName: 'name',
-    productName: 'productName'
+    productName: 'productName',
+    appTypeKey: 'APP.MFE'
   }
 
   const appMs: AppAbstract = {
@@ -83,7 +87,8 @@ describe('AppDetailComponent', () => {
     appId: 'appId',
     appType: 'MS',
     appName: 'name',
-    productName: 'productName'
+    productName: 'productName',
+    appTypeKey: 'APP.MS'
   }
 
   const mfeApiServiceSpy = {
@@ -245,6 +250,7 @@ describe('AppDetailComponent', () => {
       productName: new FormControl(''),
       description: new FormControl(''),
       technology: new FormControl(''),
+      type: new FormControl(''),
       remoteBaseUrl: new FormControl(''),
       remoteEntry: new FormControl(''),
       exposedModule: new FormControl(''),
@@ -375,6 +381,7 @@ describe('AppDetailComponent', () => {
       productName: new FormControl(''),
       description: new FormControl(''),
       technology: new FormControl(''),
+      type: new FormControl(''),
       remoteBaseUrl: new FormControl(''),
       remoteEntry: new FormControl(''),
       exposedModule: new FormControl(''),
