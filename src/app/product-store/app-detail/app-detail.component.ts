@@ -29,6 +29,7 @@ export interface MfeForm {
   productName: FormControl<string | null>
   description: FormControl<string | null>
   technology: FormControl<string | null>
+  type: FormControl<string | null>
   remoteBaseUrl: FormControl<string | null>
   remoteEntry: FormControl<string | null>
   classifications: FormControl<string | null>
@@ -68,6 +69,10 @@ export class AppDetailComponent implements OnChanges {
     { label: 'Angular', value: 'ANGULAR' },
     { label: 'WebComponent', value: 'WEBCOMPONENT' }
   ]
+  public types: SelectItem[] = [
+    { label: 'Module', value: 'MODULE' },
+    { label: 'Component', value: 'COMPONENT' }
+  ]
   public iconItems: SelectItem[] = [{ label: '', value: null }] // default value is empty
   public convertToUniqueStringArray = convertToUniqueStringArray
 
@@ -91,7 +96,8 @@ export class AppDetailComponent implements OnChanges {
       appVersion: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
       productName: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
       description: new FormControl(null, [Validators.maxLength(255)]),
-      technology: new FormControl(null, [Validators.maxLength(255)]),
+      technology: new FormControl(null),
+      type: new FormControl(null),
       remoteBaseUrl: new FormControl(null, [Validators.maxLength(255)]),
       remoteEntry: new FormControl(null, [Validators.maxLength(255)]),
       exposedModule: new FormControl(null, [Validators.maxLength(255)]),
@@ -194,6 +200,7 @@ export class AppDetailComponent implements OnChanges {
       productName: mfe['productName'],
       description: mfe['description'],
       technology: mfe['technology'],
+      type: mfe['type'],
       remoteBaseUrl: mfe['remoteBaseUrl'],
       remoteEntry: mfe['remoteEntry'],
       exposedModule: mfe['exposedModule'],

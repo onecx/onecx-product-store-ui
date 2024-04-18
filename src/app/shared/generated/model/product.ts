@@ -27,5 +27,6 @@ export interface Product {
     displayName?: string;
     iconName?: string;
     classifications?: Array<string>;
+    undeployed?: boolean;
 }
 

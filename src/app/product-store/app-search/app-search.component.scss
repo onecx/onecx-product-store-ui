@@ -1,15 +1,12 @@
 @import '/src/_mixins.scss';
 
-@include card-badges;
 @include correct-data-view-control;
 @include correct-search-criteria;
 @include search-criteria-select-button;
+@include card-badges;
+@include danger-action;
 
 :host ::ng-deep {
-  .danger-action-text {
-    color: var(--danger-button-bg);
-  }
-
   .p-dataview-content .p-grid > div {
     min-height: 60px;
     &.listview-row {
@@ -18,7 +15,6 @@
       }
     }
   }
-
   .h-05rem {
     height: 0.5rem;
   }

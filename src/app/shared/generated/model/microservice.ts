@@ -24,5 +24,6 @@ export interface Microservice {
     description?: string;
     productName?: string;
     operator?: boolean;
+    undeployed?: boolean;
 }
 

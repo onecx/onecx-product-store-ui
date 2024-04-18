@@ -36,9 +36,30 @@
   }
 }
 
+@mixin invisible {
+  :host ::ng-deep {
+    .invisible {
+      visibility: hidden;
+    }
+  }
+}
+
+@mixin danger-action {
+  :host ::ng-deep {
+    .danger-action-text {
+      color: var(--danger-button-bg);
+    }
+    .danger-action-bg {
+      color: white;
+      background-color: var(--danger-button-bg);
+    }
+  }
+}
+
 @mixin card-badges {
   :host ::ng-deep {
     .card-badge-right {
+      border-radius: var(--border-radius);
       display: inline-block;
       position: absolute;
       right: 3px;
@@ -50,6 +71,7 @@
       }
     }
     .card-badge-left {
+      border-radius: var(--border-radius);
       display: inline-block;
       position: absolute;
       left: 3px;

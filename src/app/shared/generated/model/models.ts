@@ -7,6 +7,7 @@ export * from './mfeAndMsSearchCriteria';
 export * from './microfrontend';
 export * from './microfrontendAbstract';
 export * from './microfrontendPageResult';
+export * from './microfrontendType';
 export * from './microservice';
 export * from './microservicePageResult';
 export * from './problemDetailInvalidParam';

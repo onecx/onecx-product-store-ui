@@ -12,13 +12,13 @@ info:
 servers:
   - url: 'http://onecx-product-store-bff:8080'
 tags:
-  - name: OneCX Product Store
+  - name: Microfrontends
 paths:
   /microfrontends:
     post:
       x-onecx:
         permissions:
-          product-store:
+          microfrontend:
             - write
       tags:
         - Microfrontends
@@ -53,7 +53,7 @@ paths:
     post:
       x-onecx:
         permissions:
-          product-store:
+          microfrontend:
             - read
       tags:
         - Microfrontends
@@ -78,36 +78,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /microfrontends/appId/{appId}:
-    get:
-      x-onecx:
-        permissions:
-          product-store:
-            - read
-      tags:
-        - Microfrontends
-      description: Return micro-frontend by its appId
-      operationId: getMicrofrontendByAppId
-      parameters:
-        - name: appId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Microfrontend'
-        '404':
-          description: Not Found
   /microfrontends/{id}:
     get:
       x-onecx:
         permissions:
-          product-store:
+          microfrontend:
             - read
       tags:
         - Microfrontends
@@ -131,7 +106,7 @@ paths:
     put:
       x-onecx:
         permissions:
-          product-store:
+          microfrontend:
             - write
       tags:
         - Microfrontends
@@ -163,7 +138,7 @@ paths:
     delete:
       x-onecx:
         permissions:
-          product-store:
+          microfrontend:
             - delete
       tags:
         - Microfrontends
@@ -188,7 +163,7 @@ paths:
     post:
       x-onecx:
         permissions:
-          product-store:
+          product:
             - write
       tags:
         - Products
@@ -223,7 +198,7 @@ paths:
     post:
       x-onecx:
         permissions:
-          product-store:
+          product:
             - read
       tags:
         - Products
@@ -252,7 +227,7 @@ paths:
     get:
       x-onecx:
         permissions:
-          product-store:
+          product:
             - read
       tags:
         - Products
@@ -286,7 +261,7 @@ paths:
     put:
       x-onecx:
         permissions:
-          product-store:
+          product:
             - write
       tags:
         - Products
@@ -322,7 +297,7 @@ paths:
     delete:
       x-onecx:
         permissions:
-          product-store:
+          product:
             - delete
       tags:
         - Products
@@ -347,7 +322,7 @@ paths:
     get:
       x-onecx:
         permissions:
-          product-store:
+          product:
             - read
       tags:
         - Products
@@ -382,7 +357,7 @@ paths:
     post:
       x-onecx:
         permissions:
-          product-store:
+          microservice:
             - write
       tags:
         - Microservices
@@ -417,7 +392,7 @@ paths:
     post:
       x-onecx:
         permissions:
-          product-store:
+          microservice:
             - read
       tags:
         - Microservices
@@ -445,7 +420,7 @@ paths:
   /microservices/{id}:
     x-onecx:
       permissions:
-        product-store:
+        microservice:
           - read
     get:
       tags:
@@ -470,7 +445,7 @@ paths:
     put:
       x-onecx:
         permissions:
-          product-store:
+          microservice:
             - write
       tags:
         - Microservices
@@ -502,7 +477,7 @@ paths:
     delete:
       x-onecx:
         permissions:
-          product-store:
+          microservice:
             - delete
       tags:
         - Microservices
@@ -526,7 +501,7 @@ paths:
   /microservices/appId/{appId}:
     x-onecx:
       permissions:
-        product-store:
+        microservice:
           - read
     get:
       tags:
@@ -552,7 +527,7 @@ paths:
     post:
       x-onecx:
         permissions:
-          product-store:
+          image:
             - write
       tags:
         - imagesInternal
@@ -595,7 +570,7 @@ paths:
     get:
       x-onecx:
         permissions:
-          product-store:
+          image:
             - read
       tags:
         - imagesInternal
@@ -629,7 +604,7 @@ paths:
     put:
       x-onecx:
         permissions:
-          product-store:
+          image:
             - write
       tags:
         - imagesInternal
@@ -750,6 +725,8 @@ components:
           uniqueItems: true
           items:
             type: string
+        undeployed:
+          type: boolean
     UpdateProductRequest:
       type: object
       required:
@@ -776,6 +753,8 @@ components:
           uniqueItems: true
           items:
             type: string
+        undeployed:
+          type: boolean
     Product:
       type: object
       required:
@@ -817,6 +796,8 @@ components:
           uniqueItems: true
           items:
             type: string
+        undeployed:
+          type: boolean
     ProductAndWorkspaces:
       type: object
       allOf:
@@ -849,10 +830,12 @@ components:
           description: name of the product used for displaying to user.
         classifications:
           type: array
-          description: like tags for grouing and labeling. Used in frontend to enable filtering.
+          description: like tags for grouping and labeling. Used in frontend to enable filtering.
           uniqueItems: true
           items:
             type: string
+        undeployed:
+          type: boolean
     OffsetDateTime:
       format: date-time
       type: string
@@ -945,6 +928,12 @@ components:
           type: string
         operator:
           type: boolean
+        deprecated:
+          type: boolean
+        undeployed:
+          type: boolean
+        type:
+          $ref: '#/components/schemas/MicrofrontendType'
         classifications:
           type: array
           uniqueItems: true
@@ -1022,6 +1011,12 @@ components:
           type: string
         exposedModule:
           type: string
+        deprecated:
+          type: boolean
+        undeployed:
+          type: boolean
+        type:
+          $ref: '#/components/schemas/MicrofrontendType'
         endpoints:
           type: array
           items:
@@ -1079,6 +1074,12 @@ components:
           type: string
         exposedModule:
           type: string
+        deprecated:
+          type: boolean
+        undeployed:
+          type: boolean
+        type:
+          $ref: '#/components/schemas/MicrofrontendType'
         endpoints:
           type: array
           items:
@@ -1151,10 +1152,19 @@ components:
           type: string
         exposedModule:
           type: string
+        deprecated:
+          type: boolean
+        undeployed:
+          type: boolean
+        type:
+          $ref: '#/components/schemas/MicrofrontendType'
         endpoints:
           type: array
           items:
             $ref: '#/components/schemas/UIEndpoint'
+    MicrofrontendType:
+      type: string
+      enum: [MODULE, COMPONENT]
     UIEndpoint:
       required:
         - path
@@ -1193,6 +1203,8 @@ components:
           type: string
         operator:
           type: boolean
+        undeployed:
+          type: boolean
     UpdateMicroserviceRequest:
       type: object
       properties:
@@ -1208,6 +1220,8 @@ components:
           type: string
         type:
           type: string
+        undeployed:
+          type: boolean
     CreateMicroserviceRequest:
       required:
         - productName
@@ -1226,6 +1240,8 @@ components:
           type: string
         type:
           type: string
+        undeployed:
+          type: boolean
     MicroservicePageResult:
       type: object
       properties:

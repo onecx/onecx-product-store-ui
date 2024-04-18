@@ -92,6 +92,19 @@
           <label for="portal_detail_internal_field_operator"> {{ 'PRODUCT.OPERATOR' | translate }}</label>
         </span>
       </div>
+      <div class="w-12 sm:w-6 px-3 flex align-items-center">
+        <p-checkbox
+          type="text"
+          [readonly]="true"
+          inputId="portal_detail_internal_field_undeployed"
+          [(ngModel)]="undeployed"
+          [binary]="true"
+          [pTooltip]="'PRODUCT.TOOLTIPS.UNDEPLOYED' | translate"
+          tooltipPosition="top"
+          tooltipEvent="focus"
+          [label]="'PRODUCT.UNDEPLOYED' | translate"
+        ></p-checkbox>
+      </div>
     </div>
 
     <div class="flex flex-wrap row-gap-4">
