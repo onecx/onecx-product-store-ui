@@ -197,6 +197,8 @@
     "GROUP.REMOTE_MODULE": "Remote Module",
     "GROUP.LOCAL_MODULE": "Module Management Details",
     "GROUP.INTERNALS": "More Details",
+    "DEPRECATED": "Veraltet",
+    "UNDEPLOYED": "Undeployed",
     "TOOLTIPS": {
       "APP_ID": "Unique ID - base identifier for this App",
       "APP_NAME": "Business name of the App",
@@ -215,7 +217,11 @@
       "ENDPOINTS": "UI Endpoints",
       "GROUP.REMOTE_MODULE": "Details of the remote module to be used",
       "GROUP.LOCAL_MODULE": "Details of the module's local registration",
-      "GROUP.INTERNALS": "More details of object management and usage"
+      "GROUP.INTERNALS": "More details of object management and usage",
+      "DEPRECATED": "If set, then this app is marked as obsolete. It can currently be used but will no longer be available in the future.",
+      "DEPRECATED_SEARCH": "This app is marked as deprecated. It can currently be used but will no longer be available in the future.",
+      "UNDEPLOYED": "If set, this APP can no longer be used. Further use leads to error messages.",
+      "UNDEPLOYED_SEARCH": "This app is no longer usable. Further use leads to error messages."
     }
   },
   "PRODUCT": {

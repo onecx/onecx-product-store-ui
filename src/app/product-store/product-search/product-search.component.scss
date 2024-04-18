@@ -3,6 +3,7 @@
 @include correct-data-view-control;
 @include correct-search-criteria;
 @include card-badges;
+@include danger-action;
 
 :host ::ng-deep {
   .p-dataview-content .p-grid > div {
@@ -15,8 +16,5 @@
   }
   .h-05rem {
     height: 0.5rem;
-  }
-  .rounded-badges {
-    border-radius: var(--border-radius);
   }
 }

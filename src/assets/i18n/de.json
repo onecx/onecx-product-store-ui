@@ -197,6 +197,8 @@
     "GROUP.REMOTE_MODULE": "Remote Modul",
     "GROUP.LOCAL_MODULE": "Modul Management Details",
     "GROUP.INTERNALS": "Weitere Details",
+    "DEPRECATED": "Veraltet",
+    "UNDEPLOYED": "Undeployed",
     "TOOLTIPS": {
       "APP_ID": "Eindeutige ID - Basis Bezeichner der App",
       "APP_NAME": "Name der App",
@@ -215,7 +217,11 @@
       "ENDPOINTS": "UI Endpunkte",
       "GROUP.REMOTE_MODULE": "Details des zu verwendeten Remote Moduls",
       "GROUP.LOCAL_MODULE": "Details der lokalen Registrierung des Moduls",
-      "GROUP.INTERNALS": "Weitere Details der Objektverwaltung und Verwendung"
+      "GROUP.INTERNALS": "Weitere Details der Objektverwaltung und Verwendung",
+      "DEPRECATED": "Wenn gesetzt, dann ist diese App als veraltet markiert. Sie kann derzeit weiter verwendet werden wird aber in Zukunft nicht mehr zur Verfügung stehen.",
+      "DEPRECATED_SEARCH": "Diese App ist als veraltet markiert. Sie kann derzeit weiter verwendet werden wird aber in Zukunft nicht mehr zur Verfügung stehen.",
+      "UNDEPLOYED": "Wenn gesetzt, dann ist diese APP nicht länger nutzbar. Eine weitere Nutzung führt zu Fehlermeldungen.",
+      "UNDEPLOYED_SEARCH": "Diese App ist nicht länger nutzbar. Eine weitere Nutzung führt zu Fehlermeldungen."
     }
   },
   "PRODUCT": {

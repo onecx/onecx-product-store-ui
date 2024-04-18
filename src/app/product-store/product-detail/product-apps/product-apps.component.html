@@ -33,7 +33,7 @@
       >
       </ocx-data-view-controls
     ></ng-template>
-    <ng-template let-app pTemplate="gridItem">
+    <ng-template let-app let-idx="rowIndex" pTemplate="gridItem">
       <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3" (click)="onDetail($event, app)">
         <div
           class="card relative p-1 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
@@ -54,8 +54,21 @@
             (click)="onDelete($event, app)"
           ></span>
           <span
+            *ngIf="app?.undeployed"
+            [id]="'app_search_data_' + app.appId + '_undeployed'"
+            class="card-badge-right badge-1 p-2 pi pi-ban danger-action-bg"
+            [title]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
+          ></span>
+          <span
+            *ngIf="app?.deprecated && !app?.undeployed"
+            [id]="'app_search_data_' + app.appId + '_undeployed'"
+            class="card-badge-right badge-1 p-2 pi pi-exclamation-circle danger-action-bg"
+            [title]="'APP.TOOLTIPS.DEPRECATED_SEARCH' | translate"
+          ></span>
+
+          <span
             *ngIf="app.appType === 'MFE'"
-            [id]="'app_search_data_icon'"
+            [id]="'app_search_data_' + app.appId + '_icon'"
             class="card-badge-right badge-2 p-2 pi cursor-auto"
             [ngClass]="'pi-' + app.iconName"
             [title]="'APP.ICON_NAME' | translate"
