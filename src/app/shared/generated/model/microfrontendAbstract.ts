@@ -9,6 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { MicrofrontendType } from './microfrontendType';
 import { UIEndpoint } from './uIEndpoint';
 
 
@@ -41,10 +42,15 @@ export interface MicrofrontendAbstract {
     productName: string;
     iconName?: string;
     operator?: boolean;
+    deprecated?: boolean;
+    undeployed?: boolean;
+    type?: MicrofrontendType;
     classifications?: Array<string>;
     /**
      * available endpoints which are exposed by MFE
      */
     endpoints?: Array<UIEndpoint>;
 }
+
+
 

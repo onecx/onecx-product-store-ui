@@ -18,5 +18,6 @@ export interface CreateMicroserviceRequest {
     description?: string;
     productName: string;
     type?: string;
+    undeployed?: boolean;
 }
 

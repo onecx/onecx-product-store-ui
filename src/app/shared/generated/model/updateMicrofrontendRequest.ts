@@ -9,6 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { MicrofrontendType } from './microfrontendType';
 import { UpdateUIEndpoint } from './updateUIEndpoint';
 
 
@@ -28,6 +29,11 @@ export interface UpdateMicrofrontendRequest {
     iconName?: string;
     note?: string;
     exposedModule?: string;
+    deprecated?: boolean;
+    undeployed?: boolean;
+    type?: MicrofrontendType;
     endpoints?: Array<UpdateUIEndpoint>;
 }
+
+
 

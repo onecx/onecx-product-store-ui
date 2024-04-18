@@ -11,31 +11,8 @@
  */
 
 
-export interface ProductAbstract { 
-    /**
-     * technical id for a product (unique). Can be used to fetch further product details.
-     */
-    id: string;
-    /**
-     * business key for identifying product
-     */
-    name: string;
-    /**
-     * textual description for a product.
-     */
-    description?: string;
-    /**
-     * product image as url.
-     */
-    imageUrl?: string;
-    /**
-     * name of the product used for displaying to user.
-     */
-    displayName?: string;
-    /**
-     * like tags for grouping and labeling. Used in frontend to enable filtering.
-     */
-    classifications?: Array<string>;
-    undeployed?: boolean;
+export enum MicrofrontendType {
+    Module = 'MODULE',
+    Component = 'COMPONENT'
 }
 
