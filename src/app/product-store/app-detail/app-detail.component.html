@@ -49,7 +49,22 @@
             </label>
           </span>
         </div>
-        <div class="col-12 md:col-6" style="min-width: 15rem" [title]="'APP.TOOLTIPS.TECHNOLOGY' | translate">
+        <div class="col-12 md:col-2" style="min-width: 13rem" [title]="'APP.TOOLTIPS.TYPE' | translate">
+          <span class="p-float-label" controlErrorAnchor>
+            <p-dropdown
+              id="app_detail_form_mfe_type"
+              styleClass="w-full min-w-min input-field-correction"
+              formControlName="technology"
+              [pTooltip]="'APP.TOOLTIPS.TYPE' | translate"
+              tooltipPosition="top"
+              tooltipEvent="focus"
+              [options]="types"
+            >
+            </p-dropdown>
+            <label class="ocx-required-label" for="app_detail_form_mfe_type"> {{ 'APP.TYPE' | translate }} </label>
+          </span>
+        </div>
+        <div class="col-12 md:col-2" style="min-width: 13rem" [title]="'APP.TOOLTIPS.TECHNOLOGY' | translate">
           <span class="p-float-label" controlErrorAnchor>
             <p-dropdown
               id="app_detail_form_mfe_technology"

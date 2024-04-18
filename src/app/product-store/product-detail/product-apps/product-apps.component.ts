@@ -103,7 +103,7 @@ export class ProductAppsComponent implements OnChanges {
         return a.stream
           ? a.stream
               ?.map((mfe) => {
-                return { ...mfe, appType: 'MFE' } as AppAbstract
+                return { ...mfe, appType: 'MFE', appTypeKey: 'APP.MFE' + mfe.type } as AppAbstract
               })
               .sort(this.sortAppsByAppId)
           : []
@@ -117,7 +117,7 @@ export class ProductAppsComponent implements OnChanges {
         return a.stream
           ? a.stream
               ?.map((ms) => {
-                return { ...ms, appType: 'MS' } as AppAbstract
+                return { ...ms, appType: 'MS', appTypeKey: 'APP.MS' } as AppAbstract
               })
               .sort(this.sortAppsByAppId)
           : []

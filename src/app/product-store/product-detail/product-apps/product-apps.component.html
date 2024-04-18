@@ -74,9 +74,7 @@
           ></span>
           <div class="h-4rem flex flex-column justify-content-between gap-1 text-center">
             <div class="font-bold" [title]="'ID: ' + app.appId">{{ limitText(app.appId, 25) }}</div>
-            <div class="text-sm" [title]="'APP.APP_TYPE' | translate">
-              {{ app.appType + (app.appType === 'MFE' ? ' - ' + app.type : '') }}
-            </div>
+            <div class="text-sm" [title]="'APP.APP_TYPE' | translate">{{ app.appTypeKey | translate }}</div>
             <div [title]="'Product: ' + app.productName">{{ limitText(app.productName, 25) }}</div>
           </div>
         </div>
