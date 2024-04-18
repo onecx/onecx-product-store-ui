@@ -47,7 +47,7 @@
             (click)="onCopy($event, app)"
           ></span>
           <span
-            *ngIf="!app.operator && hasDeletePermission"
+            *ngIf="(!app.operator || app.undeployed) && hasDeletePermission"
             [id]="'app_search_data_' + app.appId + '_delete_app'"
             class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text pseudo-button-link"
             [title]="'ACTIONS.DELETE.LABEL' | translate"
@@ -56,13 +56,13 @@
           <span
             *ngIf="app?.undeployed"
             [id]="'app_search_data_' + app.appId + '_undeployed'"
-            class="card-badge-right badge-1 p-2 pi pi-ban danger-action-bg"
+            class="card-badge-right badge-1 p-2 pi pi-ban danger-action-bg cursor-auto"
             [title]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
           ></span>
           <span
             *ngIf="app?.deprecated && !app?.undeployed"
             [id]="'app_search_data_' + app.appId + '_deprecated'"
-            class="card-badge-right badge-1 p-2 pi pi-exclamation-circle danger-action-bg"
+            class="card-badge-right badge-1 p-2 pi pi-exclamation-circle danger-action-bg cursor-auto"
             [title]="'APP.TOOLTIPS.DEPRECATED_SEARCH' | translate"
           ></span>
           <span
@@ -70,7 +70,7 @@
             [id]="'app_search_data_' + app.appId + '_icon'"
             class="card-badge-right badge-2 p-2 pi cursor-auto"
             [ngClass]="'pi-' + app.iconName"
-            [title]="'APP.ICON_NAME' | translate"
+            [title]="'Icon'"
           ></span>
           <div class="h-4rem flex flex-column justify-content-between gap-1 text-center">
             <div class="font-bold" [title]="'ID: ' + app.appId">{{ limitText(app.appId, 25) }}</div>

@@ -156,7 +156,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
         return a.stream
           ? a.stream
               ?.map((mfe) => {
-                return { ...mfe, appType: 'MFE', appTypeKey: 'APP.MFE' + mfe.type } as AppAbstract
+                return { ...mfe, appType: 'MFE', appTypeKey: 'APP.MFE.' + mfe.type } as AppAbstract
               })
               .sort(this.sortAppsByAppId)
           : []
