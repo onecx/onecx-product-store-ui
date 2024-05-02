@@ -15,6 +15,6 @@ export class ProductInternComponent implements OnChanges {
   constructor(private translate: TranslateService) {}
 
   public ngOnChanges(): void {
-    this.undeployed = this.product?.undeployed ?? false
+    this.undeployed = this.product?.undeployed ? this.product?.undeployed : false
   }
 }

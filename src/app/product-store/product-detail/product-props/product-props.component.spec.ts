@@ -113,6 +113,17 @@ describe('ProductPropertyComponent', () => {
     expect(component.logoImageWasUploaded).toBeTrue()
   })
 
+  it('should disable name form control in edit mode ', () => {
+    imgServiceSpy.getImage.and.returnValue(of({}))
+    component.formGroup = mockForm
+    component.formGroup.controls['name'].setValue('name')
+    component.changeMode = 'EDIT'
+
+    component.ngOnInit()
+
+    expect(component.formGroup.controls['name'].disabled).toBeTrue()
+  })
+
   it('should patchValue in formGroup onChanges if product', () => {
     const product = {
       id: 'id',
