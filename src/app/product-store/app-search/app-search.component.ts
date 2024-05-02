@@ -243,21 +243,23 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   }
 
   public prepareDialogTranslations(): void {
-    this.translate.get(['APP.APP_ID', 'APP.APP_TYPE', 'APP.PRODUCT_NAME', 'ACTIONS.DATAVIEW.FILTER_OF']).pipe(
-      map((data) => {
-        this.dataViewControlsTranslations = {
-          filterInputTooltip:
-            data['ACTIONS.DATAVIEW.FILTER_OF'] +
-            ': ' +
-            data['APP.APP_ID'] +
-            ', ' +
-            data['APP.APP_TYPE'] +
-            ', ' +
-            data['APP.PRODUCT_NAME']
-        }
-      })
-    )
-    .subscribe()
+    this.translate
+      .get(['APP.APP_ID', 'APP.APP_TYPE', 'APP.PRODUCT_NAME', 'ACTIONS.DATAVIEW.FILTER_OF'])
+      .pipe(
+        map((data) => {
+          this.dataViewControlsTranslations = {
+            filterInputTooltip:
+              data['ACTIONS.DATAVIEW.FILTER_OF'] +
+              ': ' +
+              data['APP.APP_ID'] +
+              ', ' +
+              data['APP.APP_TYPE'] +
+              ', ' +
+              data['APP.PRODUCT_NAME']
+          }
+        })
+      )
+      .subscribe()
   }
 
   /**

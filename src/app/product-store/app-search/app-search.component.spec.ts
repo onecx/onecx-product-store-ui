@@ -135,8 +135,7 @@ describe('AppSearchComponent', () => {
     await component.ngOnInit()
 
     expect(component.dataViewControlsTranslations).toEqual({
-      filterInputTooltip:
-        'searchFilterOf: appId, appType, productName'
+      filterInputTooltip: 'searchFilterOf: appId, appType, productName'
     })
   })
 
