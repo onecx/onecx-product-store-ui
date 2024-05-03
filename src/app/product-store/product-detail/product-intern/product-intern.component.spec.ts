@@ -5,6 +5,21 @@ import { RouterTestingModule } from '@angular/router/testing'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { ProductInternComponent } from './product-intern.component'
+import { ProductAndWorkspaces } from 'src/app/shared/generated'
+
+const prodAndWsUndeployed: ProductAndWorkspaces = {
+  id: 'id',
+  name: 'name',
+  basePath: 'basePath',
+  undeployed: true
+}
+
+const prodAndWsDeployed: ProductAndWorkspaces = {
+  id: 'id',
+  name: 'name',
+  basePath: 'basePath',
+  undeployed: false
+}
 
 describe('ProductInternComponent', () => {
   let component: ProductInternComponent
@@ -33,5 +48,15 @@ describe('ProductInternComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy()
+  })
+
+  it('should set undeployed according to the input product undeployed attribute', () => {
+    component.product = prodAndWsUndeployed
+    component.ngOnChanges()
+    expect(component.undeployed).toBeTrue()
+
+    component.product = prodAndWsDeployed
+    component.ngOnChanges()
+    expect(component.undeployed).toBeFalse()
   })
 })
