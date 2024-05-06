@@ -6,4 +6,6 @@ export * from './microservices.service';
 import { MicroservicesAPIService } from './microservices.service';
 export * from './products.service';
 import { ProductsAPIService } from './products.service';
-export const APIS = [ImagesInternalAPIService, MicrofrontendsAPIService, MicroservicesAPIService, ProductsAPIService];
+export * from './slots.service';
+import { SlotsAPIService } from './slots.service';
+export const APIS = [ImagesInternalAPIService, MicrofrontendsAPIService, MicroservicesAPIService, ProductsAPIService, SlotsAPIService];

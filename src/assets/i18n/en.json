@@ -174,9 +174,9 @@
     "SEARCH.APPS.HEADER": "Apps",
     "SEARCH.APPS.SUBHEADER": "Searching and Management of Microfrontends and Microservices",
     "SEARCH.SLOTS.LABEL": "Slots",
-    "SEARCH.SLOTS.TOOLTIP": "Search of Slots",
+    "SEARCH.SLOTS.TOOLTIP": "Display slots",
     "SEARCH.SLOTS.HEADER": "Slots",
-    "SEARCH.SLOTS.SUBHEADER": "Searching of Slots",
+    "SEARCH.SLOTS.SUBHEADER": "Search slots",
     "TABS": {
       "APPS": "Apps",
       "INTERN": "Internal",
@@ -265,22 +265,33 @@
       "WORKSPACES": "Workspaces using the Product"
     }
   },
+  "SLOT": {
+    "NAME": "Name",
+    "TOOLTIPS": {
+      "ID": "Unique technical ID of the Slot",
+      "NAME": "Unique Name of the Slot"
+    }
+  },
   "EXCEPTIONS": {
     "HTTP_STATUS_0": {
       "PRODUCTS": "Unknown problem retrieving Product data - please try again.",
-      "APPS": "Unknown problem retrieving App data - please try again."
+      "APPS": "Unknown problem retrieving App data - please try again.",
+      "SLOTS": "Unknown problem retrieving Slot data - please try again."
     },
     "HTTP_STATUS_403": {
       "PRODUCTS": "You have no permissions to see Products.",
-      "APPS": "You have no permissions to see Apps."
+      "APPS": "You have no permissions to see Apps.",
+      "SLOTS": "You have no permissions to see Slots."
     },
     "HTTP_STATUS_404": {
       "PRODUCTS": "No Products could be found.",
-      "APPS": "No Apps could be found."
+      "APPS": "No Apps could be found.",
+      "SLOTS": "No Slots could be found."
     },
     "HTTP_STATUS_500": {
       "PRODUCTS": "Unknown server problem retrieving Product data - please try again.",
-      "APPS": "Unknown server problem retrieving App data - please try again."
+      "APPS": "Unknown server problem retrieving App data - please try again.",
+      "SLOTS": "Unknown server problem retrieving Slot data - please try again."
     }
   },
   "VALIDATION": {

@@ -1,12 +1,18 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
-// import { FormGroup, FormControl } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
+import { FormControl, FormGroup } from '@angular/forms'
+import { finalize, map, of, Observable, catchError } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
-import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
-import { Observable, map } from 'rxjs'
-import { ProductPageResult, ProductsAPIService, ImagesInternalAPIService } from 'src/app/shared/generated'
-import { limitText } from 'src/app/shared/utils'
 import { DataView } from 'primeng/dataview'
+
+import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+
+import { Slot, SlotPageResult, /* SlotSearchCriteria, */ SlotsAPIService } from 'src/app/shared/generated'
+import { limitText } from 'src/app/shared/utils'
+
+export interface SlotSearchCriteria {
+  slotName: FormControl<string | null>
+}
 
 @Component({
   templateUrl: './slot-search.component.html',
@@ -15,16 +21,12 @@ import { DataView } from 'primeng/dataview'
 export class SlotSearchComponent implements OnInit {
   public exceptionKey: string | undefined
   public searchInProgress = false
-  public slots$!: Observable<ProductPageResult>
+  public slots$!: Observable<SlotPageResult>
+  public slotSearchCriteriaGroup!: FormGroup<SlotSearchCriteria>
   public actions$: Observable<Action[]> | undefined
-
-  // public appSearchCriteriaGroup!: FormGroup<AppSearchCriteria>
   public viewMode = 'grid'
-  public filterValue: string | undefined
-  public filterValueDefault = 'appId,appType,productName,classifications'
-  public filterBy = this.filterValueDefault
   public filter: string | undefined
-  public sortField = 'appId'
+  public sortField = 'displayName'
   public sortOrder = 1
   public limitText = limitText
 
@@ -34,19 +36,68 @@ export class SlotSearchComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private productApi: ProductsAPIService,
-    private translate: TranslateService,
-    private imageApi: ImagesInternalAPIService
+    private slotApi: SlotsAPIService,
+    private translate: TranslateService
   ) {
-    // this.productSearchCriteriaGroup = new FormGroup<ProductSearchCriteria>({
-    //   productName: new FormControl<string | null>(null)
-    // })
+    this.slotSearchCriteriaGroup = new FormGroup<SlotSearchCriteria>({
+      slotName: new FormControl<string | null>(null)
+    })
   }
 
   ngOnInit(): void {
-    // this.prepareDialogTranslations()
+    this.prepareDialogTranslations()
     this.prepareActionButtons()
-    // this.searchSlots()
+    this.searchSlots()
+  }
+
+  public searchSlots(): void {
+    this.searchInProgress = true
+    this.slots$ = this.slotApi
+      .searchSlots({
+        slotSearchCriteria: { name: this.slotSearchCriteriaGroup.controls['slotName'].value!, pageSize: 1000 }
+      })
+      .pipe(
+        catchError((err) => {
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.SLOTS'
+          console.error('searchSlots():', err)
+          return of({ stream: [] } as SlotPageResult)
+        }),
+        finalize(() => (this.searchInProgress = false))
+      )
+  }
+  public sortSlotsByName(a: Slot, b: Slot): number {
+    return (a.name as string).toUpperCase().localeCompare((b.name as string).toUpperCase())
+  }
+
+  /**
+   * DIALOG
+   */
+  private prepareDialogTranslations(): void {
+    this.translate
+      .get([
+        'SLOT.NAME',
+        'ACTIONS.DATAVIEW.VIEW_MODE_GRID',
+        'ACTIONS.DATAVIEW.FILTER',
+        'ACTIONS.DATAVIEW.FILTER_OF',
+        'ACTIONS.DATAVIEW.SORT_BY',
+        'ACTIONS.DATAVIEW.SORT_DIRECTION_ASC',
+        'ACTIONS.DATAVIEW.SORT_DIRECTION_DESC'
+      ])
+      .subscribe((data) => {
+        this.dataViewControlsTranslations = {
+          sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY'],
+          filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
+          filterInputTooltip: data['ACTIONS.DATAVIEW.FILTER_OF'] + data['SLOT.NAME'],
+          viewModeToggleTooltips: {
+            grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID']
+          },
+          sortOrderTooltips: {
+            ascending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_ASC'],
+            descending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_DESC']
+          },
+          sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY']
+        }
+      })
   }
 
   private prepareActionButtons(): void {
@@ -81,12 +132,13 @@ export class SlotSearchComponent implements OnInit {
   public onSortDirChange(asc: boolean): void {
     this.sortOrder = asc ? -1 : 1
   }
+
   public onSearch() {
     this.searchInProgress = true
   }
-  // public onSearchReset() {
-  //   this.appSearchCriteriaGroup.reset({ appType: 'ALL' })
-  // }
+  public onSearchReset() {
+    this.slotSearchCriteriaGroup.reset()
+  }
   public onBack() {
     this.router.navigate(['../'], { relativeTo: this.route })
   }

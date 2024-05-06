@@ -3,14 +3,34 @@
     [header]="'DIALOG.SEARCH.SLOTS.HEADER' | translate"
     [subheader]="'DIALOG.SEARCH.SLOTS.SUBHEADER' | translate"
     (searched)="onSearch()"
+    (resetted)="onSearchReset()"
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
+    <div
+      id="product_search_criteria"
+      [formGroup]="slotSearchCriteriaGroup"
+      class="flex flex-wrap gap-4 row-gap-10 px-2"
+    >
+      <span class="p-float-label">
+        <input
+          id="product_search_criteria_product_name"
+          pInputText
+          type="text"
+          formControlName="slotName"
+          class="w-18rem"
+          [clear]="true"
+          [title]="'SLOT.TOOLTIPS.NAME' | translate"
+        />
+        <label for="product_search_criteria_product_name">{{ 'SLOT.NAME' | translate }}</label>
+      </span>
+    </div>
   </ocx-search-header>
+
   <ocx-page-content>
-    <div *ngIf="exceptionKey" id="slot_search_criteria_error" class="card px-3 align-items-center">
+    <div *ngIf="exceptionKey" id="product_search_criteria_error" class="card px-3 align-items-center">
       <p-message
-        id="slot_search_criteria_error_message"
+        id="product_search_criteria_error_message"
         severity="error"
         styleClass="p-2"
         [text]="exceptionKey | translate"
@@ -18,57 +38,75 @@
     </div>
     <p-dataView
       *ngIf="!exceptionKey"
-      id="slots_search_dataview"
+      id="product_search_dataview"
+      [value]="(slots$ | async)?.stream!.sort(sortSlotsByName)"
       [paginator]="true"
       [alwaysShowPaginator]="false"
       [rowsPerPageOptions]="[10, 20, 50]"
-      [rows]="viewMode === 'grid' ? 24 : 10"
+      [rows]="12"
       [layout]="viewMode"
       [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
-      [filterBy]="filterValueDefault"
+      filterBy="name,displayName,classification"
       [sortField]="sortField"
       [sortOrder]="sortOrder"
     >
-    </p-dataView>
-    <ng-template pTemplate="header">
-      <div class="flex flex-wrap align-items-center mx-1">
-        <div class="flex flex-wrap align-items-center ml-1 gap-2">
-          <div
-            class="p-selectbutton-title data-view-control opacity-90 text-sm"
-            [title]="'ACTIONS.SEARCH.APP.QUICK_FILTER.TOOLTIP' | translate"
-          >
-            {{ 'ACTIONS.SEARCH.APP.FILTER.TOOLTIP' | translate }}
-          </div>
-        </div>
+      <ng-template pTemplate="header">
         <ocx-data-view-controls
-          class="flex-grow-1"
+          id="product_search_dataview_controls"
+          [enableFiltering]="true"
+          [enableSorting]="true"
           [supportedViews]="['grid']"
           [initialViewMode]="viewMode"
-          [enableFiltering]="true"
-          (filterChange)="onFilterChange($event)"
-          [filterColumns]="[
-            'APP.APP_ID' | translate,
-            'APP.APP_TYPE' | translate,
-            'APP.PRODUCT_NAME' | translate,
-            'APP.CLASSIFICATIONS' | translate
+          [sortingOptions]="[
+            { label: 'PRODUCT.NAME' | translate, value: 'name' },
+            { label: 'PRODUCT.DISPLAY_NAME' | translate, value: 'displayName' }
           ]"
-          [enableSorting]="true"
           [defaultSortOption]="sortField"
           [defaultSortDirection]="sortOrder === 1"
-          [sortingOptions]="[
-            { label: 'APP.APP_ID' | translate, value: 'appId' },
-            { label: 'APP.APP_TYPE' | translate, value: 'appType' },
-            { label: 'APP.PRODUCT_NAME' | translate, value: 'productName' }
-          ]"
           (dataViewChange)="onLayoutChange($event)"
+          (filterChange)="onFilterChange($event)"
+          [filterColumns]="[
+            'PRODUCT.NAME' | translate,
+            'PRODUCT.DISPLAY_NAME' | translate,
+            'PRODUCT.CLASSIFICATIONS' | translate
+          ]"
           (sortChange)="onSortChange($event)"
           (sortDirectionChange)="onSortDirChange($event)"
           [translations]="dataViewControlsTranslations"
         >
-        </ocx-data-view-controls>
-      </div>
-    </ng-template>
+        </ocx-data-view-controls
+      ></ng-template>
+      <ng-template let-product let-idx="rowIndex" pTemplate="gridItem">
+        <div
+          [id]="'product_search_data_grid_' + idx"
+          class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3"
+          [routerLink]="['./', product.name]"
+        >
+          <div class="card relative p-2 flex flex-column justify-content-center hover:bg-gray-200 cursor-pointer">
+            <span
+              *ngIf="product?.undeployed"
+              [id]="'product_search_data_grid_' + idx + '_undeployed'"
+              class="card-badge-right badge-1 p-2 pi pi-ban danger-action-bg"
+              [title]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
+            ></span>
+            <div class="h-3rem flex flex-column justify-content-between gap-1 text-center">
+              <div
+                [id]="'product_search_data_grid_' + idx + '_product_display_name'"
+                class="mt-2 font-bold text-lg"
+                [title]="('PRODUCT.DISPLAY_NAME' | translate) + ': ' + limitText(product.displayName, 100)"
+              >
+                {{ limitText(product.displayName, 20) }}
+              </div>
+              <div
+                [id]="'product_search_data_grid_' + idx + '_product_name'"
+                [title]="('PRODUCT.NAME' | translate) + ': ' + product.name"
+              >
+                {{ limitText(product.name, 25) }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-dataView>
   </ocx-page-content>
 </ocx-portal-page>
-
-<!-- (resetted)="onSearchReset()" -->

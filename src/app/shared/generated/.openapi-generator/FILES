@@ -7,6 +7,7 @@ api/imagesInternal.service.ts
 api/microfrontends.service.ts
 api/microservices.service.ts
 api/products.service.ts
+api/slots.service.ts
 configuration.ts
 encoder.ts
 git_push.sh
@@ -14,6 +15,7 @@ index.ts
 model/createMicrofrontendRequest.ts
 model/createMicroserviceRequest.ts
 model/createProductRequest.ts
+model/createSlotRequest.ts
 model/createUIEndpoint.ts
 model/imageInfo.ts
 model/mfeAndMsSearchCriteria.ts
@@ -33,10 +35,15 @@ model/productAndWorkspaces.ts
 model/productPageResult.ts
 model/productSearchCriteria.ts
 model/refType.ts
+model/slot.ts
+model/slotPageItem.ts
+model/slotPageResult.ts
+model/slotSearchCriteria.ts
 model/uIEndpoint.ts
 model/updateMicrofrontendRequest.ts
 model/updateMicroserviceRequest.ts
 model/updateProductRequest.ts
+model/updateSlotRequest.ts
 model/updateUIEndpoint.ts
 param.ts
 variables.ts

@@ -174,7 +174,7 @@
     "SEARCH.APPS.HEADER": "Apps",
     "SEARCH.APPS.SUBHEADER": "Suchen und verwalten von Microfrontends und Microservices",
     "SEARCH.SLOTS.LABEL": "Slots",
-    "SEARCH.SLOTS.TOOLTIP": "Slots suchen",
+    "SEARCH.SLOTS.TOOLTIP": "Slots anzeigen",
     "SEARCH.SLOTS.HEADER": "Slots",
     "SEARCH.SLOTS.SUBHEADER": "Suchen von Slots",
     "TABS": {
@@ -265,22 +265,33 @@
       "WORKSPACES": "Workspaces, die das Produkt benutzen"
     }
   },
+  "SLOT": {
+    "NAME": "Name",
+    "TOOLTIPS": {
+      "ID": "Eindeutige technische ID des Slots",
+      "NAME": "Eindeutiger Name des Slots"
+    }
+  },
   "EXCEPTIONS": {
     "HTTP_STATUS_0": {
       "PRODUCTS": "Unbekanntes Problem beim Abrufen von Produkte-Daten - Bitte versuchen sie es noch einmal.",
-      "APPS": "Unbekanntes Problem beim Abrufen von App-Daten - Bitte versuchen sie es noch einmal."
+      "APPS": "Unbekanntes Problem beim Abrufen von App-Daten - Bitte versuchen sie es noch einmal.",
+      "SLOTS": "Unbekanntes Problem beim Abrufen von Slot-Daten - Bitte versuchen sie es noch einmal."
     },
     "HTTP_STATUS_403": {
-      "PRODUCTS": "Sie haben keine Rechte um Produkte zu sehen.",
-      "APPS": "Sie haben keine Rechte um Apps zu sehen."
+      "PRODUCTS": "Sie haben keine Rechte, um Produkte zu sehen.",
+      "APPS": "Sie haben keine Rechte, um Apps zu sehen.",
+      "SLOTS": "Sie haben keine Rechte, um Slots zu sehen."
     },
     "HTTP_STATUS_404": {
       "PRODUCTS": "Es konnten keine Produkte gefunden werden.",
-      "APPS": "Es konnten keine Apps gefunden werden."
+      "APPS": "Es konnten keine Apps gefunden werden.",
+      "SLOTS": "Es konnten keine Slots gefunden werden."
     },
     "HTTP_STATUS_500": {
       "PRODUCTS": "Unbekanntes Server-Problem beim Abrufen von Produkt-Daten - Bitte versuchen sie es noch einmal.",
-      "APPS": "Unbekanntes Server-Problem beim Abrufen von App-Daten - Bitte versuchen sie es noch einmal."
+      "APPS": "Unbekanntes Server-Problem beim Abrufen von App-Daten - Bitte versuchen sie es noch einmal.",
+      "SLOTS": "Unbekanntes Server-Problem beim Abrufen von Slot-Daten - Bitte versuchen sie es noch einmal."
     }
   },
   "VALIDATION": {

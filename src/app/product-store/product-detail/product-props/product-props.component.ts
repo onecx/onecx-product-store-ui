@@ -207,7 +207,6 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
           let imageType: RefType = RefType.Logo
 
           requestParameters = {
-            contentLength: files.length,
             refId: this.formGroup.controls['name'].value!,
             refType: imageType,
             body: blob
