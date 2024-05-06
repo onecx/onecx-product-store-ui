@@ -19,6 +19,7 @@ import { ProductDetailComponent } from './product-detail/product-detail.componen
 import { ProductPropertyComponent } from './product-detail/product-props/product-props.component'
 import { ProductInternComponent } from './product-detail/product-intern/product-intern.component'
 import { ProductAppsComponent } from './product-detail/product-apps/product-apps.component'
+import { SlotSearchComponent } from './slot-search/slot-search.component'
 
 const routes: Routes = [
   {
@@ -30,6 +31,12 @@ const routes: Routes = [
     path: 'apps',
     component: AppSearchComponent,
     data: { breadcrumb: 'BREADCRUMBS.APPS', breadcrumbFn: (data: any) => `${data.labeli18n}` },
+    resolve: { labeli18n: LabelResolver }
+  },
+  {
+    path: 'slots',
+    component: SlotSearchComponent,
+    data: { breadcrumb: 'BREADCRUMBS.SLOTS', breadcrumbFn: (data: any) => `${data.labeli18n}` },
     resolve: { labeli18n: LabelResolver }
   },
   {
@@ -54,7 +61,8 @@ const routes: Routes = [
     ProductDetailComponent,
     ProductPropertyComponent,
     ProductInternComponent,
-    ProductAppsComponent
+    ProductAppsComponent,
+    SlotSearchComponent
   ],
   imports: [
     CommonModule,

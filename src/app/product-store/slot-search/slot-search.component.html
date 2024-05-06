@@ -1,0 +1,74 @@
+<ocx-portal-page permission="APP#SEARCH" helpArticleId="PAGE_APP_SEARCH">
+  <ocx-search-header
+    [header]="'DIALOG.SEARCH.SLOTS.HEADER' | translate"
+    [subheader]="'DIALOG.SEARCH.SLOTS.SUBHEADER' | translate"
+    (searched)="onSearch()"
+    [manualBreadcrumbs]="false"
+    [actions]="(actions$ | async) ?? []"
+  >
+  </ocx-search-header>
+  <ocx-page-content>
+    <div *ngIf="exceptionKey" id="slot_search_criteria_error" class="card px-3 align-items-center">
+      <p-message
+        id="slot_search_criteria_error_message"
+        severity="error"
+        styleClass="p-2"
+        [text]="exceptionKey | translate"
+      ></p-message>
+    </div>
+    <p-dataView
+      *ngIf="!exceptionKey"
+      id="slots_search_dataview"
+      [paginator]="true"
+      [alwaysShowPaginator]="false"
+      [rowsPerPageOptions]="[10, 20, 50]"
+      [rows]="viewMode === 'grid' ? 24 : 10"
+      [layout]="viewMode"
+      [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
+      [filterBy]="filterValueDefault"
+      [sortField]="sortField"
+      [sortOrder]="sortOrder"
+    >
+    </p-dataView>
+    <ng-template pTemplate="header">
+      <div class="flex flex-wrap align-items-center mx-1">
+        <div class="flex flex-wrap align-items-center ml-1 gap-2">
+          <div
+            class="p-selectbutton-title data-view-control opacity-90 text-sm"
+            [title]="'ACTIONS.SEARCH.APP.QUICK_FILTER.TOOLTIP' | translate"
+          >
+            {{ 'ACTIONS.SEARCH.APP.FILTER.TOOLTIP' | translate }}
+          </div>
+        </div>
+        <ocx-data-view-controls
+          class="flex-grow-1"
+          [supportedViews]="['grid']"
+          [initialViewMode]="viewMode"
+          [enableFiltering]="true"
+          (filterChange)="onFilterChange($event)"
+          [filterColumns]="[
+            'APP.APP_ID' | translate,
+            'APP.APP_TYPE' | translate,
+            'APP.PRODUCT_NAME' | translate,
+            'APP.CLASSIFICATIONS' | translate
+          ]"
+          [enableSorting]="true"
+          [defaultSortOption]="sortField"
+          [defaultSortDirection]="sortOrder === 1"
+          [sortingOptions]="[
+            { label: 'APP.APP_ID' | translate, value: 'appId' },
+            { label: 'APP.APP_TYPE' | translate, value: 'appType' },
+            { label: 'APP.PRODUCT_NAME' | translate, value: 'productName' }
+          ]"
+          (dataViewChange)="onLayoutChange($event)"
+          (sortChange)="onSortChange($event)"
+          (sortDirectionChange)="onSortDirChange($event)"
+          [translations]="dataViewControlsTranslations"
+        >
+        </ocx-data-view-controls>
+      </div>
+    </ng-template>
+  </ocx-page-content>
+</ocx-portal-page>
+
+<!-- (resetted)="onSearchReset()" -->

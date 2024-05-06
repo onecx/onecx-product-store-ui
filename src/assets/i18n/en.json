@@ -136,6 +136,7 @@
   },
   "BREADCRUMBS": {
     "APPS": "Apps",
+    "SLOTS": "Slots",
     "CREATE": "New",
     "DETAIL": "Details",
     "EDIT": "Edit"
@@ -172,6 +173,10 @@
     "SEARCH.APPS.TOOLTIP": "Search and Management of Microfrontends and Microservices",
     "SEARCH.APPS.HEADER": "Apps",
     "SEARCH.APPS.SUBHEADER": "Searching and Management of Microfrontends and Microservices",
+    "SEARCH.SLOTS.LABEL": "Slots",
+    "SEARCH.SLOTS.TOOLTIP": "Search of Slots",
+    "SEARCH.SLOTS.HEADER": "Slots",
+    "SEARCH.SLOTS.SUBHEADER": "Searching of Slots",
     "TABS": {
       "APPS": "Apps",
       "INTERN": "Internal",

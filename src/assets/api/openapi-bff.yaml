@@ -1,4 +1,3 @@
----
 openapi: 3.0.3
 info:
   title: onecx-product-store-bff
@@ -498,31 +497,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /microservices/appId/{appId}:
-    x-onecx:
-      permissions:
-        microservice:
-          - read
-    get:
-      tags:
-        - Microservices
-      description: Return microservice by its appId
-      operationId: getMicroserviceByAppId
-      parameters:
-        - name: appId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Microservice'
-        '404':
-          description: Not found
   /images/{refId}/{refType}:
     post:
       x-onecx:
