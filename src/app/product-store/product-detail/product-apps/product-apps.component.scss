@@ -2,12 +2,7 @@
 
 @include make-disabled-form-readable-input;
 @include make-disabled-form-readable-dropdown;
+@include correct-data-view-control;
 @include prepare-inputgroup;
 @include card-badges;
-@include correct-data-view-control;
-
-:host ::ng-deep {
-  .danger-action-text {
-    color: var(--danger-button-bg);
-  }
-}
+@include danger-action;

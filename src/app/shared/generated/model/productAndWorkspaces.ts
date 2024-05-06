@@ -28,5 +28,6 @@ export interface ProductAndWorkspaces {
     displayName?: string;
     iconName?: string;
     classifications?: Array<string>;
+    undeployed?: boolean;
 }
 

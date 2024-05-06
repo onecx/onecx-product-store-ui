@@ -10,10 +10,12 @@ app:
     # Microfrontend
     microfrontend:
       enabled: true
-      spec:
-        exposedModule: "./OneCXProductStoreModule"
-        description: "OneCX Product Store UI"
-        note: "OneCX Product Store UI module auto import via MF operator"
+      specs:
+        main:
+          exposedModule: "./OneCXProductStoreModule"
+          description: "OneCX Product Store UI"
+          note: "OneCX Product Store UI module auto import via MF operator"
+          type: MODULE
     # Permission
     permission:
       enabled: true

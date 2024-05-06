@@ -36,14 +36,16 @@ describe('AppSearchComponent', () => {
     appId: 'appId',
     appType: 'MFE',
     appName: 'microfrontend',
-    productName: 'prodName'
+    productName: 'prodName',
+    appTypeKey: 'APP.MFE'
   }
   const msApp: AppAbstract = {
     id: 'id',
     appId: 'appId',
     appType: 'MS',
     appName: 'microservice',
-    productName: 'prodName'
+    productName: 'prodName',
+    appTypeKey: 'APP.MS'
   }
   const mfe: MicrofrontendAbstract = {
     id: 'id',
@@ -107,7 +109,6 @@ describe('AppSearchComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AppSearchComponent)
     component = fixture.componentInstance
-    // fixture.detectChanges()
     fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
   })
 
@@ -121,34 +122,20 @@ describe('AppSearchComponent', () => {
     expect(component).toBeTruthy()
   })
 
-  xit('should prepare dialog translations', async () => {
+  it('should prepare dialog translations', async () => {
     const translateService = TestBed.inject(TranslateService)
-    const actionsTranslations = {
-      'ACTIONS.NAVIGATION.BACK': 'back',
-      'ACTIONS.NAVIGATION.BACK.TOOLTIP': 'backTooltip',
-      'ACTIONS.CREATE.MS.LABEL': 'msLabel',
-      'ACTIONS.CREATE.MFE.LABEL': 'mfeLabel',
-      'ACTIONS.CREATE.APP.TOOLTIP': 'appTooltip'
-    }
     const dialogTranslations = {
       'ACTIONS.DATAVIEW.FILTER_OF': 'searchFilterOf',
       'APP.APP_ID': 'appId',
       'APP.APP_TYPE': 'appType',
       'APP.PRODUCT_NAME': 'productName'
     }
-    spyOn(translateService, 'get').and.returnValues(of(actionsTranslations), of(dialogTranslations))
+    spyOn(translateService, 'get').and.returnValue(of(dialogTranslations))
 
     await component.ngOnInit()
 
     expect(component.dataViewControlsTranslations).toEqual({
-      filterInputTooltip:
-        dialogTranslations['ACTIONS.DATAVIEW.FILTER_OF'] +
-        ': ' +
-        dialogTranslations['APP.APP_ID'] +
-        ', ' +
-        dialogTranslations['APP.APP_TYPE'] +
-        ', ' +
-        dialogTranslations['APP.PRODUCT_NAME']
+      filterInputTooltip: 'searchFilterOf: appId, appType, productName'
     })
   })
 

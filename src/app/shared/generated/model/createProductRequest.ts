@@ -20,5 +20,6 @@ export interface CreateProductRequest {
     displayName?: string;
     iconName?: string;
     classifications?: Array<string>;
+    undeployed?: boolean;
 }
 

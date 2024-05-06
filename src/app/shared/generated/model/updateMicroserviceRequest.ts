@@ -18,5 +18,6 @@ export interface UpdateMicroserviceRequest {
     description?: string;
     productName?: string;
     type?: string;
+    undeployed?: boolean;
 }
 

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
-import { finalize } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
+import { finalize } from 'rxjs'
 import { SelectItem } from 'primeng/api'
 
 import { PortalMessageService, UserService } from '@onecx/portal-integration-angular'
@@ -10,14 +10,14 @@ import { dropDownSortItemsByLabel, convertToUniqueStringArray } from 'src/app/sh
 import {
   CreateMicrofrontendRequest,
   CreateMicroserviceRequest,
-  GetMicrofrontendByAppIdRequestParams,
+  GetMicrofrontendRequestParams,
+  GetMicroserviceRequestParams,
   MicrofrontendsAPIService,
-  Microservice,
-  Microfrontend,
-  UpdateMicrofrontendRequest,
-  UpdateMicroserviceRequest,
   MicroservicesAPIService,
-  GetMicroserviceByAppIdRequestParams
+  Microfrontend,
+  Microservice,
+  UpdateMicrofrontendRequest,
+  UpdateMicroserviceRequest
 } from 'src/app/shared/generated'
 
 import { AppAbstract, ChangeMode } from '../app-search/app-search.component'
@@ -29,6 +29,7 @@ export interface MfeForm {
   productName: FormControl<string | null>
   description: FormControl<string | null>
   technology: FormControl<string | null>
+  type: FormControl<string | null>
   remoteBaseUrl: FormControl<string | null>
   remoteEntry: FormControl<string | null>
   classifications: FormControl<string | null>
@@ -68,6 +69,10 @@ export class AppDetailComponent implements OnChanges {
     { label: 'Angular', value: 'ANGULAR' },
     { label: 'WebComponent', value: 'WEBCOMPONENT' }
   ]
+  public types: SelectItem[] = [
+    { label: 'Module', value: 'MODULE' },
+    { label: 'Component', value: 'COMPONENT' }
+  ]
   public iconItems: SelectItem[] = [{ label: '', value: null }] // default value is empty
   public convertToUniqueStringArray = convertToUniqueStringArray
 
@@ -91,7 +96,8 @@ export class AppDetailComponent implements OnChanges {
       appVersion: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
       productName: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
       description: new FormControl(null, [Validators.maxLength(255)]),
-      technology: new FormControl(null, [Validators.maxLength(255)]),
+      technology: new FormControl(null),
+      type: new FormControl(null),
       remoteBaseUrl: new FormControl(null, [Validators.maxLength(255)]),
       remoteEntry: new FormControl(null, [Validators.maxLength(255)]),
       exposedModule: new FormControl(null, [Validators.maxLength(255)]),
@@ -142,7 +148,7 @@ export class AppDetailComponent implements OnChanges {
   public getMfe() {
     this.loading = true
     this.mfeApi
-      .getMicrofrontendByAppId({ appId: this.appAbstract?.appId } as GetMicrofrontendByAppIdRequestParams)
+      .getMicrofrontend({ id: this.appAbstract?.id ?? '' } as GetMicrofrontendRequestParams)
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: (data: any) => {
@@ -165,7 +171,7 @@ export class AppDetailComponent implements OnChanges {
   public getMs() {
     this.loading = true
     this.msApi
-      .getMicroserviceByAppId({ appId: this.appAbstract?.appId } as GetMicroserviceByAppIdRequestParams)
+      .getMicroservice({ id: this.appAbstract?.id } as GetMicroserviceRequestParams)
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: (data: any) => {
@@ -194,6 +200,7 @@ export class AppDetailComponent implements OnChanges {
       productName: mfe['productName'],
       description: mfe['description'],
       technology: mfe['technology'],
+      type: mfe['type'],
       remoteBaseUrl: mfe['remoteBaseUrl'],
       remoteEntry: mfe['remoteEntry'],
       exposedModule: mfe['exposedModule'],

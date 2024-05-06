@@ -20,6 +20,7 @@ model/mfeAndMsSearchCriteria.ts
 model/microfrontend.ts
 model/microfrontendAbstract.ts
 model/microfrontendPageResult.ts
+model/microfrontendType.ts
 model/microservice.ts
 model/microservicePageResult.ts
 model/models.ts

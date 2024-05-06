@@ -12,7 +12,8 @@ import {
   MicrofrontendsAPIService,
   MicroservicesAPIService,
   Microfrontend,
-  Microservice
+  Microservice,
+  MicrofrontendType
 } from 'src/app/shared/generated'
 import { AppAbstract } from '../app-search/app-search.component'
 
@@ -23,6 +24,7 @@ const form = new FormGroup<MfeForm>({
   productName: new FormControl(''),
   description: new FormControl(''),
   technology: new FormControl(''),
+  type: new FormControl(''),
   remoteBaseUrl: new FormControl(''),
   remoteEntry: new FormControl(''),
   exposedModule: new FormControl(''),
@@ -50,6 +52,7 @@ const mfe: Microfrontend = {
   remoteEntry: 'entry',
   description: 'description',
   technology: 'technology',
+  type: MicrofrontendType.Module,
   contact: 'contact',
   iconName: 'iconName',
   note: 'note',
@@ -75,7 +78,8 @@ describe('AppDetailComponent', () => {
     appId: 'appId',
     appType: 'MFE',
     appName: 'name',
-    productName: 'productName'
+    productName: 'productName',
+    appTypeKey: 'APP.MFE'
   }
 
   const appMs: AppAbstract = {
@@ -83,16 +87,17 @@ describe('AppDetailComponent', () => {
     appId: 'appId',
     appType: 'MS',
     appName: 'name',
-    productName: 'productName'
+    productName: 'productName',
+    appTypeKey: 'APP.MS'
   }
 
   const mfeApiServiceSpy = {
-    getMicrofrontendByAppId: jasmine.createSpy('getMicrofrontendByAppId').and.returnValue(of({})),
+    getMicrofrontend: jasmine.createSpy('getMicrofrontend').and.returnValue(of({})),
     createMicrofrontend: jasmine.createSpy('createMicrofrontend').and.returnValue(of({})),
     updateMicrofrontend: jasmine.createSpy('updateMicrofrontend').and.returnValue(of({}))
   }
   const msApiServiceSpy = {
-    getMicroserviceByAppId: jasmine.createSpy('getMicroserviceByAppId').and.returnValue(of({})),
+    getMicroservice: jasmine.createSpy('getMicroservice').and.returnValue(of({})),
     createMicroservice: jasmine.createSpy('createMicroservice').and.returnValue(of({})),
     updateMicroservice: jasmine.createSpy('updateMicroservice').and.returnValue(of({}))
   }
@@ -153,10 +158,10 @@ describe('AppDetailComponent', () => {
   afterEach(() => {
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
-    mfeApiServiceSpy.getMicrofrontendByAppId.calls.reset()
+    mfeApiServiceSpy.getMicrofrontend.calls.reset()
     mfeApiServiceSpy.createMicrofrontend.calls.reset()
     mfeApiServiceSpy.updateMicrofrontend.calls.reset()
-    msApiServiceSpy.getMicroserviceByAppId.calls.reset()
+    msApiServiceSpy.getMicroservice.calls.reset()
     msApiServiceSpy.createMicroservice.calls.reset()
     msApiServiceSpy.updateMicroservice.calls.reset()
   })
@@ -200,7 +205,7 @@ describe('AppDetailComponent', () => {
   })
 
   it('should getMfe', () => {
-    mfeApiServiceSpy.getMicrofrontendByAppId.and.returnValue(of(mfe))
+    mfeApiServiceSpy.getMicrofrontend.and.returnValue(of(mfe))
     component.formGroupMfe = form
 
     component.getMfe()
@@ -209,7 +214,7 @@ describe('AppDetailComponent', () => {
   })
 
   it('should getMfe and prepare copy', () => {
-    mfeApiServiceSpy.getMicrofrontendByAppId.and.returnValue(of(mfe))
+    mfeApiServiceSpy.getMicrofrontend.and.returnValue(of(mfe))
     component.formGroupMfe = form
     component.changeMode = 'COPY'
     component.mfe = mfe
@@ -220,7 +225,7 @@ describe('AppDetailComponent', () => {
   })
 
   it('should getMs', () => {
-    msApiServiceSpy.getMicroserviceByAppId.and.returnValue(of(ms))
+    msApiServiceSpy.getMicroservice.and.returnValue(of(ms))
     component.changeMode = 'COPY'
 
     component.getMs()
@@ -245,6 +250,7 @@ describe('AppDetailComponent', () => {
       productName: new FormControl(''),
       description: new FormControl(''),
       technology: new FormControl(''),
+      type: new FormControl(''),
       remoteBaseUrl: new FormControl(''),
       remoteEntry: new FormControl(''),
       exposedModule: new FormControl(''),
@@ -375,6 +381,7 @@ describe('AppDetailComponent', () => {
       productName: new FormControl(''),
       description: new FormControl(''),
       technology: new FormControl(''),
+      type: new FormControl(''),
       remoteBaseUrl: new FormControl(''),
       remoteEntry: new FormControl(''),
       exposedModule: new FormControl(''),

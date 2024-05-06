@@ -186,6 +186,10 @@
     "DESCRIPTION": "Beschreibung",
     "PRODUCT_NAME": "Produktname",
     "TECHNOLOGY": "Technologie",
+    "TYPE": "Typ",
+    "MS": "MS",
+    "MFE.MODULE": "MFE - Module",
+    "MFE.COMPONENT": "MFE - Component",
     "REMOTE_BASE_URL": "Remote Base URL",
     "REMOTE_ENTRY": "Remote Entry",
     "CLASSIFICATIONS": "Klassifizierungen",
@@ -197,6 +201,8 @@
     "GROUP.REMOTE_MODULE": "Remote Modul",
     "GROUP.LOCAL_MODULE": "Modul Management Details",
     "GROUP.INTERNALS": "Weitere Details",
+    "DEPRECATED": "Veraltet",
+    "UNDEPLOYED": "Undeployed",
     "TOOLTIPS": {
       "APP_ID": "Eindeutige ID - Basis Bezeichner der App",
       "APP_NAME": "Name der App",
@@ -205,6 +211,7 @@
       "DESCRIPTION": "Beschreibung",
       "PRODUCT_NAME": "Name des Produkts dem die App zugeordnet ist",
       "TECHNOLOGY": "Technologie",
+      "TYPE": "Typ des Microfrontends",
       "REMOTE_BASE_URL": "Remote Base URL",
       "REMOTE_ENTRY": "Remote Entry",
       "CLASSIFICATIONS": "Klassifizierungen",
@@ -215,7 +222,11 @@
       "ENDPOINTS": "UI Endpunkte",
       "GROUP.REMOTE_MODULE": "Details des zu verwendeten Remote Moduls",
       "GROUP.LOCAL_MODULE": "Details der lokalen Registrierung des Moduls",
-      "GROUP.INTERNALS": "Weitere Details der Objektverwaltung und Verwendung"
+      "GROUP.INTERNALS": "Weitere Details der Objektverwaltung und Verwendung",
+      "DEPRECATED": "Wenn gesetzt, dann ist diese App als veraltet markiert. Sie kann derzeit weiter verwendet werden wird aber in Zukunft nicht mehr zur Verfügung stehen.",
+      "DEPRECATED_SEARCH": "Diese App ist als veraltet markiert. Sie kann derzeit weiter verwendet werden wird aber in Zukunft nicht mehr zur Verfügung stehen.",
+      "UNDEPLOYED": "Wenn gesetzt, dann ist diese APP nicht länger nutzbar. Eine weitere Nutzung führt zu Fehlermeldungen.",
+      "UNDEPLOYED_SEARCH": "Diese App ist nicht länger nutzbar. Eine weitere Nutzung führt zu Fehlermeldungen."
     }
   },
   "PRODUCT": {
@@ -231,6 +242,7 @@
     "BASE_PATH": "Basispfad",
     "ICON_NAME": "Iconname",
     "CLASSIFICATIONS": "Klassifizierungen",
+    "UNDEPLOYED": "Undeployed",
     "WORKSPACES": "Verwendet in Workspaces",
     "TOOLTIPS": {
       "ID": "Eindeutige technische ID des Produkts",
@@ -243,6 +255,8 @@
       "BASE_PATH": "Der Basispfad wie das Produkt erreichbar ist. Muss eindeutig über alle Produkte sein",
       "ICON_NAME": "Name eines Icons aus der PrimeNG Icon Bibliothek. Wird z.b. als Default bei Menüeinträgen benutzt",
       "CLASSIFICATIONS": "Kommaseparierte Liste von Begriffen zur Klassifizierungen des Produkts, z.b. Game, Tool etc.. Kann zur Filterung benutzt werden",
+      "UNDEPLOYED": "Wenn gesetzt, dann ist dieses Produkt nicht länger benutzbar. Eine weitere Benutzung von dessen Apps führt zu Fehlermeldungen.",
+      "UNDEPLOYED_SEARCH": "Dieses Produkt ist nicht länger benutzbar. Eine weitere Benutzung von dessen Apps führt zu Fehlermeldungen.",
       "WORKSPACES": "Workspaces, die das Produkt benutzen"
     }
   },
