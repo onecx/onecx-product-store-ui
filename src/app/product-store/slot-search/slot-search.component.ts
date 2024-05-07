@@ -26,8 +26,7 @@ export class SlotSearchComponent implements OnInit {
   public actions$: Observable<Action[]> | undefined
   public viewMode = 'grid'
   public filter: string | undefined
-  public sortField = 'displayName'
-  public sortOrder = 1
+  public sortField = 'name'
   public limitText = limitText
 
   public dataViewControlsTranslations: DataViewControlTranslations = {}
@@ -125,12 +124,6 @@ export class SlotSearchComponent implements OnInit {
   public onFilterChange(filter: string): void {
     this.filter = filter
     this.dv?.filter(filter, 'contains')
-  }
-  public onSortChange(field: string): void {
-    this.sortField = field
-  }
-  public onSortDirChange(asc: boolean): void {
-    this.sortOrder = asc ? -1 : 1
   }
 
   public onSearch() {
