@@ -134,7 +134,7 @@ export class SlotSearchComponent implements OnInit {
   }
 
   public onSearch() {
-    this.searchInProgress = true
+    this.searchSlots()
   }
   public onSearchReset() {
     this.slotSearchCriteriaGroup.reset()
