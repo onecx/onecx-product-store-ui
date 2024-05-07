@@ -7,14 +7,10 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <div
-      id="product_search_criteria"
-      [formGroup]="slotSearchCriteriaGroup"
-      class="flex flex-wrap gap-4 row-gap-10 px-2"
-    >
+    <div id="slot_search_criteria" [formGroup]="slotSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-10 px-2">
       <span class="p-float-label">
         <input
-          id="product_search_criteria_product_name"
+          id="slot_search_criteria_slot_name"
           pInputText
           type="text"
           formControlName="slotName"
@@ -22,15 +18,15 @@
           [clear]="true"
           [title]="'SLOT.TOOLTIPS.NAME' | translate"
         />
-        <label for="product_search_criteria_product_name">{{ 'SLOT.NAME' | translate }}</label>
+        <label for="slot_search_criteria_slot_name">{{ 'SLOT.NAME' | translate }}</label>
       </span>
     </div>
   </ocx-search-header>
 
   <ocx-page-content>
-    <div *ngIf="exceptionKey" id="product_search_criteria_error" class="card px-3 align-items-center">
+    <div *ngIf="exceptionKey" id="slot_search_criteria_error" class="card px-3 align-items-center">
       <p-message
-        id="product_search_criteria_error_message"
+        id="slot_search_criteria_error_message"
         severity="error"
         styleClass="p-2"
         [text]="exceptionKey | translate"
@@ -38,7 +34,7 @@
     </div>
     <p-dataView
       *ngIf="!exceptionKey"
-      id="product_search_dataview"
+      id="slot_search_dataview"
       [value]="(slots$ | async)?.stream!.sort(sortSlotsByName)"
       [paginator]="true"
       [alwaysShowPaginator]="false"
@@ -52,56 +48,43 @@
     >
       <ng-template pTemplate="header">
         <ocx-data-view-controls
-          id="product_search_dataview_controls"
+          id="slot_search_dataview_controls"
           [enableFiltering]="true"
-          [enableSorting]="true"
           [supportedViews]="['grid']"
           [initialViewMode]="viewMode"
-          [sortingOptions]="[
-            { label: 'PRODUCT.NAME' | translate, value: 'name' },
-            { label: 'PRODUCT.DISPLAY_NAME' | translate, value: 'displayName' }
-          ]"
           [defaultSortOption]="sortField"
           [defaultSortDirection]="sortOrder === 1"
           (dataViewChange)="onLayoutChange($event)"
           (filterChange)="onFilterChange($event)"
-          [filterColumns]="[
-            'PRODUCT.NAME' | translate,
-            'PRODUCT.DISPLAY_NAME' | translate,
-            'PRODUCT.CLASSIFICATIONS' | translate
-          ]"
+          [filterColumns]="['SLOT.NAME' | translate]"
           (sortChange)="onSortChange($event)"
           (sortDirectionChange)="onSortDirChange($event)"
           [translations]="dataViewControlsTranslations"
         >
         </ocx-data-view-controls
       ></ng-template>
-      <ng-template let-product let-idx="rowIndex" pTemplate="gridItem">
-        <div
-          [id]="'product_search_data_grid_' + idx"
-          class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3"
-          [routerLink]="['./', product.name]"
-        >
+      <ng-template let-slot let-idx="rowIndex" pTemplate="gridItem">
+        <div [id]="'slot_search_data_grid_' + idx" class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3">
           <div class="card relative p-2 flex flex-column justify-content-center hover:bg-gray-200 cursor-pointer">
-            <span
-              *ngIf="product?.undeployed"
-              [id]="'product_search_data_grid_' + idx + '_undeployed'"
-              class="card-badge-right badge-1 p-2 pi pi-ban danger-action-bg"
-              [title]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
-            ></span>
             <div class="h-3rem flex flex-column justify-content-between gap-1 text-center">
               <div
-                [id]="'product_search_data_grid_' + idx + '_product_display_name'"
+                [id]="'slot_search_data_grid_' + idx + '_product_name'"
                 class="mt-2 font-bold text-lg"
-                [title]="('PRODUCT.DISPLAY_NAME' | translate) + ': ' + limitText(product.displayName, 100)"
+                [title]="('PRODUCT.NAME' | translate) + ': ' + limitText(slot.productName, 100)"
               >
-                {{ limitText(product.displayName, 20) }}
+                {{ limitText(slot.productName, 20) }}
               </div>
               <div
-                [id]="'product_search_data_grid_' + idx + '_product_name'"
-                [title]="('PRODUCT.NAME' | translate) + ': ' + product.name"
+                [id]="'slot_search_data_grid_' + idx + '_slot_app_id'"
+                [title]="('SLOT.NAME' | translate) + ': ' + slot.appId"
               >
-                {{ limitText(product.name, 25) }}
+                {{ limitText(slot.appId, 25) }}
+              </div>
+              <div
+                [id]="'slot_search_data_grid_' + idx + '_slot_name'"
+                [title]="('SLOT.NAME' | translate) + ': ' + slot.name"
+              >
+                {{ limitText(slot.name, 25) }}
               </div>
             </div>
           </div>
