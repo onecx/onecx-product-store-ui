@@ -7,7 +7,7 @@ import { DataView } from 'primeng/dataview'
 
 import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 
-import { Slot, SlotPageResult, /* SlotSearchCriteria, */ SlotsAPIService } from 'src/app/shared/generated'
+import { Slot, SlotPageResult, SlotsAPIService } from 'src/app/shared/generated'
 import { limitText } from 'src/app/shared/utils'
 
 export interface SlotSearchCriteria {
@@ -118,9 +118,6 @@ export class SlotSearchComponent implements OnInit {
   /**
    * UI EVENTS
    */
-  public onLayoutChange(viewMode: string): void {
-    this.viewMode = viewMode
-  }
   public onFilterChange(filter: string): void {
     this.filter = filter
     this.dv?.filter(filter, 'contains')

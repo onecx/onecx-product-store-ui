@@ -47,7 +47,6 @@ describe('ProductSearchComponent', () => {
     fixture = TestBed.createComponent(ProductSearchComponent)
     component = fixture.componentInstance
     router = TestBed.inject(Router)
-    //fixture.detectChanges()
     fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
   })
 
