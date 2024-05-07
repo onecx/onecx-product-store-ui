@@ -7,11 +7,11 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <div id="slot_search_criteria" [formGroup]="slotSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-10 px-2">
+    <div id="slot_search_criteria" [formGroup]="slotSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-3 px-2">
       <span class="p-float-label">
         <input
-          id="slot_search_criteria_slot_name"
           pInputText
+          id="slot_search_criteria_slot_name"
           type="text"
           formControlName="slotName"
           class="w-18rem"
@@ -66,17 +66,17 @@
       <ng-template let-slot let-idx="rowIndex" pTemplate="gridItem">
         <div [id]="'slot_search_data_grid_' + idx" class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3">
           <div class="card relative p-2 flex flex-column justify-content-center hover:bg-gray-200 cursor-pointer">
-            <div class="h-3rem flex flex-column justify-content-between gap-1 text-center">
+            <div class="h-5rem flex flex-column justify-content-between gap-1 text-center">
               <div
                 [id]="'slot_search_data_grid_' + idx + '_product_name'"
                 class="mt-2 font-bold text-lg"
-                [title]="('PRODUCT.NAME' | translate) + ': ' + limitText(slot.productName, 100)"
+                [title]="('SLOT.PRODUCT_NAME' | translate) + ': ' + limitText(slot.productName, 100)"
               >
                 {{ limitText(slot.productName, 20) }}
               </div>
               <div
                 [id]="'slot_search_data_grid_' + idx + '_slot_app_id'"
-                [title]="('SLOT.NAME' | translate) + ': ' + slot.appId"
+                [title]="('APP.APP_ID' | translate) + ': ' + slot.appId"
               >
                 {{ limitText(slot.appId, 25) }}
               </div>

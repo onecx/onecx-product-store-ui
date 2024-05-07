@@ -267,6 +267,7 @@
   },
   "SLOT": {
     "NAME": "Name",
+    "PRODUCT_NAME": "Product name",
     "TOOLTIPS": {
       "ID": "Unique technical ID of the Slot",
       "NAME": "Unique Name of the Slot"

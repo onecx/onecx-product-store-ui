@@ -267,6 +267,7 @@
   },
   "SLOT": {
     "NAME": "Name",
+    "PRODUCT_NAME": "Produktname",
     "TOOLTIPS": {
       "ID": "Eindeutige technische ID des Slots",
       "NAME": "Eindeutiger Name des Slots"

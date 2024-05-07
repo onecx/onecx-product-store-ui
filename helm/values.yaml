@@ -35,6 +35,8 @@ app:
             SAVE: Update and save product
             SEARCH: Search products
             VIEW: View product details
+          SLOT:
+            SEARCH: Search slots
     # Keycloak
     keycloak:
       client:
