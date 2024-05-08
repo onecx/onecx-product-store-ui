@@ -62,7 +62,7 @@
             { label: 'PRODUCT.DISPLAY_NAME' | translate, value: 'displayName' }
           ]"
           [defaultSortOption]="sortField"
-          [defaultSortDirection]="sortOrder === 1"
+          [defaultSortDirection]="sortOrder === -1"
           (dataViewChange)="onLayoutChange($event)"
           (filterChange)="onFilterChange($event)"
           [filterColumns]="[
