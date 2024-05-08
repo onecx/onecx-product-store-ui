@@ -25,7 +25,7 @@ const slots: Slot[] = [
   }
 ]
 
-fdescribe('SlotSearchComponent', () => {
+describe('SlotSearchComponent', () => {
   let component: SlotSearchComponent
   let fixture: ComponentFixture<SlotSearchComponent>
   let routerSpy = jasmine.createSpyObj('Router', ['navigate'])

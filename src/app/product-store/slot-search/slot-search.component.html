@@ -65,11 +65,11 @@
           <div class="card relative p-2 flex flex-column justify-content-center hover:bg-gray-200 cursor-pointer">
             <div class="h-5rem flex flex-column justify-content-between gap-1 text-center">
               <div
-                [id]="'slot_search_data_grid_' + idx + '_product_name'"
+                [id]="'slot_search_data_grid_' + idx + '_slot_name'"
                 class="mt-2 font-bold text-lg"
-                [title]="('SLOT.PRODUCT_NAME' | translate) + ': ' + limitText(slot.productName, 100)"
+                [title]="('SLOT.NAME' | translate) + ': ' + slot.name"
               >
-                {{ limitText(slot.productName, 20) }}
+                {{ limitText(slot.name, 25) }}
               </div>
               <div
                 [id]="'slot_search_data_grid_' + idx + '_slot_app_id'"
@@ -78,10 +78,10 @@
                 {{ limitText(slot.appId, 25) }}
               </div>
               <div
-                [id]="'slot_search_data_grid_' + idx + '_slot_name'"
-                [title]="('SLOT.NAME' | translate) + ': ' + slot.name"
+                [id]="'slot_search_data_grid_' + idx + '_product_name'"
+                [title]="('SLOT.PRODUCT_NAME' | translate) + ': ' + limitText(slot.productName, 100)"
               >
-                {{ limitText(slot.name, 25) }}
+                {{ limitText(slot.productName, 20) }}
               </div>
             </div>
           </div>
