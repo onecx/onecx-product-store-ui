@@ -123,7 +123,9 @@ export class ProductSearchComponent implements OnInit {
         'ACTIONS.CREATE.PRODUCT.LABEL',
         'ACTIONS.CREATE.PRODUCT.TOOLTIP',
         'DIALOG.SEARCH.APPS.LABEL',
-        'DIALOG.SEARCH.APPS.TOOLTIP'
+        'DIALOG.SEARCH.APPS.TOOLTIP',
+        'DIALOG.SEARCH.SLOTS.LABEL',
+        'DIALOG.SEARCH.SLOTS.TOOLTIP'
       ])
       .pipe(
         map((data) => {
@@ -132,6 +134,14 @@ export class ProductSearchComponent implements OnInit {
               label: data['DIALOG.SEARCH.APPS.LABEL'],
               title: data['DIALOG.SEARCH.APPS.TOOLTIP'],
               actionCallback: () => this.onAppSearch(),
+              permission: 'APP#SEARCH',
+              icon: 'pi pi-bars',
+              show: 'always'
+            },
+            {
+              label: data['DIALOG.SEARCH.SLOTS.LABEL'],
+              title: data['DIALOG.SEARCH.SLOTS.TOOLTIP'],
+              actionCallback: () => this.onSlotSearch(),
               permission: 'APP#SEARCH',
               icon: 'pi pi-bars',
               show: 'always'
@@ -174,6 +184,9 @@ export class ProductSearchComponent implements OnInit {
   }
   public onAppSearch() {
     this.router.navigate(['./apps'], { relativeTo: this.route })
+  }
+  public onSlotSearch() {
+    this.router.navigate(['./slots'], { relativeTo: this.route })
   }
   public onNewProduct() {
     this.router.navigate(['./new'], { relativeTo: this.route })

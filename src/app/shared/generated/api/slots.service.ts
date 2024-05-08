@@ -19,49 +19,49 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { CreateMicroserviceRequest } from '../model/createMicroserviceRequest';
-// @ts-ignore
-import { MfeAndMsSearchCriteria } from '../model/mfeAndMsSearchCriteria';
-// @ts-ignore
-import { Microservice } from '../model/microservice';
-// @ts-ignore
-import { MicroservicePageResult } from '../model/microservicePageResult';
+import { CreateSlotRequest } from '../model/createSlotRequest';
 // @ts-ignore
 import { ProblemDetailResponse } from '../model/problemDetailResponse';
 // @ts-ignore
-import { UpdateMicroserviceRequest } from '../model/updateMicroserviceRequest';
+import { Slot } from '../model/slot';
+// @ts-ignore
+import { SlotPageResult } from '../model/slotPageResult';
+// @ts-ignore
+import { SlotSearchCriteria } from '../model/slotSearchCriteria';
+// @ts-ignore
+import { UpdateSlotRequest } from '../model/updateSlotRequest';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
 
 
-export interface CreateMicroserviceRequestParams {
-    createMicroserviceRequest: CreateMicroserviceRequest;
+export interface CreateSlotRequestParams {
+    createSlotRequest: CreateSlotRequest;
 }
 
-export interface DeleteMicroserviceRequestParams {
+export interface DeleteSlotRequestParams {
     id: string;
 }
 
-export interface GetMicroserviceRequestParams {
+export interface GetSlotRequestParams {
     id: string;
 }
 
-export interface SearchMicroserviceRequestParams {
-    mfeAndMsSearchCriteria: MfeAndMsSearchCriteria;
+export interface SearchSlotsRequestParams {
+    slotSearchCriteria: SlotSearchCriteria;
 }
 
-export interface UpdateMicroserviceRequestParams {
+export interface UpdateSlotRequestParams {
     id: string;
-    updateMicroserviceRequest: UpdateMicroserviceRequest;
+    updateSlotRequest: UpdateSlotRequest;
 }
 
 
 @Injectable({
   providedIn: 'any'
 })
-export class MicroservicesAPIService {
+export class SlotsAPIService {
 
     protected basePath = 'http://onecx-product-store-bff:8080';
     public defaultHeaders = new HttpHeaders();
@@ -123,18 +123,18 @@ export class MicroservicesAPIService {
     }
 
     /**
-     * Create microservice
+     * Create slot
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public createMicroservice(requestParameters: CreateMicroserviceRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Microservice>;
-    public createMicroservice(requestParameters: CreateMicroserviceRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Microservice>>;
-    public createMicroservice(requestParameters: CreateMicroserviceRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Microservice>>;
-    public createMicroservice(requestParameters: CreateMicroserviceRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
-        const createMicroserviceRequest = requestParameters.createMicroserviceRequest;
-        if (createMicroserviceRequest === null || createMicroserviceRequest === undefined) {
-            throw new Error('Required parameter createMicroserviceRequest was null or undefined when calling createMicroservice.');
+    public createSlot(requestParameters: CreateSlotRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Slot>;
+    public createSlot(requestParameters: CreateSlotRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Slot>>;
+    public createSlot(requestParameters: CreateSlotRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Slot>>;
+    public createSlot(requestParameters: CreateSlotRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+        const createSlotRequest = requestParameters.createSlotRequest;
+        if (createSlotRequest === null || createSlotRequest === undefined) {
+            throw new Error('Required parameter createSlotRequest was null or undefined when calling createSlot.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -177,11 +177,11 @@ export class MicroservicesAPIService {
             }
         }
 
-        let localVarPath = `/microservices`;
-        return this.httpClient.request<Microservice>('post', `${this.configuration.basePath}${localVarPath}`,
+        let localVarPath = `/slots`;
+        return this.httpClient.request<Slot>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: createMicroserviceRequest,
+                body: createSlotRequest,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -192,18 +192,18 @@ export class MicroservicesAPIService {
     }
 
     /**
-     * Delete microservice by ID
+     * Delete slot by ID
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public deleteMicroservice(requestParameters: DeleteMicroserviceRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
-    public deleteMicroservice(requestParameters: DeleteMicroserviceRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
-    public deleteMicroservice(requestParameters: DeleteMicroserviceRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
-    public deleteMicroservice(requestParameters: DeleteMicroserviceRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public deleteSlot(requestParameters: DeleteSlotRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public deleteSlot(requestParameters: DeleteSlotRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public deleteSlot(requestParameters: DeleteSlotRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public deleteSlot(requestParameters: DeleteSlotRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         const id = requestParameters.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling deleteMicroservice.');
+            throw new Error('Required parameter id was null or undefined when calling deleteSlot.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -237,7 +237,7 @@ export class MicroservicesAPIService {
             }
         }
 
-        let localVarPath = `/microservices/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        let localVarPath = `/slots/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
         return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
@@ -251,18 +251,18 @@ export class MicroservicesAPIService {
     }
 
     /**
-     * Return microservices by ID
+     * Return slot by ID
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getMicroservice(requestParameters: GetMicroserviceRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Microservice>;
-    public getMicroservice(requestParameters: GetMicroserviceRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Microservice>>;
-    public getMicroservice(requestParameters: GetMicroserviceRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Microservice>>;
-    public getMicroservice(requestParameters: GetMicroserviceRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public getSlot(requestParameters: GetSlotRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Slot>;
+    public getSlot(requestParameters: GetSlotRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Slot>>;
+    public getSlot(requestParameters: GetSlotRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Slot>>;
+    public getSlot(requestParameters: GetSlotRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         const id = requestParameters.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling getMicroservice.');
+            throw new Error('Required parameter id was null or undefined when calling getSlot.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -296,8 +296,8 @@ export class MicroservicesAPIService {
             }
         }
 
-        let localVarPath = `/microservices/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<Microservice>('get', `${this.configuration.basePath}${localVarPath}`,
+        let localVarPath = `/slots/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        return this.httpClient.request<Slot>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,
@@ -310,18 +310,18 @@ export class MicroservicesAPIService {
     }
 
     /**
-     * Search for microservices by search criteria
+     * Search for slots by search criteria
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public searchMicroservice(requestParameters: SearchMicroserviceRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<MicroservicePageResult>;
-    public searchMicroservice(requestParameters: SearchMicroserviceRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<MicroservicePageResult>>;
-    public searchMicroservice(requestParameters: SearchMicroserviceRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<MicroservicePageResult>>;
-    public searchMicroservice(requestParameters: SearchMicroserviceRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
-        const mfeAndMsSearchCriteria = requestParameters.mfeAndMsSearchCriteria;
-        if (mfeAndMsSearchCriteria === null || mfeAndMsSearchCriteria === undefined) {
-            throw new Error('Required parameter mfeAndMsSearchCriteria was null or undefined when calling searchMicroservice.');
+    public searchSlots(requestParameters: SearchSlotsRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<SlotPageResult>;
+    public searchSlots(requestParameters: SearchSlotsRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<SlotPageResult>>;
+    public searchSlots(requestParameters: SearchSlotsRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<SlotPageResult>>;
+    public searchSlots(requestParameters: SearchSlotsRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+        const slotSearchCriteria = requestParameters.slotSearchCriteria;
+        if (slotSearchCriteria === null || slotSearchCriteria === undefined) {
+            throw new Error('Required parameter slotSearchCriteria was null or undefined when calling searchSlots.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -364,11 +364,11 @@ export class MicroservicesAPIService {
             }
         }
 
-        let localVarPath = `/microservices/search`;
-        return this.httpClient.request<MicroservicePageResult>('post', `${this.configuration.basePath}${localVarPath}`,
+        let localVarPath = `/slots/search`;
+        return this.httpClient.request<SlotPageResult>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: mfeAndMsSearchCriteria,
+                body: slotSearchCriteria,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -379,22 +379,22 @@ export class MicroservicesAPIService {
     }
 
     /**
-     * Update microservice by ID
+     * Update slot by ID
      * @param requestParameters
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateMicroservice(requestParameters: UpdateMicroserviceRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
-    public updateMicroservice(requestParameters: UpdateMicroserviceRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
-    public updateMicroservice(requestParameters: UpdateMicroserviceRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
-    public updateMicroservice(requestParameters: UpdateMicroserviceRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public updateSlot(requestParameters: UpdateSlotRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any>;
+    public updateSlot(requestParameters: UpdateSlotRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<any>>;
+    public updateSlot(requestParameters: UpdateSlotRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<any>>;
+    public updateSlot(requestParameters: UpdateSlotRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         const id = requestParameters.id;
         if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling updateMicroservice.');
+            throw new Error('Required parameter id was null or undefined when calling updateSlot.');
         }
-        const updateMicroserviceRequest = requestParameters.updateMicroserviceRequest;
-        if (updateMicroserviceRequest === null || updateMicroserviceRequest === undefined) {
-            throw new Error('Required parameter updateMicroserviceRequest was null or undefined when calling updateMicroservice.');
+        const updateSlotRequest = requestParameters.updateSlotRequest;
+        if (updateSlotRequest === null || updateSlotRequest === undefined) {
+            throw new Error('Required parameter updateSlotRequest was null or undefined when calling updateSlot.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -437,11 +437,11 @@ export class MicroservicesAPIService {
             }
         }
 
-        let localVarPath = `/microservices/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
+        let localVarPath = `/slots/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
         return this.httpClient.request<any>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: updateMicroserviceRequest,
+                body: updateSlotRequest,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

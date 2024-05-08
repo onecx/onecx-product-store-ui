@@ -1,4 +1,3 @@
----
 openapi: 3.0.3
 info:
   title: onecx-product-store-bff
@@ -498,31 +497,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /microservices/appId/{appId}:
-    x-onecx:
-      permissions:
-        microservice:
-          - read
-    get:
-      tags:
-        - Microservices
-      description: Return microservice by its appId
-      operationId: getMicroserviceByAppId
-      parameters:
-        - name: appId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Microservice'
-        '404':
-          description: Not found
   /images/{refId}/{refType}:
     post:
       x-onecx:
@@ -533,13 +507,6 @@ paths:
         - imagesInternal
       description: Upload Images
       parameters:
-        - in: header
-          name: Content-Length
-          required: true
-          schema:
-            minimum: 1
-            maximum: 110000
-            type: integer
         - name: refId
           in: path
           required: true
@@ -611,12 +578,6 @@ paths:
       description: update Images
       operationId: updateImage
       parameters:
-        - in: header
-          name: Content-Length
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 110000
         - name: refId
           in: path
           required: true
@@ -643,6 +604,151 @@ paths:
                 $ref: '#/components/schemas/ImageInfo'
         '400':
           description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /slots:
+    post:
+      x-onecx:
+        permissions:
+          slot:
+            - write
+      tags:
+        - slots
+      description: Create slot
+      operationId: createSlot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSlotRequest'
+      responses:
+        '201':
+          description: New slot created
+          headers:
+            Location:
+              required: true
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slot'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /slots/search:
+    post:
+      x-onecx:
+        permissions:
+          slot:
+            - read
+      tags:
+        - slots
+      description: Search for slots by search criteria
+      operationId: searchSlots
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SlotSearchCriteria'
+      responses:
+        '200':
+          description: Corresponding slots
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlotPageResult'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /slots/{id}:
+    get:
+      x-onecx:
+        permissions:
+          slot:
+            - read
+      tags:
+        - slots
+      description: Return slot by ID
+      operationId: getSlot
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Slot'
+        '404':
+          description: Not found
+    put:
+      x-onecx:
+        permissions:
+          slot:
+            - write
+      tags:
+        - slots
+      description: Update slot by ID
+      operationId: updateSlot
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSlotRequest'
+      responses:
+        '204':
+          description: Slot updated
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        '404':
+          description: Slot not found
+    delete:
+      x-onecx:
+        permissions:
+          slot:
+            - delete
+      tags:
+        - slots
+      description: Delete slot by ID
+      operationId: deleteSlot
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -1262,3 +1368,148 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Microservice'
+    UpdateSlotRequest:
+      required:
+        - productName
+        - appId
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+        appId:
+          type: string
+        description:
+          type: string
+        productName:
+          type: string
+        deprecated:
+          type: boolean
+        undeployed:
+          type: boolean
+    SlotPageResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/SlotPageItem'
+    SlotPageItem:
+      required:
+        - productName
+        - appId
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        modificationCount:
+          format: int32
+          type: integer
+        operator:
+          type: boolean
+        appId:
+          type: string
+        description:
+          type: string
+        productName:
+          type: string
+        deprecated:
+          type: boolean
+        undeployed:
+          type: boolean
+    SlotSearchCriteria:
+      type: object
+      properties:
+        appId:
+          type: string
+        name:
+          type: string
+        productName:
+          type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 10
+          type: integer
+    CreateSlotRequest:
+      required:
+        - appId
+        - productName
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+        appId:
+          type: string
+        description:
+          type: string
+        productName:
+          type: string
+        deprecated:
+          type: boolean
+        undeployed:
+          type: boolean
+    Slot:
+      required:
+        - productName
+        - appId
+        - name
+      type: object
+      properties:
+        id:
+          type: string
+        creationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        creationUser:
+          type: string
+        modificationDate:
+          $ref: '#/components/schemas/OffsetDateTime'
+        modificationUser:
+          type: string
+        modificationCount:
+          format: int32
+          type: integer
+        operator:
+          type: boolean
+        appId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        productName:
+          type: string
+        deprecated:
+          type: boolean
+        undeployed:
+          type: boolean

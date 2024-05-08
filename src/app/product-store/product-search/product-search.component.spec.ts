@@ -47,7 +47,6 @@ describe('ProductSearchComponent', () => {
     fixture = TestBed.createComponent(ProductSearchComponent)
     component = fixture.componentInstance
     router = TestBed.inject(Router)
-    //fixture.detectChanges()
     fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
   })
 
@@ -61,6 +60,7 @@ describe('ProductSearchComponent', () => {
 
   it('should prepare action buttons on init', () => {
     spyOn(component, 'onAppSearch')
+    spyOn(component, 'onSlotSearch')
     spyOn(component, 'onNewProduct')
 
     component.ngOnInit()
@@ -70,8 +70,10 @@ describe('ProductSearchComponent', () => {
 
     actions[0].actionCallback()
     actions[1].actionCallback()
+    actions[2].actionCallback()
 
     expect(component.onAppSearch).toHaveBeenCalled()
+    expect(component.onSlotSearch).toHaveBeenCalled()
     expect(component.onNewProduct).toHaveBeenCalled()
   })
 
@@ -184,6 +186,14 @@ describe('ProductSearchComponent', () => {
     component.onAppSearch()
 
     expect(routerSpy).toHaveBeenCalledWith(['./apps'], jasmine.any(Object))
+  })
+
+  it('should navigate to slots onSlotSearch', () => {
+    const routerSpy = spyOn(router, 'navigate')
+
+    component.onSlotSearch()
+
+    expect(routerSpy).toHaveBeenCalledWith(['./slots'], jasmine.any(Object))
   })
 
   it('should sort products by display name', () => {
