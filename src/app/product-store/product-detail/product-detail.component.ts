@@ -5,8 +5,14 @@ import { Observable, finalize, map } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 
 import { Action, PortalMessageService, UserService } from '@onecx/portal-integration-angular'
-import { Product, ProductAndWorkspaces, ProductsAPIService } from 'src/app/shared/generated'
-import { prepareUrl } from 'src/app/shared/utils'
+import {
+  ImagesInternalAPIService,
+  Product,
+  ProductAndWorkspaces,
+  ProductsAPIService,
+  RefType
+} from 'src/app/shared/generated'
+import { bffImageUrl } from 'src/app/shared/utils'
 import { ProductPropertyComponent } from './product-props/product-props.component'
 
 export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
@@ -27,6 +33,7 @@ export class ProductDetailComponent implements OnInit {
   public productDeleteVisible = false
   public productDeleteMessage = ''
   public selectedTabIndex = 0
+  public currentLogoUrl: string | undefined = undefined
 
   @ViewChild(ProductPropertyComponent, { static: false }) productPropsComponent!: ProductPropertyComponent
 
@@ -36,6 +43,7 @@ export class ProductDetailComponent implements OnInit {
     private user: UserService,
     private location: Location,
     private productApi: ProductsAPIService,
+    private imageApi: ImagesInternalAPIService,
     private msgService: PortalMessageService,
     private translate: TranslateService
   ) {
@@ -73,7 +81,7 @@ export class ProductDetailComponent implements OnInit {
           if (data) {
             this.product = data
             this.prepareActionButtons()
-            this.headerImageUrl = prepareUrl(this.product?.imageUrl)
+            this.currentLogoUrl = this.getLogoUrl(this.product!)
           }
         }
       })
@@ -224,5 +232,15 @@ export class ProductDetailComponent implements OnInit {
         error: () => this.msgService.error({ summaryKey: 'ACTIONS.DELETE.PRODUCT.NOK' })
       })
     }
+  }
+
+  // called by props component (this is the master of this url)
+  public onUpdateLogoUrl(url: string) {
+    this.currentLogoUrl = url
+  }
+
+  public getLogoUrl(product: Product): string {
+    if (product?.imageUrl) return product?.imageUrl
+    else return bffImageUrl(this.imageApi.configuration.basePath, product?.name, RefType.Logo)
   }
 }

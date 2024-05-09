@@ -4,8 +4,8 @@
     [header]="product?.displayName"
     [subheader]="('DIALOG.DETAIL.SUBHEADER' | translate) + ': ' + ('ACTIONS.' + changeMode + '.LABEL' | translate)"
     [actions]="(actions$ | async) ?? []"
-    [figureImage]="headerImageUrl"
-    [figureBackground]="!product?.imageUrl"
+    [figureImage]="currentLogoUrl"
+    [figureBackground]="!currentLogoUrl"
   >
   </ocx-page-header>
   <ocx-page-content>
@@ -23,6 +23,7 @@
           [changeMode]="changeMode"
           (productCreated)="onCreate($event)"
           (productChanged)="onChange($event)"
+          (currentLogoUrl)="onUpdateLogoUrl($event)"
         ></app-product-props>
       </p-tabPanel>
 

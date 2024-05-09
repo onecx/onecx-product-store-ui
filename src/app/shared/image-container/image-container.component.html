@@ -1,15 +1,17 @@
 <img
   [id]="id"
-  *ngIf="imageUrl && !displayPlaceHolder"
-  [class]="'image-object image-' + (small ? 'sm' : 'lg') + ' sm:image-lg vertical-align-middle'"
-  [ocxSrc]="imageUrl"
+  *ngIf="!displayDefaultLogo"
+  [class]="'image-object image-' + (small ? 'sm' : 'lg') + ' sm:image-lg ' + (styleClass ? styleClass : '')"
+  [ocxSrc]="displayImageUrl"
   (error)="onImageError()"
-  alt="Logo"
+  [alt]="'IMAGE.TOOLTIPS.IMAGE' | translate"
+  [title]="title ? title : ('IMAGE.TOOLTIPS.IMAGE' | translate)"
 />
 <img
   [id]="id"
-  *ngIf="!imageUrl || displayPlaceHolder"
-  [class]="'image-object image-' + (small ? 'sm' : 'lg') + ' sm:image-lg vertical-align-middle'"
-  [ocxSrc]="defaultImageUrl"
-  alt="Logo"
+  *ngIf="displayDefaultLogo"
+  [class]="'image-object image-' + (small ? 'sm' : 'lg') + ' sm:image-lg ' + (styleClass ? styleClass : '')"
+  [src]="defaultImageUrl"
+  [alt]="'IMAGE.TOOLTIPS.IMAGE' | translate"
+  [title]="title ? title : ('IMAGE.TOOLTIPS.PLACEHOLDER' | translate)"
 />

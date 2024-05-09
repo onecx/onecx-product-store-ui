@@ -5,16 +5,14 @@ import { SelectItem } from 'primeng/api'
 import { PortalMessageService } from '@onecx/portal-integration-angular'
 import {
   CreateProductRequest,
-  GetImageRequestParams,
   ImagesInternalAPIService,
   Product,
   ProductsAPIService,
   RefType,
-  UpdateProductRequest,
-  UploadImageRequestParams
+  UpdateProductRequest
 } from 'src/app/shared/generated'
 import { IconService } from 'src/app/shared/iconservice'
-import { dropDownSortItemsByLabel, convertToUniqueStringArray } from 'src/app/shared/utils'
+import { bffImageUrl, dropDownSortItemsByLabel, convertToUniqueStringArray } from 'src/app/shared/utils'
 import { ChangeMode } from '../product-detail.component'
 
 export interface ProductDetailForm {
@@ -49,12 +47,15 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
   @Output() productCreated = new EventEmitter<Product>()
   @Output() productChanged = new EventEmitter<boolean>()
   @Output() changeModeChange = new EventEmitter<ChangeMode>()
+  @Output() currentLogoUrl = new EventEmitter<string>()
+
   public formGroup: FormGroup<ProductDetailForm>
   public productId: string | undefined
   public productName: string | null | undefined
   public fetchingLogoUrl: string | undefined
   public iconItems: SelectItem[] = [{ label: '', value: null }]
   public logoImageWasUploaded: boolean | undefined
+  public externUrlPattern = 'http(s)://path-to-image'
   public convertToUniqueStringArray = convertToUniqueStringArray
 
   constructor(
@@ -88,15 +89,6 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
     if (this.changeMode === 'EDIT') {
       this.formGroup.controls['name'].disable()
     }
-    let productName = this.formGroup.controls['name'].value!
-    if (!productName) {
-      this.logoImageWasUploaded = false
-    } else {
-      this.imageApi.getImage({ refId: productName, refType: RefType.Logo }).subscribe(() => {
-        this.logoImageWasUploaded = true
-      })
-    }
-    this.fetchingLogoUrl = this.prepareImageUrl()
   }
 
   ngOnChanges(): void {
@@ -104,9 +96,13 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
       this.formGroup.patchValue({ ...this.product })
       this.productId = this.changeMode !== 'COPY' ? this.product.id : undefined
       this.productName = this.product.name // business key => manage the change!
+      this.fetchingLogoUrl = this.getLogoUrl(this.product)
     } else {
       this.formGroup.reset()
+      this.fetchingLogoUrl = undefined
     }
+    this.currentLogoUrl.emit(this.fetchingLogoUrl)
+    // mode
     this.changeMode !== 'VIEW' ? this.formGroup.enable() : this.formGroup.disable()
     this.changeMode = this.changeMode === 'COPY' ? 'CREATE' : this.changeMode
     this.changeModeChange.emit(this.changeMode)
@@ -187,78 +183,85 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
 
   /** File Handling
    */
-  public onFileUpload(ev: Event, fieldType: 'logo'): void {
-    let productName = this.formGroup.controls['name'].value
+  public onFileUpload(ev: Event): void {
+    ev.stopPropagation
+    const workspaceName = this.formGroup.controls['name'].value
+    if (!workspaceName || workspaceName === '') {
+      this.msgService.error({
+        summaryKey: 'IMAGE.CONSTRAINT_FAILED',
+        detailKey: 'IMAGE.CONSTRAINT_NAME'
+      })
+      return
+    }
     if (ev.target && (ev.target as HTMLInputElement).files) {
       const files = (ev.target as HTMLInputElement).files
       if (files) {
-        if (productName == undefined || productName == '' || productName == null) {
-          this.msgService.error({ summaryKey: 'LOGO.UPLOAD_FAILED_NAME' })
-        } else if (files[0].size > 110000) {
-          this.msgService.error({ summaryKey: 'LOGO.UPLOAD_FAILED_SIZE' })
+        if (files[0].size > 100000) {
+          this.msgService.error({
+            summaryKey: 'IMAGE.CONSTRAINT_FAILED',
+            detailKey: 'IMAGE.CONSTRAINT_SIZE'
+          })
+        } else if (!/^.*.(jpg|jpeg|png)$/.exec(files[0].name)) {
+          this.msgService.error({
+            summaryKey: 'IMAGE.CONSTRAINT_FAILED',
+            detailKey: 'IMAGE.CONSTRAINT_FILE_TYPE'
+          })
         } else {
-          let requestParametersGet: GetImageRequestParams
-          requestParametersGet = {
-            refId: productName,
-            refType: RefType.Logo
-          }
-          let requestParameters: UploadImageRequestParams
-          const blob = new Blob([files[0]], { type: files[0].type })
-          let imageType: RefType = RefType.Logo
-
-          requestParameters = {
-            refId: this.formGroup.controls['name'].value!,
-            refType: imageType,
-            body: blob
-          }
-
-          this.fetchingLogoUrl = undefined
-
-          this.imageApi.getImage(requestParametersGet).subscribe(
-            (res) => {
-              if (RegExp(/^.*.(jpg|jpeg|png)$/).exec(files[0].name)) {
-                this.imageApi.updateImage(requestParameters).subscribe(() => {
-                  this.fetchingLogoUrl =
-                    this.imageApi.configuration.basePath + '/images/' + productName + '/' + fieldType
-                  this.msgService.info({ summaryKey: 'LOGO.UPLOADED' })
-                  this.formGroup.controls['imageUrl'].setValue('')
-                  this.logoImageWasUploaded = true
-                })
-              }
-            },
-            (err) => {
-              if (RegExp(/^.*.(jpg|jpeg|png)$/).exec(files[0].name)) {
-                this.imageApi.uploadImage(requestParameters).subscribe(() => {
-                  this.fetchingLogoUrl =
-                    this.imageApi.configuration.basePath + '/images/' + productName + '/' + fieldType
-                  this.msgService.info({ summaryKey: 'LOGO.UPLOADED' })
-                  this.formGroup.controls['imageUrl'].setValue('')
-                  this.logoImageWasUploaded = true
-                })
-              }
-            }
-          )
+          this.saveImage(workspaceName, files) // store image
         }
+      } else {
+        this.msgService.error({
+          summaryKey: 'IMAGE.CONSTRAINT_FAILED',
+          detailKey: 'IMAGE.CONSTRAINT_FILE_MISSING'
+        })
       }
     }
   }
 
-  prepareImageUrl(): string {
-    let imgUrl = this.formGroup.controls['imageUrl'].value
-    if (imgUrl == '' || imgUrl == null) {
-      return this.imageApi.configuration.basePath + '/images/' + this.formGroup.controls['name'].value + '/logo'
-    } else {
-      return imgUrl
+  private saveImage(name: string, files: FileList) {
+    const blob = new Blob([files[0]], { type: files[0].type })
+    this.fetchingLogoUrl = undefined // reset - important to trigger the change in UI
+    this.currentLogoUrl.emit(this.fetchingLogoUrl)
+    const saveRequestParameter = {
+      contentLength: files.length,
+      refId: name,
+      refType: RefType.Logo,
+      body: blob
     }
+    this.imageApi.getImage({ refId: name, refType: RefType.Logo }).subscribe(
+      () => {
+        this.imageApi.updateImage(saveRequestParameter).subscribe(() => {
+          this.prepareImageResponse(name)
+        })
+      },
+      (err) => {
+        this.imageApi.uploadImage(saveRequestParameter).subscribe(() => {
+          this.prepareImageResponse(name)
+        })
+      }
+    )
+  }
+  private prepareImageResponse(name: string): void {
+    this.fetchingLogoUrl = bffImageUrl(this.imageApi.configuration.basePath, name, RefType.Logo)
+    this.currentLogoUrl.emit(this.fetchingLogoUrl)
+    this.msgService.info({ summaryKey: 'IMAGE.UPLOAD_SUCCESS' })
+    this.formGroup.controls['imageUrl'].setValue('')
   }
 
-  inputChange(event: Event) {
-    setTimeout(() => {
-      this.fetchingLogoUrl = (event.target as HTMLInputElement).value
-      if ((event.target as HTMLInputElement).value == undefined || (event.target as HTMLInputElement).value == '') {
-        this.fetchingLogoUrl =
-          this.imageApi.configuration.basePath + '/images/' + this.formGroup.controls['name'].value + '/logo'
-      }
-    }, 1000)
+  public getLogoUrl(product: Product | undefined): string | undefined {
+    if (!product) {
+      return undefined
+    }
+    if (product.imageUrl && product.imageUrl != '') {
+      return product.imageUrl
+    }
+    return bffImageUrl(this.imageApi.configuration.basePath, product.name, RefType.Logo)
+  }
+
+  public onInputChange(product: Product | undefined, event: Event): void {
+    this.fetchingLogoUrl = (event.target as HTMLInputElement).value
+    if ((event.target as HTMLInputElement).value == undefined || (event.target as HTMLInputElement).value == '') {
+      this.fetchingLogoUrl = bffImageUrl(this.imageApi.configuration.basePath, product?.name, RefType.Logo)
+    }
   }
 }

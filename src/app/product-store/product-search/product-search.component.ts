@@ -11,9 +11,10 @@ import {
   ImagesInternalAPIService,
   ProductAbstract,
   ProductPageResult,
-  ProductsAPIService
+  ProductsAPIService,
+  RefType
 } from 'src/app/shared/generated'
-import { limitText } from 'src/app/shared/utils'
+import { bffImageUrl, limitText } from 'src/app/shared/utils'
 
 export interface ProductSearchCriteria {
   productName: FormControl<string | null>
@@ -192,11 +193,13 @@ export class ProductSearchComponent implements OnInit {
     this.router.navigate(['./new'], { relativeTo: this.route })
   }
 
-  public prepareImageUrl(product: any): string {
-    if (product.imageUrl) {
-      return product.imageUrl
-    } else {
-      return this.imageApi.configuration.basePath + '/images/' + product.name + '/logo'
+  public getLogoUrl(product: ProductAbstract | undefined): string | undefined {
+    if (!product) {
+      return undefined
     }
+    if (product.imageUrl && product.imageUrl != '') {
+      return product.imageUrl
+    }
+    return bffImageUrl(this.imageApi.configuration.basePath, product.name, RefType.Logo)
   }
 }

@@ -153,17 +153,21 @@
       "MODIFICATION_USER": "Name of the user of the last change"
     }
   },
-  "LOGO": {
-    "LOGO_URL": "Logo URL",
+  "IMAGE": {
+    "LOGO_URL": "External Logo URL",
+    "UPLOAD_FAIL": " The file was not uploaded successfully",
+    "UPLOAD_SUCCESS": "The file was uploaded successfully",
+    "CONSTRAINT_FILE_MISSING": "No file selected.",
+    "CONSTRAINT_FILE_TYPE": "The following image formats are accepted: jpg, jpeg, png",
+    "CONSTRAINT_FAILED": "File upload condition check failed:",
+    "CONSTRAINT_NAME": "Please add a Workspace name before uploading a file.",
+    "CONSTRAINT_SIZE": "The image file size exceeds the maximum length of 100,000 bytes.",
     "TOOLTIPS": {
+      "URL": "As an alternative to uploading, a URL to an image can be specified here",
       "IMAGE": "Logo",
-      "PLACEHOLDER": "Image Placeholder",
+      "PLACEHOLDER": "Logo Placeholder",
       "UPLOAD": "Select and upload image"
-    },
-    "UPLOADED": "File uploaded",
-    "UPLOAD_FAILED": "Upload failed",
-    "UPLOAD_FAILED_SIZE": "Upload failed. The image is too large",
-    "UPLOAD_FAILED_NAME": "Upload failed. Please provide a name first"
+    }
   },
   "DIALOG": {
     "SEARCH.HEADER": "Product Store",
@@ -297,6 +301,9 @@
   },
   "VALIDATION": {
     "FORM_INVALID": "The data are not ready to store.",
+    "HINTS": {
+      "FORMAT_URL": "Format: "
+    },
     "APP.UNIQUE_CONSTRAINT.REMOTE_MODULE": "An app with this remote configuration already exists for the product.",
     "APP.UNIQUE_CONSTRAINT.APP_ID": "An App with this id exists already for the Product.",
     "PRODUCT.UNIQUE_CONSTRAINT.NAME": "A Product with this name exists already.",
