@@ -54,7 +54,6 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
   public productName: string | null | undefined
   public fetchingLogoUrl: string | undefined
   public iconItems: SelectItem[] = [{ label: '', value: null }]
-  public logoImageWasUploaded: boolean | undefined
   public externUrlPattern = 'http(s)://path-to-image'
   public convertToUniqueStringArray = convertToUniqueStringArray
 
@@ -149,7 +148,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
       .updateProduct({
         id: this.productId!,
         updateProductRequest: {
-          name: this.formGroup.value['name'],
+          name: this.productName,
           version: this.formGroup.value['version'],
           description: this.formGroup.value['description'],
           imageUrl: this.formGroup.controls['imageUrl'].value,
@@ -262,6 +261,6 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
     this.fetchingLogoUrl = (event.target as HTMLInputElement).value
     if ((event.target as HTMLInputElement).value == undefined || (event.target as HTMLInputElement).value == '') {
       this.fetchingLogoUrl = bffImageUrl(this.imageApi.configuration.basePath, product?.name, RefType.Logo)
-    }
+    } else this.currentLogoUrl.emit(this.fetchingLogoUrl)
   }
 }
