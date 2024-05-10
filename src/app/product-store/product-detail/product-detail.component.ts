@@ -117,16 +117,6 @@ export class ProductDetailComponent implements OnInit {
               showCondition: this.changeMode === 'VIEW'
             },
             {
-              label: data['ACTIONS.EDIT.LABEL'],
-              title: data['ACTIONS.EDIT.PRODUCT.TOOLTIP'],
-              actionCallback: () => this.onEdit(),
-              icon: 'pi pi-pencil',
-              show: 'always',
-              conditional: true,
-              showCondition: this.selectedTabIndex === 0 && this.changeMode === 'VIEW' && this.product !== undefined,
-              permission: 'PRODUCT#EDIT'
-            },
-            {
               label: data['ACTIONS.COPY.LABEL'],
               title: data['ACTIONS.COPY.PRODUCT.HEADER'],
               actionCallback: () => this.onCopy(),
@@ -135,6 +125,16 @@ export class ProductDetailComponent implements OnInit {
               conditional: true,
               showCondition: this.selectedTabIndex === 0 && this.changeMode === 'VIEW' && this.product !== undefined,
               permission: 'PRODUCT#CREATE'
+            },
+            {
+              label: data['ACTIONS.EDIT.LABEL'],
+              title: data['ACTIONS.EDIT.PRODUCT.TOOLTIP'],
+              actionCallback: () => this.onEdit(),
+              icon: 'pi pi-pencil',
+              show: 'always',
+              conditional: true,
+              showCondition: this.selectedTabIndex === 0 && this.changeMode === 'VIEW' && this.product !== undefined,
+              permission: 'PRODUCT#EDIT'
             },
             {
               label: data['ACTIONS.CANCEL'],
@@ -206,13 +206,9 @@ export class ProductDetailComponent implements OnInit {
     this.router.navigate(['./../', this.product?.name], { relativeTo: this.route })
   }
 
-  public onChange(nameChanged: boolean) {
-    if (nameChanged) {
-      this.close()
-    } else {
-      this.changeMode = 'VIEW'
-      this.getProduct()
-    }
+  public onChange() {
+    this.changeMode = 'VIEW'
+    this.getProduct()
   }
 
   public onDelete(ev: MouseEvent, item: Product): void {
@@ -236,6 +232,7 @@ export class ProductDetailComponent implements OnInit {
 
   // called by props component (this is the master of this url)
   public onUpdateLogoUrl(url: string) {
+    console.log('onUpdateLogoUrl ' + url)
     this.currentLogoUrl = url
   }
 

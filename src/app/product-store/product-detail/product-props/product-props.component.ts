@@ -45,7 +45,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
   @Input() dateFormat = 'medium'
   @Input() changeMode: ChangeMode = 'VIEW'
   @Output() productCreated = new EventEmitter<Product>()
-  @Output() productChanged = new EventEmitter<boolean>()
+  @Output() productChanged = new EventEmitter()
   @Output() changeModeChange = new EventEmitter<ChangeMode>()
   @Output() currentLogoUrl = new EventEmitter<string>()
 
@@ -161,7 +161,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
       .subscribe({
         next: () => {
           this.msgService.success({ summaryKey: 'ACTIONS.EDIT.PRODUCT.OK' })
-          this.productChanged.emit(this.productName !== this.formGroup.value['name'])
+          this.productChanged.emit()
         },
         error: (err) => this.displaySaveError(err)
       })

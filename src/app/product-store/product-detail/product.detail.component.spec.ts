@@ -120,8 +120,8 @@ describe('ProductDetailComponent', () => {
 
   it('should prepare action buttons on init', () => {
     spyOn(component, 'onClose')
-    spyOn(component, 'onEdit')
     spyOn(component, 'onCopy')
+    spyOn(component, 'onEdit')
     spyOn(component, 'onCancel')
     spyOn(component, 'onSave')
     component.product = product
@@ -140,8 +140,8 @@ describe('ProductDetailComponent', () => {
     actions[5].actionCallback()
 
     expect(component.onClose).toHaveBeenCalled()
-    expect(component.onEdit).toHaveBeenCalled()
     expect(component.onCopy).toHaveBeenCalled()
+    expect(component.onEdit).toHaveBeenCalled()
     expect(component.onCancel).toHaveBeenCalled()
     expect(component.onSave).toHaveBeenCalled()
   })
@@ -220,18 +220,10 @@ describe('ProductDetailComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith(['./../', product.name], jasmine.any(Object))
   })
 
-  it('should behave correctly onNameChange if change true', () => {
-    spyOn(component, 'close')
-
-    component.onChange(true)
-
-    expect(component.close).toHaveBeenCalled()
-  })
-
   it('should behave correctly onChange if change false', () => {
     spyOn(component, 'getProduct')
 
-    component.onChange(false)
+    component.onChange()
 
     expect(component.getProduct).toHaveBeenCalled()
   })
