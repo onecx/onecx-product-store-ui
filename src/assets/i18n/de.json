@@ -251,7 +251,7 @@
     "BASE_PATH": "Basispfad",
     "ICON_NAME": "Iconname",
     "CLASSIFICATIONS": "Klassifizierungen",
-    "UNDEPLOYED": "Undeployed",
+    "UNDEPLOYED": "Verfügbarkeit",
     "WORKSPACES": "Verwendet in Workspaces",
     "TOOLTIPS": {
       "ID": "Eindeutige technische ID des Produkts",

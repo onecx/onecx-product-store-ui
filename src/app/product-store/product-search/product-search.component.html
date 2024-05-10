@@ -59,10 +59,11 @@
           [initialViewMode]="viewMode"
           [sortingOptions]="[
             { label: 'PRODUCT.NAME' | translate, value: 'name' },
-            { label: 'PRODUCT.DISPLAY_NAME' | translate, value: 'displayName' }
+            { label: 'PRODUCT.DISPLAY_NAME' | translate, value: 'displayName' },
+            { label: 'PRODUCT.UNDEPLOYED' | translate, value: 'undeployed' }
           ]"
           [defaultSortOption]="sortField"
-          [defaultSortDirection]="sortOrder === -1"
+          [defaultSortDirection]="false"
           (dataViewChange)="onLayoutChange($event)"
           (filterChange)="onFilterChange($event)"
           [filterColumns]="[
@@ -97,7 +98,11 @@
               <div
                 [id]="'product_search_data_list_row_' + row + '_product_display_name'"
                 class="font-bold"
-                [title]="'PRODUCT.DISPLAY_NAME' | translate"
+                [class.danger-action-text]="product.undeployed"
+                [title]="
+                  ('PRODUCT.DISPLAY_NAME' | translate) +
+                  (!product.undeployed ? '' : ' => ' + ('PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate))
+                "
               >
                 {{ limitText(product.displayName, 100) }}
               </div>
@@ -133,6 +138,7 @@
               <div
                 [id]="'product_search_data_grid_idx_' + idx + '_product_display_name'"
                 class="mt-2 font-bold text-lg"
+                [class.danger-action-text]="product.undeployed"
                 [title]="('PRODUCT.DISPLAY_NAME' | translate) + ': ' + limitText(product.displayName, 100)"
               >
                 {{ limitText(product.displayName, 20) }}

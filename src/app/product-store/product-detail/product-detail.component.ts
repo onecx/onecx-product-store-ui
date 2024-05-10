@@ -133,7 +133,11 @@ export class ProductDetailComponent implements OnInit {
               icon: 'pi pi-pencil',
               show: 'always',
               conditional: true,
-              showCondition: this.selectedTabIndex === 0 && this.changeMode === 'VIEW' && this.product !== undefined,
+              showCondition:
+                this.selectedTabIndex === 0 &&
+                this.changeMode === 'VIEW' &&
+                this.product !== undefined &&
+                !this.product.undeployed,
               permission: 'PRODUCT#EDIT'
             },
             {

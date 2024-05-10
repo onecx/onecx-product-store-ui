@@ -113,6 +113,19 @@
   }
 }
 
+@mixin dataview-zebra-rows {
+  :host ::ng-deep {
+    .p-dataview-content .p-grid > div {
+      min-height: 60px;
+      &.listview-row {
+        &:nth-child(odd) {
+          background-color: #f8f9fa;
+        }
+      }
+    }
+  }
+}
+
 @mixin correct-search-criteria {
   :host ::ng-deep {
     .search-criteria-container > div {
