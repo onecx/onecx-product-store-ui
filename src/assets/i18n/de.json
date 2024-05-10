@@ -154,7 +154,6 @@
     }
   },
   "IMAGE": {
-    "LOGO_URL": "Externe Logo URL",
     "UPLOAD_FAIL": "Die Datei wurde nicht erfolgreich hochgeladen",
     "UPLOAD_SUCCESS": "Die Datei wurde erfolgreich hochgeladen",
     "CONSTRAINT_FILE_MISSING": "Keine Datei ausgewählt.",
@@ -164,8 +163,6 @@
     "CONSTRAINT_SIZE": "Die Größe der Bilddatei übersteigt die maximale Lönge von 100.000 Bytes.",
     "TOOLTIPS": {
       "URL": "Als Alternative zum Hochladen kann hier eine URL zu einem Bild angegeben werden",
-      "IMAGE": "Logo",
-      "PLACEHOLDER": "Logo Platzhalter",
       "UPLOAD": "Bild auswählen und hochladen"
     }
   },
@@ -181,6 +178,10 @@
     "SEARCH.SLOTS.TOOLTIP": "Slots anzeigen",
     "SEARCH.SLOTS.HEADER": "Slots",
     "SEARCH.SLOTS.SUBHEADER": "Suchen von Slots",
+    "IMAGE": {
+      "LOGO": "Logo",
+      "PLACEHOLDER": "Logo Platzhalter"
+    },
     "TABS": {
       "APPS": "Apps",
       "INTERN": "Intern",
@@ -211,7 +212,7 @@
     "GROUP.LOCAL_MODULE": "Modul Management Details",
     "GROUP.INTERNALS": "Weitere Details",
     "DEPRECATED": "Veraltet",
-    "UNDEPLOYED": "Undeployed",
+    "UNDEPLOYED": "Unverfügbar",
     "TOOLTIPS": {
       "APP_ID": "Eindeutige ID - Basis Bezeichner der App",
       "APP_NAME": "Name der App",
