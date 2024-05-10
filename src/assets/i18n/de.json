@@ -178,8 +178,8 @@
     "SEARCH.SLOTS.TOOLTIP": "Slots anzeigen",
     "SEARCH.SLOTS.HEADER": "Slots",
     "SEARCH.SLOTS.SUBHEADER": "Suchen von Slots",
-    "IMAGE": {
-      "LOGO": "Logo",
+    "LOGO": {
+      "LABEL": "Logo",
       "PLACEHOLDER": "Logo Platzhalter"
     },
     "TABS": {
