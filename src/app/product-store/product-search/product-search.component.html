@@ -59,10 +59,11 @@
           [initialViewMode]="viewMode"
           [sortingOptions]="[
             { label: 'PRODUCT.NAME' | translate, value: 'name' },
-            { label: 'PRODUCT.DISPLAY_NAME' | translate, value: 'displayName' }
+            { label: 'PRODUCT.DISPLAY_NAME' | translate, value: 'displayName' },
+            { label: 'PRODUCT.UNDEPLOYED' | translate, value: 'undeployed' }
           ]"
           [defaultSortOption]="sortField"
-          [defaultSortDirection]="sortOrder === -1"
+          [defaultSortDirection]="false"
           (dataViewChange)="onLayoutChange($event)"
           (filterChange)="onFilterChange($event)"
           [filterColumns]="[
@@ -76,32 +77,36 @@
         >
         </ocx-data-view-controls
       ></ng-template>
-      <ng-template let-product let-idx="rowIndex" pTemplate="listItem">
+      <ng-template let-product let-row="rowIndex" pTemplate="listItem">
         <div
-          [id]="'product_search_data_list_' + idx"
+          [id]="'product_search_data_list_row_' + row"
           class="col-12 grid grid-nogutter align-items-center row-gap-1 listview-row p-1 hover:bg-gray-200 cursor-pointer"
           [routerLink]="['./', product.name]"
         >
           <div class="col-12 md:col-2 lg:col-2 xl:col-2 text-center">
             <div class="flex flex-column justify-content-center align-items-center gap-1 md:gap-2 h-full">
               <app-image-container
-                [id]="'product_search_data_list_' + idx + '_image'"
-                [imageUrl]="prepareImageUrl(product)"
-                [title]="'LOGO.TOOLTIPS.' + (product.imageUrl ? 'IMAGE' : 'PLACEHOLDER') | translate"
+                [id]="'product_search_data_list_row_' + row + '_image'"
+                [title]="'IMAGE.TOOLTIPS.IMAGE' | translate"
                 [small]="true"
+                [imageUrl]="getLogoUrl(product)"
               ></app-image-container>
             </div>
           </div>
           <div class="col-12 md:col-5 lg:col-5 xl:col-6">
             <div class="flex flex-column justify-content-center gap-1 text-center md:text-left">
               <div
-                [id]="'product_search_data_list_' + idx + '_product_display_name'"
+                [id]="'product_search_data_list_row_' + row + '_product_display_name'"
                 class="font-bold"
-                [title]="'PRODUCT.DISPLAY_NAME' | translate"
+                [class.danger-action-text]="product.undeployed"
+                [title]="
+                  ('PRODUCT.DISPLAY_NAME' | translate) +
+                  (!product.undeployed ? '' : ' => ' + ('PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate))
+                "
               >
                 {{ limitText(product.displayName, 100) }}
               </div>
-              <div [id]="'product_search_data_list_' + idx + '_product_name'" [title]="'PRODUCT.NAME' | translate">
+              <div [id]="'product_search_data_list_row_' + row + '_product_name'" [title]="'PRODUCT.NAME' | translate">
                 {{ limitText(product.name, 100) }}
               </div>
             </div>
@@ -110,35 +115,36 @@
       </ng-template>
       <ng-template let-product let-idx="rowIndex" pTemplate="gridItem">
         <div
-          [id]="'product_search_data_grid_' + idx"
+          [id]="'product_search_data_grid_idx_' + idx"
           class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3"
           [routerLink]="['./', product.name]"
         >
           <div class="card relative p-2 flex flex-column justify-content-center hover:bg-gray-200 cursor-pointer">
             <span
               *ngIf="product?.undeployed"
-              [id]="'product_search_data_grid_' + idx + '_undeployed'"
+              [id]="'product_search_data_grid_idx_' + idx + '_undeployed'"
               class="card-badge-right badge-1 p-2 pi pi-ban danger-action-bg"
               [title]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
             ></span>
             <div class="h-3rem md:h-5rem flex flex-column justify-content-center align-items-center text-center">
               <app-image-container
-                [id]="'product_search_data_grid_' + idx + '_image'"
-                [imageUrl]="prepareImageUrl(product)"
-                [title]="'LOGO.TOOLTIPS.' + (product.imageUrl ? 'IMAGE' : 'PLACEHOLDER') | translate"
+                [id]="'product_search_data_grid_idx_' + idx + '_image'"
+                [title]="'IMAGE.TOOLTIPS.IMAGE' | translate"
                 [small]="false"
+                [imageUrl]="getLogoUrl(product)"
               ></app-image-container>
             </div>
             <div class="h-3rem flex flex-column justify-content-between gap-1 text-center">
               <div
-                [id]="'product_search_data_grid_' + idx + '_product_display_name'"
+                [id]="'product_search_data_grid_idx_' + idx + '_product_display_name'"
                 class="mt-2 font-bold text-lg"
+                [class.danger-action-text]="product.undeployed"
                 [title]="('PRODUCT.DISPLAY_NAME' | translate) + ': ' + limitText(product.displayName, 100)"
               >
                 {{ limitText(product.displayName, 20) }}
               </div>
               <div
-                [id]="'product_search_data_grid_' + idx + '_product_name'"
+                [id]="'product_search_data_grid_idx_' + idx + '_product_name'"
                 [title]="('PRODUCT.NAME' | translate) + ': ' + product.name"
               >
                 {{ limitText(product.name, 25) }}

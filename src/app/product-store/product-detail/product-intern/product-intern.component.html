@@ -7,14 +7,14 @@
             pInputText
             type="text"
             readonly
-            id="portal_detail_internal_field_creationDate"
+            id="product_detail_intern_field_creationDate"
             class="w-full pt-3 pb-2"
             [value]="product?.creationDate | date : dateFormat"
             [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
             tooltipPosition="top"
             tooltipEvent="focus"
           />
-          <label for="portal_detail_internal_field_creationDate">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
+          <label for="product_detail_intern_field_creationDate">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
         </span>
       </div>
       <div class="w-12 sm:w-6 px-3">
@@ -23,14 +23,14 @@
             pInputText
             type="text"
             readonly
-            id="portal_detail_internal_field_creationUser"
+            id="product_detail_intern_field_creationUser"
             class="w-full pt-3 pb-2"
             [value]="product?.creationUser"
             [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_USER' | translate"
             tooltipPosition="top"
             tooltipEvent="focus"
           />
-          <label for="portal_detail_internal_field_creationUser">{{ 'INTERNAL.CREATION_USER' | translate }}</label>
+          <label for="product_detail_intern_field_creationUser">{{ 'INTERNAL.CREATION_USER' | translate }}</label>
         </span>
       </div>
     </div>
@@ -42,14 +42,14 @@
             pInputText
             type="text"
             readonly
-            id="portal_detail_internal_field_modificationDate"
+            id="product_detail_intern_field_modificationDate"
             class="w-full pt-3 pb-2"
             [value]="product?.modificationDate | date : dateFormat"
             [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
             tooltipPosition="top"
             tooltipEvent="focus"
           />
-          <label for="portal_detail_internal_field_modificationDate">
+          <label for="product_detail_intern_field_modificationDate">
             {{ 'INTERNAL.MODIFICATION_DATE' | translate }}</label
           >
         </span>
@@ -61,14 +61,14 @@
             pInputText
             type="text"
             readonly
-            id="portal_detail_internal_field_modificationUser"
+            id="product_detail_intern_field_modificationUser"
             class="w-full pt-3 pb-2"
             [value]="product?.modificationUser"
             [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_USER' | translate"
             tooltipPosition="top"
             tooltipEvent="focus"
           />
-          <label for="portal_detail_internal_field_modificationUser">
+          <label for="product_detail_intern_field_modificationUser">
             {{ 'INTERNAL.MODIFICATION_USER' | translate }}</label
           >
         </span>
@@ -82,21 +82,21 @@
             pInputText
             type="text"
             readonly
-            id="portal_detail_internal_field_operator"
+            id="product_detail_intern_field_operator"
             class="w-full pt-3 pb-2"
             [value]="(product?.operator ? 'PRODUCT.OPERATOR.DEPLOYMENT' : 'PRODUCT.OPERATOR.MANUAL') | translate"
             [pTooltip]="'PRODUCT.TOOLTIPS.OPERATOR' | translate"
             tooltipPosition="top"
             tooltipEvent="focus"
           />
-          <label for="portal_detail_internal_field_operator"> {{ 'PRODUCT.OPERATOR' | translate }}</label>
+          <label for="product_detail_intern_field_operator"> {{ 'PRODUCT.OPERATOR' | translate }}</label>
         </span>
       </div>
       <div class="w-12 sm:w-6 px-3 flex align-items-center">
         <p-checkbox
           type="text"
           [readonly]="true"
-          inputId="portal_detail_internal_field_undeployed"
+          inputId="product_detail_intern_field_undeployed"
           [(ngModel)]="undeployed"
           [binary]="true"
           [pTooltip]="'PRODUCT.TOOLTIPS.UNDEPLOYED' | translate"
@@ -116,14 +116,14 @@
             class="w-full"
             autoresize="true"
             rows="3"
-            id="portal_detail_internal_field_workspaces"
+            id="product_detail_intern_field_workspaces"
             [pTooltip]="'PRODUCT.TOOLTIPS.WORKSPACES' | translate"
             tooltipPosition="top"
             tooltipEvent="focus"
           >
             {{ product?.workspaces }}</textarea
           >
-          <label for="portal_detail_internal_field_workspaces">{{ 'PRODUCT.WORKSPACES' | translate }}</label>
+          <label for="product_detail_intern_field_workspaces">{{ 'PRODUCT.WORKSPACES' | translate }}</label>
         </span>
       </div>
     </div>

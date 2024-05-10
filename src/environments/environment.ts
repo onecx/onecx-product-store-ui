@@ -9,5 +9,5 @@ export const environment = {
   KEYCLOAK_REALM: 'OneCX',
   skipRemoteConfigLoad: true,
   apiPrefix: 'bff',
-  DEFAULT_LOGO_URL: './assets/images/product.jpg'
+  DEFAULT_LOGO_PATH: 'assets/images/logo.png'
 }

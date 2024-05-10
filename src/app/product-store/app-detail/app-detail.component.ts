@@ -62,7 +62,10 @@ export class AppDetailComponent implements OnChanges {
   public ms: Microservice | undefined
   public formGroupMfe: FormGroup
   public formGroupMs: FormGroup
+  public dialogTitelKey = ''
   public loading = false
+  public undeployed = false
+  public deprecated = false
   public hasCreatePermission = false
   public hasEditPermission = false
   public technologies: SelectItem[] = [
@@ -155,6 +158,8 @@ export class AppDetailComponent implements OnChanges {
           if (data) {
             this.mfe = data
             if (this.mfe) this.viewFormMfe(this.mfe)
+            this.undeployed = this.mfe?.undeployed ?? false
+            this.deprecated = this.mfe?.deprecated ?? false
             if (this.changeMode === 'COPY') {
               if (this.mfe?.id) {
                 this.mfe.id = undefined
@@ -165,6 +170,7 @@ export class AppDetailComponent implements OnChanges {
             }
             this.enableForms()
           }
+          this.dialogTitelKey = 'ACTIONS.' + this.changeMode + '.MFE.HEADER'
         }
       })
   }
@@ -178,6 +184,7 @@ export class AppDetailComponent implements OnChanges {
           if (data) {
             this.ms = data
             if (this.ms) this.viewFormMs(this.ms)
+            this.undeployed = this.ms?.undeployed ?? false
             if (this.changeMode === 'COPY') {
               if (this.ms?.id) {
                 this.ms.id = undefined
@@ -188,6 +195,7 @@ export class AppDetailComponent implements OnChanges {
             }
             this.enableForms()
           }
+          this.dialogTitelKey = 'ACTIONS.' + this.changeMode + '.MS.HEADER'
         }
       })
   }

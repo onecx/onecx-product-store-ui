@@ -8,7 +8,7 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
 import { ProductPropertyComponent, ProductDetailForm, productNameValidator } from './product-props.component'
-import { ProductsAPIService, ImagesInternalAPIService } from 'src/app/shared/generated'
+import { Product, ProductsAPIService, ImagesInternalAPIService } from 'src/app/shared/generated'
 
 const mockForm = new FormGroup<ProductDetailForm>({
   id: new FormControl<string | null>(null), // Assuming ID might not be needed or can be null for new entries
@@ -34,6 +34,12 @@ const mockForm = new FormGroup<ProductDetailForm>({
 describe('ProductPropertyComponent', () => {
   let component: ProductPropertyComponent
   let fixture: ComponentFixture<ProductPropertyComponent>
+  const product: Product = {
+    id: 'id',
+    name: 'name',
+    basePath: 'basePath',
+    displayName: 'displayName'
+  }
 
   const apiServiceSpy = {
     createProduct: jasmine.createSpy('createProduct').and.returnValue(of({})),
@@ -101,16 +107,6 @@ describe('ProductPropertyComponent', () => {
 
     control.setValue('validName')
     expect(control.errors).toBeNull()
-  })
-
-  it('should getImage onInit', () => {
-    imgServiceSpy.getImage.and.returnValue(of({}))
-    component.formGroup = mockForm
-    component.formGroup.controls['name'].setValue('name')
-
-    component.ngOnInit()
-
-    expect(component.logoImageWasUploaded).toBeTrue()
   })
 
   it('should disable name form control in edit mode ', () => {
@@ -380,10 +376,11 @@ describe('ProductPropertyComponent', () => {
     }
     component.formGroup.controls['name'].setValue('')
 
-    component.onFileUpload(event as any, 'logo')
+    component.onFileUpload(event as any)
 
     expect(msgServiceSpy.error).toHaveBeenCalledWith({
-      summaryKey: 'LOGO.UPLOAD_FAILED_NAME'
+      summaryKey: 'IMAGE.CONSTRAINT_FAILED',
+      detailKey: 'IMAGE.CONSTRAINT_NAME'
     })
   })
 
@@ -395,10 +392,30 @@ describe('ProductPropertyComponent', () => {
     }
     component.formGroup.controls['name'].setValue(null)
 
-    component.onFileUpload(event as any, 'logo')
+    component.onFileUpload(event as any)
 
     expect(msgServiceSpy.error).toHaveBeenCalledWith({
-      summaryKey: 'LOGO.UPLOAD_FAILED_NAME'
+      summaryKey: 'IMAGE.CONSTRAINT_FAILED',
+      detailKey: 'IMAGE.CONSTRAINT_NAME'
+    })
+  })
+
+  it('should not upload a file that is too large', () => {
+    const largeBlob = new Blob(['a'.repeat(100001)], { type: 'image/png' })
+    const largeFile = new File([largeBlob], 'test.png', { type: 'image/png' })
+    const event = {
+      target: {
+        files: [largeFile]
+      }
+    }
+    component.formGroup.controls['name'].setValue('name')
+
+    component.onFileUpload(event as any)
+
+    expect(component.formGroup.valid).toBeFalse()
+    expect(msgServiceSpy.error).toHaveBeenCalledWith({
+      summaryKey: 'IMAGE.CONSTRAINT_FAILED',
+      detailKey: 'IMAGE.CONSTRAINT_SIZE'
     })
   })
 
@@ -412,22 +429,7 @@ describe('ProductPropertyComponent', () => {
     }
     component.formGroup.controls['name'].setValue('name')
 
-    component.onFileUpload(event as any, 'logo')
-
-    expect(component.formGroup.valid).toBeFalse()
-  })
-
-  it('should not upload a file that is too large', () => {
-    const largeBlob = new Blob(['a'.repeat(120000)], { type: 'image/png' })
-    const largeFile = new File([largeBlob], 'test.png', { type: 'image/png' })
-    const event = {
-      target: {
-        files: [largeFile]
-      }
-    }
-    component.formGroup.controls['name'].setValue('name')
-
-    component.onFileUpload(event as any, 'logo')
+    component.onFileUpload(event as any)
 
     expect(component.formGroup.valid).toBeFalse()
   })
@@ -443,10 +445,10 @@ describe('ProductPropertyComponent', () => {
     }
     component.formGroup.controls['name'].setValue('name')
 
-    component.onFileUpload(event as any, 'logo')
+    component.onFileUpload(event as any)
 
     expect(msgServiceSpy.info).toHaveBeenCalledWith({
-      summaryKey: 'LOGO.UPLOADED'
+      summaryKey: 'IMAGE.UPLOAD_SUCCESS'
     })
   })
 
@@ -461,40 +463,43 @@ describe('ProductPropertyComponent', () => {
     }
     component.formGroup.controls['name'].setValue('name')
 
-    component.onFileUpload(event as any, 'logo')
+    component.onFileUpload(event as any)
 
     expect(msgServiceSpy.info).toHaveBeenCalledWith({
-      summaryKey: 'LOGO.UPLOADED'
+      summaryKey: 'IMAGE.UPLOAD_SUCCESS'
     })
   })
 
-  it('should return an image url', () => {
-    component.formGroup.controls['imageUrl'].setValue('url')
+  it('should test getLogoUrl()', () => {
+    let result = component.getLogoUrl(undefined)
+    expect(result).toBeUndefined()
 
-    const result = component.prepareImageUrl()
-
+    result = component.getLogoUrl({ ...product, imageUrl: 'url' })
     expect(result).toEqual('url')
+
+    result = component.getLogoUrl({ ...product, imageUrl: undefined })
+    expect(result).toEqual('basepath/images/name/logo')
   })
 
-  it('should change fetchingLogoUrl on inputChange: valid value', fakeAsync(() => {
+  it('should change fetchingLogoUrl on onInputChange: valid value', fakeAsync(() => {
     const event = {
       target: { value: 'newLogoValue' }
     } as unknown as Event
 
-    component.inputChange(event)
+    component.onInputChange(product, event)
 
     tick(1000)
 
     expect(component.fetchingLogoUrl).toBe('newLogoValue')
   }))
 
-  it('should change fetchingLogoUrl on inputChange: empty value', fakeAsync(() => {
+  it('should change fetchingLogoUrl on onInputChange: empty value', fakeAsync(() => {
     const event = {
       target: { value: '' }
     } as unknown as Event
     component.formGroup.controls['name'].setValue('name')
 
-    component.inputChange(event)
+    component.onInputChange(product, event)
 
     tick(1000)
 

@@ -153,17 +153,21 @@
       "MODIFICATION_USER": "Name of the user of the last change"
     }
   },
-  "LOGO": {
-    "LOGO_URL": "Logo URL",
+  "IMAGE": {
+    "LOGO_URL": "External Logo URL",
+    "UPLOAD_FAIL": " The file was not uploaded successfully",
+    "UPLOAD_SUCCESS": "The file was uploaded successfully",
+    "CONSTRAINT_FILE_MISSING": "No file selected.",
+    "CONSTRAINT_FILE_TYPE": "The following image formats are accepted: jpg, jpeg, png",
+    "CONSTRAINT_FAILED": "File upload condition check failed:",
+    "CONSTRAINT_NAME": "Please add a Workspace name before uploading a file.",
+    "CONSTRAINT_SIZE": "The image file size exceeds the maximum length of 100,000 bytes.",
     "TOOLTIPS": {
+      "URL": "As an alternative to uploading, a URL to an image can be specified here",
       "IMAGE": "Logo",
-      "PLACEHOLDER": "Image Placeholder",
+      "PLACEHOLDER": "Logo Placeholder",
       "UPLOAD": "Select and upload image"
-    },
-    "UPLOADED": "File uploaded",
-    "UPLOAD_FAILED": "Upload failed",
-    "UPLOAD_FAILED_SIZE": "Upload failed. The image is too large",
-    "UPLOAD_FAILED_NAME": "Upload failed. Please provide a name first"
+    }
   },
   "DIALOG": {
     "SEARCH.HEADER": "Product Store",
@@ -228,10 +232,10 @@
       "GROUP.REMOTE_MODULE": "Details of the remote module to be used",
       "GROUP.LOCAL_MODULE": "Details of the module's local registration",
       "GROUP.INTERNALS": "More details of object management and usage",
-      "DEPRECATED": "If set, then this app is marked as obsolete. It can currently be used but will no longer be available in the future.",
-      "DEPRECATED_SEARCH": "This app is marked as deprecated. It can currently be used but will no longer be available in the future.",
-      "UNDEPLOYED": "If set, this APP can no longer be used. Further use leads to error messages.",
-      "UNDEPLOYED_SEARCH": "This app is no longer usable. Further use leads to error messages."
+      "DEPRECATED": "If set, then this App is marked as obsolete. It can currently be used but will no longer be available in the future.",
+      "DEPRECATED_SEARCH": "This App is marked as deprecated. It can currently be used but will no longer be available in the future.",
+      "UNDEPLOYED": "If set, this App can no longer be used. Further use leads to error messages.",
+      "UNDEPLOYED_SEARCH": "This App is no longer usable. Further use leads to error messages."
     }
   },
   "PRODUCT": {
@@ -247,7 +251,7 @@
     "BASE_PATH": "Base Path",
     "ICON_NAME": "Icon Name",
     "CLASSIFICATIONS": "Classifications",
-    "UNDEPLOYED": "Undeployed",
+    "UNDEPLOYED": "Availability",
     "WORKSPACES": "Used in Workspaces",
     "TOOLTIPS": {
       "ID": "Unique technical ID of the Product",
@@ -297,7 +301,10 @@
   },
   "VALIDATION": {
     "FORM_INVALID": "The data are not ready to store.",
-    "APP.UNIQUE_CONSTRAINT.REMOTE_MODULE": "An app with this remote configuration already exists for the product.",
+    "HINTS": {
+      "FORMAT_URL": "Format: "
+    },
+    "APP.UNIQUE_CONSTRAINT.REMOTE_MODULE": "An App with this remote configuration already exists for the product.",
     "APP.UNIQUE_CONSTRAINT.APP_ID": "An App with this id exists already for the Product.",
     "PRODUCT.UNIQUE_CONSTRAINT.NAME": "A Product with this name exists already.",
     "PRODUCT.UNIQUE_CONSTRAINT.BASEPATH": "A Product with this basepath exists already.",

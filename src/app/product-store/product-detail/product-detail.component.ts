@@ -5,8 +5,14 @@ import { Observable, finalize, map } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 
 import { Action, PortalMessageService, UserService } from '@onecx/portal-integration-angular'
-import { Product, ProductAndWorkspaces, ProductsAPIService } from 'src/app/shared/generated'
-import { prepareUrl } from 'src/app/shared/utils'
+import {
+  ImagesInternalAPIService,
+  Product,
+  ProductAndWorkspaces,
+  ProductsAPIService,
+  RefType
+} from 'src/app/shared/generated'
+import { bffImageUrl } from 'src/app/shared/utils'
 import { ProductPropertyComponent } from './product-props/product-props.component'
 
 export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
@@ -27,6 +33,7 @@ export class ProductDetailComponent implements OnInit {
   public productDeleteVisible = false
   public productDeleteMessage = ''
   public selectedTabIndex = 0
+  public currentLogoUrl: string | undefined = undefined
 
   @ViewChild(ProductPropertyComponent, { static: false }) productPropsComponent!: ProductPropertyComponent
 
@@ -36,6 +43,7 @@ export class ProductDetailComponent implements OnInit {
     private user: UserService,
     private location: Location,
     private productApi: ProductsAPIService,
+    private imageApi: ImagesInternalAPIService,
     private msgService: PortalMessageService,
     private translate: TranslateService
   ) {
@@ -73,7 +81,7 @@ export class ProductDetailComponent implements OnInit {
           if (data) {
             this.product = data
             this.prepareActionButtons()
-            this.headerImageUrl = prepareUrl(this.product?.imageUrl)
+            this.currentLogoUrl = this.getLogoUrl(this.product!)
           }
         }
       })
@@ -109,16 +117,6 @@ export class ProductDetailComponent implements OnInit {
               showCondition: this.changeMode === 'VIEW'
             },
             {
-              label: data['ACTIONS.EDIT.LABEL'],
-              title: data['ACTIONS.EDIT.PRODUCT.TOOLTIP'],
-              actionCallback: () => this.onEdit(),
-              icon: 'pi pi-pencil',
-              show: 'always',
-              conditional: true,
-              showCondition: this.selectedTabIndex === 0 && this.changeMode === 'VIEW' && this.product !== undefined,
-              permission: 'PRODUCT#EDIT'
-            },
-            {
               label: data['ACTIONS.COPY.LABEL'],
               title: data['ACTIONS.COPY.PRODUCT.HEADER'],
               actionCallback: () => this.onCopy(),
@@ -127,6 +125,20 @@ export class ProductDetailComponent implements OnInit {
               conditional: true,
               showCondition: this.selectedTabIndex === 0 && this.changeMode === 'VIEW' && this.product !== undefined,
               permission: 'PRODUCT#CREATE'
+            },
+            {
+              label: data['ACTIONS.EDIT.LABEL'],
+              title: data['ACTIONS.EDIT.PRODUCT.TOOLTIP'],
+              actionCallback: () => this.onEdit(),
+              icon: 'pi pi-pencil',
+              show: 'always',
+              conditional: true,
+              showCondition:
+                this.selectedTabIndex === 0 &&
+                this.changeMode === 'VIEW' &&
+                this.product !== undefined &&
+                !this.product.undeployed,
+              permission: 'PRODUCT#EDIT'
             },
             {
               label: data['ACTIONS.CANCEL'],
@@ -198,13 +210,9 @@ export class ProductDetailComponent implements OnInit {
     this.router.navigate(['./../', this.product?.name], { relativeTo: this.route })
   }
 
-  public onChange(nameChanged: boolean) {
-    if (nameChanged) {
-      this.close()
-    } else {
-      this.changeMode = 'VIEW'
-      this.getProduct()
-    }
+  public onChange() {
+    this.changeMode = 'VIEW'
+    this.getProduct()
   }
 
   public onDelete(ev: MouseEvent, item: Product): void {
@@ -224,5 +232,15 @@ export class ProductDetailComponent implements OnInit {
         error: () => this.msgService.error({ summaryKey: 'ACTIONS.DELETE.PRODUCT.NOK' })
       })
     }
+  }
+
+  // called by props component (this is the master of this url)
+  public onUpdateLogoUrl(url: string) {
+    this.currentLogoUrl = url
+  }
+
+  public getLogoUrl(product: Product): string {
+    if (product?.imageUrl) return product?.imageUrl
+    else return bffImageUrl(this.imageApi.configuration.basePath, product?.name, RefType.Logo)
   }
 }

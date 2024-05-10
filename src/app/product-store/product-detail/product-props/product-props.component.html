@@ -1,4 +1,4 @@
-<form [formGroup]="formGroup" (ngSubmit)="onSave()">
+<form [formGroup]="formGroup">
   <div class="surface-section flex flex-column row-gap-4 my-3 sm:my-5">
     <div class="flex flex-wrap row-gap-4">
       <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
@@ -48,39 +48,38 @@
       <div class="w-full sm:w-12 md:w-9 lg:w-12 px-3">
         <div class="flex flex-wrap sm:flex-nowrap align-items-center row-gap-2 column-gap-4">
           <app-image-container
-            *ngIf="fetchingLogoUrl"
             [id]="'product_detail_item_logo_image'"
-            [imageUrl]="fetchingLogoUrl"
             [small]="true"
-            [title]="'LOGO.TOOLTIPS.' + (fetchingLogoUrl ? 'IMAGE' : 'PLACEHOLDER') | translate"
+            [imageUrl]="fetchingLogoUrl"
           ></app-image-container>
-          <input hidden type="file" accept="image/*" #selectedFileInputLogo (change)="onFileUpload($event, 'logo')" />
+          <input hidden type="file" accept="image/*" #selectedFileInputLogo (change)="onFileUpload($event)" />
           <button
             pButton
             id="product_detail_item_upload_logo2"
             icon="pi pi-upload"
+            [disabled]="changeMode === 'VIEW'"
             class="action-button p-button-icon-only"
-            [ngClass]="
-              changeMode === 'VIEW' ||
-              this.formGroup.controls['name'].value === '' ||
-              this.formGroup.controls['name'].value === null
-                ? 'p-disabled'
-                : 'cursor-pointer'
-            "
-            [title]="'LOGO.TOOLTIPS.UPLOAD' | translate"
-            (click)="changeMode !== 'VIEW' ? selectedFileInputLogo.click() : null"
+            [class.cursor-pointer]="changeMode === 'EDIT'"
+            [title]="'IMAGE.TOOLTIPS.UPLOAD' | translate"
+            (click)="selectedFileInputLogo.click()"
           ></button>
-          <span class="p-float-label w-full" [title]="'PRODUCT.TOOLTIPS.IMAGE_URL' | translate">
-            <input
-              pInputText
-              type="text"
-              class="w-full"
-              id="product_detail_item_image_url"
-              formControlName="imageUrl"
-              (input)="inputChange($event)"
-            />
-            <label for="product_detail_item_image_url">{{ 'PRODUCT.IMAGE_URL' | translate }}</label>
-          </span>
+          <div class="flex flex-column row-gap-1 w-full">
+            <span class="p-float-label" [title]="'IMAGE.TOOLTIPS.URL' | translate">
+              <input
+                pInputText
+                type="text"
+                class="w-full"
+                id="product_detail_item_image_url"
+                formControlName="imageUrl"
+                (paste)="onInputChange(product, $event)"
+                (change)="onInputChange(product, $event)"
+              />
+              <label for="product_detail_item_image_url">{{ 'PRODUCT.IMAGE_URL' | translate }}</label>
+            </span>
+            <label *ngIf="changeMode === 'EDIT'" class="ocx-control-hint block" for="workspace_detail_form_logo_url">
+              {{ ('VALIDATION.HINTS.FORMAT_URL' | translate) + externUrlPattern }}
+            </label>
+          </div>
         </div>
       </div>
 
@@ -94,7 +93,7 @@
           >
             <ng-template let-ico pTemplate="selectedItem">
               <div class="flex">
-                <span class="pi pi-{{ ico.value }} mr-3"> </span>
+                <span class="font-bold pi pi-{{ ico.value }} mr-3"> </span>
                 <span>{{ ico.label || 'dummy-for-renderer' }}</span>
               </div>
             </ng-template>

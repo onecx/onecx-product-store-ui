@@ -1,3 +1,7 @@
+@import '/src/_mixins.scss';
+
+@include danger-action;
+
 /* limit deletion dialog */
 :host ::ng-deep {
   // each tab panel manages its own padding separately
@@ -12,9 +16,5 @@
       max-height: unset !important;
       height: unset !important;
     }
-  }
-
-  .danger-action-text {
-    color: var(--danger-button-bg);
   }
 }
