@@ -66,7 +66,7 @@ export class SlotSearchComponent implements OnInit {
       )
   }
   public sortSlotsByName(a: Slot, b: Slot): number {
-    return (a.name as string).toUpperCase().localeCompare((b.name as string).toUpperCase())
+    return a.name.toUpperCase().localeCompare(b.name.toUpperCase())
   }
 
   /**

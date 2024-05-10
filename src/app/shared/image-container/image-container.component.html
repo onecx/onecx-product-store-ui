@@ -4,14 +4,14 @@
   [class]="'image-object image-' + (small ? 'sm' : 'lg') + ' sm:image-lg ' + (styleClass ? styleClass : '')"
   [ocxSrc]="displayImageUrl"
   (error)="onImageError()"
-  [alt]="'IMAGE.TOOLTIPS.IMAGE' | translate"
-  [title]="title ? title : ('IMAGE.TOOLTIPS.IMAGE' | translate)"
+  [alt]="'DIALOG.IMAGE.LOGO' | translate"
+  [title]="title ? title : ('DIALOG.IMAGE.LOGO' | translate)"
 />
 <img
   [id]="id"
   *ngIf="displayDefaultLogo"
   [class]="'image-object image-' + (small ? 'sm' : 'lg') + ' sm:image-lg ' + (styleClass ? styleClass : '')"
   [src]="defaultImageUrl"
-  [alt]="'IMAGE.TOOLTIPS.IMAGE' | translate"
-  [title]="title ? title : ('IMAGE.TOOLTIPS.PLACEHOLDER' | translate)"
+  [alt]="'DIALOG.IMAGE.PLACEHOLDER' | translate"
+  [title]="title ? title : ('DIALOG.IMAGE.PLACEHOLDER' | translate)"
 />
