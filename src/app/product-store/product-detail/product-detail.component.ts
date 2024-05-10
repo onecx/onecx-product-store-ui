@@ -236,7 +236,6 @@ export class ProductDetailComponent implements OnInit {
 
   // called by props component (this is the master of this url)
   public onUpdateLogoUrl(url: string) {
-    console.log('onUpdateLogoUrl ' + url)
     this.currentLogoUrl = url
   }
 

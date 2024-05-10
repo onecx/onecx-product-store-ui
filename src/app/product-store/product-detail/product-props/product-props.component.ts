@@ -257,10 +257,12 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
     return bffImageUrl(this.imageApi.configuration.basePath, product.name, RefType.Logo)
   }
 
+  // changes on external log URL field: user enters text (change) or paste something
   public onInputChange(product: Product | undefined, event: Event): void {
     this.fetchingLogoUrl = (event.target as HTMLInputElement).value
-    if ((event.target as HTMLInputElement).value == undefined || (event.target as HTMLInputElement).value == '') {
+    if (!this.fetchingLogoUrl || this.fetchingLogoUrl === '') {
       this.fetchingLogoUrl = bffImageUrl(this.imageApi.configuration.basePath, product?.name, RefType.Logo)
-    } else this.currentLogoUrl.emit(this.fetchingLogoUrl)
+    }
+    this.currentLogoUrl.emit(this.fetchingLogoUrl)
   }
 }

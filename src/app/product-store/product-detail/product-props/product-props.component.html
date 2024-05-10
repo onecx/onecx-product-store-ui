@@ -71,7 +71,8 @@
                 class="w-full"
                 id="product_detail_item_image_url"
                 formControlName="imageUrl"
-                (blur)="onInputChange(product, $event)"
+                (paste)="onInputChange(product, $event)"
+                (change)="onInputChange(product, $event)"
               />
               <label for="product_detail_item_image_url">{{ 'PRODUCT.IMAGE_URL' | translate }}</label>
             </span>
