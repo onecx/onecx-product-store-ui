@@ -194,12 +194,8 @@ export class ProductSearchComponent implements OnInit {
   }
 
   public getLogoUrl(product: ProductAbstract | undefined): string | undefined {
-    if (!product) {
-      return undefined
-    }
-    if (product.imageUrl && product.imageUrl != '') {
-      return product.imageUrl
-    }
+    if (!product) return undefined
+    if (product.imageUrl && product.imageUrl != '') return product.imageUrl
     return bffImageUrl(this.imageApi.configuration.basePath, product.name, RefType.Logo)
   }
 }

@@ -42,7 +42,7 @@
       [value]="(products$ | async)?.stream!.sort(sortProductsByDisplayName)"
       [paginator]="true"
       [alwaysShowPaginator]="false"
-      [rowsPerPageOptions]="[10, 20, 50]"
+      [rowsPerPageOptions]="'grid' ? [12, 24, 60] : [10, 20, 50]"
       [rows]="viewMode === 'grid' ? 12 : 10"
       [layout]="viewMode"
       [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
