@@ -71,7 +71,7 @@
       [value]="(apps$ | async) ?? []"
       [paginator]="true"
       [alwaysShowPaginator]="false"
-      [rowsPerPageOptions]="[10, 20, 50]"
+      [rowsPerPageOptions]="'grid' ? [24, 48, 96] : [10, 20, 50]"
       [rows]="viewMode === 'grid' ? 24 : 10"
       [layout]="viewMode"
       [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"

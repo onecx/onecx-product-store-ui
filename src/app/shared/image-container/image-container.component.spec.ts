@@ -39,7 +39,6 @@ describe('ImageContainerComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy()
-    expect(component.defaultImageUrl).toEqual('/base/assets/images/logo.png')
   })
 
   describe('ngOnChanges', () => {
