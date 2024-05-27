@@ -1,59 +1,51 @@
-import { Component, Input, OnChanges, ViewChild } from '@angular/core'
-import { combineLatest, finalize, map, of, Observable, catchError } from 'rxjs'
+import { Component, Input, OnChanges, OnDestroy } from '@angular/core'
+import { finalize, of, Observable, catchError, Subject, takeUntil } from 'rxjs'
 import { SelectItem } from 'primeng/api'
-import { DataView } from 'primeng/dataview'
 
-import { DataViewControlTranslations, UserService } from '@onecx/portal-integration-angular'
+import { UserService } from '@onecx/portal-integration-angular'
 import {
+  MicrofrontendAbstract,
+  Microservice,
   Product,
-  MfeAndMsSearchCriteria,
-  MicrofrontendPageResult,
-  MicrofrontendsAPIService,
-  MicroservicePageResult,
-  MicroservicesAPIService
+  ProductDetails,
+  ProductsAPIService,
+  SlotPageItem
 } from 'src/app/shared/generated'
 import { dropDownSortItemsByLabel, limitText } from 'src/app/shared/utils'
 import { IconService } from 'src/app/shared/iconservice'
 
 import { AppAbstract, ChangeMode } from '../../app-search/app-search.component'
 
+enum AppType {
+  MS = 'MS',
+  MFE = 'MFE'
+}
+
 @Component({
   selector: 'app-product-apps',
   templateUrl: './product-apps.component.html',
   styleUrls: ['./product-apps.component.scss']
 })
-export class ProductAppsComponent implements OnChanges {
+export class ProductAppsComponent implements OnChanges, OnDestroy {
   @Input() product: Product | undefined
   @Input() dateFormat = 'medium'
   @Input() changeMode: ChangeMode = 'VIEW'
 
-  private readonly debug = true // to be removed after finalization
+  private readonly destroy$ = new Subject()
   public exceptionKey = ''
   public searchInProgress = false
-  public apps$!: Observable<AppAbstract[]>
-  public mfes$!: Observable<MicrofrontendPageResult>
-  public mss$!: Observable<MicroservicePageResult>
+  public limitText = limitText
+
+  public AppType = AppType
+  public productDetails$!: Observable<ProductDetails>
   public app: AppAbstract | undefined
   public iconItems: SelectItem[] = [{ label: '', value: null }]
-  public filter: string | undefined
-  public viewMode = 'grid'
-  public sortField = 'appId'
-  public sortOrder = 1
   public displayDetailDialog = false
   public displayDeleteDialog = false
   public hasCreatePermission = false
   public hasDeletePermission = false
 
-  public dataViewControlsTranslations: DataViewControlTranslations = {}
-  @ViewChild(DataView) dv: DataView | undefined
-  public limitText = limitText
-
-  constructor(
-    private icon: IconService,
-    private user: UserService,
-    private mfeApi: MicrofrontendsAPIService,
-    private msApi: MicroservicesAPIService
-  ) {
+  constructor(private icon: IconService, private user: UserService, private productApi: ProductsAPIService) {
     this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
     this.hasDeletePermission = this.user.hasPermission('APP#DELETE')
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
@@ -61,102 +53,56 @@ export class ProductAppsComponent implements OnChanges {
   }
 
   ngOnChanges(): void {
-    if (this.product) this.searchApps()
+    if (this.product) this.searchProducts()
   }
-
-  /**
-   * DECLARE Observables
-   */
-  private declareMfeObservable(): void {
-    this.mfes$ = this.mfeApi
-      .searchMicrofrontends({ mfeAndMsSearchCriteria: { productName: this.product?.name } as MfeAndMsSearchCriteria })
-      .pipe(
-        catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
-          console.error('searchMicrofrontends():', err)
-          return of({} as MicrofrontendPageResult)
-        }),
-        finalize(() => (this.searchInProgress = false))
-      )
-  }
-  private declareMsObservable(): void {
-    this.mss$ = this.msApi
-      .searchMicroservice({ mfeAndMsSearchCriteria: { productName: this.product?.name } as MfeAndMsSearchCriteria })
-      .pipe(
-        catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
-          console.error('searchMicroservice():', err)
-          return of({} as MicroservicePageResult)
-        }),
-        finalize(() => (this.searchInProgress = false))
-      )
+  public ngOnDestroy(): void {
+    this.destroy$.next(undefined)
+    this.destroy$.complete()
   }
 
   /**
    * SEARCH
    */
-  private searchMfes(): Observable<AppAbstract[]> {
-    this.declareMfeObservable()
-    return this.mfes$.pipe(
-      map((a) => {
-        return a.stream
-          ? a.stream
-              ?.map((mfe) => {
-                return { ...mfe, appType: 'MFE', appTypeKey: 'APP.MFE.' + mfe.type } as AppAbstract
-              })
-              .sort(this.sortAppsByAppId)
-          : []
-      })
-    )
-  }
-  private searchMss(): Observable<AppAbstract[]> {
-    this.declareMsObservable()
-    return this.mss$.pipe(
-      map((a) => {
-        return a.stream
-          ? a.stream
-              ?.map((ms) => {
-                return { ...ms, appType: 'MS', appTypeKey: 'APP.MS' } as AppAbstract
-              })
-              .sort(this.sortAppsByAppId)
-          : []
-      })
-    )
-  }
-  public searchApps(): void {
+  public searchProducts(): void {
+    this.productDetails$ = this.productApi
+      .getProductDetailsByCriteria({ productSearchCriteria: { name: this.product?.name } })
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError((err) => {
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
+          console.error('searchMicrofrontends():', err)
+          return of({} as ProductDetails)
+        }),
+        finalize(() => (this.searchInProgress = false))
+      )
     this.searchInProgress = true
-    this.apps$ = combineLatest([this.searchMfes(), this.searchMss()]).pipe(
-      map(([mfes, mss]) => mfes.concat(mss).sort(this.sortAppsByAppId))
+  }
+
+  public sortMfesByTypeAndExposedModule(a: MicrofrontendAbstract, b: MicrofrontendAbstract): number {
+    return (
+      (a.type ? a.type.toUpperCase() : '').localeCompare((b.type ? b.type.toUpperCase() : '').toUpperCase()) ||
+      (a.exposedModule ? a.exposedModule.toUpperCase() : '').localeCompare(
+        (b.exposedModule ? b.exposedModule.toUpperCase() : '').toUpperCase()
+      )
     )
   }
-  private sortAppsByAppId(a: AppAbstract, b: AppAbstract): number {
-    return (a.appId as string).toUpperCase().localeCompare((b.appId as string).toUpperCase())
+  public sortMssByAppId(a: Microservice, b: Microservice): number {
+    return (a.appId ? a.appId.toUpperCase() : '').localeCompare((b.appId ? b.appId.toUpperCase() : '').toUpperCase())
+  }
+  public sortSlotsByName(a: SlotPageItem, b: SlotPageItem): number {
+    return (a.name ? a.name.toUpperCase() : '').localeCompare((b.name ? b.name.toUpperCase() : '').toUpperCase())
   }
 
   /**
    * UI EVENTS
    */
-  public onLayoutChange(viewMode: string): void {
-    this.viewMode = viewMode
-  }
-  public onFilterChange(filter: string): void {
-    this.filter = filter
-    this.dv?.filter(filter, 'contains')
-  }
-  public onSortChange(field: string): void {
-    this.sortField = field
-  }
-  public onSortDirChange(asc: boolean): void {
-    this.sortOrder = asc ? -1 : 1
-  }
-
-  public onDetail(ev: any, app: AppAbstract) {
+  public onDetail(ev: any, app: any, appType: AppType) {
     ev.stopPropagation()
-    this.app = app
+    this.app = { ...app, appType: appType } as AppAbstract
     this.changeMode = 'EDIT'
     this.displayDetailDialog = true
   }
-  public onCopy(ev: any, app: AppAbstract) {
+  public onCopy(ev: any, app: any, appType: AppType) {
     ev.stopPropagation()
     this.app = app
     this.changeMode = 'COPY'
@@ -167,7 +113,7 @@ export class ProductAppsComponent implements OnChanges {
     this.app = undefined
     this.displayDetailDialog = true
   }
-  public onDelete(ev: any, app: AppAbstract) {
+  public onDelete(ev: any, app: any) {
     ev.stopPropagation()
     this.app = app
     this.displayDeleteDialog = true
@@ -175,10 +121,10 @@ export class ProductAppsComponent implements OnChanges {
 
   public appChanged(changed: any) {
     this.displayDetailDialog = false
-    if (changed) this.searchApps()
+    if (changed) this.searchProducts()
   }
   public appDeleted(deleted: any) {
     this.displayDeleteDialog = false
-    if (deleted) this.searchApps()
+    if (deleted) this.searchProducts()
   }
 }

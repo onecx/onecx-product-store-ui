@@ -60,6 +60,7 @@
   :host ::ng-deep {
     .card-badge-right {
       border-radius: var(--border-radius);
+      padding: 5px !important;
       display: inline-block;
       position: absolute;
       right: 3px;
@@ -72,6 +73,7 @@
     }
     .card-badge-left {
       border-radius: var(--border-radius);
+      padding: 5px !important;
       display: inline-block;
       position: absolute;
       left: 3px;
@@ -88,7 +90,7 @@
         color: var(--primary-color-text);
         background: var(--button-hover-bg);
         cursor: pointer;
-        padding: 5px !important;
+        //padding: 5px !important;
       }
     }
   }

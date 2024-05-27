@@ -183,9 +183,14 @@
       "PLACEHOLDER": "Logo Platzhalter"
     },
     "TABS": {
-      "APPS": "Apps",
+      "APPS": "Components",
       "INTERN": "Intern",
       "PROPERTIES": "Eigenschaften"
+    },
+    "COMPONENTS": {
+      "MFE": "Microfrontends",
+      "MS": "Microservices",
+      "SLOT": "Slots"
     }
   },
   "APP": {
@@ -252,7 +257,7 @@
     "BASE_PATH": "Basispfad",
     "ICON_NAME": "Iconname",
     "CLASSIFICATIONS": "Klassifizierungen",
-    "UNDEPLOYED": "Verfügbarkeit",
+    "UNDEPLOYED": "Unverfügbarkeit",
     "WORKSPACES": "Verwendet in Workspaces",
     "TOOLTIPS": {
       "ID": "Eindeutige technische ID des Produkts",

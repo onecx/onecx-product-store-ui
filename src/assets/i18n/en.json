@@ -186,6 +186,11 @@
       "APPS": "Apps",
       "INTERN": "Internal",
       "PROPERTIES": "Properties"
+    },
+    "COMPONENTS": {
+      "MFE": "Microfrontends",
+      "MS": "Microservices",
+      "SLOT": "Slots"
     }
   },
   "APP": {
@@ -252,7 +257,7 @@
     "BASE_PATH": "Base Path",
     "ICON_NAME": "Icon Name",
     "CLASSIFICATIONS": "Classifications",
-    "UNDEPLOYED": "Availability",
+    "UNDEPLOYED": "Unavailability",
     "WORKSPACES": "Used in Workspaces",
     "TOOLTIPS": {
       "ID": "Unique technical ID of the Product",

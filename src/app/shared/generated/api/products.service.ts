@@ -27,6 +27,8 @@ import { Product } from '../model/product';
 // @ts-ignore
 import { ProductAndWorkspaces } from '../model/productAndWorkspaces';
 // @ts-ignore
+import { ProductDetails } from '../model/productDetails';
+// @ts-ignore
 import { ProductPageResult } from '../model/productPageResult';
 // @ts-ignore
 import { ProductSearchCriteria } from '../model/productSearchCriteria';
@@ -52,6 +54,10 @@ export interface GetProductRequestParams {
 
 export interface GetProductByNameRequestParams {
     name: string;
+}
+
+export interface GetProductDetailsByCriteriaRequestParams {
+    productSearchCriteria: ProductSearchCriteria;
 }
 
 export interface SearchProductsRequestParams {
@@ -365,6 +371,75 @@ export class ProductsAPIService {
         return this.httpClient.request<ProductAndWorkspaces>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Return product by (unique) name
+     * @param requestParameters
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public getProductDetailsByCriteria(requestParameters: GetProductDetailsByCriteriaRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ProductDetails>;
+    public getProductDetailsByCriteria(requestParameters: GetProductDetailsByCriteriaRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ProductDetails>>;
+    public getProductDetailsByCriteria(requestParameters: GetProductDetailsByCriteriaRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ProductDetails>>;
+    public getProductDetailsByCriteria(requestParameters: GetProductDetailsByCriteriaRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+        const productSearchCriteria = requestParameters.productSearchCriteria;
+        if (productSearchCriteria === null || productSearchCriteria === undefined) {
+            throw new Error('Required parameter productSearchCriteria was null or undefined when calling getProductDetailsByCriteria.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/products/details`;
+        return this.httpClient.request<ProductDetails>('post', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: productSearchCriteria,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

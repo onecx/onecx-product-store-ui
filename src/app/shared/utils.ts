@@ -3,7 +3,7 @@ import { Location } from '@angular/common'
 import { environment } from 'src/environments/environment'
 import { RefType } from 'src/app/shared/generated'
 
-export function limitText(text: string, limit: number): string {
+export function limitText(text: string | undefined, limit: number): string {
   if (text) {
     return text.length < limit ? text : text.substring(0, limit) + '...'
   } else {

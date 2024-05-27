@@ -17,6 +17,7 @@ export * from './problemDetailResponse';
 export * from './product';
 export * from './productAbstract';
 export * from './productAndWorkspaces';
+export * from './productDetails';
 export * from './productPageResult';
 export * from './productSearchCriteria';
 export * from './refType';
