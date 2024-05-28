@@ -95,7 +95,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     ]
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.prepareDialogTranslations()
     this.prepareActionButtons()
     this.searchApps()

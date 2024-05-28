@@ -52,9 +52,10 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
     this.iconItems.sort(dropDownSortItemsByLabel)
   }
 
-  ngOnChanges(): void {
+  public ngOnChanges(): void {
     if (this.product) this.searchProducts()
   }
+
   public ngOnDestroy(): void {
     this.destroy$.next(undefined)
     this.destroy$.complete()

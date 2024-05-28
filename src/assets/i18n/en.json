@@ -216,7 +216,7 @@
     "GROUP.REMOTE_MODULE": "Remote Module",
     "GROUP.LOCAL_MODULE": "Module Management Details",
     "GROUP.INTERNALS": "More Details",
-    "DEPRECATED": "Veraltet",
+    "DEPRECATED": "Outdated",
     "UNDEPLOYED": "Undeployed",
     "TOOLTIPS": {
       "APP_ID": "Unique ID - base identifier for this App",

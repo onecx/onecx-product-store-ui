@@ -179,7 +179,12 @@
             ></span>
             <div class="h-4rem flex flex-column justify-content-between gap-1 text-center">
               <div class="font-bold" [title]="'APP ID: ' + app.appId">{{ limitText(app.appId, 25) }}</div>
-              <div class="text-sm" [title]="'APP.APP_TYPE' | translate">{{ app.appTypeKey | translate }}</div>
+              <div *ngIf="app.appType === 'MS'" class="text-sm" [title]="'APP.APP_TYPE' | translate">
+                {{ app.appTypeKey | translate }}
+              </div>
+              <div *ngIf="app.appType === 'MFE'" class="text-sm" title="Microfrontend - Exposed Module">
+                {{ app.exposedModule }}
+              </div>
               <div [title]="'Product: ' + app.productName">{{ limitText(app.productName, 25) }}</div>
             </div>
           </div>
