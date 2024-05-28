@@ -1,8 +1,25 @@
 @import '/src/_mixins.scss';
 
-@include make-disabled-form-readable-input;
-@include make-disabled-form-readable-dropdown;
-@include correct-data-view-control;
-@include prepare-inputgroup;
 @include card-badges;
 @include danger-action;
+
+:host ::ng-deep {
+  .p-fieldset {
+    &.p-fieldset-toggleable .p-fieldset-legend a,
+    .p-fieldset-legend {
+      background-color: transparent;
+      padding: 0.3rem 0.4rem;
+    }
+    .p-fieldset-content {
+      padding: var(--panel-content-padding) 0.5rem 1rem;
+    }
+  }
+  .h-2-5rem {
+    height: 2.5rem !important;
+  }
+  .card-badge-left {
+    &.badge-2-1 {
+      top: 25px;
+    }
+  }
+}

@@ -1,87 +1,142 @@
-<ng-container *ngIf="apps$ | async as apps">
-  <p-dataView
-    id="product_detail_apps_dataview"
-    [value]="apps"
-    [paginator]="true"
-    [alwaysShowPaginator]="false"
-    [rowsPerPageOptions]="[10, 20, 50]"
-    [rows]="viewMode === 'grid' ? 12 : 10"
-    [layout]="viewMode"
-    [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
-    filterBy="appId,appType"
-    [sortField]="sortField"
-    [sortOrder]="sortOrder"
+<div *ngIf="productDetails$ | async as details" class="m-3">
+  <p-fieldset
+    *ngIf="details.microfrontends && details.microfrontends.length > 0"
+    [toggleable]="false"
+    [collapsed]="false"
+    styleClass="surface-100 py-0 mx-0"
   >
     <ng-template pTemplate="header">
-      <ocx-data-view-controls
-        [enableFiltering]="true"
-        [enableSorting]="true"
-        [supportedViews]="['grid']"
-        [initialViewMode]="viewMode"
-        [sortingOptions]="[
-          { label: 'APP.APP_ID' | translate, value: 'appId' },
-          { label: 'APP.APP_TYPE' | translate, value: 'appType' }
-        ]"
-        [defaultSortOption]="sortField"
-        [defaultSortDirection]="sortOrder === 1"
-        (dataViewChange)="onLayoutChange($event)"
-        (filterChange)="onFilterChange($event)"
-        [filterColumns]="['APP.APP_ID' | translate, 'APP.APP_TYPE' | translate]"
-        (sortChange)="onSortChange($event)"
-        (sortDirectionChange)="onSortDirChange($event)"
-        [translations]="dataViewControlsTranslations"
-      >
-      </ocx-data-view-controls
-    ></ng-template>
-    <ng-template let-app let-idx="rowIndex" pTemplate="gridItem">
-      <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3" (click)="onDetail($event, app)">
-        <div
-          class="card relative p-1 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
-          [class.bg-primary]="app.appType === 'MFE'"
-        >
+      <span [title]="'DIALOG.COMPONENTS.MFE' | translate"> {{ 'DIALOG.COMPONENTS.MFE' | translate }} </span>
+    </ng-template>
+    <div class="flex flex-row flex-wrap column-gap-4 row-gap-3">
+      <ng-container *ngFor="let mfe of details.microfrontends.sort(sortMfesByTypeAndExposedModule)">
+        <div (click)="onDetail($event, mfe, AppType.MFE)">
+          <div
+            class="card relative m-0 py-2 px-6 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
+          >
+            <span
+              *ngIf="!mfe.operator && hasCreatePermission"
+              [id]="'product_detail_components_mfe_' + mfe.appId + '_copy_app'"
+              class="card-badge-left badge-1 pi pi-copy pseudo-button-link"
+              [title]="'ACTIONS.COPY.LABEL' | translate"
+              (click)="onCopy($event, mfe, AppType.MFE)"
+            ></span>
+            <span
+              *ngIf="(!mfe.operator || mfe.undeployed) && hasDeletePermission"
+              [id]="'product_detail_components_mfe_' + mfe.appId + '_delete_app'"
+              class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text pseudo-button-link"
+              [title]="'ACTIONS.DELETE.LABEL' | translate"
+              (click)="onDelete($event, mfe)"
+            ></span>
+            <span
+              *ngIf="mfe?.undeployed"
+              [id]="'product_detail_components_mfe_' + mfe.appId + '_undeployed'"
+              class="card-badge-right badge-1 pi pi-ban danger-action-bg cursor-auto"
+              [title]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
+            ></span>
+            <span
+              *ngIf="mfe?.deprecated && !mfe?.undeployed"
+              [id]="'product_detail_components_mfe_' + mfe.appId + '_deprecated'"
+              class="card-badge-right badge-1 pi pi-exclamation-circle danger-action-bg cursor-auto"
+              [title]="'APP.TOOLTIPS.DEPRECATED_SEARCH' | translate"
+            ></span>
+            <span
+              [id]="'product_detail_components_mfe_' + mfe.appId + '_icon'"
+              class="card-badge-right badge-2 p-2 pi cursor-auto"
+              [ngClass]="'pi-' + mfe.iconName"
+              [title]="'Icon'"
+            ></span>
+            <div class="w-12rem flex flex-column justify-content-between gap-1 text-center">
+              <div class="font-bold white-space-nowrap" [title]="'ID: ' + mfe.appId">
+                {{ limitText(mfe.appId, 25) }}
+              </div>
+              <div class="text-xs" [title]="'APP.APP_TYPE' | translate">{{ mfe.type }}</div>
+              <div class="text-sm">{{ limitText(mfe.exposedModule ?? '', 25) }}</div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </p-fieldset>
+
+  <p-fieldset
+    *ngIf="details.microservices && details.microservices.length > 0"
+    [toggleable]="false"
+    [collapsed]="false"
+    styleClass="surface-100 py-0 mx-0 mt-3"
+  >
+    <ng-template pTemplate="header">
+      <span [title]="'DIALOG.COMPONENTS.MS' | translate"> {{ 'DIALOG.COMPONENTS.MS' | translate }} </span>
+    </ng-template>
+    <div class="flex flex-row flex-wrap column-gap-4 row-gap-3">
+      <ng-container *ngFor="let ms of details.microservices.sort(sortMssByAppId)">
+        <div (click)="onDetail($event, ms, AppType.MS)">
+          <div
+            class="card relative m-0 py-2 px-6 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
+          >
+            <span
+              *ngIf="!ms.operator && hasCreatePermission"
+              [id]="'product_detail_components_ms_' + ms.appId + '_copy_app'"
+              class="card-badge-left badge-1 pi pi-copy pseudo-button-link"
+              [title]="'ACTIONS.COPY.LABEL' | translate"
+              (click)="onCopy($event, ms, AppType.MS)"
+            ></span>
+            <span
+              *ngIf="(!ms.operator || ms.undeployed) && hasDeletePermission"
+              [id]="'product_detail_components_ms_' + ms.appId + '_delete_app'"
+              class="card-badge-left badge-2-1 p-2 pi pi-trash danger-action-text pseudo-button-link"
+              [title]="'ACTIONS.DELETE.LABEL' | translate"
+              (click)="onDelete($event, ms)"
+            ></span>
+            <span
+              *ngIf="ms?.undeployed"
+              [id]="'product_detail_components_ms_' + ms.appId + '_undeployed'"
+              class="card-badge-right badge-1 pi pi-ban danger-action-bg cursor-auto"
+              [title]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
+            ></span>
+            <div class="h-2-5rem w-12rem flex flex-column justify-content-around text-center">
+              <div class="font-bold white-space-nowrap" [title]="'ID: ' + ms.appId">{{ limitText(ms.appId, 25) }}</div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </p-fieldset>
+
+  <p-fieldset
+    *ngIf="details.slots && details.slots.length > 0"
+    [toggleable]="false"
+    [collapsed]="false"
+    styleClass="surface-100 py-0 mx-0 mt-3"
+  >
+    <ng-template pTemplate="header">
+      <span [title]="'DIALOG.COMPONENTS.SLOT' | translate"> {{ 'DIALOG.COMPONENTS.SLOT' | translate }} </span>
+    </ng-template>
+    <div class="flex flex-row flex-wrap column-gap-4 row-gap-3">
+      <ng-container *ngFor="let slot of details.slots.sort(sortSlotsByName)">
+        <div class="card relative m-0 py-0 px-0 flex flex-column justify-content-center">
           <span
-            *ngIf="!app.operator && hasCreatePermission"
-            [id]="'app_search_data_' + app.appId + '_copy_app'"
-            class="card-badge-left badge-1 p-2 pi pi-copy pseudo-button-link"
-            [title]="'ACTIONS.COPY.LABEL' | translate"
-            (click)="onCopy($event, app)"
-          ></span>
-          <span
-            *ngIf="(!app.operator || app.undeployed) && hasDeletePermission"
-            [id]="'app_search_data_' + app.appId + '_delete_app'"
-            class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text pseudo-button-link"
-            [title]="'ACTIONS.DELETE.LABEL' | translate"
-            (click)="onDelete($event, app)"
-          ></span>
-          <span
-            *ngIf="app?.undeployed"
-            [id]="'app_search_data_' + app.appId + '_undeployed'"
-            class="card-badge-right badge-1 p-2 pi pi-ban danger-action-bg cursor-auto"
+            *ngIf="slot?.undeployed"
+            [id]="'product_detail_components_slot_' + slot.name + '_undeployed'"
+            class="card-badge-right badge-1 pi pi-ban danger-action-bg cursor-auto"
             [title]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
           ></span>
           <span
-            *ngIf="app?.deprecated && !app?.undeployed"
-            [id]="'app_search_data_' + app.appId + '_deprecated'"
-            class="card-badge-right badge-1 p-2 pi pi-exclamation-circle danger-action-bg cursor-auto"
+            *ngIf="slot?.deprecated && !slot?.undeployed"
+            [id]="'product_detail_components_slot_' + slot.appId + '_deprecated'"
+            class="card-badge-right badge-1 pi pi-exclamation-circle danger-action-bg cursor-auto"
             [title]="'APP.TOOLTIPS.DEPRECATED_SEARCH' | translate"
           ></span>
-          <span
-            *ngIf="app.appType === 'MFE'"
-            [id]="'app_search_data_' + app.appId + '_icon'"
-            class="card-badge-right badge-2 p-2 pi cursor-auto"
-            [ngClass]="'pi-' + app.iconName"
-            [title]="'Icon'"
-          ></span>
-          <div class="h-4rem flex flex-column justify-content-between gap-1 text-center">
-            <div class="font-bold" [title]="'ID: ' + app.appId">{{ limitText(app.appId, 25) }}</div>
-            <div class="text-sm" [title]="'APP.APP_TYPE' | translate">{{ app.appTypeKey | translate }}</div>
-            <div [title]="'Product: ' + app.productName">{{ limitText(app.productName, 25) }}</div>
+          <div class="h-2-5rem w-12rem my-2 mx-6 flex flex-column justify-content-around text-center">
+            <div class="font-bold white-space-nowrap" [title]="'Name: ' + slot.name">
+              {{ limitText(slot.name, 25) }}
+            </div>
           </div>
         </div>
-      </div>
-    </ng-template>
-  </p-dataView>
-</ng-container>
+      </ng-container>
+    </div>
+  </p-fieldset>
+</div>
 
 <app-app-detail
   [displayDialog]="displayDetailDialog"

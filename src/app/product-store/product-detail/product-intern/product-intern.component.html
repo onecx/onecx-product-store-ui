@@ -10,9 +10,7 @@
             id="product_detail_intern_field_creationDate"
             class="w-full pt-3 pb-2"
             [value]="product?.creationDate | date : dateFormat"
-            [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
-            tooltipPosition="top"
-            tooltipEvent="focus"
+            [title]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
           />
           <label for="product_detail_intern_field_creationDate">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
         </span>
@@ -26,9 +24,7 @@
             id="product_detail_intern_field_creationUser"
             class="w-full pt-3 pb-2"
             [value]="product?.creationUser"
-            [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_USER' | translate"
-            tooltipPosition="top"
-            tooltipEvent="focus"
+            [title]="'INTERNAL.TOOLTIPS.CREATION_USER' | translate"
           />
           <label for="product_detail_intern_field_creationUser">{{ 'INTERNAL.CREATION_USER' | translate }}</label>
         </span>
@@ -45,9 +41,7 @@
             id="product_detail_intern_field_modificationDate"
             class="w-full pt-3 pb-2"
             [value]="product?.modificationDate | date : dateFormat"
-            [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
-            tooltipPosition="top"
-            tooltipEvent="focus"
+            [title]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
           />
           <label for="product_detail_intern_field_modificationDate">
             {{ 'INTERNAL.MODIFICATION_DATE' | translate }}</label
@@ -64,9 +58,7 @@
             id="product_detail_intern_field_modificationUser"
             class="w-full pt-3 pb-2"
             [value]="product?.modificationUser"
-            [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_USER' | translate"
-            tooltipPosition="top"
-            tooltipEvent="focus"
+            [title]="'INTERNAL.TOOLTIPS.MODIFICATION_USER' | translate"
           />
           <label for="product_detail_intern_field_modificationUser">
             {{ 'INTERNAL.MODIFICATION_USER' | translate }}</label
@@ -85,9 +77,7 @@
             id="product_detail_intern_field_operator"
             class="w-full pt-3 pb-2"
             [value]="(product?.operator ? 'PRODUCT.OPERATOR.DEPLOYMENT' : 'PRODUCT.OPERATOR.MANUAL') | translate"
-            [pTooltip]="'PRODUCT.TOOLTIPS.OPERATOR' | translate"
-            tooltipPosition="top"
-            tooltipEvent="focus"
+            [title]="'PRODUCT.TOOLTIPS.OPERATOR' | translate"
           />
           <label for="product_detail_intern_field_operator"> {{ 'PRODUCT.OPERATOR' | translate }}</label>
         </span>
@@ -95,13 +85,12 @@
       <div class="w-12 sm:w-6 px-3 flex align-items-center">
         <p-checkbox
           type="text"
+          styleClass="cursor-auto"
           [readonly]="true"
           inputId="product_detail_intern_field_undeployed"
           [(ngModel)]="undeployed"
           [binary]="true"
-          [pTooltip]="'PRODUCT.TOOLTIPS.UNDEPLOYED' | translate"
-          tooltipPosition="top"
-          tooltipEvent="focus"
+          [title]="'PRODUCT.TOOLTIPS.UNDEPLOYED' | translate"
           [label]="'PRODUCT.UNDEPLOYED' | translate"
         ></p-checkbox>
       </div>
@@ -111,18 +100,16 @@
       <div class="w-12 px-3">
         <span class="p-float-label">
           <textarea
+            #usedInWorkspaces
             pInputTextarea
             readonly
             class="w-full"
             autoresize="true"
             rows="3"
             id="product_detail_intern_field_workspaces"
-            [pTooltip]="'PRODUCT.TOOLTIPS.WORKSPACES' | translate"
-            tooltipPosition="top"
-            tooltipEvent="focus"
+            [title]="'PRODUCT.TOOLTIPS.WORKSPACES' | translate"
           >
-            {{ product?.workspaces }}</textarea
-          >
+          </textarea>
           <label for="product_detail_intern_field_workspaces">{{ 'PRODUCT.WORKSPACES' | translate }}</label>
         </span>
       </div>

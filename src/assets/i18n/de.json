@@ -12,7 +12,7 @@
         "HEADER": "App kopieren"
       },
       "PRODUCT": {
-        "HEADER": "Produkt kopieren"
+        "HEADER": "Applikation kopieren"
       }
     },
     "CREATE": {
@@ -27,11 +27,11 @@
         "NOK": "Die App konnte nicht erstellt werden."
       },
       "PRODUCT": {
-        "LABEL": "Produkt erstellen",
-        "HEADER": "Produkt erstellen",
-        "TOOLTIP": "Ein neues Produkt erstellen",
-        "OK": "Das Produkt wurde erfolgreich erstellt",
-        "NOK": "Das Produkt konnte nicht erstellt werden."
+        "LABEL": "Applikation erstellen",
+        "HEADER": "Applikation erstellen",
+        "TOOLTIP": "Eine neue Applikation erstellen",
+        "OK": "Die Applikation wurde erfolgreich erstellt",
+        "NOK": "Die Applikation konnte nicht erstellt werden."
       }
     },
     "DELETE": {
@@ -44,10 +44,10 @@
         "OK": "App erfolgreich gelöscht"
       },
       "PRODUCT": {
-        "TOOLTIP": "Produkt löschen",
-        "HEADER": "Produkt löschen",
-        "NOK": "Produkt konnte nicht gelöscht werden",
-        "OK": "Produkt erfolgreich gelöscht"
+        "TOOLTIP": "Applikation löschen",
+        "HEADER": "Applikation löschen",
+        "NOK": "Applikation konnte nicht gelöscht werden",
+        "OK": "Applikation erfolgreich gelöscht"
       },
       "MESSAGE": "Möchten Sie \"{{ITEM}}\" löschen?",
       "MESSAGE_INFO": "Diese Aktion kann nicht rückgängig gemacht werden!"
@@ -62,10 +62,10 @@
         "NOK": "Die App konnte nicht geändert werden."
       },
       "PRODUCT": {
-        "HEADER": "Produkt bearbeiten",
-        "TOOLTIP": "Die Produkteigenschaften bearbeiten",
-        "OK": "Das Produkt wurde erfolgreich geändert",
-        "NOK": "Das Produkt konnte nicht geändert werden."
+        "HEADER": "Applikation bearbeiten",
+        "TOOLTIP": "Die Eigenschaften der Applikation bearbeiten",
+        "OK": "Die Applikation wurde erfolgreich geändert",
+        "NOK": "Die Applikation konnte nicht geändert werden."
       }
     },
     "NAVIGATION": {
@@ -79,7 +79,7 @@
       "DETAILS.TOOLTIP": "Anzeige Details",
       "NEW.TOOLTIP": "Erstelle neuen Eintrag",
       "LINKS": {
-        "GOTO.PRODUCT": "Produktdetails anzeigen"
+        "GOTO.PRODUCT": "Details der Applikation anzeigen"
       }
     },
     "DATAVIEW": {
@@ -97,7 +97,7 @@
       "APP": {
         "NOT_EXISTS": "Eine App mit diesem Namen konnte nicht gefunden werden.",
         "LOAD_ERROR": "App konnte nicht geladen werden",
-        "NOT_FOUND": "Das Produkt hat noch keine Apps",
+        "NOT_FOUND": "Die Applikation hat noch keine Apps",
         "FILTER": {
           "TOOLTIP": "App Typ",
           "ALL": "Alle",
@@ -112,9 +112,9 @@
         }
       },
       "PRODUCT": {
-        "NOT_EXISTS": "Ein Produkt mit diesem Namen konnte nicht gefunden werden.",
-        "LOAD_ERROR": "Produkt konnte nicht geladen werden",
-        "NOT_FOUND": "Produkt nicht gefunden"
+        "NOT_EXISTS": "Eine Applikation mit diesem Namen konnte nicht gefunden werden.",
+        "LOAD_ERROR": "Applikation konnte nicht geladen werden",
+        "NOT_FOUND": "Applikation nicht gefunden"
       }
     },
     "VIEW": {
@@ -122,7 +122,7 @@
       "MFE.HEADER": "Microfrontend Details",
       "MS.HEADER": "Microservice Details",
       "PRODUCT": {
-        "HEADER": "Produkt bearbeiten"
+        "HEADER": "Applikation bearbeiten"
       }
     },
     "CANCEL": "Abbrechen",
@@ -167,9 +167,9 @@
     }
   },
   "DIALOG": {
-    "SEARCH.HEADER": "Product Store",
-    "SEARCH.SUBHEADER": "Produkte und deren Apps verwalten",
-    "DETAIL.SUBHEADER": "Produkt Details",
+    "SEARCH.HEADER": "Application Store",
+    "SEARCH.SUBHEADER": "Applikationen und deren Apps verwalten",
+    "DETAIL.SUBHEADER": "Application Details",
     "SEARCH.APPS.LABEL": "Apps",
     "SEARCH.APPS.TOOLTIP": "Microfrontends und Microservices suchen und verwalten",
     "SEARCH.APPS.HEADER": "Apps",
@@ -183,9 +183,14 @@
       "PLACEHOLDER": "Logo Platzhalter"
     },
     "TABS": {
-      "APPS": "Apps",
+      "APPS": "Components",
       "INTERN": "Intern",
       "PROPERTIES": "Eigenschaften"
+    },
+    "COMPONENTS": {
+      "MFE": "Microfrontends",
+      "MS": "Microservices",
+      "SLOT": "Slots"
     }
   },
   "APP": {
@@ -194,7 +199,7 @@
     "APP_TYPE": "Typ",
     "APP_VERSION": "Version",
     "DESCRIPTION": "Beschreibung",
-    "PRODUCT_NAME": "Produktname",
+    "PRODUCT_NAME": "Applikationsname",
     "TECHNOLOGY": "Technologie",
     "TYPE": "Typ",
     "MS": "MS",
@@ -219,7 +224,7 @@
       "APP_TYPE": "Typ der App",
       "APP_VERSION": "Version",
       "DESCRIPTION": "Beschreibung",
-      "PRODUCT_NAME": "Name des Produkts dem die App zugeordnet ist",
+      "PRODUCT_NAME": "Name der Applikation der die App zugeordnet ist",
       "TECHNOLOGY": "Technologie",
       "TYPE": "Typ des Microfrontends",
       "REMOTE_BASE_URL": "Remote Base URL",
@@ -252,27 +257,27 @@
     "BASE_PATH": "Basispfad",
     "ICON_NAME": "Iconname",
     "CLASSIFICATIONS": "Klassifizierungen",
-    "UNDEPLOYED": "Verfügbarkeit",
+    "UNDEPLOYED": "Unverfügbarkeit",
     "WORKSPACES": "Verwendet in Workspaces",
     "TOOLTIPS": {
-      "ID": "Eindeutige technische ID des Produkts",
-      "NAME": "Eindeutiger Name des Produkts",
-      "VERSION": "Version des Produkts",
-      "DESCRIPTION": "Beschreibung des Produkts",
-      "DISPLAY_NAME": "Anzeigename des Produkts",
-      "OPERATOR": "Wie wurde das Produkt angelegt? Wird bei der Erstellung des Produkts bestimmt.",
-      "IMAGE_URL": "URL für ein Image ausserhalb des Product Stores",
-      "BASE_PATH": "Der Basispfad wie das Produkt erreichbar ist. Muss eindeutig über alle Produkte sein",
+      "ID": "Eindeutige technische ID der Applikation",
+      "NAME": "Eindeutiger Name der Applikation",
+      "VERSION": "Version der Applikation",
+      "DESCRIPTION": "Beschreibung der Applikation",
+      "DISPLAY_NAME": "Anzeigename der Applikation",
+      "OPERATOR": "Wie wurde die Applikation angelegt? Wird bei der Erstellung der Applikation bestimmt.",
+      "IMAGE_URL": "URL für ein Image ausserhalb des Application Stores",
+      "BASE_PATH": "Der Basispfad wie die Applikation erreichbar ist. Muss eindeutig über alle Applikationen sein",
       "ICON_NAME": "Name eines Icons aus der PrimeNG Icon Bibliothek. Wird z.b. als Default bei Menüeinträgen benutzt",
-      "CLASSIFICATIONS": "Kommaseparierte Liste von Begriffen zur Klassifizierungen des Produkts, z.b. Game, Tool etc.. Kann zur Filterung benutzt werden",
-      "UNDEPLOYED": "Wenn gesetzt, dann ist dieses Produkt nicht länger benutzbar. Eine weitere Benutzung von dessen Apps führt zu Fehlermeldungen.",
-      "UNDEPLOYED_SEARCH": "Dieses Produkt ist nicht länger benutzbar. Eine weitere Benutzung von dessen Apps führt zu Fehlermeldungen.",
-      "WORKSPACES": "Workspaces, die das Produkt benutzen"
+      "CLASSIFICATIONS": "Kommaseparierte Liste von Begriffen zur Klassifizierungen der Applikation, z.b. Game, Tool etc.. Kann zur Filterung benutzt werden",
+      "UNDEPLOYED": "Wenn gesetzt, dann ist diese Applikation nicht länger benutzbar. Eine weitere Benutzung von dessen Apps führt zu Fehlermeldungen.",
+      "UNDEPLOYED_SEARCH": "Diese Applikation ist nicht länger benutzbar. Eine weitere Benutzung von dessen Apps führt zu Fehlermeldungen.",
+      "WORKSPACES": "Workspaces, die diese Applikation benutzen"
     }
   },
   "SLOT": {
     "NAME": "Name",
-    "PRODUCT_NAME": "Produktname",
+    "PRODUCT_NAME": "Applikationsname",
     "TOOLTIPS": {
       "ID": "Eindeutige technische ID des Slots",
       "NAME": "Eindeutiger Name des Slots"
@@ -280,22 +285,22 @@
   },
   "EXCEPTIONS": {
     "HTTP_STATUS_0": {
-      "PRODUCTS": "Unbekanntes Problem beim Abrufen von Produkte-Daten - Bitte versuchen sie es noch einmal.",
+      "PRODUCTS": "Unbekanntes Problem beim Abrufen von Applikationen-Daten - Bitte versuchen sie es noch einmal.",
       "APPS": "Unbekanntes Problem beim Abrufen von App-Daten - Bitte versuchen sie es noch einmal.",
       "SLOTS": "Unbekanntes Problem beim Abrufen von Slot-Daten - Bitte versuchen sie es noch einmal."
     },
     "HTTP_STATUS_403": {
-      "PRODUCTS": "Sie haben keine Rechte, um Produkte zu sehen.",
+      "PRODUCTS": "Sie haben keine Rechte, um Applikationen zu sehen.",
       "APPS": "Sie haben keine Rechte, um Apps zu sehen.",
       "SLOTS": "Sie haben keine Rechte, um Slots zu sehen."
     },
     "HTTP_STATUS_404": {
-      "PRODUCTS": "Es konnten keine Produkte gefunden werden.",
+      "PRODUCTS": "Es konnten keine Applikationen gefunden werden.",
       "APPS": "Es konnten keine Apps gefunden werden.",
       "SLOTS": "Es konnten keine Slots gefunden werden."
     },
     "HTTP_STATUS_500": {
-      "PRODUCTS": "Unbekanntes Server-Problem beim Abrufen von Produkt-Daten - Bitte versuchen sie es noch einmal.",
+      "PRODUCTS": "Unbekanntes Server-Problem beim Abrufen von Applikation-Daten - Bitte versuchen sie es noch einmal.",
       "APPS": "Unbekanntes Server-Problem beim Abrufen von App-Daten - Bitte versuchen sie es noch einmal.",
       "SLOTS": "Unbekanntes Server-Problem beim Abrufen von Slot-Daten - Bitte versuchen sie es noch einmal."
     }
@@ -305,10 +310,10 @@
     "HINTS": {
       "FORMAT_URL": "Format: "
     },
-    "APP.UNIQUE_CONSTRAINT.REMOTE_MODULE": "Eine App mit dieser Remote Konfiguration existiert bereits für das Produkt.",
-    "APP.UNIQUE_CONSTRAINT.APP_ID": "Eine App mit dieser ID existiert bereits für das Produkt.",
-    "PRODUCT.UNIQUE_CONSTRAINT.NAME": "Ein Produkt mit diesem Namen existiert bereits.",
-    "PRODUCT.UNIQUE_CONSTRAINT.BASEPATH": "Ein Produkt mit diesem Basepath existiert bereits.",
+    "APP.UNIQUE_CONSTRAINT.REMOTE_MODULE": "Eine App mit dieser Remote Konfiguration existiert bereits für die Applikation.",
+    "APP.UNIQUE_CONSTRAINT.APP_ID": "Eine App mit dieser ID existiert bereits für die Applikation.",
+    "PRODUCT.UNIQUE_CONSTRAINT.NAME": "Eine Applikation mit diesem Namen existiert bereits.",
+    "PRODUCT.UNIQUE_CONSTRAINT.BASEPATH": "Eine Applikation mit diesem Basepath existiert bereits.",
     "PRODUCT.INVALID_NAME": "Dieser Name ist reserviert und kann nicht verwendet werden.",
     "ERRORS": {
       "PARSE_ERROR": "Parserfehler: Die enthaltene Struktur entspricht nicht dem erwarteten Format.",

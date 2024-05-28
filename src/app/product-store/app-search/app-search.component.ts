@@ -33,7 +33,6 @@ export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
 })
 export class AppSearchComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject()
-  private readonly debug = true // to be removed after finalization
   public exceptionKey: string | undefined
   public loading = true
   public actions$: Observable<Action[]> | undefined
@@ -96,7 +95,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     ]
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.prepareDialogTranslations()
     this.prepareActionButtons()
     this.searchApps()

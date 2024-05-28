@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core'
+import { Component, Input, OnChanges, ElementRef, ViewChild } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
 
 import { ProductAndWorkspaces } from 'src/app/shared/generated'
@@ -10,11 +10,19 @@ import { ProductAndWorkspaces } from 'src/app/shared/generated'
 export class ProductInternComponent implements OnChanges {
   @Input() product: ProductAndWorkspaces | undefined
   @Input() dateFormat = 'medium'
+
+  @ViewChild('usedInWorkspaces') usedInWorkspaces: ElementRef = {} as ElementRef
   public undeployed = false
 
   constructor(private translate: TranslateService) {}
 
   public ngOnChanges(): void {
-    this.undeployed = this.product?.undeployed ? this.product?.undeployed : false
+    if (this.product) {
+      this.undeployed = this.product.undeployed ? this.product.undeployed : false
+    }
+    setTimeout(() => {
+      if (this.usedInWorkspaces?.nativeElement)
+        this.usedInWorkspaces.nativeElement.innerHTML = this.product?.workspaces?.join(', ')
+    }, 2)
   }
 }

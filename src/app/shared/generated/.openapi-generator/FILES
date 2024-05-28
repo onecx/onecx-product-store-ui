@@ -32,6 +32,7 @@ model/problemDetailResponse.ts
 model/product.ts
 model/productAbstract.ts
 model/productAndWorkspaces.ts
+model/productDetails.ts
 model/productPageResult.ts
 model/productSearchCriteria.ts
 model/refType.ts

@@ -353,6 +353,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+  /products/details:
+    post:
+      x-onecx:
+        permissions:
+          product:
+            - read
+      tags:
+        - Products
+      description: Return product by (unique) name
+      operationId: getProductDetailsByCriteria
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductSearchCriteria'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDetails'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
   /microservices:
     post:
       x-onecx:
@@ -862,6 +897,23 @@ components:
             type: string
         undeployed:
           type: boolean
+    ProductDetails:
+      type: object
+      properties:
+        name:
+          type: string
+        microfrontends:
+          type: array
+          items:
+            $ref: '#/components/schemas/MicrofrontendAbstract'
+        microservices:
+          type: array
+          items:
+            $ref: '#/components/schemas/Microservice'
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/SlotPageItem'
     Product:
       type: object
       required:
@@ -1015,13 +1067,13 @@ components:
         appId:
           type: string
           description: BID of an app
-        remoteName:
-          type: string
         tagName:
           type: string
         appName:
           type: string
           description: Readable name of the app
+        exposedModule:
+          type: string
         description:
           type: string
           description: textual description of MFE

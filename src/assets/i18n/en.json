@@ -12,7 +12,7 @@
         "HEADER": "Copy App"
       },
       "PRODUCT": {
-        "HEADER": "Copy Product"
+        "HEADER": "Copy Application"
       }
     },
     "CREATE": {
@@ -27,11 +27,11 @@
         "NOK": "An error has occurred. The App was not created."
       },
       "PRODUCT": {
-        "LABEL": "Create Product",
-        "HEADER": "Create Product",
-        "TOOLTIP": "Create a new Product",
-        "OK": "The Product was created successfully",
-        "NOK": "An error has occurred. The Product was not created."
+        "LABEL": "Create Application",
+        "HEADER": "Create Application",
+        "TOOLTIP": "Create a new Application",
+        "OK": "The Application was created successfully",
+        "NOK": "An error has occurred. The Application was not created."
       }
     },
     "DELETE": {
@@ -44,10 +44,10 @@
         "OK": "App deleted successfully"
       },
       "PRODUCT": {
-        "TOOLTIP": "Delete Product",
-        "HEADER": "Delete Product",
-        "NOK": "Product could not be deleted",
-        "OK": "Product deleted successfully"
+        "TOOLTIP": "Delete Application",
+        "HEADER": "Delete Application",
+        "NOK": "Application could not be deleted",
+        "OK": "Application deleted successfully"
       },
       "MESSAGE": "Do you want to delete \"{{ITEM}}\"?",
       "MESSAGE_INFO": "This action cannot be undone!"
@@ -62,10 +62,10 @@
         "NOK": "Ein Fehler ist aufgetreten. Das App wurde nicht geändert."
       },
       "PRODUCT": {
-        "HEADER": "Edit Product",
-        "TOOLTIP": "Edit Product properties",
-        "OK": "The Product was changed successfully",
-        "NOK": "An error has occurred. The Product was not changed."
+        "HEADER": "Edit Application",
+        "TOOLTIP": "Edit Application properties",
+        "OK": "The Application was changed successfully",
+        "NOK": "An error has occurred. The Application was not changed."
       }
     },
     "NAVIGATION": {
@@ -79,7 +79,7 @@
       "DETAILS.TOOLTIP": "Display details",
       "NEW.TOOLTIP": "Create new entry",
       "LINKS": {
-        "GOTO.PRODUCT": "Display Product details"
+        "GOTO.PRODUCT": "Display Application details"
       }
     },
     "DATAVIEW": {
@@ -97,7 +97,7 @@
       "APP": {
         "NOT_EXISTS": "An App with this name could not be found.",
         "LOAD_ERROR": "Failed to load App",
-        "NOT_FOUND": "The product does not have an App",
+        "NOT_FOUND": "The Application does not have an App",
         "FILTER": {
           "TOOLTIP": "App Type",
           "ALL": "All",
@@ -112,9 +112,9 @@
         }
       },
       "PRODUCT": {
-        "NOT_EXISTS": "A Product with this name could not be found.",
-        "LOAD_ERROR": "Failed to load Product",
-        "NOT_FOUND": "Product was not found"
+        "NOT_EXISTS": "An Application with this name could not be found.",
+        "LOAD_ERROR": "Failed to load the Application",
+        "NOT_FOUND": "Application was not found"
       }
     },
     "VIEW": {
@@ -122,7 +122,7 @@
       "MFE.HEADER": "Microfrontend Details",
       "MS.HEADER": "Microservice Details",
       "PRODUCT": {
-        "HEADER": "Edit Product"
+        "HEADER": "Edit Application"
       }
     },
     "CANCEL": "Cancel",
@@ -167,9 +167,9 @@
     }
   },
   "DIALOG": {
-    "SEARCH.HEADER": "Product Store",
-    "SEARCH.SUBHEADER": "Viewing and Managing Products and their Apps",
-    "DETAIL.SUBHEADER": "Product Details",
+    "SEARCH.HEADER": "Application Store",
+    "SEARCH.SUBHEADER": "Viewing and Managing Applications and their Apps",
+    "DETAIL.SUBHEADER": "Application Details",
     "SEARCH.APPS.LABEL": "Apps",
     "SEARCH.APPS.TOOLTIP": "Search and Management of Microfrontends and Microservices",
     "SEARCH.APPS.HEADER": "Apps",
@@ -186,6 +186,11 @@
       "APPS": "Apps",
       "INTERN": "Internal",
       "PROPERTIES": "Properties"
+    },
+    "COMPONENTS": {
+      "MFE": "Microfrontends",
+      "MS": "Microservices",
+      "SLOT": "Slots"
     }
   },
   "APP": {
@@ -194,7 +199,7 @@
     "APP_TYPE": "Type",
     "APP_VERSION": "Version",
     "DESCRIPTION": "Description",
-    "PRODUCT_NAME": "Product Name",
+    "PRODUCT_NAME": "Application Name",
     "TECHNOLOGY": "Technology",
     "TYPE": "Type",
     "MS": "MS",
@@ -211,7 +216,7 @@
     "GROUP.REMOTE_MODULE": "Remote Module",
     "GROUP.LOCAL_MODULE": "Module Management Details",
     "GROUP.INTERNALS": "More Details",
-    "DEPRECATED": "Veraltet",
+    "DEPRECATED": "Outdated",
     "UNDEPLOYED": "Undeployed",
     "TOOLTIPS": {
       "APP_ID": "Unique ID - base identifier for this App",
@@ -252,27 +257,27 @@
     "BASE_PATH": "Base Path",
     "ICON_NAME": "Icon Name",
     "CLASSIFICATIONS": "Classifications",
-    "UNDEPLOYED": "Availability",
+    "UNDEPLOYED": "Unavailability",
     "WORKSPACES": "Used in Workspaces",
     "TOOLTIPS": {
-      "ID": "Unique technical ID of the Product",
-      "NAME": "Unique Name of the Product",
-      "VERSION": "Version of the Product",
-      "DESCRIPTION": "Description of the Product",
-      "DISPLAY_NAME": "Display Name of the Product",
-      "OPERATOR": "How the Product was created? Set at creation time",
-      "IMAGE_URL": "URL for an image outside the Product Store",
-      "BASE_PATH": "The basic path through which the product can be accessed. It must be unique across all products",
+      "ID": "Unique technical ID of the Application",
+      "NAME": "Unique Name of the Application",
+      "VERSION": "Version of the Application",
+      "DESCRIPTION": "Description of the Application",
+      "DISPLAY_NAME": "Display Name of the Application",
+      "OPERATOR": "How the Application was created? Set at creation time",
+      "IMAGE_URL": "URL for an image outside the Application Store",
+      "BASE_PATH": "The basic path through which the Application can be accessed. It must be unique across all Applications",
       "ICON_NAME": "Name of the icons from the PrimeNG icon library. Used, for example, as a default icon for menu entries",
-      "CLASSIFICATIONS": "Comma-separated list of terms to classify the product, e.g. Game, Tool etc. Can be used for filtering",
-      "UNDEPLOYED": "If set, then this product can no longer be used. Further use of its apps leads to error messages.",
-      "UNDEPLOYED_SEARCH": "This product can no longer be used. Further use of its apps leads to error messages.",
-      "WORKSPACES": "Workspaces using the Product"
+      "CLASSIFICATIONS": "Comma-separated list of terms to classify the Application, e.g. Game, Tool etc. Can be used for filtering",
+      "UNDEPLOYED": "If set, then this Application can no longer be used. Further use of its apps leads to error messages.",
+      "UNDEPLOYED_SEARCH": "This Application can no longer be used. Further use of its apps leads to error messages.",
+      "WORKSPACES": "Workspaces using the Application"
     }
   },
   "SLOT": {
     "NAME": "Name",
-    "PRODUCT_NAME": "Product name",
+    "PRODUCT_NAME": "Application name",
     "TOOLTIPS": {
       "ID": "Unique technical ID of the Slot",
       "NAME": "Unique Name of the Slot"
@@ -280,22 +285,22 @@
   },
   "EXCEPTIONS": {
     "HTTP_STATUS_0": {
-      "PRODUCTS": "Unknown problem retrieving Product data - please try again.",
+      "PRODUCTS": "Unknown problem retrieving Application data - please try again.",
       "APPS": "Unknown problem retrieving App data - please try again.",
       "SLOTS": "Unknown problem retrieving Slot data - please try again."
     },
     "HTTP_STATUS_403": {
-      "PRODUCTS": "You have no permissions to see Products.",
+      "PRODUCTS": "You have no permissions to see Applications.",
       "APPS": "You have no permissions to see Apps.",
       "SLOTS": "You have no permissions to see Slots."
     },
     "HTTP_STATUS_404": {
-      "PRODUCTS": "No Products could be found.",
+      "PRODUCTS": "No Applications could be found.",
       "APPS": "No Apps could be found.",
       "SLOTS": "No Slots could be found."
     },
     "HTTP_STATUS_500": {
-      "PRODUCTS": "Unknown server problem retrieving Product data - please try again.",
+      "PRODUCTS": "Unknown server problem retrieving Application data - please try again.",
       "APPS": "Unknown server problem retrieving App data - please try again.",
       "SLOTS": "Unknown server problem retrieving Slot data - please try again."
     }
@@ -305,10 +310,10 @@
     "HINTS": {
       "FORMAT_URL": "Format: "
     },
-    "APP.UNIQUE_CONSTRAINT.REMOTE_MODULE": "An App with this remote configuration already exists for the product.",
-    "APP.UNIQUE_CONSTRAINT.APP_ID": "An App with this id exists already for the Product.",
-    "PRODUCT.UNIQUE_CONSTRAINT.NAME": "A Product with this name exists already.",
-    "PRODUCT.UNIQUE_CONSTRAINT.BASEPATH": "A Product with this basepath exists already.",
+    "APP.UNIQUE_CONSTRAINT.REMOTE_MODULE": "An App with this remote configuration already exists for the Application.",
+    "APP.UNIQUE_CONSTRAINT.APP_ID": "An App with this id exists already for the Application.",
+    "PRODUCT.UNIQUE_CONSTRAINT.NAME": "An Application with this name exists already.",
+    "PRODUCT.UNIQUE_CONSTRAINT.BASEPATH": "An Application with this basepath exists already.",
     "PRODUCT.INVALID_NAME": "This name is a reserved term and cannot be used.",
     "ERRORS": {
       "PARSE_ERROR": "Parse error: The contained structure does not match the expected format.",
