@@ -55,8 +55,10 @@
           [initialViewMode]="viewMode"
           [defaultSortOption]="sortField"
           [sortingOptions]="[
-            { label: 'PRODUCT.NAME' | translate, value: 'name' },
-            { label: 'APP.APP_ID' | translate, value: 'appId' }
+            { label: 'SLOT.NAME' | translate, value: 'name' },
+            { label: 'APP.APP_ID' | translate, value: 'appId' },
+            { label: 'APP.UNDEPLOYED' | translate, value: 'undeployed' },
+            { label: 'APP.DEPRECATED' | translate, value: 'deprecated' }
           ]"
           [defaultSortDirection]="sortOrder === -1"
           (sortChange)="onSortChange($event)"
@@ -73,13 +75,13 @@
             <span
               *ngIf="slot.undeployed"
               [id]="'slot_search_data_grid_idx_' + idx + '_undeployed'"
-              class="card-badge-right badge-1 danger-action-text p-2 pi pi-ban"
+              class="card-badge-right badge-1 danger-action-text font-bold p-2 pi pi-ban"
               [title]="'SLOT.UNDEPLOYED_SEARCH' | translate"
             ></span>
             <span
               *ngIf="!slot.undeployed && slot.deprecated"
               [id]="'slot_search_data_grid_idx_' + idx + '_deprecated'"
-              class="card-badge-right badge-1 p-2 danger-action-text pi pi-exclamation-circle"
+              class="card-badge-right badge-1 p-2 danger-action-text font-bold pi pi-exclamation-circle"
               [title]="'SLOT.DEPRECATED_SEARCH' | translate"
             ></span>
             <div class="h-4rem flex flex-column justify-content-between gap-1 text-center">

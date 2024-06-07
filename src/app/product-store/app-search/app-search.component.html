@@ -121,7 +121,9 @@
             [sortingOptions]="[
               { label: 'APP.APP_ID' | translate, value: 'appId' },
               { label: 'APP.APP_TYPE' | translate, value: 'appType' },
-              { label: 'APP.PRODUCT_NAME' | translate, value: 'productName' }
+              { label: 'APP.PRODUCT_NAME' | translate, value: 'productName' },
+              { label: 'APP.UNDEPLOYED' | translate, value: 'undeployed' },
+              { label: 'APP.DEPRECATED' | translate, value: 'deprecated' }
             ]"
             (dataViewChange)="onLayoutChange($event)"
             (sortChange)="onSortChange($event)"
@@ -161,13 +163,13 @@
             <span
               *ngIf="app?.undeployed"
               [id]="'app_search_data_' + app.appId + '_undeployed'"
-              class="card-badge-right badge-1 p-2 pi pi-ban danger-action-bg cursor-auto"
+              class="card-badge-right badge-1 p-2 pi pi-ban danger-action-text font-bold cursor-auto"
               [title]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
             ></span>
             <span
               *ngIf="app?.deprecated && !app?.undeployed"
               [id]="'app_search_data_' + app.appId + '_deprecated'"
-              class="card-badge-right badge-1 p-2 pi pi-exclamation-circle danger-action-bg cursor-auto"
+              class="card-badge-right badge-1 p-2 pi pi-exclamation-circle danger-action-text font-bold cursor-auto"
               [title]="'APP.TOOLTIPS.DEPRECATED_SEARCH' | translate"
             ></span>
             <span
