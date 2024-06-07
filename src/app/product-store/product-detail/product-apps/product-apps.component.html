@@ -31,13 +31,13 @@
             <span
               *ngIf="mfe?.undeployed"
               [id]="'product_detail_components_mfe_' + mfe.appId + '_undeployed'"
-              class="card-badge-right badge-1 pi pi-ban danger-action-bg cursor-auto"
+              class="card-badge-right badge-1 pi pi-ban danger-action-text font-bold cursor-auto"
               [title]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
             ></span>
             <span
               *ngIf="mfe?.deprecated && !mfe?.undeployed"
               [id]="'product_detail_components_mfe_' + mfe.appId + '_deprecated'"
-              class="card-badge-right badge-1 pi pi-exclamation-circle danger-action-bg cursor-auto"
+              class="card-badge-right badge-1 pi pi-exclamation-circle danger-action-text font-bold cursor-auto"
               [title]="'APP.TOOLTIPS.DEPRECATED_SEARCH' | translate"
             ></span>
             <span
@@ -84,14 +84,14 @@
             <span
               *ngIf="(!ms.operator || ms.undeployed) && hasDeletePermission"
               [id]="'product_detail_components_ms_' + ms.appId + '_delete_app'"
-              class="card-badge-left badge-2-1 p-2 pi pi-trash danger-action-text pseudo-button-link"
+              class="card-badge-left badge-2-1 p-2 pi pi-trash danger-action-text font-bold pseudo-button-link"
               [title]="'ACTIONS.DELETE.LABEL' | translate"
               (click)="onDelete($event, ms)"
             ></span>
             <span
               *ngIf="ms?.undeployed"
               [id]="'product_detail_components_ms_' + ms.appId + '_undeployed'"
-              class="card-badge-right badge-1 pi pi-ban danger-action-bg cursor-auto"
+              class="card-badge-right badge-1 pi pi-ban danger-action-text font-bold cursor-auto"
               [title]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
             ></span>
             <div class="h-2-5rem w-12rem flex flex-column justify-content-around text-center">
@@ -118,13 +118,13 @@
           <span
             *ngIf="slot?.undeployed"
             [id]="'product_detail_components_slot_' + slot.name + '_undeployed'"
-            class="card-badge-right badge-1 pi pi-ban danger-action-bg cursor-auto"
+            class="card-badge-right badge-1 pi pi-ban danger-action-text font-bold cursor-auto"
             [title]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
           ></span>
           <span
             *ngIf="slot?.deprecated && !slot?.undeployed"
             [id]="'product_detail_components_slot_' + slot.appId + '_deprecated'"
-            class="card-badge-right badge-1 pi pi-exclamation-circle danger-action-bg cursor-auto"
+            class="card-badge-right badge-1 pi pi-exclamation-circle danger-action-text font-bold cursor-auto"
             [title]="'APP.TOOLTIPS.DEPRECATED_SEARCH' | translate"
           ></span>
           <div class="h-2-5rem w-12rem my-2 mx-6 flex flex-column justify-content-around text-center">

@@ -23,12 +23,12 @@
       </div>
       <div
         *ngIf="undeployed"
-        class="p-dialog-title font-bold danger-action-text pi pi-ban"
+        class="p-dialog-title danger-action-text font-bold pi pi-ban"
         [title]="'APP.TOOLTIPS.UNDEPLOYED' | translate"
       ></div>
       <div
         *ngIf="!undeployed && deprecated"
-        class="p-dialog-title font-bold danger-action-text pi pi-exclamation-circle"
+        class="p-dialog-title danger-action-text font-bold pi pi-exclamation-circle"
         [title]="'APP.TOOLTIPS.DEPRECATED' | translate"
       ></div>
     </div>
@@ -37,7 +37,7 @@
     <ng-template pTemplate="header">
       <span>{{ 'ACTIONS.' + this.changeMode + '.MFE.HEADER' | translate }}</span>
     </ng-template>
-    <p-fieldset [toggleable]="false" [collapsed]="false" styleClass="surface-100 py-0 mx-0">
+    <p-fieldset [toggleable]="false" [collapsed]="false" styleClass="surface-100 pt-0 pb-1 mx-0">
       <ng-template pTemplate="header">
         <span [title]="'APP.TOOLTIPS.GROUP.REMOTE_MODULE' | translate">
           {{ 'APP.GROUP.REMOTE_MODULE' | translate }}
@@ -130,7 +130,7 @@
       </div>
     </p-fieldset>
 
-    <p-fieldset [toggleable]="false" [collapsed]="false" styleClass="surface-100 py-0 mx-0 mt-3">
+    <p-fieldset [toggleable]="false" [collapsed]="false" styleClass="surface-100 pt-0 pb-1 mt-3 mx-0">
       <ng-template pTemplate="header">
         <span [title]="'APP.TOOLTIPS.GROUP.LOCAL_MODULE' | translate">{{ 'APP.GROUP.LOCAL_MODULE' | translate }}</span>
       </ng-template>
@@ -277,7 +277,7 @@
       *ngIf="changeMode !== 'CREATE'"
       [toggleable]="true"
       [collapsed]="true"
-      styleClass="surface-100 py-0 mx-0"
+      styleClass="surface-100 pt-0 pb-1 mt-3 mx-0"
     >
       <ng-template pTemplate="header">
         <span [title]="'APP.TOOLTIPS.GROUP.INTERNALS' | translate">{{ 'APP.GROUP.INTERNALS' | translate }}</span>
@@ -363,7 +363,7 @@
     <ng-template pTemplate="header">
       <span>{{ 'ACTIONS.' + this.changeMode + '.MS.HEADER' | translate }}</span>
     </ng-template>
-    <p-fieldset [toggleable]="false" [collapsed]="false" styleClass="surface-100 py-0 mx-0">
+    <p-fieldset [toggleable]="false" [collapsed]="false" styleClass="surface-100 pt-0 pb-1 mx-0">
       <ng-template pTemplate="header">
         <span [title]="'APP.TOOLTIPS.GROUP.LOCAL_MODULE' | translate">{{ 'APP.GROUP.LOCAL_MODULE' | translate }}</span>
       </ng-template>
@@ -456,7 +456,7 @@
       *ngIf="changeMode !== 'CREATE'"
       [toggleable]="true"
       [collapsed]="true"
-      styleClass="surface-100 py-0 mx-0 mt-3"
+      styleClass="surface-100 pt-0 pb-1 mx-0 mt-3"
     >
       <ng-template pTemplate="header">
         <span [title]="'APP.TOOLTIPS.GROUP.INTERNALS' | translate">{{ 'APP.GROUP.INTERNALS' | translate }}</span>

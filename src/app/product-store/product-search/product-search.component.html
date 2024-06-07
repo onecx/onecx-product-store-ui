@@ -41,7 +41,7 @@
       id="product_search_dataview"
       [value]="(products$ | async)?.stream!.sort(sortProductsByDisplayName)"
       [paginator]="true"
-      [alwaysShowPaginator]="false"
+      [alwaysShowPaginator]="true"
       [rowsPerPageOptions]="'grid' ? [12, 24, 60] : [10, 20, 50]"
       [rows]="viewMode === 'grid' ? 12 : 10"
       [layout]="viewMode"
@@ -122,7 +122,7 @@
             <span
               *ngIf="product?.undeployed"
               [id]="'product_search_data_grid_idx_' + idx + '_undeployed'"
-              class="card-badge-right badge-1 p-2 pi pi-ban danger-action-bg"
+              class="card-badge-right badge-1 p-2 pi pi-ban danger-action-text font-bold text-xl"
               [title]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
             ></span>
             <div class="h-3rem md:h-5rem flex flex-column justify-content-center align-items-center text-center">

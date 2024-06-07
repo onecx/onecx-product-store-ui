@@ -37,8 +37,8 @@
       id="slot_search_dataview"
       [value]="(slots$ | async)?.stream!.sort(sortSlotsByName)"
       [paginator]="true"
-      [alwaysShowPaginator]="false"
-      [rowsPerPageOptions]="[12, 24, 60]"
+      [alwaysShowPaginator]="true"
+      [rowsPerPageOptions]="[20, 40, 100]"
       [rows]="12"
       [layout]="viewMode"
       [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
@@ -55,8 +55,10 @@
           [initialViewMode]="viewMode"
           [defaultSortOption]="sortField"
           [sortingOptions]="[
-            { label: 'PRODUCT.NAME' | translate, value: 'name' },
-            { label: 'APP.APP_ID' | translate, value: 'appId' }
+            { label: 'SLOT.NAME' | translate, value: 'name' },
+            { label: 'APP.APP_ID' | translate, value: 'appId' },
+            { label: 'APP.UNDEPLOYED' | translate, value: 'undeployed' },
+            { label: 'APP.DEPRECATED' | translate, value: 'deprecated' }
           ]"
           [defaultSortDirection]="sortOrder === -1"
           (sortChange)="onSortChange($event)"
@@ -69,22 +71,36 @@
       </ng-template>
       <ng-template let-slot let-idx="rowIndex" pTemplate="gridItem">
         <div [id]="'slot_search_data_grid_' + idx" class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3">
-          <div class="card relative p-2 flex flex-column justify-content-center hover:bg-gray-200 cursor-pointer">
-            <div class="h-5rem flex flex-column justify-content-between gap-1 text-center">
+          <div class="card relative p-2 flex flex-column justify-content-center">
+            <span
+              *ngIf="slot.undeployed"
+              [id]="'slot_search_data_grid_idx_' + idx + '_undeployed'"
+              class="card-badge-right badge-1 danger-action-text font-bold p-2 pi pi-ban"
+              [title]="'SLOT.UNDEPLOYED_SEARCH' | translate"
+            ></span>
+            <span
+              *ngIf="!slot.undeployed && slot.deprecated"
+              [id]="'slot_search_data_grid_idx_' + idx + '_deprecated'"
+              class="card-badge-right badge-1 p-2 danger-action-text font-bold pi pi-exclamation-circle"
+              [title]="'SLOT.DEPRECATED_SEARCH' | translate"
+            ></span>
+            <div class="h-4rem flex flex-column justify-content-between gap-1 text-center">
               <div
                 [id]="'slot_search_data_grid_' + idx + '_slot_name'"
-                class="mt-2 font-bold text-lg"
+                class="font-bold"
                 [title]="('SLOT.NAME' | translate) + ': ' + slot.name"
               >
                 {{ limitText(slot.name, 25) }}
               </div>
               <div
+                class="text-sm"
                 [id]="'slot_search_data_grid_' + idx + '_slot_app_id'"
                 [title]="('APP.APP_ID' | translate) + ': ' + slot.appId"
               >
                 {{ limitText(slot.appId, 25) }}
               </div>
               <div
+                class="text-xs"
                 [id]="'slot_search_data_grid_' + idx + '_product_name'"
                 [title]="('SLOT.PRODUCT_NAME' | translate) + ': ' + limitText(slot.productName, 100)"
               >
