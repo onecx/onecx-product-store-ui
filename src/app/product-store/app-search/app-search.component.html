@@ -70,9 +70,9 @@
       id="product_search_dataview"
       [value]="(apps$ | async) ?? []"
       [paginator]="true"
-      [alwaysShowPaginator]="false"
-      [rowsPerPageOptions]="'grid' ? [24, 48, 96] : [10, 20, 50]"
-      [rows]="viewMode === 'grid' ? 24 : 10"
+      [alwaysShowPaginator]="true"
+      [rowsPerPageOptions]="'grid' ? [20, 40, 100] : [10, 40, 100]"
+      [rows]="viewMode === 'grid' ? 20 : 10"
       [layout]="viewMode"
       [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
       [filterBy]="filterValueDefault"
@@ -185,7 +185,9 @@
               <div *ngIf="app.appType === 'MFE'" class="text-sm" title="Microfrontend - Exposed Module">
                 {{ app.exposedModule }}
               </div>
-              <div [title]="'Application: ' + app.productName">{{ limitText(app.productName, 25) }}</div>
+              <div class="text-xs" [title]="'Application: ' + app.productName">
+                {{ limitText(app.productName, 25) }}
+              </div>
             </div>
           </div>
         </div>

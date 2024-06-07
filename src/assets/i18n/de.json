@@ -281,13 +281,20 @@
     "TOOLTIPS": {
       "ID": "Eindeutige technische ID des Slots",
       "NAME": "Eindeutiger Name des Slots"
-    }
+    },
+    "DEPRECATED_SEARCH": "Dieser Slot ist als veraltet markiert. Er kann derzeit weiter verwendet werden wird aber in Zukunft nicht mehr zur Verfügung stehen.",
+    "UNDEPLOYED_SEARCH": "Dieser Slot ist nicht länger nutzbar. Eine weitere Nutzung führt zu Fehlermeldungen."
   },
   "EXCEPTIONS": {
     "HTTP_STATUS_0": {
       "PRODUCTS": "Unbekanntes Problem beim Abrufen von Applikationen-Daten - Bitte versuchen sie es noch einmal.",
       "APPS": "Unbekanntes Problem beim Abrufen von App-Daten - Bitte versuchen sie es noch einmal.",
       "SLOTS": "Unbekanntes Problem beim Abrufen von Slot-Daten - Bitte versuchen sie es noch einmal."
+    },
+    "HTTP_STATUS_401": {
+      "PRODUCTS": "Sie sind nicht autorisiert, um Applikationen zu sehen.",
+      "APPS": "Sie sind nicht autorisiert, um Apps zu sehen.",
+      "SLOTS": "Sie sind nicht autorisiert, um Slots zu sehen."
     },
     "HTTP_STATUS_403": {
       "PRODUCTS": "Sie haben keine Rechte, um Applikationen zu sehen.",

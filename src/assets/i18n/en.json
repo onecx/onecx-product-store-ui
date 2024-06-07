@@ -281,13 +281,20 @@
     "TOOLTIPS": {
       "ID": "Unique technical ID of the Slot",
       "NAME": "Unique Name of the Slot"
-    }
+    },
+    "DEPRECATED_SEARCH": "This Slot is marked as deprecated. It can currently be used but will no longer be available in the future.",
+    "UNDEPLOYED_SEARCH": "This Slot is no longer usable. Further use leads to error messages."
   },
   "EXCEPTIONS": {
     "HTTP_STATUS_0": {
       "PRODUCTS": "Unknown problem retrieving Application data - please try again.",
       "APPS": "Unknown problem retrieving App data - please try again.",
       "SLOTS": "Unknown problem retrieving Slot data - please try again."
+    },
+    "HTTP_STATUS_401": {
+      "PRODUCTS": "You are not authorized to see Applications.",
+      "APPS": "You are not authorized to see Apps.",
+      "SLOTS": "You are not authorized to see Slots."
     },
     "HTTP_STATUS_403": {
       "PRODUCTS": "You have no permissions to see Applications.",
