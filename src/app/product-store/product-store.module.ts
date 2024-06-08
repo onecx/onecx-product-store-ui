@@ -20,6 +20,7 @@ import { ProductPropertyComponent } from './product-detail/product-props/product
 import { ProductInternComponent } from './product-detail/product-intern/product-intern.component'
 import { ProductAppsComponent } from './product-detail/product-apps/product-apps.component'
 import { SlotSearchComponent } from './slot-search/slot-search.component'
+import { SlotDeleteComponent } from './slot-delete/slot-delete.component'
 
 const routes: Routes = [
   {
@@ -62,7 +63,8 @@ const routes: Routes = [
     ProductPropertyComponent,
     ProductInternComponent,
     ProductAppsComponent,
-    SlotSearchComponent
+    SlotSearchComponent,
+    SlotDeleteComponent
   ],
   imports: [
     CommonModule,

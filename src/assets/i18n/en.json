@@ -49,6 +49,12 @@
         "NOK": "Application could not be deleted",
         "OK": "Application deleted successfully"
       },
+      "SLOT": {
+        "TOOLTIP": "Delete Slot",
+        "HEADER": "Delete Slot",
+        "NOK": "Slot could not be deleted",
+        "OK": "Slot deleted successfully"
+      },
       "MESSAGE": "Do you want to delete \"{{ITEM}}\"?",
       "MESSAGE_INFO": "This action cannot be undone!"
     },
@@ -257,7 +263,7 @@
     "BASE_PATH": "Base Path",
     "ICON_NAME": "Icon Name",
     "CLASSIFICATIONS": "Classifications",
-    "UNDEPLOYED": "Unavailability",
+    "UNDEPLOYED": "Unavailable",
     "WORKSPACES": "Used in Workspaces",
     "TOOLTIPS": {
       "ID": "Unique technical ID of the Application",

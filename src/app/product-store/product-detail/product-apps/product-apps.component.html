@@ -22,8 +22,8 @@
               (click)="onCopy($event, mfe, AppType.MFE)"
             ></span>
             <span
-              *ngIf="(!mfe.operator || mfe.undeployed) && hasDeletePermission"
-              [id]="'product_detail_components_mfe_' + mfe.appId + '_delete_app'"
+              *ngIf="mfe.undeployed && hasDeletePermission"
+              [id]="'product_detail_components_mfe_' + mfe.appId + '_delete'"
               class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text pseudo-button-link"
               [title]="'ACTIONS.DELETE.LABEL' | translate"
               (click)="onDelete($event, mfe)"
@@ -82,8 +82,8 @@
               (click)="onCopy($event, ms, AppType.MS)"
             ></span>
             <span
-              *ngIf="(!ms.operator || ms.undeployed) && hasDeletePermission"
-              [id]="'product_detail_components_ms_' + ms.appId + '_delete_app'"
+              *ngIf="ms.undeployed && hasDeletePermission"
+              [id]="'product_detail_components_ms_' + ms.appId + '_delete'"
               class="card-badge-left badge-2-1 p-2 pi pi-trash danger-action-text font-bold pseudo-button-link"
               [title]="'ACTIONS.DELETE.LABEL' | translate"
               (click)="onDelete($event, ms)"
@@ -115,6 +115,13 @@
     <div class="flex flex-row flex-wrap column-gap-4 row-gap-3">
       <ng-container *ngFor="let slot of details.slots.sort(sortSlotsByName)">
         <div class="card relative m-0 py-0 px-0 flex flex-column justify-content-center">
+          <span
+            *ngIf="slot.undeployed && hasDeletePermission"
+            [id]="'product_detail_components_slot_' + slot.appId + '_delete'"
+            class="card-badge-left badge-2-1 p-2 pi pi-trash danger-action-text font-bold pseudo-button-link"
+            [title]="'ACTIONS.DELETE.LABEL' | translate"
+            (click)="onSlotDelete($event, slot)"
+          ></span>
           <span
             *ngIf="slot?.undeployed"
             [id]="'product_detail_components_slot_' + slot.name + '_undeployed'"
@@ -150,3 +157,9 @@
   [appAbstract]="app"
   (appDeleted)="appDeleted($event)"
 ></app-app-delete>
+
+<app-slot-delete
+  [displayDialog]="displaySlotDeleteDialog"
+  [slot]="slot"
+  (slotDeleted)="slotDeleted($event)"
+></app-slot-delete>
