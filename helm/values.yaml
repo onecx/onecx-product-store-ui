@@ -37,6 +37,7 @@ app:
             VIEW: View product details
           SLOT:
             SEARCH: Search slots
+            DELETE: Delete slot
     # Keycloak
     keycloak:
       client:
