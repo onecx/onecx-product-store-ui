@@ -204,6 +204,8 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   private prepareActionButtons(): void {
     this.actions$ = this.translate
       .get([
+        'DIALOG.SEARCH.SLOTS.LABEL',
+        'DIALOG.SEARCH.SLOTS.TOOLTIP',
         'ACTIONS.CREATE.MFE.LABEL',
         'ACTIONS.CREATE.MS.LABEL',
         'ACTIONS.CREATE.APP.TOOLTIP',
@@ -218,6 +220,14 @@ export class AppSearchComponent implements OnInit, OnDestroy {
               title: data['ACTIONS.NAVIGATION.BACK.TOOLTIP'],
               actionCallback: () => this.onBack(),
               icon: 'pi pi-arrow-left',
+              show: 'always'
+            },
+            {
+              label: data['DIALOG.SEARCH.SLOTS.LABEL'],
+              title: data['DIALOG.SEARCH.SLOTS.TOOLTIP'],
+              actionCallback: () => this.router.navigate(['../slots'], { relativeTo: this.route }),
+              permission: 'APP#SEARCH',
+              icon: 'pi pi-bars',
               show: 'always'
             },
             {

@@ -9,6 +9,7 @@ import {
   Product,
   ProductDetails,
   ProductsAPIService,
+  Slot,
   SlotPageItem
 } from 'src/app/shared/generated'
 import { dropDownSortItemsByLabel, limitText } from 'src/app/shared/utils'
@@ -39,9 +40,11 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   public AppType = AppType
   public productDetails$!: Observable<ProductDetails>
   public app: AppAbstract | undefined
+  public slot: Slot | undefined
   public iconItems: SelectItem[] = [{ label: '', value: null }]
   public displayDetailDialog = false
   public displayDeleteDialog = false
+  public displaySlotDeleteDialog = false
   public hasCreatePermission = false
   public hasDeletePermission = false
 
@@ -126,6 +129,16 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   }
   public appDeleted(deleted: any) {
     this.displayDeleteDialog = false
+    if (deleted) this.searchProducts()
+  }
+
+  public onSlotDelete(ev: any, slot: Slot) {
+    ev.stopPropagation()
+    this.slot = slot
+    this.displaySlotDeleteDialog = true
+  }
+  public slotDeleted(deleted: boolean) {
+    this.displaySlotDeleteDialog = false
     if (deleted) this.searchProducts()
   }
 }

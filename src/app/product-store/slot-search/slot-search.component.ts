@@ -5,7 +5,7 @@ import { finalize, map, of, Observable, catchError } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 import { DataView } from 'primeng/dataview'
 
-import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+import { Action, DataViewControlTranslations, UserService } from '@onecx/portal-integration-angular'
 
 import { Slot, SlotPageResult, SlotsAPIService } from 'src/app/shared/generated'
 import { limitText } from 'src/app/shared/utils'
@@ -23,12 +23,15 @@ export class SlotSearchComponent implements OnInit {
   public searchInProgress = false
   public slots$!: Observable<SlotPageResult>
   public slotSearchCriteriaGroup!: FormGroup<SlotSearchCriteria>
+  public slot!: Slot | undefined
   public actions$: Observable<Action[]> | undefined
   public viewMode = 'grid'
   public filter: string | undefined
   public sortField = 'name'
   public sortOrder = 1
   public limitText = limitText
+  public displayDeleteDialog = false
+  public hasDeletePermission = false
 
   public dataViewControlsTranslations: DataViewControlTranslations = {}
   @ViewChild(DataView) dv: DataView | undefined
@@ -36,9 +39,11 @@ export class SlotSearchComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private user: UserService,
     private slotApi: SlotsAPIService,
     private translate: TranslateService
   ) {
+    this.hasDeletePermission = this.user.hasPermission('SLOT#DELETE')
     this.slotSearchCriteriaGroup = new FormGroup<SlotSearchCriteria>({
       slotName: new FormControl<string | null>(null)
     })
@@ -101,19 +106,34 @@ export class SlotSearchComponent implements OnInit {
   }
 
   private prepareActionButtons(): void {
-    this.actions$ = this.translate.get(['ACTIONS.NAVIGATION.BACK', 'ACTIONS.NAVIGATION.BACK.TOOLTIP']).pipe(
-      map((data) => {
-        return [
-          {
-            label: data['ACTIONS.NAVIGATION.BACK'],
-            title: data['ACTIONS.NAVIGATION.BACK.TOOLTIP'],
-            actionCallback: () => this.onBack(),
-            icon: 'pi pi-arrow-left',
-            show: 'always'
-          }
-        ]
-      })
-    )
+    this.actions$ = this.translate
+      .get([
+        'ACTIONS.NAVIGATION.BACK',
+        'ACTIONS.NAVIGATION.BACK.TOOLTIP',
+        'DIALOG.SEARCH.APPS.LABEL',
+        'DIALOG.SEARCH.APPS.TOOLTIP'
+      ])
+      .pipe(
+        map((data) => {
+          return [
+            {
+              label: data['ACTIONS.NAVIGATION.BACK'],
+              title: data['ACTIONS.NAVIGATION.BACK.TOOLTIP'],
+              actionCallback: () => this.onBack(),
+              icon: 'pi pi-arrow-left',
+              show: 'always'
+            },
+            {
+              label: data['DIALOG.SEARCH.APPS.LABEL'],
+              title: data['DIALOG.SEARCH.APPS.TOOLTIP'],
+              actionCallback: () => this.router.navigate(['../apps'], { relativeTo: this.route }),
+              permission: 'APP#SEARCH',
+              icon: 'pi pi-bars',
+              show: 'always'
+            }
+          ]
+        })
+      )
   }
 
   /**
@@ -138,5 +158,15 @@ export class SlotSearchComponent implements OnInit {
   }
   public onBack() {
     this.router.navigate(['../'], { relativeTo: this.route })
+  }
+
+  public onDelete(ev: any, slot: Slot) {
+    ev.stopPropagation()
+    this.slot = slot
+    this.displayDeleteDialog = true
+  }
+  public slotDeleted(deleted: boolean) {
+    this.displayDeleteDialog = false
+    if (deleted) this.searchSlots()
   }
 }

@@ -42,8 +42,8 @@
       [value]="(products$ | async)?.stream!.sort(sortProductsByDisplayName)"
       [paginator]="true"
       [alwaysShowPaginator]="true"
-      [rowsPerPageOptions]="'grid' ? [12, 24, 60] : [10, 20, 50]"
-      [rows]="viewMode === 'grid' ? 12 : 10"
+      [rowsPerPageOptions]="'grid' ? [16, 32, 80] : [10, 20, 50]"
+      [rows]="viewMode === 'grid' ? 16 : 10"
       [layout]="viewMode"
       [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
       filterBy="name,displayName,classification"
@@ -122,26 +122,28 @@
             <span
               *ngIf="product?.undeployed"
               [id]="'product_search_data_grid_idx_' + idx + '_undeployed'"
-              class="card-badge-right badge-1 p-2 pi pi-ban danger-action-text font-bold text-xl"
+              class="card-badge-right badge-1 p-2 pi pi-ban danger-action-text font-bold"
               [title]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
             ></span>
-            <div class="h-3rem md:h-5rem flex flex-column justify-content-center align-items-center text-center">
+            <div class="h-3rem flex flex-column justify-content-center align-items-center text-center">
               <app-image-container
                 [id]="'product_search_data_grid_idx_' + idx + '_image'"
                 [small]="false"
+                styleClass="max-h-3rem"
                 [imageUrl]="getLogoUrl(product)"
               ></app-image-container>
             </div>
-            <div class="h-3rem flex flex-column justify-content-between gap-1 text-center">
+            <div class="flex flex-column justify-content-between gap-1 text-center">
               <div
+                class="mt-2 font-bold text-md"
                 [id]="'product_search_data_grid_idx_' + idx + '_product_display_name'"
-                class="mt-2 font-bold text-lg"
                 [class.danger-action-text]="product.undeployed"
                 [title]="('PRODUCT.DISPLAY_NAME' | translate) + ': ' + limitText(product.displayName, 100)"
               >
                 {{ limitText(product.displayName, 20) }}
               </div>
               <div
+                class="text-sm"
                 [id]="'product_search_data_grid_idx_' + idx + '_product_name'"
                 [title]="('PRODUCT.NAME' | translate) + ': ' + product.name"
               >

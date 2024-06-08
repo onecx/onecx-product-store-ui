@@ -18,4 +18,9 @@
   .h-05rem {
     height: 0.5rem;
   }
+  .card-badge-right {
+    &.badge-2 {
+      top: 38px;
+    }
+  }
 }

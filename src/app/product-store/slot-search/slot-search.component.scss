@@ -5,3 +5,11 @@
 @include dataview-zebra-rows;
 @include card-badges;
 @include danger-action;
+
+:host ::ng-deep {
+  .card-badge-left {
+    &.badge-2 {
+      top: 30px;
+    }
+  }
+}

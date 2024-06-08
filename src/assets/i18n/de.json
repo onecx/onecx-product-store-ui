@@ -49,6 +49,12 @@
         "NOK": "Applikation konnte nicht gelöscht werden",
         "OK": "Applikation erfolgreich gelöscht"
       },
+      "SLOT": {
+        "TOOLTIP": "Slot löschen",
+        "HEADER": "SLot löschen",
+        "NOK": "Slot konnte nicht gelöscht werden",
+        "OK": "Slot erfolgreich gelöscht"
+      },
       "MESSAGE": "Möchten Sie \"{{ITEM}}\" löschen?",
       "MESSAGE_INFO": "Diese Aktion kann nicht rückgängig gemacht werden!"
     },
@@ -257,7 +263,7 @@
     "BASE_PATH": "Basispfad",
     "ICON_NAME": "Iconname",
     "CLASSIFICATIONS": "Klassifizierungen",
-    "UNDEPLOYED": "Unverfügbarkeit",
+    "UNDEPLOYED": "Unverfügbar",
     "WORKSPACES": "Verwendet in Workspaces",
     "TOOLTIPS": {
       "ID": "Eindeutige technische ID der Applikation",
