@@ -160,7 +160,7 @@ describe('AppSearchComponent', () => {
 
     if (component.actions$) {
       component.actions$.subscribe((actions) => {
-        const firstAction = actions[1]
+        const firstAction = actions[2]
         firstAction.actionCallback()
         expect(component.onCreate).toHaveBeenCalledWith('MFE')
       })
@@ -174,7 +174,7 @@ describe('AppSearchComponent', () => {
 
     if (component.actions$) {
       component.actions$.subscribe((actions) => {
-        const firstAction = actions[2]
+        const firstAction = actions[3]
         firstAction.actionCallback()
         expect(component.onCreate).toHaveBeenCalledWith('MS')
       })

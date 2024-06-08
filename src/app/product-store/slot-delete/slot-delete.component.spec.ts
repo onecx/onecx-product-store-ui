@@ -5,38 +5,26 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
-import { MicrofrontendsAPIService, MicroservicesAPIService } from 'src/app/shared/generated'
-import { AppAbstract } from '../app-search/app-search.component'
-import { AppDeleteComponent } from './app-delete.component'
+import { Slot, SlotsAPIService } from 'src/app/shared/generated'
+import { SlotDeleteComponent } from './slot-delete.component'
 
-describe('AppDeleteComponent', () => {
-  let component: AppDeleteComponent
-  let fixture: ComponentFixture<AppDeleteComponent>
-  const appMfe: AppAbstract = {
+describe('SlotDeleteComponent', () => {
+  let component: SlotDeleteComponent
+  let fixture: ComponentFixture<SlotDeleteComponent>
+  const slot: Slot = {
     id: 'id',
     appId: 'appId',
-    appType: 'MFE',
-    appName: 'name',
-    productName: 'productName'
-  }
-  const appMs: AppAbstract = {
-    id: 'id',
-    appId: 'appId',
-    appType: 'MS',
-    appName: 'name',
+    name: 'name',
     productName: 'productName'
   }
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error'])
-  const apiMfeServiceSpy = {
-    deleteMicrofrontend: jasmine.createSpy('deleteMicrofrontend').and.returnValue(of({}))
-  }
-  const apiMsServiceSpy = {
-    deleteMicroservice: jasmine.createSpy('deleteMicroservice').and.returnValue(of({}))
+  const apiSlotServiceSpy = {
+    deleteSlot: jasmine.createSpy('deleteSlot').and.returnValue(of({}))
   }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [AppDeleteComponent],
+      declarations: [SlotDeleteComponent],
       imports: [
         HttpClientTestingModule,
         TranslateTestingModule.withTranslations({
@@ -45,8 +33,7 @@ describe('AppDeleteComponent', () => {
         }).withDefaultLanguage('en')
       ],
       providers: [
-        { provide: MicrofrontendsAPIService, useValue: apiMfeServiceSpy },
-        { provide: MicroservicesAPIService, useValue: apiMsServiceSpy },
+        { provide: SlotsAPIService, useValue: apiSlotServiceSpy },
         { provide: PortalMessageService, useValue: msgServiceSpy }
       ],
       schemas: [NO_ERRORS_SCHEMA]
@@ -54,15 +41,14 @@ describe('AppDeleteComponent', () => {
   }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AppDeleteComponent)
+    fixture = TestBed.createComponent(SlotDeleteComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
   })
   afterEach(() => {
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
-    apiMfeServiceSpy.deleteMicrofrontend.calls.reset()
-    apiMsServiceSpy.deleteMicroservice.calls.reset()
+    apiSlotServiceSpy.deleteSlot.calls.reset()
   })
 
   it('should create', () => {
@@ -70,47 +56,29 @@ describe('AppDeleteComponent', () => {
   })
 
   it('should behave correctly onDialogHide', () => {
-    spyOn(component.appDeleted, 'emit')
+    spyOn(component.slotDeleted, 'emit')
 
     component.onDialogHide()
 
-    expect(component.appDeleted.emit).toHaveBeenCalledWith(false)
+    expect(component.slotDeleted.emit).toHaveBeenCalledWith(false)
   })
 
-  it('should delete mfe onConfirmDeletion', () => {
-    spyOn(component.appDeleted, 'emit')
-    component.appAbstract = appMfe
+  it('should delete slot onConfirmDeletion', () => {
+    spyOn(component.slotDeleted, 'emit')
+    component.slot = slot
 
     component.onConfirmDeletion()
 
-    expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.APP.OK' })
-    expect(component.appDeleted.emit).toHaveBeenCalledWith(true)
+    expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.SLOT.OK' })
+    expect(component.slotDeleted.emit).toHaveBeenCalledWith(true)
   })
 
   it('should display error if api call fails onConfirmDeletion: mfe', () => {
-    apiMfeServiceSpy.deleteMicrofrontend.and.returnValue(throwError(() => new Error()))
-    component.appAbstract = appMfe
+    apiSlotServiceSpy.deleteSlot.and.returnValue(throwError(() => new Error()))
+    component.slot = slot
 
     component.onConfirmDeletion()
 
-    expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.APP.NOK' })
-  })
-
-  it('should delete ms onConfirmDeletion', () => {
-    apiMsServiceSpy.deleteMicroservice.and.returnValue(of({}))
-    component.appAbstract = appMs
-
-    component.onConfirmDeletion()
-
-    expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.APP.OK' })
-  })
-
-  it('should display error if api call fails onConfirmDeletion: ms', () => {
-    apiMsServiceSpy.deleteMicroservice.and.returnValue(throwError(() => new Error()))
-    component.appAbstract = appMs
-
-    component.onConfirmDeletion()
-
-    expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.APP.NOK' })
+    expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.SLOT.NOK' })
   })
 })
