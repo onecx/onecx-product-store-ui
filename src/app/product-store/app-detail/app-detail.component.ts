@@ -125,6 +125,8 @@ export class AppDetailComponent implements OnChanges {
       this.mfe = undefined
       this.formGroupMs.reset()
       this.formGroupMfe.reset()
+      this.formGroupMfe.controls['type'].setValue('MODULE')
+      this.formGroupMfe.controls['technology'].setValue('ANGULAR')
     }
     if (this.appAbstract?.id) {
       if (this.appAbstract.appType === 'MFE') this.getMfe()
