@@ -1,4 +1,3 @@
----
 openapi: 3.0.3
 info:
   title: onecx-product-store-bff
@@ -869,6 +868,8 @@ components:
             type: string
         undeployed:
           type: boolean
+        provider:
+          type: string
     UpdateProductRequest:
       type: object
       required:
@@ -897,6 +898,8 @@ components:
             type: string
         undeployed:
           type: boolean
+        provider:
+          type: string
     ProductDetails:
       type: object
       properties:
@@ -957,6 +960,8 @@ components:
             type: string
         undeployed:
           type: boolean
+        provider:
+          type: string
     ProductAndWorkspaces:
       type: object
       allOf:
@@ -995,6 +1000,8 @@ components:
             type: string
         undeployed:
           type: boolean
+        provider:
+          type: string
     OffsetDateTime:
       format: date-time
       type: string
