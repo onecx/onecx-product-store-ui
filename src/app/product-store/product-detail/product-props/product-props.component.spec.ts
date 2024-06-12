@@ -20,6 +20,7 @@ const mockForm = new FormGroup<ProductDetailForm>({
   ]),
   version: new FormControl<string | null>(null, [Validators.required, Validators.maxLength(255)]),
   description: new FormControl<string | null>(null, [Validators.maxLength(255)]),
+  provider: new FormControl<string | null>(null, [Validators.maxLength(255)]),
   imageUrl: new FormControl<string | null>(null, [Validators.maxLength(255)]),
   basePath: new FormControl<string | null>(null, [Validators.required, Validators.maxLength(255)]),
   displayName: new FormControl<string | null>(null, [
@@ -165,6 +166,7 @@ describe('ProductPropertyComponent', () => {
       name: new FormControl<string | null>('name'),
       version: new FormControl<string | null>('version'),
       description: new FormControl<string | null>(null),
+      provider: new FormControl<string | null>(null, [Validators.maxLength(255)]),
       imageUrl: new FormControl<string | null>(null),
       basePath: new FormControl<string | null>('path'),
       displayName: new FormControl<string | null>('display'),
@@ -187,6 +189,8 @@ describe('ProductPropertyComponent', () => {
       name: new FormControl<string | null>('name'),
       version: new FormControl<string | null>('version'),
       description: new FormControl<string | null>(null),
+      provider: new FormControl<string | null>(null, [Validators.maxLength(255)]),
+
       imageUrl: new FormControl<string | null>(null),
       basePath: new FormControl<string | null>('path'),
       displayName: new FormControl<string | null>('display'),
@@ -209,6 +213,8 @@ describe('ProductPropertyComponent', () => {
       name: new FormControl<string | null>('name'),
       version: new FormControl<string | null>('version'),
       description: new FormControl<string | null>(null),
+      provider: new FormControl<string | null>(null, [Validators.maxLength(255)]),
+
       imageUrl: new FormControl<string | null>(null),
       basePath: new FormControl<string | null>('path'),
       displayName: new FormControl<string | null>('display'),
@@ -249,6 +255,8 @@ describe('ProductPropertyComponent', () => {
       name: new FormControl<string | null>('name'),
       version: new FormControl<string | null>('version'),
       description: new FormControl<string | null>(null),
+      provider: new FormControl<string | null>(null, [Validators.maxLength(255)]),
+
       imageUrl: new FormControl<string | null>(null),
       basePath: new FormControl<string | null>('path'),
       displayName: new FormControl<string | null>('display'),
@@ -290,6 +298,8 @@ describe('ProductPropertyComponent', () => {
       name: new FormControl<string | null>('name'),
       version: new FormControl<string | null>('version'),
       description: new FormControl<string | null>(null),
+      provider: new FormControl<string | null>(null, [Validators.maxLength(255)]),
+
       imageUrl: new FormControl<string | null>(null),
       basePath: new FormControl<string | null>('path'),
       displayName: new FormControl<string | null>('display'),
@@ -329,6 +339,8 @@ describe('ProductPropertyComponent', () => {
       name: new FormControl<string | null>('name'),
       version: new FormControl<string | null>('version'),
       description: new FormControl<string | null>(null),
+      provider: new FormControl<string | null>(null, [Validators.maxLength(255)]),
+
       imageUrl: new FormControl<string | null>(null),
       basePath: new FormControl<string | null>('path'),
       displayName: new FormControl<string | null>('display'),
@@ -352,6 +364,8 @@ describe('ProductPropertyComponent', () => {
       name: new FormControl<string | null>('name'),
       version: new FormControl<string | null>('version'),
       description: new FormControl<string | null>(null),
+      provider: new FormControl<string | null>(null, [Validators.maxLength(255)]),
+
       imageUrl: new FormControl<string | null>(null),
       basePath: new FormControl<string | null>('path'),
       displayName: new FormControl<string | null>('display'),
