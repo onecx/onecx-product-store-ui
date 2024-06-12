@@ -37,5 +37,6 @@ export interface ProductAbstract {
      */
     classifications?: Array<string>;
     undeployed?: boolean;
+    provider?: string;
 }
 

@@ -107,6 +107,7 @@
           <label for="product_detail_item_iconName">{{ 'PRODUCT.ICON_NAME' | translate }}</label>
         </span>
       </div>
+
       <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
         <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.CLASSIFICATIONS' | translate">
           <input
@@ -117,6 +118,23 @@
             formControlName="classifications"
           />
           <label for="product_detail_item_classifications">{{ 'PRODUCT.CLASSIFICATIONS' | translate }}</label>
+        </span>
+      </div>
+
+      <div class="w-full sm:w-12 md:w-9 lg:w-12 px-3">
+        <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.PROVIDER' | translate">
+          <textarea
+            pInputTextarea
+            class="w-full"
+            autoresize="true"
+            rows="1"
+            id="product_detail_item_provider"
+            [pTooltip]="'PRODUCT.PROVIDER' | translate"
+            tooltipPosition="top"
+            tooltipEvent="focus"
+            formControlName="provider"
+          ></textarea>
+          <label for="product_detail_item_provider">{{ 'PRODUCT.PROVIDER' | translate }}</label>
         </span>
       </div>
 

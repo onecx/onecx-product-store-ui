@@ -20,6 +20,7 @@ export interface ProductDetailForm {
   name: FormControl<string | null>
   version: FormControl<string | null>
   description: FormControl<string | null>
+  provider: FormControl<string | null>
   imageUrl: FormControl<string | null>
   basePath: FormControl<string | null>
   displayName: FormControl<string | null>
@@ -75,6 +76,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
       displayName: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
       version: new FormControl(null, [Validators.required, Validators.maxLength(255)]),
       description: new FormControl(null, [Validators.maxLength(255)]),
+      provider: new FormControl(null, [Validators.maxLength(255)]),
       imageUrl: new FormControl(null, [Validators.maxLength(255)]),
       basePath: new FormControl(null, [Validators.required, Validators.maxLength(255)]),
       iconName: new FormControl(null, [Validators.maxLength(255)]),
@@ -127,6 +129,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
           name: this.formGroup.value['name'],
           version: this.formGroup.value['version'],
           description: this.formGroup.value['description'],
+          provider: this.formGroup.value['provider'],
           imageUrl: this.formGroup.controls['imageUrl'].value,
           basePath: this.formGroup.value['basePath'],
           displayName: this.formGroup.value['displayName'],
@@ -151,6 +154,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
           name: this.productName,
           version: this.formGroup.value['version'],
           description: this.formGroup.value['description'],
+          provider: this.formGroup.value['provider'],
           imageUrl: this.formGroup.controls['imageUrl'].value,
           basePath: this.formGroup.value['basePath'],
           displayName: this.formGroup.value['displayName'],

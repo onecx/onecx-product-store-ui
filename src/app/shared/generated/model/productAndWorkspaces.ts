@@ -29,5 +29,6 @@ export interface ProductAndWorkspaces {
     iconName?: string;
     classifications?: Array<string>;
     undeployed?: boolean;
+    provider?: string;
 }
 
