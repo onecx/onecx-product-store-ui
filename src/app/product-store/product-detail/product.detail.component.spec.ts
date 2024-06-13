@@ -17,7 +17,7 @@ const product = {
   name: 'name',
   basePath: 'path',
   imageUrl: 'imageUrl',
-  undeployed: false
+  undeployed: true
 }
 
 class MockProductPropertyComponent {
@@ -154,6 +154,21 @@ describe('ProductDetailComponent', () => {
     expect(component.onEdit).toHaveBeenCalled()
     expect(component.onCancel).toHaveBeenCalled()
     expect(component.onSave).toHaveBeenCalled()
+  })
+
+  it('should fulfill all conditions for edit button', () => {
+    spyOn(component, 'onEdit')
+    component.product = product
+    component.changeMode = 'VIEW'
+
+    component.prepareActionButtons()
+
+    let actions: any = []
+    component.actions$!.subscribe((act) => (actions = act))
+
+    actions[2].actionCallback()
+
+    expect(component.onEdit).toHaveBeenCalled()
   })
 
   it('should call close() onClose', () => {
