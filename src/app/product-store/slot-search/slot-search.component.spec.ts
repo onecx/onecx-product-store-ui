@@ -86,8 +86,6 @@ describe('SlotSearchComponent', () => {
   })
 
   it('should navigate to Apps when button clicked and actionCallback executed', () => {
-    spyOn(component, 'onBack')
-
     component.ngOnInit()
 
     if (component.actions$) {
