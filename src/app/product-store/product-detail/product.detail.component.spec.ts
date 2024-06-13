@@ -15,7 +15,9 @@ import { ProductsAPIService } from 'src/app/shared/generated'
 const product = {
   id: 'id',
   name: 'name',
-  basePath: 'path'
+  basePath: 'path',
+  imageUrl: 'imageUrl',
+  undeployed: false
 }
 
 class MockProductPropertyComponent {
@@ -99,12 +101,20 @@ describe('ProductDetailComponent', () => {
     expect(component).toBeTruthy()
   })
 
-  it('should be set up correctly onInit if no product name', () => {
+  it('should be set up correctly onInit if there is a product name', () => {
     component.productName = 'name'
 
     component.ngOnInit()
 
     expect(component.changeMode).toEqual('VIEW')
+  })
+
+  it('should be set up correctly onInit if no product name', () => {
+    component.productName = ''
+
+    component.ngOnInit()
+
+    expect(component.changeMode).toEqual('CREATE')
   })
 
   it('should get product onInit', () => {
@@ -269,5 +279,17 @@ describe('ProductDetailComponent', () => {
 
     expect(component.selectedTabIndex).toEqual(2)
     expect(component.product_for_apps).toEqual(product)
+  })
+
+  it('should update logo url', () => {
+    component.onUpdateLogoUrl('testUrl')
+
+    expect(component.currentLogoUrl).toBe('testUrl')
+  })
+
+  it('shoult get logo url', () => {
+    const result = component.getLogoUrl(product)
+
+    expect(result).toBe(product.imageUrl)
   })
 })
