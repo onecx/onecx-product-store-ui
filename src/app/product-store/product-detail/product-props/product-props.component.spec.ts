@@ -433,12 +433,12 @@ describe('ProductPropertyComponent', () => {
     })
   })
 
-  it('should not upload a file that is too large', () => {
-    const largeBlob = new Blob(['a'.repeat(120000)], { type: 'image/png' })
-    const largeFile = new File([largeBlob], 'test.png', { type: 'image/png' })
+  it('should not upload a file of wrong file type', () => {
+    const blob = new Blob(['a'.repeat(10)], { type: 'txt' })
+    const file = new File([blob], 'test.txt', { type: 'txt' })
     const event = {
       target: {
-        files: [largeFile]
+        files: [file]
       }
     }
     component.formGroup.controls['name'].setValue('name')
@@ -446,6 +446,10 @@ describe('ProductPropertyComponent', () => {
     component.onFileUpload(event as any)
 
     expect(component.formGroup.valid).toBeFalse()
+    expect(msgServiceSpy.error).toHaveBeenCalledWith({
+      summaryKey: 'IMAGE.CONSTRAINT_FAILED',
+      detailKey: 'IMAGE.CONSTRAINT_FILE_TYPE'
+    })
   })
 
   it('should upload a file', () => {
@@ -466,8 +470,9 @@ describe('ProductPropertyComponent', () => {
     })
   })
 
-  it('should display error if upload fails', () => {
+  it('should display error if api call to upload a file fails', () => {
     imgServiceSpy.getImage.and.returnValue(throwError(() => new Error()))
+    imgServiceSpy.uploadImage.and.returnValue(of({}))
     const blob = new Blob(['a'.repeat(10)], { type: 'image/png' })
     const file = new File([blob], 'test.png', { type: 'image/png' })
     const event = {
@@ -481,6 +486,23 @@ describe('ProductPropertyComponent', () => {
 
     expect(msgServiceSpy.info).toHaveBeenCalledWith({
       summaryKey: 'IMAGE.UPLOAD_SUCCESS'
+    })
+  })
+
+  it('should display error if file choice fails', () => {
+    imgServiceSpy.getImage.and.returnValue(throwError(() => new Error()))
+    const event = {
+      target: {
+        files: undefined
+      }
+    }
+    component.formGroup.controls['name'].setValue('name')
+
+    component.onFileUpload(event as any)
+
+    expect(msgServiceSpy.error).toHaveBeenCalledWith({
+      summaryKey: 'IMAGE.CONSTRAINT_FAILED',
+      detailKey: 'IMAGE.CONSTRAINT_FILE_MISSING'
     })
   })
 
