@@ -153,6 +153,18 @@ describe('AppSearchComponent', () => {
     }
   })
 
+  it('should navigate to Slots when button clicked and actionCallback executed', () => {
+    component.ngOnInit()
+
+    if (component.actions$) {
+      component.actions$.subscribe((actions) => {
+        const firstAction = actions[1]
+        firstAction.actionCallback()
+        expect(routerSpy.navigate).toHaveBeenCalledWith(['../slots'], { relativeTo: routeMock })
+      })
+    }
+  })
+
   it('should call onCreate when actionCallback is executed', () => {
     spyOn(component, 'onCreate')
 

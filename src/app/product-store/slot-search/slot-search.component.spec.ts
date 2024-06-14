@@ -85,12 +85,42 @@ describe('SlotSearchComponent', () => {
     }
   })
 
+  it('should navigate to Apps when button clicked and actionCallback executed', () => {
+    component.ngOnInit()
+
+    if (component.actions$) {
+      component.actions$.subscribe((actions) => {
+        const firstAction = actions[1]
+        firstAction.actionCallback()
+        expect(routerSpy.navigate).toHaveBeenCalledWith(['../apps'], { relativeTo: routeMock })
+      })
+    }
+  })
+
   it('should set correct values onFilterChange', () => {
     const filter = 'filter'
 
     component.onFilterChange(filter)
 
     expect(component.filter).toEqual(filter)
+  })
+
+  it('should set correct value onSortChange', () => {
+    const sortField = 'field'
+
+    component.onSortChange(sortField)
+
+    expect(component.sortField).toEqual(sortField)
+  })
+
+  it('should set correct value onSortDirChange', () => {
+    let asc = true
+    component.onSortDirChange(asc)
+    expect(component.sortOrder).toEqual(-1)
+
+    asc = false
+    component.onSortDirChange(asc)
+    expect(component.sortOrder).toEqual(1)
   })
 
   it('should search slots - successful found', (done) => {
@@ -179,5 +209,23 @@ describe('SlotSearchComponent', () => {
     component.onBack()
 
     expect(routerSpy.navigate).toHaveBeenCalledWith(['../'], { relativeTo: routeMock })
+  })
+
+  it('should behave correctly onDelete', () => {
+    const event: MouseEvent = new MouseEvent('type')
+
+    component.onDelete(event, slots[0])
+
+    expect(component.slot).toEqual(slots[0])
+    expect(component.displayDeleteDialog).toBeTrue()
+  })
+
+  it('should search slots again if a slot was deleted', () => {
+    spyOn(component, 'searchSlots')
+
+    component.slotDeleted(true)
+
+    expect(component.displayDeleteDialog).toBeFalse()
+    expect(component.searchSlots).toHaveBeenCalled()
   })
 })

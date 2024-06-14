@@ -220,4 +220,12 @@ describe('ProductSearchComponent', () => {
 
     expect(result).toEqual('')
   })
+
+  it('should getLogoUrl from image api if not from existing product', () => {
+    const product = undefined
+
+    const result = component.getLogoUrl(product)
+
+    expect(result).toBeUndefined()
+  })
 })

@@ -1,3 +1,4 @@
+import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of } from 'rxjs'
@@ -27,11 +28,12 @@ describe('ImageContainerComponent', () => {
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
-      providers: [{ provide: AppStateService, useValue: mockAppStateService }]
+      providers: [{ provide: AppStateService, useValue: mockAppStateService }],
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents()
   }))
 
-  beforeEach(() => {
+  beforeEach(async () => {
     fixture = TestBed.createComponent(ImageContainerComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
@@ -39,6 +41,18 @@ describe('ImageContainerComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy()
+  })
+
+  it('should get a default image url with info from app state service on creation', (done) => {
+    component.defaultImageUrl$.subscribe({
+      next: (url) => {
+        if (url) {
+          expect(url).toBe('/base/assets/images/logo.png')
+        }
+        done()
+      },
+      error: done.fail
+    })
   })
 
   describe('ngOnChanges', () => {
@@ -55,6 +69,19 @@ describe('ImageContainerComponent', () => {
       })
 
       expect(component.imageUrl).toBe(testUrl)
+    })
+
+    it('should set defaultLogoUrl if component imageUrl is undefined', () => {
+      component.ngOnChanges({
+        imageUrl: {
+          currentValue: '',
+          previousValue: null,
+          firstChange: true,
+          isFirstChange: () => true
+        }
+      })
+
+      expect(component.displayDefaultLogo).toBeTrue()
     })
   })
 
