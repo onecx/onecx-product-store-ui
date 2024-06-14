@@ -1,3 +1,4 @@
+---
 openapi: 3.0.3
 info:
   title: onecx-product-store-bff
@@ -836,7 +837,8 @@ components:
         pageSize:
           format: int32
           description: The size of page
-          default: 10
+          default: 100
+          maximum: 1000
           minimum: 1
           exclusiveMinimum: false
           type: integer
@@ -1130,8 +1132,9 @@ components:
         pageSize:
           format: int32
           description: The size of page
-          default: 10
+          default: 100
           minimum: 1
+          maximum: 1000
           exclusiveMinimum: false
           type: integer
     CreateMicrofrontendRequest:
@@ -1518,7 +1521,8 @@ components:
         pageSize:
           format: int32
           description: The size of page
-          default: 10
+          default: 100
+          maximum: 1000
           type: integer
     CreateSlotRequest:
       required:
