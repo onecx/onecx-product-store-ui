@@ -16,7 +16,7 @@ app:
           description: "OneCX Product Store UI"
           note: "OneCX Product Store UI module auto import via MF operator"
           type: MODULE
-          technology: WEB_COMPONENT_MODULE
+          technology: WEBCOMPONENTMODULE
           remoteName: onecx-product-store
           tagName: ocx-product-store-component
     # Permission
