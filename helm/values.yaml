@@ -38,12 +38,5 @@ app:
           SLOT:
             SEARCH: Search slots
             DELETE: Delete slot
-    # Keycloak
-    keycloak:
-      client:
-        enabled: true
-        spec:
-          kcConfig:
-            clientId: "onecx-product-store-ui"
 
 # PIPE Config
