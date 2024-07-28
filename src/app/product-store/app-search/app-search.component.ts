@@ -259,7 +259,6 @@ export class AppSearchComponent implements OnInit, OnDestroy {
           this.dataViewControlsTranslations = {
             filterInputTooltip:
               data['ACTIONS.DATAVIEW.FILTER_OF'] +
-              ': ' +
               data['APP.APP_ID'] +
               ', ' +
               data['APP.APP_TYPE'] +

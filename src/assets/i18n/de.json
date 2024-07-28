@@ -41,19 +41,22 @@
       "APP": {
         "TOOLTIP": "App löschen",
         "NOK": "App konnte nicht gelöscht werden",
-        "OK": "App erfolgreich gelöscht"
+        "OK": "App erfolgreich gelöscht",
+        "OPERATOR_TEXT": "Diese App wurde automatisiert erstellt. Wenn weiterhin benötigt dann wird sie beim nächsten Deployment wiederhergestellt."
       },
       "PRODUCT": {
         "TOOLTIP": "Applikation löschen",
         "HEADER": "Applikation löschen",
         "NOK": "Applikation konnte nicht gelöscht werden",
-        "OK": "Applikation erfolgreich gelöscht"
+        "OK": "Applikation erfolgreich gelöscht",
+        "OPERATOR_TEXT": "Diese Applikation wurde automatisiert erstellt. Wenn weiterhin benötigt dann wird sie beim nächsten Deployment wiederhergestellt."
       },
       "SLOT": {
         "TOOLTIP": "Slot löschen",
         "HEADER": "SLot löschen",
         "NOK": "Slot konnte nicht gelöscht werden",
-        "OK": "Slot erfolgreich gelöscht"
+        "OK": "Slot erfolgreich gelöscht",
+        "OPERATOR_TEXT": "Dieser Slot wurde automatisiert erstellt. Wenn weiterhin benötigt dann wird er beim nächsten Deployment wiederhergestellt."
       },
       "MESSAGE": "Möchten Sie \"{{ITEM}}\" löschen?",
       "MESSAGE_INFO": "Diese Aktion kann nicht rückgängig gemacht werden!"
@@ -191,12 +194,22 @@
     "TABS": {
       "APPS": "Komponenten",
       "INTERN": "Intern",
-      "PROPERTIES": "Eigenschaften"
+      "PROPERTIES": "Eigenschaften",
+      "TOOLTIPS": {
+        "APPS": "Komponenten verwalten",
+        "INTERN": "Interne Eigenschaften",
+        "PROPERTIES": "Eigenschaften verwalten"
+      }
     },
     "COMPONENTS": {
       "MFE": "Microfrontends",
       "MS": "Microservices",
-      "SLOT": "Slots"
+      "SLOT": "Slots",
+      "TOOLTIPS": {
+        "MFE": "UI Komponenten: Module, Remote Components",
+        "MS": "Liste der Backend und Frontend Services",
+        "SLOT": "Bereiche in UI Komponenten in denen man spezielle Funktionalität haben möchte. Diese wird bei der Verwendung in Workspaces zugeordnet."
+      }
     }
   },
   "APP": {
@@ -224,6 +237,7 @@
     "GROUP.INTERNALS": "Weitere Details",
     "DEPRECATED": "Veraltet",
     "UNDEPLOYED": "Unverfügbar",
+    "OPERATOR": "Automatisch erstellt",
     "TOOLTIPS": {
       "APP_ID": "Eindeutige ID - Basis Bezeichner der App",
       "APP_NAME": "Name der App",
@@ -235,9 +249,9 @@
       "TYPE": "Typ des Microfrontends",
       "REMOTE_BASE_URL": "Remote Base URL",
       "REMOTE_ENTRY": "Remote Entry",
-      "CLASSIFICATIONS": "Klassifizierungen",
-      "CONTACT": "Kontakt",
-      "ICON_NAME": "Iconname",
+      "CLASSIFICATIONS": "Kommaseparierte Liste von Begriffen zur Klassifizierung der App, z.b. Game, Tool etc. Kann zur Filterung benutzt werden.",
+      "CONTACT": "Kontakt zum Anbieter (E-Mail-Adresse o.ä.)",
+      "ICON_NAME": "Name eines Icons aus der PrimeNG Icon Bibliothek. Wird z.b. als Default bei Menüeinträgen benutzt",
       "NOTE": "Notiz",
       "EXPOSED_MODULE": "Exposed Module",
       "ENDPOINTS": "UI Endpunkte",
@@ -247,19 +261,17 @@
       "DEPRECATED": "Wenn gesetzt, dann ist diese App als veraltet markiert. Sie kann derzeit weiter verwendet werden wird aber in Zukunft nicht mehr zur Verfügung stehen.",
       "DEPRECATED_SEARCH": "Diese App ist als veraltet markiert. Sie kann derzeit weiter verwendet werden wird aber in Zukunft nicht mehr zur Verfügung stehen.",
       "UNDEPLOYED": "Wenn gesetzt, dann ist diese APP nicht länger nutzbar. Eine weitere Nutzung führt zu Fehlermeldungen.",
-      "UNDEPLOYED_SEARCH": "Diese App ist nicht länger nutzbar. Eine weitere Nutzung führt zu Fehlermeldungen."
+      "UNDEPLOYED_SEARCH": "Diese App ist nicht länger nutzbar. Eine weitere Nutzung führt zu Fehlermeldungen.",
+      "OPERATOR": "Wenn gesetzt, dann wurde die App automatisch erstellt. Alle Änderungen gehen beim beim nächsten Deployment verloren."
     }
   },
   "PRODUCT": {
-    "ID": "ID",
     "NAME": "Name",
     "VERSION": "Version",
     "DESCRIPTION": "Beschreibung",
     "DISPLAY_NAME": "Anzeigename",
     "PROVIDER": "Anbieter",
-    "OPERATOR": "Erzeugt durch",
-    "OPERATOR.MANUAL": "Manuell",
-    "OPERATOR.DEPLOYMENT": "Deployment Operator",
+    "OPERATOR": "Automatisch erstellt",
     "IMAGE_URL": "Externe Image URL",
     "BASE_PATH": "Basispfad",
     "ICON_NAME": "Iconname",
@@ -267,17 +279,16 @@
     "UNDEPLOYED": "Unverfügbar",
     "WORKSPACES": "Verwendet in Workspaces",
     "TOOLTIPS": {
-      "ID": "Eindeutige technische ID der Applikation",
-      "NAME": "Eindeutiger Name der Applikation",
+      "NAME": "Eindeutiger Name der Applikation. Kann nicht geändert werden da als Referenz benutzt.",
       "VERSION": "Version der Applikation",
       "DESCRIPTION": "Beschreibung der Applikation",
       "PROVIDER": "Anbieterinformation, sollte bei der Bereitstellung mitgeliefert werden (Helm chart)",
       "DISPLAY_NAME": "Anzeigename der Applikation",
-      "OPERATOR": "Wie wurde die Applikation angelegt? Wird bei der Erstellung der Applikation bestimmt.",
+      "OPERATOR": "Wenn gesetzt, dann wurde die Applikation automatisch erstellt. Alle Änderungen gehen beim beim nächsten Deployment verloren.",
       "IMAGE_URL": "URL für ein Image ausserhalb des Application Stores",
       "BASE_PATH": "Der Basispfad wie die Applikation erreichbar ist. Muss eindeutig über alle Applikationen sein",
       "ICON_NAME": "Name eines Icons aus der PrimeNG Icon Bibliothek. Wird z.b. als Default bei Menüeinträgen benutzt",
-      "CLASSIFICATIONS": "Kommaseparierte Liste von Begriffen zur Klassifizierungen der Applikation, z.b. Game, Tool etc.. Kann zur Filterung benutzt werden",
+      "CLASSIFICATIONS": "Kommaseparierte Liste von Begriffen zur Klassifizierung der Applikation, z.b. Game, Tool etc. Kann zur Filterung benutzt werden.",
       "UNDEPLOYED": "Wenn gesetzt, dann ist diese Applikation nicht länger benutzbar. Eine weitere Benutzung von dessen Apps führt zu Fehlermeldungen.",
       "UNDEPLOYED_SEARCH": "Diese Applikation ist nicht länger benutzbar. Eine weitere Benutzung von dessen Apps führt zu Fehlermeldungen.",
       "WORKSPACES": "Workspaces, die diese Applikation benutzen"

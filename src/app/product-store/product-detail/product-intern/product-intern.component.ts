@@ -12,12 +12,14 @@ export class ProductInternComponent implements OnChanges {
   @Input() dateFormat = 'medium'
 
   @ViewChild('usedInWorkspaces') usedInWorkspaces: ElementRef = {} as ElementRef
+  public operator = false
   public undeployed = false
 
   constructor(private translate: TranslateService) {}
 
   public ngOnChanges(): void {
     if (this.product) {
+      this.operator = this.product.operator ? this.product.operator : false
       this.undeployed = this.product.undeployed ? this.product.undeployed : false
     }
     setTimeout(() => {
