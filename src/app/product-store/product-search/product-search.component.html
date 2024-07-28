@@ -79,87 +79,96 @@
         >
         </ocx-data-view-controls
       ></ng-template>
-      <ng-template let-product let-row="rowIndex" pTemplate="listItem">
-        <div
-          [id]="'product_search_data_list_row_' + row"
-          class="col-12 grid grid-nogutter align-items-center row-gap-1 listview-row p-1 hover:bg-gray-200 cursor-pointer"
-          [routerLink]="['./', product.name]"
-        >
-          <div class="col-12 md:col-2 lg:col-2 xl:col-2 text-center">
-            <app-image-container
-              [id]="'product_search_data_list_row_' + row + '_image'"
-              [small]="true"
-              [imageUrl]="getLogoUrl(product)"
-            ></app-image-container>
-          </div>
-          <div class="col-12 md:col-5 lg:col-5 xl:col-6">
-            <div class="flex flex-column justify-content-center gap-1 text-center md:text-left">
-              <div
-                [id]="'product_search_data_list_row_' + row + '_product_display_name'"
-                class="font-bold text-md"
-                [class.danger-action-text]="product.undeployed"
-                [pTooltip]="
-                  ('PRODUCT.DISPLAY_NAME' | translate) +
-                  (!product.undeployed ? '' : ' => ' + ('PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate))
-                "
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              >
-                {{ limitText(product.displayName, 100) }}
-              </div>
-              <div
-                class="text-sm"
-                [id]="'product_search_data_list_row_' + row + '_product_name'"
-                [pTooltip]="'PRODUCT.NAME' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              >
-                {{ limitText(product.name, 100) }}
+      <ng-template let-products let-row="rowIndex" pTemplate="listItem">
+        <div class="p-grid p-nogutter grid grid-nogutter">
+          <div
+            *ngFor="let product of products"
+            [id]="'product_search_data_list_row_' + row"
+            class="col-12 grid grid-nogutter align-items-center row-gap-1 listview-row p-1 hover:bg-gray-200 cursor-pointer"
+            [routerLink]="['./', product.name]"
+          >
+            <div class="col-12 md:col-2 lg:col-2 xl:col-2 text-center">
+              <app-image-container
+                [id]="'product_search_data_list_row_' + row + '_image'"
+                [small]="true"
+                [imageUrl]="getLogoUrl(product)"
+              ></app-image-container>
+            </div>
+            <div class="col-12 md:col-5 lg:col-5 xl:col-6">
+              <div class="flex flex-column justify-content-center gap-1 text-center md:text-left">
+                <div
+                  [id]="'product_search_data_list_row_' + row + '_product_display_name'"
+                  class="font-bold text-md"
+                  [class.danger-action-text]="product.undeployed"
+                  [pTooltip]="
+                    ('PRODUCT.DISPLAY_NAME' | translate) +
+                    (!product.undeployed ? '' : ' => ' + ('PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate))
+                  "
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  {{ limitText(product.displayName, 100) }}
+                </div>
+                <div
+                  class="text-sm"
+                  [id]="'product_search_data_list_row_' + row + '_product_name'"
+                  [pTooltip]="'PRODUCT.NAME' | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  {{ limitText(product.name, 100) }}
+                </div>
               </div>
             </div>
           </div>
         </div>
       </ng-template>
 
-      <ng-template let-product let-idx="rowIndex" pTemplate="gridItem">
-        <div [id]="'product_search_data_grid_idx_' + idx" class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3">
-          <div [routerLink]="['./', product.name]">
-            <div class="card relative p-2 flex flex-column justify-content-center hover:bg-gray-200 cursor-pointer">
-              <span
-                *ngIf="product?.undeployed"
-                [id]="'product_search_data_grid_idx_' + idx + '_undeployed'"
-                class="card-badge-right badge-1 p-2 pi pi-ban danger-action-text font-bold"
-                [pTooltip]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              ></span>
-              <div class="h-3rem flex flex-column justify-content-center align-items-center text-center">
-                <app-image-container
-                  [id]="'product_search_data_grid_idx_' + idx + '_image'"
-                  [small]="false"
-                  styleClass="max-h-3rem"
-                  [imageUrl]="getLogoUrl(product)"
-                ></app-image-container>
-              </div>
-              <div class="flex flex-column justify-content-between gap-1 text-center">
-                <div
-                  class="mt-2 font-bold text-md"
-                  [id]="'product_search_data_grid_idx_' + idx + '_product_display_name'"
-                  [class.danger-action-text]="product.undeployed"
-                  [pTooltip]="product.displayName.length <= 20 ? '' : product.displayName"
+      <ng-template let-products let-idx="rowIndex" pTemplate="gridItem">
+        <div class="p-grid p-nogutter grid grid-nogutter">
+          <div
+            *ngFor="let product of products"
+            [id]="'product_search_data_grid_idx_' + idx"
+            class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3"
+          >
+            <div [routerLink]="['./', product.name]">
+              <div class="card relative p-2 flex flex-column justify-content-center hover:bg-gray-200 cursor-pointer">
+                <span
+                  *ngIf="product?.undeployed"
+                  [id]="'product_search_data_grid_idx_' + idx + '_undeployed'"
+                  class="card-badge-right badge-1 p-2 pi pi-ban danger-action-text font-bold"
+                  [pTooltip]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
-                >
-                  {{ limitText(product.displayName, 20) }}
+                ></span>
+                <div class="h-3rem flex flex-column justify-content-center align-items-center text-center">
+                  <app-image-container
+                    [id]="'product_search_data_grid_idx_' + idx + '_image'"
+                    [small]="false"
+                    styleClass="max-h-3rem"
+                    [imageUrl]="getLogoUrl(product)"
+                  ></app-image-container>
                 </div>
-                <div
-                  class="text-sm"
-                  [id]="'product_search_data_grid_idx_' + idx + '_product_name'"
-                  [pTooltip]="product.name.length <= 25 ? '' : product.name"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                >
-                  {{ limitText(product.name, 25) }}
+                <div class="flex flex-column justify-content-between gap-1 text-center">
+                  <div
+                    class="mt-2 font-bold text-md"
+                    [id]="'product_search_data_grid_idx_' + idx + '_product_display_name'"
+                    [class.danger-action-text]="product.undeployed"
+                    [pTooltip]="product.displayName.length <= 20 ? '' : product.displayName"
+                    tooltipPosition="top"
+                    tooltipEvent="hover"
+                  >
+                    {{ limitText(product.displayName, 20) }}
+                  </div>
+                  <div
+                    class="text-sm"
+                    [id]="'product_search_data_grid_idx_' + idx + '_product_name'"
+                    [pTooltip]="product.name.length <= 25 ? '' : product.name"
+                    tooltipPosition="top"
+                    tooltipEvent="hover"
+                  >
+                    {{ limitText(product.name, 25) }}
+                  </div>
                 </div>
               </div>
             </div>

@@ -15,7 +15,6 @@
     "clean": "npm cache clean --force && npm run clean-angular",
     "clean-angular": "ng cache clean",
     "start": "ng serve --configuration=development --proxy-config=proxy.conf.js",
-    "startPort": "ng serve --port 5021 --public-host http://localhost:5021",
     "prepare": "husky install",
     "lint": "ng lint",
     "eslint": "eslint --quiet --ext .js,.ts src",

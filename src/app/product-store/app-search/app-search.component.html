@@ -143,102 +143,104 @@
           </ocx-data-view-controls>
         </div>
       </ng-template>
-      <ng-template let-app pTemplate="gridItem">
-        <div class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3">
-          <div
-            class="card relative p-1 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
-            [class.bg-primary]="app.appType === 'MFE'"
-            (click)="onDetail($event, app)"
-          >
-            <a
-              tabindex="0"
-              *ngIf="hasCreatePermission"
-              [id]="'app_search_data_' + app.appId + '_copy_app'"
-              class="card-badge-left badge-1 p-2 pi pi-copy pseudo-button-link"
-              (click)="onCopy($event, app)"
-              [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            ></a>
-            <a
-              tabindex="0"
-              *ngIf="hasDeletePermission"
-              [id]="'app_search_data_' + app.appId + '_delete_app'"
-              class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text pseudo-button-link"
-              (click)="onDelete($event, app)"
-              [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            ></a>
-            <a
-              tabindex="0"
-              *ngIf="!(app?.deprecated || app?.undeployed)"
-              [id]="'app_search_data_' + app.appId + '_goto_product'"
-              class="card-badge-right badge-1 p-2 pi pi-external-link pseudo-button-link"
-              (click)="onGotoProduct($event, app.productName)"
-              [pTooltip]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            ></a>
-            <span
-              *ngIf="app?.undeployed"
-              [id]="'app_search_data_' + app.appId + '_undeployed'"
-              class="card-badge-right badge-1 p-2 pi pi-ban danger-action-text font-bold cursor-auto"
-              [pTooltip]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            ></span>
-            <span
-              *ngIf="app?.deprecated && !app?.undeployed"
-              [id]="'app_search_data_' + app.appId + '_deprecated'"
-              class="card-badge-right badge-1 p-2 pi pi-exclamation-circle danger-action-text font-bold cursor-auto"
-              [pTooltip]="'APP.TOOLTIPS.DEPRECATED_SEARCH' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            ></span>
-            <span
-              *ngIf="app.appType === 'MFE'"
-              [id]="'app_search_data_icon'"
-              class="card-badge-right badge-2 p-2 pi cursor-auto"
-              [ngClass]="'pi-' + app.iconName"
-              [pTooltip]="'Icon'"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            ></span>
-            <div class="h-4rem flex flex-column justify-content-between gap-1 text-center">
-              <div
-                class="font-bold"
-                [pTooltip]="app.appId.length <= 22 ? '' : app.appId"
+      <ng-template let-apps pTemplate="gridItem">
+        <div class="p-grid p-nogutter grid grid-nogutter">
+          <div *ngFor="let app of apps" class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3">
+            <div
+              class="card relative p-1 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
+              [class.bg-primary]="app.appType === 'MFE'"
+              (click)="onDetail($event, app)"
+            >
+              <a
+                tabindex="0"
+                *ngIf="hasCreatePermission"
+                [id]="'app_search_data_' + app.appId + '_copy_app'"
+                class="card-badge-left badge-1 p-2 pi pi-copy pseudo-button-link"
+                (click)="onCopy($event, app)"
+                [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
-              >
-                {{ limitText(app.appId, 22) }}
-              </div>
-              <div
-                *ngIf="app.appType === 'MS'"
-                class="text-sm"
-                [pTooltip]="'APP.APP_TYPE' | translate"
+              ></a>
+              <a
+                tabindex="0"
+                *ngIf="hasDeletePermission"
+                [id]="'app_search_data_' + app.appId + '_delete_app'"
+                class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text pseudo-button-link"
+                (click)="onDelete($event, app)"
+                [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
-              >
-                {{ app.appTypeKey | translate }}
-              </div>
-              <div
+              ></a>
+              <a
+                tabindex="0"
+                *ngIf="!(app?.deprecated || app?.undeployed)"
+                [id]="'app_search_data_' + app.appId + '_goto_product'"
+                class="card-badge-right badge-1 p-2 pi pi-external-link pseudo-button-link"
+                (click)="onGotoProduct($event, app.productName)"
+                [pTooltip]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              ></a>
+              <span
+                *ngIf="app?.undeployed"
+                [id]="'app_search_data_' + app.appId + '_undeployed'"
+                class="card-badge-right badge-1 p-2 pi pi-ban danger-action-text font-bold cursor-auto"
+                [pTooltip]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              ></span>
+              <span
+                *ngIf="app?.deprecated && !app?.undeployed"
+                [id]="'app_search_data_' + app.appId + '_deprecated'"
+                class="card-badge-right badge-1 p-2 pi pi-exclamation-circle danger-action-text font-bold cursor-auto"
+                [pTooltip]="'APP.TOOLTIPS.DEPRECATED_SEARCH' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              ></span>
+              <span
                 *ngIf="app.appType === 'MFE'"
-                class="text-sm"
-                [pTooltip]="app.exposedModule.length <= 25 ? '' : app.exposedModule"
+                [id]="'app_search_data_icon'"
+                class="card-badge-right badge-2 p-2 pi cursor-auto"
+                [ngClass]="'pi-' + app.iconName"
+                [pTooltip]="'Icon'"
                 tooltipPosition="top"
                 tooltipEvent="hover"
-              >
-                {{ limitText(app.exposedModule, 25) }}
-              </div>
-              <div
-                class="text-xs"
-                [pTooltip]="app.productName.length <= 25 ? '' : app.productName"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              >
-                {{ limitText(app.productName, 25) }}
+              ></span>
+              <div class="h-4rem flex flex-column justify-content-between gap-1 text-center">
+                <div
+                  class="font-bold"
+                  [pTooltip]="app.appId.length <= 22 ? '' : app.appId"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  {{ limitText(app.appId, 22) }}
+                </div>
+                <div
+                  *ngIf="app.appType === 'MS'"
+                  class="text-sm"
+                  [pTooltip]="'APP.APP_TYPE' | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  {{ app.appTypeKey | translate }}
+                </div>
+                <div
+                  *ngIf="app.appType === 'MFE'"
+                  class="text-sm"
+                  [pTooltip]="app.exposedModule.length <= 25 ? '' : app.exposedModule"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  {{ limitText(app.exposedModule, 25) }}
+                </div>
+                <div
+                  class="text-xs"
+                  [pTooltip]="app.productName.length <= 25 ? '' : app.productName"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  {{ limitText(app.productName, 25) }}
+                </div>
               </div>
             </div>
           </div>
