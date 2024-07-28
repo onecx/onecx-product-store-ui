@@ -108,7 +108,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   }
   public onCopy(ev: any, app: any, appType: AppType) {
     ev.stopPropagation()
-    this.app = app
+    this.app = { ...app, appType: appType } as AppAbstract
     this.changeMode = 'COPY'
     this.displayDetailDialog = true
   }
@@ -117,9 +117,9 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
     this.app = undefined
     this.displayDetailDialog = true
   }
-  public onDelete(ev: any, app: any) {
+  public onDelete(ev: any, app: any, appType: AppType) {
     ev.stopPropagation()
-    this.app = app
+    this.app = { ...app, appType: appType } as AppAbstract
     this.displayDeleteDialog = true
   }
 
