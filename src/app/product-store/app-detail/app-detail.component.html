@@ -24,12 +24,16 @@
       <div
         *ngIf="undeployed"
         class="p-dialog-title danger-action-text font-bold pi pi-ban"
-        [title]="'APP.TOOLTIPS.UNDEPLOYED' | translate"
+        [pTooltip]="'APP.TOOLTIPS.UNDEPLOYED' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
       ></div>
       <div
         *ngIf="!undeployed && deprecated"
         class="p-dialog-title danger-action-text font-bold pi pi-exclamation-circle"
-        [title]="'APP.TOOLTIPS.DEPRECATED' | translate"
+        [pTooltip]="'APP.TOOLTIPS.DEPRECATED' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
       ></div>
     </div>
   </ng-template>
@@ -39,12 +43,12 @@
     </ng-template>
     <p-fieldset [toggleable]="false" [collapsed]="false" styleClass="surface-100 pt-0 pb-1 mx-0">
       <ng-template pTemplate="header">
-        <span [title]="'APP.TOOLTIPS.GROUP.REMOTE_MODULE' | translate">
+        <span [pTooltip]="'APP.TOOLTIPS.GROUP.REMOTE_MODULE' | translate" tooltipPosition="top" tooltipEvent="hover">
           {{ 'APP.GROUP.REMOTE_MODULE' | translate }}
         </span>
       </ng-template>
       <div class="grid">
-        <div class="col-12 md:col-6" style="min-width: 15rem" [title]="'APP.TOOLTIPS.EXPOSED_MODULE' | translate">
+        <div class="col-12 md:col-6" style="min-width: 15rem">
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
@@ -54,38 +58,38 @@
               formControlName="exposedModule"
               [pTooltip]="'APP.TOOLTIPS.EXPOSED_MODULE' | translate"
               tooltipPosition="top"
-              tooltipEvent="focus"
+              tooltipEvent="hover"
             />
             <label class="ocx-required-label" for="app_detail_form_mfe_exposedModule">
               {{ 'APP.EXPOSED_MODULE' | translate }}
             </label>
           </span>
         </div>
-        <div class="col-12 sm:col-6 md:col-3" [title]="'APP.TOOLTIPS.TYPE' | translate">
+        <div class="col-12 sm:col-6 md:col-3">
           <span class="p-float-label" controlErrorAnchor>
             <p-dropdown
               id="app_detail_form_mfe_type"
               styleClass="w-full min-w-min input-field-correction"
               formControlName="type"
+              [options]="types"
               [pTooltip]="'APP.TOOLTIPS.TYPE' | translate"
               tooltipPosition="top"
-              tooltipEvent="focus"
-              [options]="types"
+              tooltipEvent="hover"
             >
             </p-dropdown>
             <label class="ocx-required-label" for="app_detail_form_mfe_type"> {{ 'APP.TYPE' | translate }} </label>
           </span>
         </div>
-        <div class="col-12 sm:col-6 md:col-3" [title]="'APP.TOOLTIPS.TECHNOLOGY' | translate">
+        <div class="col-12 sm:col-6 md:col-3">
           <span class="p-float-label" controlErrorAnchor>
             <p-dropdown
               id="app_detail_form_mfe_technology"
               styleClass="w-full min-w-min input-field-correction"
               formControlName="technology"
+              [options]="technologies"
               [pTooltip]="'APP.TOOLTIPS.TECHNOLOGY' | translate"
               tooltipPosition="top"
-              tooltipEvent="focus"
-              [options]="technologies"
+              tooltipEvent="hover"
             >
             </p-dropdown>
             <label class="ocx-required-label" for="app_detail_form_mfe_technology">
@@ -93,7 +97,7 @@
             </label>
           </span>
         </div>
-        <div class="col-12" [title]="'APP.TOOLTIPS.REMOTE_ENTRY' | translate">
+        <div class="col-12">
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
@@ -103,14 +107,14 @@
               formControlName="remoteEntry"
               [pTooltip]="'APP.TOOLTIPS.REMOTE_ENTRY' | translate"
               tooltipPosition="top"
-              tooltipEvent="focus"
+              tooltipEvent="hover"
             />
             <label class="ocx-required-label" for="app_detail_form_mfe_remoteEntry">
               {{ 'APP.REMOTE_ENTRY' | translate }}
             </label>
           </span>
         </div>
-        <div class="col-12" [title]="'APP.TOOLTIPS.REMOTE_BASE_URL' | translate">
+        <div class="col-12">
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
@@ -120,7 +124,7 @@
               formControlName="remoteBaseUrl"
               [pTooltip]="'APP.TOOLTIPS.REMOTE_BASE_URL' | translate"
               tooltipPosition="top"
-              tooltipEvent="focus"
+              tooltipEvent="hover"
             />
             <label class="ocx-required-label" for="app_detail_form_mfe_remoteBaseUrl">
               {{ 'APP.REMOTE_BASE_URL' | translate }}
@@ -132,10 +136,12 @@
 
     <p-fieldset [toggleable]="false" [collapsed]="false" styleClass="surface-100 pt-0 pb-1 mt-3 mx-0">
       <ng-template pTemplate="header">
-        <span [title]="'APP.TOOLTIPS.GROUP.LOCAL_MODULE' | translate">{{ 'APP.GROUP.LOCAL_MODULE' | translate }}</span>
+        <span [pTooltip]="'APP.TOOLTIPS.GROUP.LOCAL_MODULE' | translate" tooltipPosition="top" tooltipEvent="hover">
+          {{ 'APP.GROUP.LOCAL_MODULE' | translate }}</span
+        >
       </ng-template>
       <div class="grid">
-        <div class="col-12 md:col-6" style="min-width: 15rem" [title]="'APP.TOOLTIPS.APP_ID' | translate">
+        <div class="col-12 md:col-6" style="min-width: 15rem">
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
@@ -145,12 +151,12 @@
               formControlName="appId"
               [pTooltip]="'APP.TOOLTIPS.APP_ID' | translate"
               tooltipPosition="top"
-              tooltipEvent="focus"
+              tooltipEvent="hover"
             />
             <label class="ocx-required-label" for="app_detail_form_mfe_app_id"> {{ 'APP.APP_ID' | translate }} </label>
           </span>
         </div>
-        <div class="col-12 md:col-6" style="min-width: 15rem" [title]="'APP.TOOLTIPS.APP_NAME' | translate">
+        <div class="col-12 md:col-6" style="min-width: 15rem">
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
@@ -160,14 +166,14 @@
               formControlName="appName"
               [pTooltip]="'APP.TOOLTIPS.APP_NAME' | translate"
               tooltipPosition="top"
-              tooltipEvent="focus"
+              tooltipEvent="hover"
             />
             <label class="ocx-required-label" for="app_detail_form_mfe_app_name">
               {{ 'APP.APP_NAME' | translate }}
             </label>
           </span>
         </div>
-        <div class="col-12 md:col-6" style="min-width: 15rem" [title]="'APP.TOOLTIPS.APP_VERSION' | translate">
+        <div class="col-12 md:col-6" style="min-width: 15rem">
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
@@ -177,14 +183,14 @@
               formControlName="appVersion"
               [pTooltip]="'APP.TOOLTIPS.APP_VERSION' | translate"
               tooltipPosition="top"
-              tooltipEvent="focus"
+              tooltipEvent="hover"
             />
             <label class="ocx-required-label" for="app_detail_form_mfe_app_version">
               {{ 'APP.APP_VERSION' | translate }}
             </label>
           </span>
         </div>
-        <div class="col-12 md:col-6" style="min-width: 15rem" [title]="'APP.TOOLTIPS.PRODUCT_NAME' | translate">
+        <div class="col-12 md:col-6" style="min-width: 15rem">
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
@@ -194,14 +200,14 @@
               formControlName="productName"
               [pTooltip]="'APP.TOOLTIPS.PRODUCT_NAME' | translate"
               tooltipPosition="top"
-              tooltipEvent="focus"
+              tooltipEvent="hover"
             />
             <label class="ocx-required-label" for="app_detail_form_mfe_product_name">
               {{ 'APP.PRODUCT_NAME' | translate }}
             </label>
           </span>
         </div>
-        <div class="col-12 md:col-6" style="min-width: 15rem" [title]="'APP.TOOLTIPS.CLASSIFICATIONS' | translate">
+        <div class="col-12 md:col-6" style="min-width: 15rem">
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
@@ -211,18 +217,21 @@
               formControlName="classifications"
               [pTooltip]="'APP.TOOLTIPS.CLASSIFICATIONS' | translate"
               tooltipPosition="top"
-              tooltipEvent="focus"
+              tooltipEvent="hover"
             />
             <label for="app_detail_form_mfe_classifications"> {{ 'APP.CLASSIFICATIONS' | translate }} </label>
           </span>
         </div>
-        <div class="col-12 md:col-6" style="min-width: 15rem" [title]="'APP.TOOLTIPS.ICON_NAME' | translate">
+        <div class="col-12 md:col-6" style="min-width: 15rem">
           <span class="p-float-label" controlErrorAnchor>
             <p-dropdown
               id="app_detail_form_mfe_icon_name"
               styleClass="w-full min-w-min input-field-correction"
               formControlName="iconName"
               [options]="iconItems"
+              [pTooltip]="'APP.TOOLTIPS.ICON_NAME' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
             >
               <ng-template let-ico pTemplate="selectedItem">
                 <div class="flex">
@@ -240,7 +249,7 @@
             <label for="app_detail_form_mfe_icon_name"> {{ 'APP.ICON_NAME' | translate }} </label>
           </span>
         </div>
-        <div class="col-12" [title]="'APP.TOOLTIPS.DESCRIPTION' | translate">
+        <div class="col-12">
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
@@ -250,12 +259,12 @@
               formControlName="description"
               [pTooltip]="'APP.TOOLTIPS.DESCRIPTION' | translate"
               tooltipPosition="top"
-              tooltipEvent="focus"
+              tooltipEvent="hover"
             />
             <label for="app_detail_form_mfe_description"> {{ 'APP.DESCRIPTION' | translate }} </label>
           </span>
         </div>
-        <div class="col-12" [title]="'APP.TOOLTIPS.CONTACT' | translate">
+        <div class="col-12">
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
@@ -265,7 +274,7 @@
               formControlName="contact"
               [pTooltip]="'APP.TOOLTIPS.CONTACT' | translate"
               tooltipPosition="top"
-              tooltipEvent="focus"
+              tooltipEvent="hover"
             />
             <label for="app_detail_form_mfe_contact"> {{ 'APP.CONTACT' | translate }} </label>
           </span>
@@ -280,14 +289,55 @@
       styleClass="surface-100 pt-0 pb-1 mt-3 mx-0"
     >
       <ng-template pTemplate="header">
-        <span [title]="'APP.TOOLTIPS.GROUP.INTERNALS' | translate">{{ 'APP.GROUP.INTERNALS' | translate }}</span>
+        <span [pTooltip]="'APP.TOOLTIPS.GROUP.INTERNALS' | translate" tooltipPosition="top" tooltipEvent="hover">
+          {{ 'APP.GROUP.INTERNALS' | translate }}</span
+        >
       </ng-template>
       <div class="grid">
-        <div
-          class="col-12 md:col-3 px-2"
-          style="min-width: 12rem"
-          [title]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
-        >
+        <div class="col-12 md:col-6 pt-0 pb-3 px-4">
+          <p-checkbox
+            type="text"
+            [readonly]="true"
+            inputId="app_detail_form_mfe_field_operator"
+            [(ngModel)]="operator"
+            [ngModelOptions]="{ standalone: true }"
+            [binary]="true"
+            [label]="'APP.OPERATOR' | translate"
+            [pTooltip]="'APP.TOOLTIPS.OPERATOR' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          ></p-checkbox>
+        </div>
+        <div class="col-12 md:col-3 pt-0 pb-3 px-4" style="min-width: 12rem">
+          <p-checkbox
+            type="text"
+            [readonly]="true"
+            inputId="app_detail_form_mfe_field_undeployed"
+            [(ngModel)]="undeployed"
+            [ngModelOptions]="{ standalone: true }"
+            [binary]="true"
+            [label]="'APP.UNDEPLOYED' | translate"
+            [pTooltip]="'APP.TOOLTIPS.UNDEPLOYED' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          ></p-checkbox>
+        </div>
+        <div class="col-12 md:col-3 pt-0 pb-3 px-4" style="min-width: 12rem">
+          <p-checkbox
+            type="text"
+            [readonly]="true"
+            inputId="app_detail_form_mfe_field_deprecated"
+            [(ngModel)]="deprecated"
+            [ngModelOptions]="{ standalone: true }"
+            [binary]="true"
+            [label]="'APP.DEPRECATED' | translate"
+            [pTooltip]="'APP.TOOLTIPS.DEPRECATED' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          ></p-checkbox>
+        </div>
+
+        <div class="col-12 md:col-3 px-2" style="min-width: 12rem">
           <span class="p-float-label">
             <input
               pInputText
@@ -298,16 +348,12 @@
               [value]="mfe?.['creationDate'] ? (mfe?.['creationDate'] | date: dateFormat) : ''"
               [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
               tooltipPosition="top"
-              tooltipEvent="focus"
+              tooltipEvent="hover"
             />
             <label for="app_detail_form_mfe_field_creationDate">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
           </span>
         </div>
-        <div
-          class="col-12 md:col-3 px-2"
-          style="min-width: 12rem"
-          [title]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
-        >
+        <div class="col-12 md:col-3 px-2" style="min-width: 12rem">
           <span class="p-float-label">
             <input
               pInputText
@@ -318,42 +364,12 @@
               [value]="mfe?.['modificationDate'] ? (mfe?.['modificationDate'] | date: dateFormat) : ''"
               [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
               tooltipPosition="top"
-              tooltipEvent="focus"
+              tooltipEvent="hover"
             />
             <label for="app_detail_form_mfe_field_modificationDate">
               {{ 'INTERNAL.MODIFICATION_DATE' | translate }}
             </label>
           </span>
-        </div>
-        <div
-          class="col-12 md:col-3 px-4 flex align-items-center"
-          style="min-width: 12rem"
-          [title]="'APP.TOOLTIPS.UNDEPLOYED' | translate"
-        >
-          <p-checkbox
-            type="text"
-            [readonly]="true"
-            inputId="app_detail_form_ms_field_undeployed"
-            [(ngModel)]="undeployed"
-            [ngModelOptions]="{ standalone: true }"
-            [binary]="true"
-            [label]="'APP.UNDEPLOYED' | translate"
-          ></p-checkbox>
-        </div>
-        <div
-          class="col-12 md:col-3 px-4 flex align-items-center"
-          style="min-width: 12rem"
-          [title]="'APP.TOOLTIPS.DEPRECATED' | translate"
-        >
-          <p-checkbox
-            type="text"
-            [readonly]="true"
-            inputId="app_detail_form_ms_field_deprecated"
-            [(ngModel)]="deprecated"
-            [ngModelOptions]="{ standalone: true }"
-            [binary]="true"
-            [label]="'APP.DEPRECATED' | translate"
-          ></p-checkbox>
         </div>
       </div>
     </p-fieldset>
@@ -365,10 +381,12 @@
     </ng-template>
     <p-fieldset [toggleable]="false" [collapsed]="false" styleClass="surface-100 pt-0 pb-1 mx-0">
       <ng-template pTemplate="header">
-        <span [title]="'APP.TOOLTIPS.GROUP.LOCAL_MODULE' | translate">{{ 'APP.GROUP.LOCAL_MODULE' | translate }}</span>
+        <span [pTooltip]="'APP.TOOLTIPS.GROUP.LOCAL_MODULE' | translate" tooltipPosition="top" tooltipEvent="hover">
+          {{ 'APP.GROUP.LOCAL_MODULE' | translate }}</span
+        >
       </ng-template>
       <div class="grid">
-        <div class="col-12 md:col-6" style="min-width: 15rem" [title]="'APP.TOOLTIPS.APP_ID' | translate">
+        <div class="col-12 md:col-6" style="min-width: 15rem">
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
@@ -378,12 +396,12 @@
               formControlName="appId"
               [pTooltip]="'APP.TOOLTIPS.APP_ID' | translate"
               tooltipPosition="top"
-              tooltipEvent="focus"
+              tooltipEvent="hover"
             />
             <label class="ocx-required-label" for="app_detail_form_ms_app_id"> {{ 'APP.APP_ID' | translate }} </label>
           </span>
         </div>
-        <div class="col-12 md:col-6" style="min-width: 15rem" [title]="'APP.TOOLTIPS.APP_NAME' | translate">
+        <div class="col-12 md:col-6" style="min-width: 15rem">
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
@@ -393,14 +411,14 @@
               formControlName="appName"
               [pTooltip]="'APP.TOOLTIPS.APP_NAME' | translate"
               tooltipPosition="top"
-              tooltipEvent="focus"
+              tooltipEvent="hover"
             />
             <label class="ocx-required-label" for="app_detail_form_ms_app_name">
               {{ 'APP.APP_NAME' | translate }}
             </label>
           </span>
         </div>
-        <div class="col-12 md:col-6" style="min-width: 15rem" [title]="'APP.TOOLTIPS.APP_VERSION' | translate">
+        <div class="col-12 md:col-6" style="min-width: 15rem">
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
@@ -410,14 +428,14 @@
               formControlName="appVersion"
               [pTooltip]="'APP.TOOLTIPS.APP_VERSION' | translate"
               tooltipPosition="top"
-              tooltipEvent="focus"
+              tooltipEvent="hover"
             />
             <label class="ocx-required-label" for="app_detail_form_ms_app_version">
               {{ 'APP.APP_VERSION' | translate }}
             </label>
           </span>
         </div>
-        <div class="col-12 md:col-6" style="min-width: 15rem" [title]="'APP.TOOLTIPS.PRODUCT_NAME' | translate">
+        <div class="col-12 md:col-6" style="min-width: 15rem">
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
@@ -427,14 +445,14 @@
               formControlName="productName"
               [pTooltip]="'APP.TOOLTIPS.PRODUCT_NAME' | translate"
               tooltipPosition="top"
-              tooltipEvent="focus"
+              tooltipEvent="hover"
             />
             <label class="ocx-required-label" for="app_detail_form_ms_product_name">
               {{ 'APP.PRODUCT_NAME' | translate }}
             </label>
           </span>
         </div>
-        <div class="col-12" [title]="'APP.TOOLTIPS.DESCRIPTION' | translate">
+        <div class="col-12">
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
@@ -444,7 +462,7 @@
               formControlName="description"
               [pTooltip]="'APP.TOOLTIPS.DESCRIPTION' | translate"
               tooltipPosition="top"
-              tooltipEvent="focus"
+              tooltipEvent="hover"
             />
             <label for="app_detail_form_ms_description"> {{ 'APP.DESCRIPTION' | translate }} </label>
           </span>
@@ -459,14 +477,41 @@
       styleClass="surface-100 pt-0 pb-1 mx-0 mt-3"
     >
       <ng-template pTemplate="header">
-        <span [title]="'APP.TOOLTIPS.GROUP.INTERNALS' | translate">{{ 'APP.GROUP.INTERNALS' | translate }}</span>
+        <span [pTooltip]="'APP.TOOLTIPS.GROUP.INTERNALS' | translate" tooltipPosition="top" tooltipEvent="hover">
+          {{ 'APP.GROUP.INTERNALS' | translate }}</span
+        >
       </ng-template>
       <div class="grid">
-        <div
-          class="col-12 md:col-3 px-2"
-          style="min-width: 12rem"
-          [title]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
-        >
+        <div class="col-12 md:col-6 pt-0 pb-3 px-4">
+          <p-checkbox
+            type="text"
+            [readonly]="true"
+            inputId="app_detail_form_ms_field_operator"
+            [(ngModel)]="operator"
+            [ngModelOptions]="{ standalone: true }"
+            [binary]="true"
+            [label]="'APP.OPERATOR' | translate"
+            [pTooltip]="'APP.TOOLTIPS.OPERATOR' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          ></p-checkbox>
+        </div>
+        <div class="col-12 md:col-6 pt-0 pb-3 px-4" style="min-width: 12rem">
+          <p-checkbox
+            type="text"
+            [readonly]="true"
+            inputId="app_detail_form_ms_field_undeployed"
+            [(ngModel)]="undeployed"
+            [ngModelOptions]="{ standalone: true }"
+            [binary]="true"
+            [label]="'APP.UNDEPLOYED' | translate"
+            [pTooltip]="'APP.TOOLTIPS.UNDEPLOYED' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          ></p-checkbox>
+        </div>
+
+        <div class="col-12 md:col-3 px-2" style="min-width: 12rem">
           <span class="p-float-label">
             <input
               pInputText
@@ -477,16 +522,12 @@
               [value]="ms?.['creationDate'] ? (ms?.['creationDate'] | date: dateFormat) : ''"
               [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
               tooltipPosition="top"
-              tooltipEvent="focus"
+              tooltipEvent="hover"
             />
             <label for="app_detail_form_ms_field_creationDate">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
           </span>
         </div>
-        <div
-          class="col-12 md:col-3 px-2"
-          style="min-width: 12rem"
-          [title]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
-        >
+        <div class="col-12 md:col-3 px-2" style="min-width: 12rem">
           <span class="p-float-label">
             <input
               pInputText
@@ -497,27 +538,12 @@
               [value]="ms?.['modificationDate'] ? (ms?.['modificationDate'] | date: dateFormat) : ''"
               [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
               tooltipPosition="top"
-              tooltipEvent="focus"
+              tooltipEvent="hover"
             />
             <label for="app_detail_form_ms_field_modificationDate">
               {{ 'INTERNAL.MODIFICATION_DATE' | translate }}
             </label>
           </span>
-        </div>
-        <div
-          class="col-12 md:col-3 px-4 flex align-items-center"
-          style="min-width: 12rem"
-          [title]="'APP.TOOLTIPS.UNDEPLOYED' | translate"
-        >
-          <p-checkbox
-            type="text"
-            [readonly]="true"
-            inputId="app_detail_form_ms_field_undeployed"
-            [(ngModel)]="undeployed"
-            [ngModelOptions]="{ standalone: true }"
-            [binary]="true"
-            [label]="'APP.UNDEPLOYED' | translate"
-          ></p-checkbox>
         </div>
       </div>
     </p-fieldset>
@@ -528,30 +554,36 @@
       <p-button
         *ngIf="!allowEditing()"
         id="app_detail_button_close"
-        [label]="'ACTIONS.NAVIGATION.CLOSE' | translate"
-        [title]="'ACTIONS.NAVIGATION.CLOSE.TOOLTIP' | translate"
-        (onClick)="onDialogHide()"
         icon="pi pi-times"
+        (onClick)="onDialogHide()"
+        [label]="'ACTIONS.NAVIGATION.CLOSE' | translate"
+        [pTooltip]="'ACTIONS.NAVIGATION.CLOSE.TOOLTIP' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
       ></p-button>
       <p-button
         *ngIf="allowEditing()"
         id="app_detail_button_cancel"
-        [label]="'ACTIONS.CANCEL' | translate"
-        [title]="'ACTIONS.TOOLTIPS.CANCEL' | translate"
-        (onClick)="onDialogHide()"
         icon="pi pi-times"
+        (onClick)="onDialogHide()"
+        [label]="'ACTIONS.CANCEL' | translate"
+        [pTooltip]="'ACTIONS.TOOLTIPS.CANCEL' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
       ></p-button>
       <p-button
         *ngIf="allowEditing()"
         id="app_detail_button_save"
-        [label]="'ACTIONS.SAVE' | translate"
-        [title]="'ACTIONS.TOOLTIPS.SAVE' | translate"
-        (onClick)="onSave()"
         icon="pi pi-save"
+        (onClick)="onSave()"
         [disabled]="
           (appAbstract?.appType === 'MFE' && !formGroupMfe.valid) ||
           (appAbstract?.appType === 'MS' && !formGroupMs.valid)
         "
+        [label]="'ACTIONS.SAVE' | translate"
+        [pTooltip]="'ACTIONS.TOOLTIPS.SAVE' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
       ></p-button>
     </div>
   </ng-template>

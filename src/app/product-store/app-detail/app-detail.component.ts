@@ -64,6 +64,7 @@ export class AppDetailComponent implements OnChanges {
   public formGroupMs: FormGroup
   public dialogTitelKey = ''
   public loading = false
+  public operator = false
   public undeployed = false
   public deprecated = false
   public hasCreatePermission = false
@@ -160,6 +161,7 @@ export class AppDetailComponent implements OnChanges {
           if (data) {
             this.mfe = data
             if (this.mfe) this.viewFormMfe(this.mfe)
+            this.operator = this.mfe?.operator ?? false
             this.undeployed = this.mfe?.undeployed ?? false
             this.deprecated = this.mfe?.deprecated ?? false
             if (this.changeMode === 'COPY') {
@@ -186,6 +188,7 @@ export class AppDetailComponent implements OnChanges {
           if (data) {
             this.ms = data
             if (this.ms) this.viewFormMs(this.ms)
+            this.operator = this.ms?.operator ?? false
             this.undeployed = this.ms?.undeployed ?? false
             if (this.changeMode === 'COPY') {
               if (this.ms?.id) {

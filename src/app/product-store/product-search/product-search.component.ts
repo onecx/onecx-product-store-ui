@@ -61,7 +61,10 @@ export class ProductSearchComponent implements OnInit {
     this.searchInProgress = true
     this.products$ = this.productApi
       .searchProducts({
-        productSearchCriteria: { name: this.productSearchCriteriaGroup.controls['productName'].value, pageSize: 1000 }
+        productSearchCriteria: {
+          name: this.productSearchCriteriaGroup.controls['productName'].value,
+          pageSize: 1000
+        }
       })
       .pipe(
         catchError((err) => {

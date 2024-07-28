@@ -17,7 +17,12 @@
       (onChange)="onTabChange($event)"
       [activeIndex]="selectedTabIndex"
     >
-      <p-tabPanel id="product_detail_panel_props" class="p-0" [header]="'DIALOG.TABS.PROPERTIES' | translate">
+      <p-tabPanel
+        id="product_detail_panel_props"
+        class="p-0"
+        [header]="'DIALOG.TABS.PROPERTIES' | translate"
+        [tooltip]="'DIALOG.TABS.TOOLTIPS.PROPERTIES' | translate"
+      >
         <app-product-props
           [product]="product"
           [changeMode]="changeMode"
@@ -32,6 +37,7 @@
         class="p-0"
         [disabled]="changeMode !== 'VIEW'"
         [header]="'DIALOG.TABS.INTERN' | translate"
+        [tooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate"
       >
         <app-product-intern [product]="product" [dateFormat]="dateFormat"></app-product-intern>
       </p-tabPanel>
@@ -41,6 +47,7 @@
         class="p-0"
         [disabled]="changeMode !== 'VIEW'"
         [header]="'DIALOG.TABS.APPS' | translate"
+        [tooltip]="'DIALOG.TABS.TOOLTIPS.APPS' | translate"
       >
         <app-product-apps [product]="product_for_apps" [changeMode]="changeMode"></app-product-apps>
       </p-tabPanel>
@@ -59,7 +66,8 @@
   <div class="flex column-gap-3 row-gap-1 justify-content-start align-items-center">
     <div class="pi pi-question-circle text-3xl danger-action-text"></div>
     <div>
-      <div>{{('ACTIONS.DELETE.MESSAGE' | translate).replace('{{ITEM}}', product?.name)}}</div>
+      <div class="font-bold">{{('ACTIONS.DELETE.MESSAGE' | translate).replace('{{ITEM}}', product?.name)}}</div>
+      <div *ngIf="product?.operator" class="mt-3">{{ 'ACTIONS.DELETE.PRODUCT.OPERATOR_TEXT' | translate }}</div>
       <div class="mt-2">{{ 'ACTIONS.DELETE.MESSAGE_INFO' | translate }}</div>
     </div>
   </div>
@@ -72,9 +80,11 @@
         class="m-0"
         icon="pi pi-times"
         iconPos="left"
-        [label]="'ACTIONS.CONFIRMATION.NO' | translate"
-        [title]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
         (click)="productDeleteVisible = false"
+        [label]="'ACTIONS.CONFIRMATION.NO' | translate"
+        [pTooltip]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
       ></button>
       <button
         pButton
@@ -82,9 +92,11 @@
         class="m-0"
         icon="pi pi-check"
         iconPos="left"
-        [label]="'ACTIONS.CONFIRMATION.YES' | translate"
-        [title]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
         (click)="onDeleteConfirmation()"
+        [label]="'ACTIONS.CONFIRMATION.YES' | translate"
+        [pTooltip]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
       ></button>
     </div>
   </ng-template>

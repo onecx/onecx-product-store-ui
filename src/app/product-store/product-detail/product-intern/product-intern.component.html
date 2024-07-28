@@ -1,5 +1,36 @@
-<div class="surface-section w-full my-3 sm:my-5">
-  <div class="flex flex-wrap flex-column row-gap-4 my-3 w-12 sm:w-10 md:w-8 lg:w-6 xl:w-6">
+<div class="surface-section w-full my-3">
+  <div class="flex flex-wrap flex-column row-gap-4 w-12 sm:w-10 md:w-8 lg:w-6 xl:w-6">
+    <div class="flex flex-wrap row-gap-4 px-3">
+      <div class="w-12 sm:w-6 px-3 flex align-items-center">
+        <p-checkbox
+          type="text"
+          styleClass="cursor-auto"
+          [readonly]="true"
+          inputId="product_detail_intern_field_operator"
+          [(ngModel)]="operator"
+          [binary]="true"
+          [label]="'PRODUCT.OPERATOR' | translate"
+          [pTooltip]="'PRODUCT.TOOLTIPS.OPERATOR' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        ></p-checkbox>
+      </div>
+      <div class="w-12 sm:w-6 px-5 flex align-items-center">
+        <p-checkbox
+          type="text"
+          styleClass="cursor-auto"
+          [readonly]="true"
+          inputId="product_detail_intern_field_undeployed"
+          [(ngModel)]="undeployed"
+          [binary]="true"
+          [label]="'PRODUCT.UNDEPLOYED' | translate"
+          [pTooltip]="'PRODUCT.TOOLTIPS.UNDEPLOYED' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        ></p-checkbox>
+      </div>
+    </div>
+
     <div class="flex flex-wrap row-gap-4">
       <div class="w-12 sm:w-6 px-3">
         <span class="p-float-label">
@@ -10,7 +41,9 @@
             id="product_detail_intern_field_creationDate"
             class="w-full pt-3 pb-2"
             [value]="product?.creationDate | date: dateFormat"
-            [title]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
+            [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
           />
           <label for="product_detail_intern_field_creationDate">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
         </span>
@@ -24,7 +57,9 @@
             id="product_detail_intern_field_creationUser"
             class="w-full pt-3 pb-2"
             [value]="product?.creationUser"
-            [title]="'INTERNAL.TOOLTIPS.CREATION_USER' | translate"
+            [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_USER' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
           />
           <label for="product_detail_intern_field_creationUser">{{ 'INTERNAL.CREATION_USER' | translate }}</label>
         </span>
@@ -41,7 +76,9 @@
             id="product_detail_intern_field_modificationDate"
             class="w-full pt-3 pb-2"
             [value]="product?.modificationDate | date: dateFormat"
-            [title]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
+            [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
           />
           <label for="product_detail_intern_field_modificationDate">
             {{ 'INTERNAL.MODIFICATION_DATE' | translate }}</label
@@ -58,41 +95,14 @@
             id="product_detail_intern_field_modificationUser"
             class="w-full pt-3 pb-2"
             [value]="product?.modificationUser"
-            [title]="'INTERNAL.TOOLTIPS.MODIFICATION_USER' | translate"
+            [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_USER' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
           />
           <label for="product_detail_intern_field_modificationUser">
             {{ 'INTERNAL.MODIFICATION_USER' | translate }}</label
           >
         </span>
-      </div>
-    </div>
-
-    <div class="flex flex-wrap row-gap-4">
-      <div class="w-12 sm:w-6 px-3">
-        <span class="p-float-label">
-          <input
-            pInputText
-            type="text"
-            readonly
-            id="product_detail_intern_field_operator"
-            class="w-full pt-3 pb-2"
-            [value]="(product?.operator ? 'PRODUCT.OPERATOR.DEPLOYMENT' : 'PRODUCT.OPERATOR.MANUAL') | translate"
-            [title]="'PRODUCT.TOOLTIPS.OPERATOR' | translate"
-          />
-          <label for="product_detail_intern_field_operator"> {{ 'PRODUCT.OPERATOR' | translate }}</label>
-        </span>
-      </div>
-      <div class="w-12 sm:w-6 px-3 flex align-items-center">
-        <p-checkbox
-          type="text"
-          styleClass="cursor-auto"
-          [readonly]="true"
-          inputId="product_detail_intern_field_undeployed"
-          [(ngModel)]="undeployed"
-          [binary]="true"
-          [title]="'PRODUCT.TOOLTIPS.UNDEPLOYED' | translate"
-          [label]="'PRODUCT.UNDEPLOYED' | translate"
-        ></p-checkbox>
       </div>
     </div>
 
@@ -107,7 +117,9 @@
             autoresize="true"
             rows="3"
             id="product_detail_intern_field_workspaces"
-            [title]="'PRODUCT.TOOLTIPS.WORKSPACES' | translate"
+            [pTooltip]="'PRODUCT.TOOLTIPS.WORKSPACES' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
           >
           </textarea>
           <label for="product_detail_intern_field_workspaces">{{ 'PRODUCT.WORKSPACES' | translate }}</label>

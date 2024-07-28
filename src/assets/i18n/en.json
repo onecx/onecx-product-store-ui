@@ -41,19 +41,22 @@
       "APP": {
         "TOOLTIP": "Delete App",
         "NOK": "App could not be deleted",
-        "OK": "App deleted successfully"
+        "OK": "App deleted successfully",
+        "OPERATOR_TEXT": "This App was created automatically. If still needed it will be restored during the next deployment."
       },
       "PRODUCT": {
         "TOOLTIP": "Delete Application",
         "HEADER": "Delete Application",
         "NOK": "Application could not be deleted",
-        "OK": "Application deleted successfully"
+        "OK": "Application deleted successfully",
+        "OPERATOR_TEXT": "This Application was created automatically. If still needed it will be restored during the next deployment."
       },
       "SLOT": {
         "TOOLTIP": "Delete Slot",
         "HEADER": "Delete Slot",
         "NOK": "Slot could not be deleted",
-        "OK": "Slot deleted successfully"
+        "OK": "Slot deleted successfully",
+        "OPERATOR_TEXT": "This Slot was created automatically. If still needed it will be restored during the next deployment."
       },
       "MESSAGE": "Do you want to delete \"{{ITEM}}\"?",
       "MESSAGE_INFO": "This action cannot be undone!"
@@ -191,12 +194,22 @@
     "TABS": {
       "APPS": "Components",
       "INTERN": "Internal",
-      "PROPERTIES": "Properties"
+      "PROPERTIES": "Properties",
+      "TOOLTIPS": {
+        "APPS": "Manage Components",
+        "INTERN": "Internal properties",
+        "PROPERTIES": "Manage Properties"
+      }
     },
     "COMPONENTS": {
       "MFE": "Microfrontends",
       "MS": "Microservices",
-      "SLOT": "Slots"
+      "SLOT": "Slots",
+      "TOOLTIPS": {
+        "MFE": "UI Components: Modules, Remote Components",
+        "MS": "List of backend and frontend services",
+        "SLOT": "Areas in UI components where you want to have special functionality. This is assigned when used in Workspaces."
+      }
     }
   },
   "APP": {
@@ -224,6 +237,7 @@
     "GROUP.INTERNALS": "More Details",
     "DEPRECATED": "Outdated",
     "UNDEPLOYED": "Undeployed",
+    "OPERATOR": "Automated created",
     "TOOLTIPS": {
       "APP_ID": "Unique ID - base identifier for this App",
       "APP_NAME": "Business name of the App",
@@ -235,9 +249,9 @@
       "TYPE": "Type of the Microfrontends",
       "REMOTE_BASE_URL": "Remote Base URL",
       "REMOTE_ENTRY": "Remote Entry",
-      "CLASSIFICATIONS": "Classifications",
-      "CONTACT": "Contact",
-      "ICON_NAME": "Icon Name",
+      "CLASSIFICATIONS": "Comma-separated list of terms to classify the App, e.g. Game, Tool etc. Can be used for filtering.",
+      "CONTACT": "Contact to the provider (email address or similar)",
+      "ICON_NAME": "Name of the icons from the PrimeNG icon library. Used, for example, as a default icon for menu entries",
       "NOTE": "Note",
       "EXPOSED_MODULE": "Exposed Module",
       "ENDPOINTS": "UI Endpoints",
@@ -247,19 +261,17 @@
       "DEPRECATED": "If set, then this App is marked as obsolete. It can currently be used but will no longer be available in the future.",
       "DEPRECATED_SEARCH": "This App is marked as deprecated. It can currently be used but will no longer be available in the future.",
       "UNDEPLOYED": "If set, this App can no longer be used. Further use leads to error messages.",
-      "UNDEPLOYED_SEARCH": "This App is no longer usable. Further use leads to error messages."
+      "UNDEPLOYED_SEARCH": "This App is no longer usable. Further use leads to error messages.",
+      "OPERATOR": "If set, the App was created automatically. All changes will be lost during the next deployment."
     }
   },
   "PRODUCT": {
-    "ID": "ID",
     "NAME": "Name",
     "VERSION": "Version",
     "DESCRIPTION": "Description",
     "PROVIDER": "Provider",
     "DISPLAY_NAME": "Display Name",
-    "OPERATOR": "Created by",
-    "OPERATOR.MANUAL": "Manual",
-    "OPERATOR.DEPLOYMENT": "Deployment Operator",
+    "OPERATOR": "Automated created",
     "IMAGE_URL": "External Image URL",
     "BASE_PATH": "Base Path",
     "ICON_NAME": "Icon Name",
@@ -267,17 +279,16 @@
     "UNDEPLOYED": "Unavailable",
     "WORKSPACES": "Used in Workspaces",
     "TOOLTIPS": {
-      "ID": "Unique technical ID of the Application",
-      "NAME": "Unique Name of the Application",
+      "NAME": "Unique name of the Aapplication. Cannot be changed as it is used as a reference.",
       "VERSION": "Version of the Application",
       "DESCRIPTION": "Description of the Application",
       "PROVIDER": "Provider information, should be included in the deployment descriptor (Helm chart)",
       "DISPLAY_NAME": "Display Name of the Application",
-      "OPERATOR": "How the Application was created? Set at creation time",
+      "OPERATOR": "If set, the Application was created automatically. All changes will be lost during the next deployment.",
       "IMAGE_URL": "URL for an image outside the Application Store",
       "BASE_PATH": "The basic path through which the Application can be accessed. It must be unique across all Applications",
       "ICON_NAME": "Name of the icons from the PrimeNG icon library. Used, for example, as a default icon for menu entries",
-      "CLASSIFICATIONS": "Comma-separated list of terms to classify the Application, e.g. Game, Tool etc. Can be used for filtering",
+      "CLASSIFICATIONS": "Comma-separated list of terms to classify the Application, e.g. Game, Tool etc. Can be used for filtering.",
       "UNDEPLOYED": "If set, then this Application can no longer be used. Further use of its apps leads to error messages.",
       "UNDEPLOYED_SEARCH": "This Application can no longer be used. Further use of its apps leads to error messages.",
       "WORKSPACES": "Workspaces using the Application"

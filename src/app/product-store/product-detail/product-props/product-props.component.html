@@ -2,7 +2,13 @@
   <div class="surface-section flex flex-column row-gap-4 my-3 sm:my-5">
     <div class="flex flex-wrap row-gap-4">
       <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
-        <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.NAME' | translate" controlErrorAnchor>
+        <span
+          controlErrorAnchor
+          class="p-float-label"
+          [pTooltip]="'PRODUCT.TOOLTIPS.NAME' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        >
           <input pInputText type="text" class="w-full" id="product_detail_item_name" formControlName="name" />
           <label class="ocx-required-label" for="product_detail_item_name">{{ 'PRODUCT.NAME' | translate }}</label>
         </span>
@@ -14,7 +20,13 @@
         </div>
       </div>
       <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
-        <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.VERSION' | translate" controlErrorAnchor>
+        <span
+          controlErrorAnchor
+          class="p-float-label"
+          [pTooltip]="'PRODUCT.TOOLTIPS.VERSION' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        >
           <input pInputText type="text" class="w-full" id="product_detail_item_version" formControlName="version" />
           <label class="ocx-required-label" for="product_detail_item_version">
             {{ 'PRODUCT.VERSION' | translate }}</label
@@ -23,7 +35,13 @@
       </div>
 
       <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
-        <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.DISPLAY_NAME' | translate" controlErrorAnchor>
+        <span
+          controlErrorAnchor
+          class="p-float-label"
+          [pTooltip]="'PRODUCT.TOOLTIPS.DISPLAY_NAME' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        >
           <input
             pInputText
             type="text"
@@ -37,7 +55,13 @@
         </span>
       </div>
       <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
-        <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.BASE_PATH' | translate" controlErrorAnchor>
+        <span
+          controlErrorAnchor
+          class="p-float-label"
+          [pTooltip]="'PRODUCT.TOOLTIPS.BASE_PATH' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        >
           <input pInputText type="text" class="w-full" id="product_detail_item_basePath" formControlName="basePath" />
           <label class="ocx-required-label" for="product_detail_item_basePath">
             {{ 'PRODUCT.BASE_PATH' | translate }}</label
@@ -57,14 +81,21 @@
             pButton
             id="product_detail_item_upload_logo2"
             icon="pi pi-upload"
-            [disabled]="changeMode === 'VIEW'"
+            (click)="selectedFileInputLogo.click()"
             class="action-button p-button-icon-only"
             [class.cursor-pointer]="changeMode === 'EDIT'"
-            [title]="'IMAGE.TOOLTIPS.UPLOAD' | translate"
-            (click)="selectedFileInputLogo.click()"
+            [disabled]="changeMode === 'VIEW'"
+            [pTooltip]="'IMAGE.TOOLTIPS.UPLOAD' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
           ></button>
           <div class="flex flex-column row-gap-1 w-full">
-            <span class="p-float-label" [title]="'IMAGE.TOOLTIPS.URL' | translate">
+            <span
+              class="p-float-label"
+              [pTooltip]="'IMAGE.TOOLTIPS.URL' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            >
               <input
                 pInputText
                 type="text"
@@ -86,10 +117,13 @@
       <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
         <span class="p-float-label" controlErrorAnchor>
           <p-dropdown
-            id="product_detail_item_iconName"
+            id="product_detail_item_icon-name"
             styleClass="w-full min-w-min input-field-correction"
             formControlName="iconName"
             [options]="iconItems"
+            [pTooltip]="'PRODUCT.TOOLTIPS.ICON_NAME' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
           >
             <ng-template let-ico pTemplate="selectedItem">
               <div class="flex">
@@ -104,25 +138,28 @@
               </div>
             </ng-template>
           </p-dropdown>
-          <label for="product_detail_item_iconName">{{ 'PRODUCT.ICON_NAME' | translate }}</label>
+          <label for="product_detail_item_icon-name">{{ 'PRODUCT.ICON_NAME' | translate }}</label>
         </span>
       </div>
 
       <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
-        <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.CLASSIFICATIONS' | translate">
+        <span class="p-float-label">
           <input
             pInputText
             type="text"
             class="w-full"
             id="product_detail_item_classifications"
             formControlName="classifications"
+            [pTooltip]="'PRODUCT.TOOLTIPS.CLASSIFICATIONS' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
           />
           <label for="product_detail_item_classifications">{{ 'PRODUCT.CLASSIFICATIONS' | translate }}</label>
         </span>
       </div>
 
       <div class="w-full sm:w-12 md:w-9 lg:w-12 px-3">
-        <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.PROVIDER' | translate">
+        <span class="p-float-label">
           <textarea
             pInputTextarea
             class="w-full"
@@ -133,23 +170,26 @@
             tooltipPosition="top"
             tooltipEvent="focus"
             formControlName="provider"
+            [pTooltip]="'PRODUCT.TOOLTIPS.PROVIDER' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
           ></textarea>
           <label for="product_detail_item_provider">{{ 'PRODUCT.PROVIDER' | translate }}</label>
         </span>
       </div>
 
       <div class="w-full sm:w-12 md:w-9 lg:w-12 px-3">
-        <span class="p-float-label" [title]="'PRODUCT.TOOLTIPS.DESCRIPTION' | translate">
+        <span class="p-float-label">
           <textarea
             pInputTextarea
             class="w-full"
             autoresize="true"
             rows="3"
             id="product_detail_item_description"
-            [pTooltip]="'PRODUCT.DESCRIPTION' | translate"
-            tooltipPosition="top"
-            tooltipEvent="focus"
             formControlName="description"
+            [pTooltip]="'PRODUCT.TOOLTIPS.DESCRIPTION' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
           ></textarea>
           <label for="product_detail_item_description">{{ 'PRODUCT.DESCRIPTION' | translate }}</label>
         </span>
