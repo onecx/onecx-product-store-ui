@@ -30,7 +30,7 @@ export class ProductSearchComponent implements OnInit {
   public products$!: Observable<ProductPageResult>
   public productSearchCriteriaGroup!: FormGroup<ProductSearchCriteria>
   public actions$: Observable<Action[]> | undefined
-  public viewMode = 'grid'
+  public viewMode: 'grid' | 'list' = 'grid'
   public filter: string | undefined
   public sortField = 'displayName'
   public sortOrder = 1
@@ -163,7 +163,7 @@ export class ProductSearchComponent implements OnInit {
   /**
    * UI EVENTS
    */
-  public onLayoutChange(viewMode: string): void {
+  public onLayoutChange(viewMode: 'grid' | 'list'): void {
     this.viewMode = viewMode
   }
   public onFilterChange(filter: string): void {

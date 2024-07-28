@@ -28,7 +28,7 @@ export function sortByLocale(a: any, b: any): number {
 
 export function convertToUniqueStringArray(unsorted: string | undefined | null): string[] | undefined {
   if (!unsorted || unsorted?.length === 0) return undefined
-  let ar: Array<string> = []
+  const ar: Array<string> = []
   unsorted
     .toString()
     .split(',')

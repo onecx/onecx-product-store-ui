@@ -28,8 +28,8 @@ const form = new FormGroup<AppSearchCriteria>({
 describe('AppSearchComponent', () => {
   let component: AppSearchComponent
   let fixture: ComponentFixture<AppSearchComponent>
-  let routerSpy = jasmine.createSpyObj('Router', ['navigate'])
-  let routeMock = { snapshot: { paramMap: new Map() } }
+  const routerSpy = jasmine.createSpyObj('Router', ['navigate'])
+  const routeMock = { snapshot: { paramMap: new Map() } }
 
   const mfeApp: AppAbstract = {
     id: 'id',
@@ -194,9 +194,9 @@ describe('AppSearchComponent', () => {
   })
 
   it('should update viewMode onLayoutChange', () => {
-    component.onLayoutChange('EDIT')
+    component.onLayoutChange('list')
 
-    expect(component.viewMode).toBe('EDIT')
+    expect(component.viewMode).toBe('list')
   })
 
   it('should update filter and call dv.filter onFilterChange', () => {
