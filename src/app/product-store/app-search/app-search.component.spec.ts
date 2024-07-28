@@ -125,7 +125,7 @@ describe('AppSearchComponent', () => {
   it('should prepare dialog translations', async () => {
     const translateService = TestBed.inject(TranslateService)
     const dialogTranslations = {
-      'ACTIONS.DATAVIEW.FILTER_OF': 'searchFilterOf',
+      'ACTIONS.DATAVIEW.FILTER_OF': 'searchFilterOf ',
       'APP.APP_ID': 'appId',
       'APP.APP_TYPE': 'appType',
       'APP.PRODUCT_NAME': 'productName'
@@ -135,7 +135,7 @@ describe('AppSearchComponent', () => {
     await component.ngOnInit()
 
     expect(component.dataViewControlsTranslations).toEqual({
-      filterInputTooltip: 'searchFilterOf: appId, appType, productName'
+      filterInputTooltip: 'searchFilterOf appId, appType, productName'
     })
   })
 
