@@ -10,10 +10,10 @@
   [contentStyleClass]="'border-round'"
   [style]="{ 'max-width': '750px' }"
   [breakpoints]="{
-          '992px': '80vw',
-          '750px': '90vw',
-          '600px': '100vw',
-      }"
+    '992px': '80vw',
+    '750px': '90vw',
+    '600px': '100vw'
+  }"
 >
   <ng-template pTemplate="header">
     <div *ngIf="loading" class="pi pi-spinner"></div>
@@ -232,11 +232,12 @@
               [pTooltip]="'APP.TOOLTIPS.ICON_NAME' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
+              [showClear]="true"
             >
               <ng-template let-ico pTemplate="selectedItem">
                 <div class="flex">
                   <span class="pi pi-{{ ico.value }} mr-3"> </span>
-                  <span>{{ ico.label || 'dummy-for-renderer' }}</span>
+                  <span>{{ ico.label }}</span>
                 </div>
               </ng-template>
               <ng-template let-ico pTemplate="item">
@@ -345,7 +346,7 @@
               readonly
               id="app_detail_form_mfe_field_creationDate"
               class="w-full pt-3 pb-2"
-              [value]="mfe?.['creationDate'] ? (mfe?.['creationDate'] | date : dateFormat) : ''"
+              [value]="mfe?.['creationDate'] ? (mfe?.['creationDate'] | date: dateFormat) : ''"
               [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -361,7 +362,7 @@
               readonly
               id="app_detail_form_mfe_field_modificationDate"
               class="w-full pt-3 pb-2"
-              [value]="mfe?.['modificationDate'] ? (mfe?.['modificationDate'] | date : dateFormat) : ''"
+              [value]="mfe?.['modificationDate'] ? (mfe?.['modificationDate'] | date: dateFormat) : ''"
               [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -519,7 +520,7 @@
               readonly
               id="app_detail_form_ms_field_creationDate"
               class="w-full pt-3 pb-2"
-              [value]="ms?.['creationDate'] ? (ms?.['creationDate'] | date : dateFormat) : ''"
+              [value]="ms?.['creationDate'] ? (ms?.['creationDate'] | date: dateFormat) : ''"
               [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -535,7 +536,7 @@
               readonly
               id="app_detail_form_ms_field_modificationDate"
               class="w-full pt-3 pb-2"
-              [value]="ms?.['modificationDate'] ? (ms?.['modificationDate'] | date : dateFormat) : ''"
+              [value]="ms?.['modificationDate'] ? (ms?.['modificationDate'] | date: dateFormat) : ''"
               [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"

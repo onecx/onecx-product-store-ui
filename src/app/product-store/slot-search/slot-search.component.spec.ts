@@ -28,8 +28,8 @@ const slots: Slot[] = [
 describe('SlotSearchComponent', () => {
   let component: SlotSearchComponent
   let fixture: ComponentFixture<SlotSearchComponent>
-  let routerSpy = jasmine.createSpyObj('Router', ['navigate'])
-  let routeMock = { snapshot: { paramMap: new Map() } }
+  const routerSpy = jasmine.createSpyObj('Router', ['navigate'])
+  const routeMock = { snapshot: { paramMap: new Map() } }
 
   const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
   const apiSlotsServiceSpy = {

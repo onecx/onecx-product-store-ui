@@ -77,7 +77,7 @@ export class AppDetailComponent implements OnChanges {
     { label: 'Module', value: 'MODULE' },
     { label: 'Component', value: 'COMPONENT' }
   ]
-  public iconItems: SelectItem[] = [{ label: '', value: null }] // default value is empty
+  public iconItems: SelectItem[] = []
   public convertToUniqueStringArray = convertToUniqueStringArray
 
   constructor(

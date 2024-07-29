@@ -42,7 +42,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public mss$!: Observable<MicroservicePageResult>
   public app: AppAbstract | undefined
   public appSearchCriteriaGroup!: FormGroup<AppSearchCriteria>
-  public viewMode = 'grid'
+  public viewMode: 'grid' | 'list' = 'grid'
   public changeMode: ChangeMode = 'VIEW'
   public appTypeItems: SelectItem[]
   public quickFilterValue: AppFilterType = 'ALL'
@@ -273,7 +273,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   /**
    * UI EVENTS
    */
-  public onLayoutChange(viewMode: string): void {
+  public onLayoutChange(viewMode: 'grid' | 'list'): void {
     this.viewMode = viewMode
   }
   public onQuickFilterChange(ev: any): void {

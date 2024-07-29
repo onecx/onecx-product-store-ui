@@ -25,7 +25,7 @@ export class SlotSearchComponent implements OnInit {
   public slotSearchCriteriaGroup!: FormGroup<SlotSearchCriteria>
   public slot!: Slot | undefined
   public actions$: Observable<Action[]> | undefined
-  public viewMode = 'grid'
+  public viewMode: 'grid' | 'list' = 'grid'
   public filter: string | undefined
   public sortField = 'name'
   public sortOrder = 1

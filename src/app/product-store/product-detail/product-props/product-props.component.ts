@@ -54,7 +54,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
   public productId: string | undefined
   public productName: string | null | undefined
   public fetchingLogoUrl: string | undefined
-  public iconItems: SelectItem[] = [{ label: '', value: null }]
+  public iconItems: SelectItem[] = []
   public externUrlPattern = 'http(s)://path-to-image'
   public convertToUniqueStringArray = convertToUniqueStringArray
 

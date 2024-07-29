@@ -71,52 +71,58 @@
         >
         </ocx-data-view-controls>
       </ng-template>
-      <ng-template let-slot let-idx="rowIndex" pTemplate="gridItem">
-        <div [id]="'slot_search_data_grid_' + idx" class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3">
-          <div class="card relative p-2 flex flex-column justify-content-center">
-            <span
-              *ngIf="slot.undeployed"
-              [id]="'slot_search_data_grid_idx_' + idx + '_undeployed'"
-              class="card-badge-right badge-1 danger-action-text font-bold p-2 pi pi-ban"
-              [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            ></span>
-            <span
-              *ngIf="!slot.undeployed && slot.deprecated"
-              [id]="'slot_search_data_grid_idx_' + idx + '_deprecated'"
-              class="card-badge-right badge-1 p-2 danger-action-text font-bold pi pi-exclamation-circle"
-              [pTooltip]="'SLOT.DEPRECATED_SEARCH' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            ></span>
-            <span
-              *ngIf="hasDeletePermission"
-              [id]="'slot_search_data_' + slot.name + '_delete_slot'"
-              class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text pseudo-button-link"
-              (click)="onDelete($event, slot)"
-              [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            ></span>
-            <div class="h-3rem flex flex-column justify-content-between gap-1 text-center">
-              <div
-                [id]="'slot_search_data_grid_' + idx + '_slot_name'"
-                class="font-bold"
-                [pTooltip]="slot.name.length <= 25 ? '' : slot.name"
+      <ng-template let-slots let-idx="rowIndex" pTemplate="gridItem">
+        <div class="p-grid p-nogutter grid grid-nogutter">
+          <div
+            *ngFor="let slot of slots"
+            [id]="'slot_search_data_grid_' + idx"
+            class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3"
+          >
+            <div class="card relative p-2 flex flex-column justify-content-center">
+              <span
+                *ngIf="slot.undeployed"
+                [id]="'slot_search_data_grid_idx_' + idx + '_undeployed'"
+                class="card-badge-right badge-1 danger-action-text font-bold p-2 pi pi-ban"
+                [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
-              >
-                {{ limitText(slot.name, 25) }}
-              </div>
-              <div
-                class="text-xs"
-                [id]="'slot_search_data_grid_' + idx + '_product_name'"
-                [pTooltip]="slot.productName.length <= 20 ? '' : limitText(slot.productName, 100)"
+              ></span>
+              <span
+                *ngIf="!slot.undeployed && slot.deprecated"
+                [id]="'slot_search_data_grid_idx_' + idx + '_deprecated'"
+                class="card-badge-right badge-1 p-2 danger-action-text font-bold pi pi-exclamation-circle"
+                [pTooltip]="'SLOT.DEPRECATED_SEARCH' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
-              >
-                {{ limitText(slot.productName, 20) }}
+              ></span>
+              <span
+                *ngIf="hasDeletePermission"
+                [id]="'slot_search_data_' + slot.name + '_delete_slot'"
+                class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text pseudo-button-link"
+                (click)="onDelete($event, slot)"
+                [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              ></span>
+              <div class="h-3rem flex flex-column justify-content-between gap-1 text-center">
+                <div
+                  [id]="'slot_search_data_grid_' + idx + '_slot_name'"
+                  class="font-bold"
+                  [pTooltip]="slot.name.length <= 25 ? '' : slot.name"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  {{ limitText(slot.name, 25) }}
+                </div>
+                <div
+                  class="text-xs"
+                  [id]="'slot_search_data_grid_' + idx + '_product_name'"
+                  [pTooltip]="slot.productName.length <= 20 ? '' : limitText(slot.productName, 100)"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  {{ limitText(slot.productName, 20) }}
+                </div>
               </div>
             </div>
           </div>

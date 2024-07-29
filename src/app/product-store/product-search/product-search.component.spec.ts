@@ -78,11 +78,11 @@ describe('ProductSearchComponent', () => {
   })
 
   it('should set correct value onLayoutChange', () => {
-    const viewMode = 'EDIT'
+    const viewMode = 'list'
 
     component.onLayoutChange(viewMode)
 
-    expect(component.viewMode).toEqual('EDIT')
+    expect(component.viewMode).toEqual('list')
   })
 
   it('should set correct values onFilterChange', () => {

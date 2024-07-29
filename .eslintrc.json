@@ -25,12 +25,14 @@
         "ecmaVersion": "latest",
         "project": "**/tsconfig.json",
         "tsconfigRootDir": "",
-        "createDefaultProgram": true
+        "createDefaultProgram": true,
+        "EXPERIMENTAL_useProjectService": true
       },
       "extends": [
         "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates",
-        "plugin:prettier/recommended"
+        "plugin:prettier/recommended",
+        "plugin:@typescript-eslint/recommended"
       ],
       "rules": {
         "semi": ["error", "never"],
@@ -57,7 +59,18 @@
           }
         ],
         "no-unused-vars": "off",
-        "@typescript-eslint/no-unused-vars": ["error", { "vars": "all", "args": "none" }]
+        "@typescript-eslint/no-unused-vars": ["error", { "vars": "all", "args": "none" }],
+        "@typescript-eslint/no-explicit-any": "warn",
+        "@typescript-eslint/ban-types": [
+          "error",
+          {
+            "extendDefaults": true,
+            "types": {
+              "{}": false
+            }
+          }
+        ],
+        "@typescript-eslint/no-var-requires": 0
       }
     },
     {

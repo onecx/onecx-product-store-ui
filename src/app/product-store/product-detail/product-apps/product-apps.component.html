@@ -70,7 +70,7 @@
             <div class="text-xs">{{ mfe.type }}</div>
             <div
               class="text-sm"
-              [pTooltip]="mfe.exposedModule && mfe.exposedModule.length <= 25 ? '' : mfe.exposedModule ?? ''"
+              [pTooltip]="mfe.exposedModule && mfe.exposedModule.length <= 25 ? '' : (mfe.exposedModule ?? '')"
               tooltipPosition="top"
               tooltipEvent="hover"
             >
@@ -130,7 +130,7 @@
           <div class="h-2-5rem w-12rem flex flex-column justify-content-around text-center">
             <div
               class="font-bold white-space-nowrap"
-              [pTooltip]="ms.appId && ms.appId.length <= 25 ? '' : ms.appId ?? ''"
+              [pTooltip]="ms.appId && ms.appId.length <= 25 ? '' : (ms.appId ?? '')"
               tooltipPosition="top"
               tooltipEvent="hover"
             >

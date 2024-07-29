@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from '@angular/cor
 import { CommonModule } from '@angular/common'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
-import { ErrorTailorModule } from '@ngneat/error-tailor'
+import { provideErrorTailorConfig } from '@ngneat/error-tailor'
 
 import { AutoCompleteModule } from 'primeng/autocomplete'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
@@ -49,8 +49,36 @@ import { ImageContainerComponent } from './image-container/image-container.compo
     TableModule,
     TabViewModule,
     ToastModule,
-    TranslateModule,
-    ErrorTailorModule.forRoot({
+    TranslateModule
+  ],
+  exports: [
+    AutoCompleteModule,
+    CommonModule,
+    ConfirmDialogModule,
+    ConfirmPopupModule,
+    DataViewModule,
+    DialogModule,
+    DropdownModule,
+    FormsModule,
+    InputTextModule,
+    InputTextareaModule,
+    ImageContainerComponent,
+    KeyFilterModule,
+    ListboxModule,
+    MultiSelectModule,
+    ReactiveFormsModule,
+    SelectButtonModule,
+    TableModule,
+    TabViewModule,
+    ToastModule,
+    TranslateModule
+  ],
+  //this is not elegant, for some reason the injection token from primeng does not work across federated module
+  providers: [
+    ConfirmationService,
+    LabelResolver,
+    { provide: DialogService, useClass: PortalDialogService },
+    provideErrorTailorConfig({
       controlErrorsOn: { async: true, blur: true, change: true },
       errors: {
         useFactory: (i18n: TranslateService) => {
@@ -73,31 +101,6 @@ import { ImageContainerComponent } from './image-container/image-container.compo
       }
     })
   ],
-  exports: [
-    AutoCompleteModule,
-    CommonModule,
-    ConfirmDialogModule,
-    ConfirmPopupModule,
-    DataViewModule,
-    DialogModule,
-    DropdownModule,
-    ErrorTailorModule,
-    FormsModule,
-    InputTextModule,
-    InputTextareaModule,
-    ImageContainerComponent,
-    KeyFilterModule,
-    ListboxModule,
-    MultiSelectModule,
-    ReactiveFormsModule,
-    SelectButtonModule,
-    TableModule,
-    TabViewModule,
-    ToastModule,
-    TranslateModule
-  ],
-  //this is not elegant, for some reason the injection token from primeng does not work across federated module
-  providers: [ConfirmationService, LabelResolver, { provide: DialogService, useClass: PortalDialogService }],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SharedModule {}
