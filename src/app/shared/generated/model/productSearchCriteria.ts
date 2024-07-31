@@ -13,6 +13,7 @@
 
 export interface ProductSearchCriteria { 
     name?: string | null;
+    displayName?: string | null;
     /**
      * The number of page.
      */

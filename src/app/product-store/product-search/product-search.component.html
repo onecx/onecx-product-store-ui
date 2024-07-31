@@ -14,13 +14,27 @@
     >
       <span class="p-float-label">
         <input
+          id="product_search_criteria_display_name"
+          pInputText
+          type="text"
+          class="w-18rem"
+          [clear]="true"
+          formControlName="displayName"
+          [pTooltip]="('PRODUCT.TOOLTIPS.DISPLAY_NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        />
+        <label for="product_search_criteria_display_name">{{ 'PRODUCT.DISPLAY_NAME' | translate }}</label>
+      </span>
+      <span class="p-float-label">
+        <input
           id="product_search_criteria_product_name"
           pInputText
           type="text"
-          formControlName="productName"
           class="w-18rem"
           [clear]="true"
-          [pTooltip]="'PRODUCT.TOOLTIPS.NAME' | translate"
+          formControlName="productName"
+          [pTooltip]="('PRODUCT.TOOLTIPS.NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
@@ -60,8 +74,8 @@
           [supportedViews]="['grid', 'list']"
           [initialViewMode]="viewMode"
           [sortingOptions]="[
-            { label: 'PRODUCT.NAME' | translate, value: 'name' },
             { label: 'PRODUCT.DISPLAY_NAME' | translate, value: 'displayName' },
+            { label: 'PRODUCT.NAME' | translate, value: 'name' },
             { label: 'PRODUCT.UNDEPLOYED' | translate, value: 'undeployed' }
           ]"
           [defaultSortOption]="sortField"
@@ -69,8 +83,8 @@
           (dataViewChange)="onLayoutChange($event)"
           (filterChange)="onFilterChange($event)"
           [filterColumns]="[
-            'PRODUCT.NAME' | translate,
             'PRODUCT.DISPLAY_NAME' | translate,
+            'PRODUCT.NAME' | translate,
             'PRODUCT.CLASSIFICATIONS' | translate
           ]"
           (sortChange)="onSortChange($event)"

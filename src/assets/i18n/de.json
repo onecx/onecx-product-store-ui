@@ -103,6 +103,7 @@
     },
     "SEARCH": {
       "NOT_FOUND": "Keine Daten gefunden",
+      "WILDCARD_SUPPORT": " (Wildcards: ?, *)",
       "APP": {
         "NOT_EXISTS": "Eine App mit diesem Namen konnte nicht gefunden werden.",
         "LOAD_ERROR": "App konnte nicht geladen werden",
