@@ -280,9 +280,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   }
 
   public onAppTypeFilterChange(ev: any): void {
-    // handle PrimeNG bug - start (each 2nd click removes the value)
     if (ev.value) this.appTypeFilterValue = ev.value
-    // handle PrimeNG bug - end
   }
   public onQuickFilterChange(ev: any): void {
     // handle PrimeNG bug - start (each 2nd click removes the value)
