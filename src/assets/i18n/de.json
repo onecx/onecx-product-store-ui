@@ -109,7 +109,8 @@
         "LOAD_ERROR": "App konnte nicht geladen werden",
         "NOT_FOUND": "Die Applikation hat noch keine Apps",
         "FILTER": {
-          "TOOLTIP": "App Typ",
+          "LABEL": "App Typ",
+          "TOOLTIP": "App Typ Auswahl",
           "ALL": "Alle",
           "MS": "MS",
           "MFE": "MFE"

@@ -11,8 +11,8 @@
       <span class="p-float-label">
         <input
           pInputText
-          id="app_search_app_id"
           type="text"
+          id="app_search_criteria_app_id"
           class="w-18rem"
           formControlName="appId"
           [clear]="true"
@@ -20,13 +20,13 @@
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="app_search_app_id">{{ 'APP.APP_ID' | translate }}</label>
+        <label for="app_search_criteria_app_id">{{ 'APP.APP_ID' | translate }}</label>
       </span>
       <span class="p-float-label">
         <input
           pInputText
-          id="app_search_criteria_product_name"
           type="text"
+          id="app_search_criteria_product_name"
           class="w-18rem"
           formControlName="productName"
           [clear]="true"
@@ -39,14 +39,19 @@
       <div class="flex flex-wrap align-items-center ml-1 gap-2">
         <div
           class="p-selectbutton-title opacity-90 text-sm"
-          [pTooltip]="'ACTIONS.SEARCH.APP.QUICK_FILTER.TOOLTIP' | translate"
+          [pTooltip]="'ACTIONS.SEARCH.APP.FILTER.TOOLTIP' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
         >
-          {{ 'ACTIONS.SEARCH.APP.FILTER.TOOLTIP' | translate }}
+          {{ 'ACTIONS.SEARCH.APP.FILTER.LABEL' | translate }}
         </div>
         <div class="slim-selectbutton search-criteria-selectbutton">
-          <p-selectButton inputid="app_search_criteria_app_type" [options]="appTypeItems" formControlName="appType">
+          <p-selectButton
+            inputid="app_search_criteria_app_type"
+            formControlName="appType"
+            [options]="appTypeItems"
+            (onChange)="onAppTypeFilterChange($event)"
+          >
             <ng-template let-item pTemplate
               ><span [pTooltip]="item.label | translate" tooltipPosition="top" tooltipEvent="hover">
                 {{ item.value }}</span
@@ -54,7 +59,7 @@
             >
           </p-selectButton>
           <div class="p-selectbutton-subtitle">
-            {{ 'ACTIONS.SEARCH.APP.QUICK_FILTER.' + appSearchCriteriaGroup.controls['appType'].value | translate }}
+            {{ 'ACTIONS.SEARCH.APP.QUICK_FILTER.' + appTypeFilterValue | translate }}
           </div>
         </div>
       </div>
@@ -93,7 +98,7 @@
               tooltipPosition="top"
               tooltipEvent="hover"
             >
-              {{ 'ACTIONS.SEARCH.APP.FILTER.TOOLTIP' | translate }}
+              {{ 'ACTIONS.SEARCH.APP.FILTER.LABEL' | translate }}
             </div>
             <div class="slim-selectbutton filter-selectbutton">
               <p-selectButton

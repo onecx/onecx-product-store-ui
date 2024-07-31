@@ -109,7 +109,8 @@
         "LOAD_ERROR": "Failed to load App",
         "NOT_FOUND": "The Application does not have an App",
         "FILTER": {
-          "TOOLTIP": "App Type",
+          "LABEL": "App Type",
+          "TOOLTIP": "App Type selection",
           "ALL": "All",
           "MS": "MS",
           "MFE": "MFE"
