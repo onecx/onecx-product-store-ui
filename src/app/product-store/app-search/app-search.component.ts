@@ -77,9 +77,9 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     this.hasEditPermission = this.user.hasPermission('APP#EDIT')
     // search criteria
     this.appTypeItems = [
-      { label: 'ACTIONS.SEARCH.APP.FILTER.ALL', value: 'ALL' },
-      { label: 'ACTIONS.SEARCH.APP.FILTER.MFE', value: 'MFE' },
-      { label: 'ACTIONS.SEARCH.APP.FILTER.MS', value: 'MS' }
+      { label: 'ACTIONS.SEARCH.APP.QUICK_FILTER.ALL', value: 'ALL' },
+      { label: 'ACTIONS.SEARCH.APP.QUICK_FILTER.MFE', value: 'MFE' },
+      { label: 'ACTIONS.SEARCH.APP.QUICK_FILTER.MS', value: 'MS' }
     ]
     this.appSearchCriteriaGroup = new FormGroup<AppSearchCriteria>({
       appId: new FormControl<string | null>(null),

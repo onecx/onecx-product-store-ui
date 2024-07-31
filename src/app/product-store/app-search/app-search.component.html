@@ -46,15 +46,12 @@
           {{ 'ACTIONS.SEARCH.APP.FILTER.TOOLTIP' | translate }}
         </div>
         <div class="slim-selectbutton search-criteria-selectbutton">
-          <p-selectButton
-            inputid="app_search_criteria_app_type"
-            [options]="appTypeItems"
-            formControlName="appType"
-            [pTooltip]="'ACTIONS.SEARCH.APP.FILTER.TOOLTIP' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          >
-            <ng-template let-item pTemplate>{{ item.value }}</ng-template>
+          <p-selectButton inputid="app_search_criteria_app_type" [options]="appTypeItems" formControlName="appType">
+            <ng-template let-item pTemplate
+              ><span [pTooltip]="item.label | translate" tooltipPosition="top" tooltipEvent="hover">
+                {{ item.value }}</span
+              ></ng-template
+            >
           </p-selectButton>
           <div class="p-selectbutton-subtitle">
             {{ 'ACTIONS.SEARCH.APP.QUICK_FILTER.' + appSearchCriteriaGroup.controls['appType'].value | translate }}
@@ -106,7 +103,11 @@
                 [(ngModel)]="quickFilterValue"
                 (onChange)="onQuickFilterChange($event)"
               >
-                <ng-template let-item pTemplate>{{ item.value }}</ng-template>
+                <ng-template let-item pTemplate
+                  ><span [pTooltip]="item.label | translate" tooltipPosition="top" tooltipEvent="hover">
+                    {{ item.value }}</span
+                  ></ng-template
+                >
               </p-selectButton>
               <div class="p-selectbutton-subtitle">
                 {{ 'ACTIONS.SEARCH.APP.QUICK_FILTER.' + quickFilterValue | translate }}
