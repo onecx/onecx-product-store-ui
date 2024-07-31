@@ -17,6 +17,7 @@ import {
 import { bffImageUrl, limitText } from 'src/app/shared/utils'
 
 export interface ProductSearchCriteria {
+  displayName: FormControl<string | null>
   productName: FormControl<string | null>
 }
 
@@ -47,6 +48,7 @@ export class ProductSearchComponent implements OnInit {
     private imageApi: ImagesInternalAPIService
   ) {
     this.productSearchCriteriaGroup = new FormGroup<ProductSearchCriteria>({
+      displayName: new FormControl<string | null>(null),
       productName: new FormControl<string | null>(null)
     })
   }
@@ -63,6 +65,7 @@ export class ProductSearchComponent implements OnInit {
       .searchProducts({
         productSearchCriteria: {
           name: this.productSearchCriteriaGroup.controls['productName'].value,
+          displayName: this.productSearchCriteriaGroup.controls['displayName'].value,
           pageSize: 1000
         }
       })
@@ -103,9 +106,9 @@ export class ProductSearchComponent implements OnInit {
           filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
           filterInputTooltip:
             data['ACTIONS.DATAVIEW.FILTER_OF'] +
-            data['PRODUCT.NAME'] +
-            ', ' +
             data['PRODUCT.DISPLAY_NAME'] +
+            ', ' +
+            data['PRODUCT.NAME'] +
             ', ' +
             data['PRODUCT.CLASSIFICATIONS'],
           viewModeToggleTooltips: {

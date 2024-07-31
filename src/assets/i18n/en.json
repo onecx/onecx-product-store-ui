@@ -103,12 +103,14 @@
     },
     "SEARCH": {
       "NOT_FOUND": "No data found",
+      "WILDCARD_SUPPORT": " Wildcards: ?, *",
       "APP": {
         "NOT_EXISTS": "An App with this name could not be found.",
         "LOAD_ERROR": "Failed to load App",
         "NOT_FOUND": "The Application does not have an App",
         "FILTER": {
-          "TOOLTIP": "App Type",
+          "LABEL": "App Type",
+          "TOOLTIP": "App Type selection",
           "ALL": "All",
           "MS": "MS",
           "MFE": "MFE"

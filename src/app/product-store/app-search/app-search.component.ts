@@ -45,7 +45,9 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public viewMode: 'grid' | 'list' = 'grid'
   public changeMode: ChangeMode = 'VIEW'
   public appTypeItems: SelectItem[]
-  public quickFilterValue: AppFilterType = 'ALL'
+  public appTypeFilterValue: string = 'ALL'
+  public quickFilterValueOld: string = 'ALL'
+  public quickFilterValue: string = 'ALL'
   public quickFilterItems: SelectItem[]
   public filterValue: string | undefined
   public filterValueDefault = 'appId,appType,productName,classifications'
@@ -276,7 +278,15 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public onLayoutChange(viewMode: 'grid' | 'list'): void {
     this.viewMode = viewMode
   }
+
+  public onAppTypeFilterChange(ev: any): void {
+    if (ev.value) this.appTypeFilterValue = ev.value
+  }
   public onQuickFilterChange(ev: any): void {
+    // handle PrimeNG bug - start (each 2nd click removes the value)
+    if (ev.value) this.quickFilterValueOld = this.quickFilterValue
+    if (!ev.value) this.quickFilterValue = this.quickFilterValueOld
+    // handle PrimeNG bug - end
     if (ev.value === 'ALL') {
       this.filterBy = this.filterValueDefault
       this.filterValue = ''
