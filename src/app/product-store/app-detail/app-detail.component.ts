@@ -71,7 +71,7 @@ export class AppDetailComponent implements OnChanges {
   public hasEditPermission = false
   public technologies: SelectItem[] = [
     { label: 'Angular', value: 'ANGULAR' },
-    { label: 'WebComponent', value: 'WEBCOMPONENT' }
+    { label: 'WebComponent', value: 'WEBCOMPONENTMODULE' }
   ]
   public types: SelectItem[] = [
     { label: 'Module', value: 'MODULE' },
