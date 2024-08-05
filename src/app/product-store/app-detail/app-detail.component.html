@@ -8,7 +8,7 @@
   [modal]="true"
   [showHeader]="true"
   [contentStyleClass]="'border-round'"
-  [style]="{ 'max-width': '750px' }"
+  [style]="{ 'max-width': '1000px' }"
   [breakpoints]="{
     '992px': '80vw',
     '750px': '90vw',
@@ -128,6 +128,40 @@
             />
             <label class="ocx-required-label" for="app_detail_form_mfe_remoteBaseUrl">
               {{ 'APP.REMOTE_BASE_URL' | translate }}
+            </label>
+          </span>
+        </div>
+        <div class="col-6">
+          <span class="p-float-label" controlErrorAnchor>
+            <input
+              pInputText
+              type="text"
+              id="app_detail_form_mfe_remoteName"
+              class="w-full pt-3 pb-2"
+              formControlName="remoteName"
+              [pTooltip]="'APP.TOOLTIPS.REMOTE_NAME' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <label class="ocx-required-label" for="app_detail_form_mfe_remoteName">
+              {{ 'APP.REMOTE_NAME' | translate }}
+            </label>
+          </span>
+        </div>
+        <div class="col-6">
+          <span class="p-float-label" controlErrorAnchor>
+            <input
+              pInputText
+              type="text"
+              id="app_detail_form_mfe_tagName"
+              class="w-full pt-3 pb-2"
+              formControlName="tagName"
+              [pTooltip]="'APP.TOOLTIPS.TAG_NAME' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <label class="ocx-required-label" for="app_detail_form_mfe_tagName">
+              {{ 'APP.TAG_NAME' | translate }}
             </label>
           </span>
         </div>

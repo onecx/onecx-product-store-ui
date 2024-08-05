@@ -228,6 +228,8 @@
     "MFE.COMPONENT": "MFE - Component",
     "REMOTE_BASE_URL": "Remote Base URL",
     "REMOTE_ENTRY": "Remote Entry",
+    "REMOTE_NAME": "Remote Name",
+    "TAG_NAME": "Tag Name",
     "CLASSIFICATIONS": "Classifications",
     "CONTACT": "Contact",
     "ICON_NAME": "Icon Name",
@@ -239,7 +241,7 @@
     "GROUP.INTERNALS": "More Details",
     "DEPRECATED": "Outdated",
     "UNDEPLOYED": "Undeployed",
-    "OPERATOR": "Automated created",
+    "OPERATOR": "Created by automation",
     "TOOLTIPS": {
       "APP_ID": "Unique ID - base identifier for this App",
       "APP_NAME": "Business name of the App",
@@ -251,6 +253,8 @@
       "TYPE": "Type of the Microfrontends",
       "REMOTE_BASE_URL": "Remote Base URL",
       "REMOTE_ENTRY": "Remote Entry",
+      "REMOTE_NAME": "Entry point of JavaScript file used by WebComponents (Script)",
+      "TAG_NAME": "Name of the WebComponent tag",
       "CLASSIFICATIONS": "Comma-separated list of terms to classify the App, e.g. Game, Tool etc. Can be used for filtering.",
       "CONTACT": "Contact to the provider (email address or similar)",
       "ICON_NAME": "Name of the icons from the PrimeNG icon library. Used, for example, as a default icon for menu entries",
@@ -265,6 +269,10 @@
       "UNDEPLOYED": "If set, this App can no longer be used. Further use leads to error messages.",
       "UNDEPLOYED_SEARCH": "This App is no longer usable. Further use leads to error messages.",
       "OPERATOR": "If set, the App was created automatically. All changes will be lost during the next deployment."
+    },
+    "WEBCOMPONENT": {
+      "MODULE": "WebComponent (Module)",
+      "SCRIPT": "WebComponent (Script)"
     }
   },
   "PRODUCT": {
@@ -273,7 +281,7 @@
     "DESCRIPTION": "Description",
     "PROVIDER": "Provider",
     "DISPLAY_NAME": "Display Name",
-    "OPERATOR": "Automated created",
+    "OPERATOR": "Created by automation",
     "IMAGE_URL": "External Image URL",
     "BASE_PATH": "Base Path",
     "ICON_NAME": "Icon Name",

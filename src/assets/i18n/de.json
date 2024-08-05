@@ -228,6 +228,8 @@
     "MFE.COMPONENT": "MFE - Component",
     "REMOTE_BASE_URL": "Remote Base URL",
     "REMOTE_ENTRY": "Remote Entry",
+    "REMOTE_NAME": "Remote Name",
+    "TAG_NAME": "Tag Name",
     "CLASSIFICATIONS": "Klassifizierungen",
     "CONTACT": "Kontakt",
     "ICON_NAME": "Icon-Name",
@@ -251,6 +253,8 @@
       "TYPE": "Typ des Microfrontends",
       "REMOTE_BASE_URL": "Remote Base URL",
       "REMOTE_ENTRY": "Remote Entry",
+      "REMOTE_NAME": "Einstiegspunkt in der JavaScript-Datei bei WebComponents (Script)",
+      "TAG_NAME": "Name des WebComponent Tags",
       "CLASSIFICATIONS": "Kommaseparierte Liste von Begriffen zur Klassifizierung der App, z.b. Game, Tool etc. Kann zur Filterung benutzt werden.",
       "CONTACT": "Kontakt zum Anbieter (E-Mail-Adresse o.ä.)",
       "ICON_NAME": "Name eines Icons aus der PrimeNG Icon Bibliothek. Wird z.b. als Default bei Menüeinträgen benutzt",
@@ -265,6 +269,10 @@
       "UNDEPLOYED": "Wenn gesetzt, dann ist diese APP nicht länger nutzbar. Eine weitere Nutzung führt zu Fehlermeldungen.",
       "UNDEPLOYED_SEARCH": "Diese App ist nicht länger nutzbar. Eine weitere Nutzung führt zu Fehlermeldungen.",
       "OPERATOR": "Wenn gesetzt, dann wurde die App automatisch erstellt. Alle Änderungen gehen beim beim nächsten Deployment verloren."
+    },
+    "WEBCOMPONENT": {
+      "MODULE": "WebComponent (Modul)",
+      "SCRIPT": "WebComponent (Skript)"
     }
   },
   "PRODUCT": {
