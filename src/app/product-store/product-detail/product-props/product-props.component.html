@@ -7,7 +7,7 @@
           class="p-float-label"
           [pTooltip]="'PRODUCT.TOOLTIPS.NAME' | translate"
           tooltipPosition="top"
-          tooltipEvent="hover"
+          tooltipEvent="hover">
         >
           <input pInputText type="text" class="w-full" id="product_detail_item_name" formControlName="name" />
           <label class="ocx-required-label" for="product_detail_item_name">{{ 'PRODUCT.NAME' | translate }}</label>
@@ -85,6 +85,7 @@
             class="action-button p-button-icon-only"
             [class.cursor-pointer]="changeMode === 'EDIT'"
             [disabled]="changeMode === 'VIEW'"
+            (click)="selectedFileInputLogo.click()"
             [pTooltip]="'IMAGE.TOOLTIPS.UPLOAD' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
@@ -126,6 +127,7 @@
             tooltipEvent="hover"
             [showClear]="true"
           >
+            >
             <ng-template let-ico pTemplate="selectedItem">
               <div class="flex">
                 <span class="font-bold pi pi-{{ ico.value }} mr-3"> </span>
@@ -161,6 +163,12 @@
 
       <div class="w-full sm:w-12 md:w-9 lg:w-12 px-3">
         <span class="p-float-label">
+        <span
+          class="p-float-label"
+          [pTooltip]="'PRODUCT.TOOLTIPS.PROVIDER' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        >
           <textarea
             pInputTextarea
             class="w-full"
@@ -169,7 +177,7 @@
             id="product_detail_item_provider"
             [pTooltip]="'PRODUCT.PROVIDER' | translate"
             tooltipPosition="top"
-            tooltipEvent="focus"
+            tooltipEvent="hover"
             formControlName="provider"
             [pTooltip]="'PRODUCT.TOOLTIPS.PROVIDER' | translate"
             tooltipPosition="top"
@@ -177,6 +185,7 @@
           ></textarea>
           <label for="product_detail_item_provider">{{ 'PRODUCT.PROVIDER' | translate }}</label>
         </span>
+      </span>
       </div>
 
       <div class="w-full sm:w-12 md:w-9 lg:w-12 px-3">

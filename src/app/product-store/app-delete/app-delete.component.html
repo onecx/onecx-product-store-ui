@@ -28,9 +28,8 @@
         iconPos="left"
         (click)="onDialogHide()"
         [label]="'ACTIONS.CONFIRMATION.NO' | translate"
-        [pTooltip]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
+        [title]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
+        (click)="onDialogHide()"
       ></button>
       <button
         pButton
@@ -40,9 +39,8 @@
         iconPos="left"
         (click)="onConfirmDeletion()"
         [label]="'ACTIONS.CONFIRMATION.YES' | translate"
-        [pTooltip]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
+        [title]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
+        (click)="onConfirmDeletion()"
       ></button>
     </div>
   </ng-template>

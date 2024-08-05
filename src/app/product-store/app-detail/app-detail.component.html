@@ -354,7 +354,13 @@
             <label for="app_detail_form_mfe_field_creationDate">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
           </span>
         </div>
-        <div class="col-12 md:col-3 px-2" style="min-width: 12rem">
+        <div
+          class="col-12 md:col-3 px-2"
+          style="min-width: 12rem"
+          [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        >
           <span class="p-float-label">
             <input
               pInputText
