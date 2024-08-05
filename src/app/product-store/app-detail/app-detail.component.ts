@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core'
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, Renderer2, ViewChild } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 import { finalize } from 'rxjs'
 import { SelectItem } from 'primeng/api'
+import { TabView } from 'primeng/tabview'
 
 import { PortalMessageService, UserService } from '@onecx/portal-integration-angular'
 import { IconService } from 'src/app/shared/iconservice'
@@ -60,11 +61,14 @@ export class AppDetailComponent implements OnInit, OnChanges {
   @Input() displayDialog = false
   @Output() appChanged = new EventEmitter<boolean>()
 
+  @ViewChild('panelDetail') panelDetail: TabView | undefined
   public mfe: Microfrontend | undefined
   public ms: Microservice | undefined
   public formGroupMfe: FormGroup
   public formGroupMs: FormGroup
-  public dialogTitelKey = ''
+  public tabIndex = 0
+  private panelHeight = 0
+  public dialogTitleKey = ''
   public loading = false
   public operator = false
   public undeployed = false
@@ -85,7 +89,8 @@ export class AppDetailComponent implements OnInit, OnChanges {
     private msApi: MicroservicesAPIService,
     private mfeApi: MicrofrontendsAPIService,
     private msgService: PortalMessageService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private renderer: Renderer2
   ) {
     this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
     this.hasEditPermission = this.user.hasPermission('APP#EDIT')
@@ -137,6 +142,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
     if (this.appAbstract?.id) {
       if (this.appAbstract.appType === 'MFE') this.getMfe()
       if (this.appAbstract.appType === 'MS') this.getMs()
+      this.preparePanelHeight()
     }
   }
 
@@ -179,7 +185,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
             }
             this.enableForms()
           }
-          this.dialogTitelKey = 'ACTIONS.' + this.changeMode + '.MFE.HEADER'
+          this.dialogTitleKey = 'ACTIONS.' + this.changeMode + '.MFE.HEADER'
         }
       })
   }
@@ -205,7 +211,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
             }
             this.enableForms()
           }
-          this.dialogTitelKey = 'ACTIONS.' + this.changeMode + '.MS.HEADER'
+          this.dialogTitleKey = 'ACTIONS.' + this.changeMode + '.MS.HEADER'
         }
       })
   }
@@ -263,6 +269,18 @@ export class AppDetailComponent implements OnInit, OnChanges {
       this.ms = { ...this.formGroupMs.value, id: this.ms?.id }
       this.changeMode === 'CREATE' ? this.createMs() : this.updateMs()
     }
+  }
+
+  public onTabPanelChange(e: any): void {
+    this.tabIndex = e.index
+    this.preparePanelHeight()
+  }
+  // use the same height on all TABs
+  private preparePanelHeight(): void {
+    if (!this.panelDetail?.el?.nativeElement) return
+    this.renderer.setStyle(this.panelDetail?.el.nativeElement, 'display', 'block')
+    if (this.panelHeight === 0) this.panelHeight = this.panelDetail?.el.nativeElement.offsetHeight
+    this.renderer.setStyle(this.panelDetail?.el.nativeElement, 'height', this.panelHeight - 10 + 'px')
   }
 
   private createMfe() {
