@@ -15,6 +15,7 @@ import { SharedModule } from 'src/app/shared/shared.module'
 import { AppSearchComponent } from './app-search/app-search.component'
 import { AppDeleteComponent } from './app-delete/app-delete.component'
 import { AppDetailComponent } from './app-detail/app-detail.component'
+import { AppInternComponent } from './app-detail/app-intern/app-intern.component'
 import { ProductSearchComponent } from './product-search/product-search.component'
 import { ProductDetailComponent } from './product-detail/product-detail.component'
 import { ProductPropertyComponent } from './product-detail/product-props/product-props.component'
@@ -59,6 +60,7 @@ const routes: Routes = [
     AppSearchComponent,
     AppDeleteComponent,
     AppDetailComponent,
+    AppInternComponent,
     ProductSearchComponent,
     ProductDetailComponent,
     ProductPropertyComponent,

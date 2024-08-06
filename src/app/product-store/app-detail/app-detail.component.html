@@ -329,307 +329,111 @@
           </div>
         </p-fieldset>
       </form>
-    </p-tabPanel>
 
-    <p-tabPanel [header]="'DIALOG.TABS.INTERN' | translate" [tooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate">
-      <form>
-        <p-fieldset *ngIf="changeMode !== 'CREATE'" styleClass="surface-100 pt-0 pb-1 mt-3 mx-0">
+      <form *ngIf="!loading && appAbstract?.appType === 'MS'" [formGroup]="formGroupMs" errorTailor>
+        <ng-template pTemplate="header">
+          <span>{{ 'ACTIONS.' + this.changeMode + '.MS.HEADER' | translate }}</span>
+        </ng-template>
+        <p-fieldset [toggleable]="false" [collapsed]="false" styleClass="surface-100 pt-0 pb-1 mx-0">
           <ng-template pTemplate="header">
-            <span [pTooltip]="'APP.TOOLTIPS.GROUP.INTERNALS' | translate" tooltipPosition="top" tooltipEvent="hover">
-              {{ 'APP.GROUP.INTERNALS' | translate }}</span
+            <span [pTooltip]="'APP.TOOLTIPS.GROUP.LOCAL_MODULE' | translate" tooltipPosition="top" tooltipEvent="hover">
+              {{ 'APP.GROUP.LOCAL_MODULE' | translate }}</span
             >
           </ng-template>
           <div class="grid">
-            <div class="col-12 md:col-6 pt-0 pb-3 px-4">
-              <p-checkbox
-                type="text"
-                [readonly]="true"
-                inputId="app_detail_form_mfe_field_operator"
-                [(ngModel)]="operator"
-                [ngModelOptions]="{ standalone: true }"
-                [binary]="true"
-                [label]="'APP.OPERATOR' | translate"
-                [pTooltip]="'APP.TOOLTIPS.OPERATOR' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              ></p-checkbox>
-            </div>
-            <div class="col-12 md:col-3 pt-0 pb-3 px-4" style="min-width: 12rem">
-              <p-checkbox
-                type="text"
-                [readonly]="true"
-                inputId="app_detail_form_mfe_field_undeployed"
-                [(ngModel)]="undeployed"
-                [ngModelOptions]="{ standalone: true }"
-                [binary]="true"
-                [label]="'APP.UNDEPLOYED' | translate"
-                [pTooltip]="'APP.TOOLTIPS.UNDEPLOYED' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              ></p-checkbox>
-            </div>
-            <div class="col-12 md:col-3 pt-0 pb-3 px-4" style="min-width: 12rem">
-              <p-checkbox
-                type="text"
-                [readonly]="true"
-                inputId="app_detail_form_mfe_field_deprecated"
-                [(ngModel)]="deprecated"
-                [ngModelOptions]="{ standalone: true }"
-                [binary]="true"
-                [label]="'APP.DEPRECATED' | translate"
-                [pTooltip]="'APP.TOOLTIPS.DEPRECATED' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              ></p-checkbox>
-            </div>
-
-            <div class="col-12 md:col-3 px-2" style="min-width: 12rem">
-              <span class="p-float-label">
+            <div class="col-12 md:col-6" style="min-width: 15rem">
+              <span class="p-float-label" controlErrorAnchor>
                 <input
                   pInputText
                   type="text"
-                  readonly
-                  id="app_detail_form_mfe_field_creationDate"
+                  id="app_detail_form_ms_app_id"
                   class="w-full pt-3 pb-2"
-                  [value]="mfe?.['creationDate'] ? (mfe?.['creationDate'] | date: dateFormat) : ''"
-                  [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
+                  formControlName="appId"
+                  [pTooltip]="'APP.TOOLTIPS.APP_ID' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 />
-                <label for="app_detail_form_mfe_field_creationDate">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
-              </span>
-            </div>
-            <div class="col-12 md:col-3 px-2" style="min-width: 12rem">
-              <span class="p-float-label">
-                <input
-                  pInputText
-                  type="text"
-                  readonly
-                  id="app_detail_form_mfe_field_modificationDate"
-                  class="w-full pt-3 pb-2"
-                  [value]="mfe?.['modificationDate'] ? (mfe?.['modificationDate'] | date: dateFormat) : ''"
-                  [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                />
-                <label for="app_detail_form_mfe_field_modificationDate">
-                  {{ 'INTERNAL.MODIFICATION_DATE' | translate }}
+                <label class="ocx-required-label" for="app_detail_form_ms_app_id">
+                  {{ 'APP.APP_ID' | translate }}
                 </label>
               </span>
             </div>
-            <div class="col-12 md:col-3 px-2" style="min-width: 12rem">
-              <span class="p-float-label">
+            <div class="col-12 md:col-6" style="min-width: 15rem">
+              <span class="p-float-label" controlErrorAnchor>
                 <input
                   pInputText
                   type="text"
-                  readonly
-                  id="app_detail_form_mfe_field_creationUser"
+                  id="app_detail_form_ms_app_name"
                   class="w-full pt-3 pb-2"
-                  [value]="mfe?.['creationUser'] ? (mfe?.['creationUser'] | date: dateFormat) : ''"
-                  [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_USER' | translate"
+                  formControlName="appName"
+                  [pTooltip]="'APP.TOOLTIPS.APP_NAME' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 />
-                <label for="app_detail_form_mfe_field_creationUser"> {{ 'INTERNAL.CREATION_USER' | translate }} </label>
+                <label class="ocx-required-label" for="app_detail_form_ms_app_name">
+                  {{ 'APP.APP_NAME' | translate }}
+                </label>
               </span>
             </div>
-            <div class="col-12 md:col-3 px-2" style="min-width: 12rem">
-              <span class="p-float-label">
+            <div class="col-12 md:col-6" style="min-width: 15rem">
+              <span class="p-float-label" controlErrorAnchor>
                 <input
                   pInputText
                   type="text"
-                  readonly
-                  id="app_detail_form_mfe_field_modificationUser"
+                  id="app_detail_form_ms_app_version"
                   class="w-full pt-3 pb-2"
-                  [value]="mfe?.['modificationUser'] ? (mfe?.['modificationUser'] | date: dateFormat) : ''"
-                  [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_USER' | translate"
+                  formControlName="appVersion"
+                  [pTooltip]="'APP.TOOLTIPS.APP_VERSION' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 />
-                <label for="app_detail_form_mfe_field_modificationUser">
-                  {{ 'INTERNAL.MODIFICATION_USER' | translate }}
+                <label class="ocx-required-label" for="app_detail_form_ms_app_version">
+                  {{ 'APP.APP_VERSION' | translate }}
                 </label>
+              </span>
+            </div>
+            <div class="col-12 md:col-6" style="min-width: 15rem">
+              <span class="p-float-label" controlErrorAnchor>
+                <input
+                  pInputText
+                  type="text"
+                  id="app_detail_form_ms_product_name"
+                  class="w-full pt-3 pb-2"
+                  formControlName="productName"
+                  [pTooltip]="'APP.TOOLTIPS.PRODUCT_NAME' | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                />
+                <label class="ocx-required-label" for="app_detail_form_ms_product_name">
+                  {{ 'APP.PRODUCT_NAME' | translate }}
+                </label>
+              </span>
+            </div>
+            <div class="col-12">
+              <span class="p-float-label" controlErrorAnchor>
+                <input
+                  pInputText
+                  type="text"
+                  id="app_detail_form_ms_description"
+                  class="w-full pt-3 pb-2"
+                  formControlName="description"
+                  [pTooltip]="'APP.TOOLTIPS.DESCRIPTION' | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                />
+                <label for="app_detail_form_ms_description"> {{ 'APP.DESCRIPTION' | translate }} </label>
               </span>
             </div>
           </div>
         </p-fieldset>
       </form>
     </p-tabPanel>
+
+    <p-tabPanel [header]="'DIALOG.TABS.INTERN' | translate" [tooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate">
+      <app-app-intern *ngIf="appAbstract?.appType === 'MFE'" [app]="mfe"></app-app-intern>
+      <app-app-intern *ngIf="appAbstract?.appType === 'MS'" [app]="ms"></app-app-intern>
+    </p-tabPanel>
   </p-tabView>
-
-  <form *ngIf="!loading && appAbstract?.appType === 'MS'" [formGroup]="formGroupMs" errorTailor>
-    <ng-template pTemplate="header">
-      <span>{{ 'ACTIONS.' + this.changeMode + '.MS.HEADER' | translate }}</span>
-    </ng-template>
-    <p-fieldset [toggleable]="false" [collapsed]="false" styleClass="surface-100 pt-0 pb-1 mx-0">
-      <ng-template pTemplate="header">
-        <span [pTooltip]="'APP.TOOLTIPS.GROUP.LOCAL_MODULE' | translate" tooltipPosition="top" tooltipEvent="hover">
-          {{ 'APP.GROUP.LOCAL_MODULE' | translate }}</span
-        >
-      </ng-template>
-      <div class="grid">
-        <div class="col-12 md:col-6" style="min-width: 15rem">
-          <span class="p-float-label" controlErrorAnchor>
-            <input
-              pInputText
-              type="text"
-              id="app_detail_form_ms_app_id"
-              class="w-full pt-3 pb-2"
-              formControlName="appId"
-              [pTooltip]="'APP.TOOLTIPS.APP_ID' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label class="ocx-required-label" for="app_detail_form_ms_app_id"> {{ 'APP.APP_ID' | translate }} </label>
-          </span>
-        </div>
-        <div class="col-12 md:col-6" style="min-width: 15rem">
-          <span class="p-float-label" controlErrorAnchor>
-            <input
-              pInputText
-              type="text"
-              id="app_detail_form_ms_app_name"
-              class="w-full pt-3 pb-2"
-              formControlName="appName"
-              [pTooltip]="'APP.TOOLTIPS.APP_NAME' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label class="ocx-required-label" for="app_detail_form_ms_app_name">
-              {{ 'APP.APP_NAME' | translate }}
-            </label>
-          </span>
-        </div>
-        <div class="col-12 md:col-6" style="min-width: 15rem">
-          <span class="p-float-label" controlErrorAnchor>
-            <input
-              pInputText
-              type="text"
-              id="app_detail_form_ms_app_version"
-              class="w-full pt-3 pb-2"
-              formControlName="appVersion"
-              [pTooltip]="'APP.TOOLTIPS.APP_VERSION' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label class="ocx-required-label" for="app_detail_form_ms_app_version">
-              {{ 'APP.APP_VERSION' | translate }}
-            </label>
-          </span>
-        </div>
-        <div class="col-12 md:col-6" style="min-width: 15rem">
-          <span class="p-float-label" controlErrorAnchor>
-            <input
-              pInputText
-              type="text"
-              id="app_detail_form_ms_product_name"
-              class="w-full pt-3 pb-2"
-              formControlName="productName"
-              [pTooltip]="'APP.TOOLTIPS.PRODUCT_NAME' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label class="ocx-required-label" for="app_detail_form_ms_product_name">
-              {{ 'APP.PRODUCT_NAME' | translate }}
-            </label>
-          </span>
-        </div>
-        <div class="col-12">
-          <span class="p-float-label" controlErrorAnchor>
-            <input
-              pInputText
-              type="text"
-              id="app_detail_form_ms_description"
-              class="w-full pt-3 pb-2"
-              formControlName="description"
-              [pTooltip]="'APP.TOOLTIPS.DESCRIPTION' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label for="app_detail_form_ms_description"> {{ 'APP.DESCRIPTION' | translate }} </label>
-          </span>
-        </div>
-      </div>
-    </p-fieldset>
-
-    <p-fieldset
-      *ngIf="changeMode !== 'CREATE'"
-      [toggleable]="true"
-      [collapsed]="true"
-      styleClass="surface-100 pt-0 pb-1 mx-0 mt-3"
-    >
-      <ng-template pTemplate="header">
-        <span [pTooltip]="'APP.TOOLTIPS.GROUP.INTERNALS' | translate" tooltipPosition="top" tooltipEvent="hover">
-          {{ 'APP.GROUP.INTERNALS' | translate }}</span
-        >
-      </ng-template>
-      <div class="grid">
-        <div class="col-12 md:col-6 pt-0 pb-3 px-4">
-          <p-checkbox
-            type="text"
-            [readonly]="true"
-            inputId="app_detail_form_ms_field_operator"
-            [(ngModel)]="operator"
-            [ngModelOptions]="{ standalone: true }"
-            [binary]="true"
-            [label]="'APP.OPERATOR' | translate"
-            [pTooltip]="'APP.TOOLTIPS.OPERATOR' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          ></p-checkbox>
-        </div>
-        <div class="col-12 md:col-6 pt-0 pb-3 px-4" style="min-width: 12rem">
-          <p-checkbox
-            type="text"
-            [readonly]="true"
-            inputId="app_detail_form_ms_field_undeployed"
-            [(ngModel)]="undeployed"
-            [ngModelOptions]="{ standalone: true }"
-            [binary]="true"
-            [label]="'APP.UNDEPLOYED' | translate"
-            [pTooltip]="'APP.TOOLTIPS.UNDEPLOYED' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          ></p-checkbox>
-        </div>
-
-        <div class="col-12 md:col-3 px-2" style="min-width: 12rem">
-          <span class="p-float-label">
-            <input
-              pInputText
-              type="text"
-              readonly
-              id="app_detail_form_ms_field_creationDate"
-              class="w-full pt-3 pb-2"
-              [value]="ms?.['creationDate'] ? (ms?.['creationDate'] | date: dateFormat) : ''"
-              [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label for="app_detail_form_ms_field_creationDate">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
-          </span>
-        </div>
-        <div class="col-12 md:col-3 px-2" style="min-width: 12rem">
-          <span class="p-float-label">
-            <input
-              pInputText
-              type="text"
-              readonly
-              id="app_detail_form_ms_field_modificationDate"
-              class="w-full pt-3 pb-2"
-              [value]="ms?.['modificationDate'] ? (ms?.['modificationDate'] | date: dateFormat) : ''"
-              [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label for="app_detail_form_ms_field_modificationDate">
-              {{ 'INTERNAL.MODIFICATION_DATE' | translate }}
-            </label>
-          </span>
-        </div>
-      </div>
-    </p-fieldset>
-  </form>
 
   <ng-template pTemplate="footer">
     <div class="flex flex-wrap justify-content-end gap-2 mb-1">

@@ -1,0 +1,39 @@
+@import '/src/_mixins.scss';
+
+@include danger-action;
+
+/* limit deletion dialog */
+:host ::ng-deep {
+  // popup dialogues
+  @media (max-width: 991px) {
+    .p-dialog.p-dialog {
+      max-height: unset !important;
+      height: unset !important;
+    }
+  }
+
+  .p-dialog {
+    background: var(--panel-content-bg);
+    .p-dialog-content {
+      border-radius: unset !important;
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .p-dialog-footer button {
+      margin: unset;
+    }
+    .p-dialog-header .p-dialog-header-icons {
+      display: none;
+    }
+  }
+  .p-fieldset {
+    &.p-fieldset-toggleable .p-fieldset-legend a,
+    .p-fieldset-legend {
+      background-color: transparent;
+      padding: 0.3rem 0.4rem;
+    }
+    .p-fieldset-content {
+      padding: 1rem 0.2rem 0rem;
+    }
+  }
+}
