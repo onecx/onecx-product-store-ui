@@ -17,7 +17,7 @@ import { IconService } from 'src/app/shared/iconservice'
 
 import { AppAbstract, ChangeMode } from '../../app-search/app-search.component'
 
-enum AppType {
+export enum AppType {
   MS = 'MS',
   MFE = 'MFE'
 }
