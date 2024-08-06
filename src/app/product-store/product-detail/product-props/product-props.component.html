@@ -7,8 +7,9 @@
           class="p-float-label"
           [pTooltip]="'PRODUCT.TOOLTIPS.NAME' | translate"
           tooltipPosition="top"
-          tooltipEvent="hover">
+          tooltipEvent="hover"
         >
+          >
           <input pInputText type="text" class="w-full" id="product_detail_item_name" formControlName="name" />
           <label class="ocx-required-label" for="product_detail_item_name">{{ 'PRODUCT.NAME' | translate }}</label>
         </span>
@@ -163,29 +164,29 @@
 
       <div class="w-full sm:w-12 md:w-9 lg:w-12 px-3">
         <span class="p-float-label">
-        <span
-          class="p-float-label"
-          [pTooltip]="'PRODUCT.TOOLTIPS.PROVIDER' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        >
-          <textarea
-            pInputTextarea
-            class="w-full"
-            autoresize="true"
-            rows="1"
-            id="product_detail_item_provider"
-            [pTooltip]="'PRODUCT.PROVIDER' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-            formControlName="provider"
+          <span
+            class="p-float-label"
             [pTooltip]="'PRODUCT.TOOLTIPS.PROVIDER' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
-          ></textarea>
-          <label for="product_detail_item_provider">{{ 'PRODUCT.PROVIDER' | translate }}</label>
+          >
+            <textarea
+              pInputTextarea
+              class="w-full"
+              autoresize="true"
+              rows="1"
+              id="product_detail_item_provider"
+              [pTooltip]="'PRODUCT.PROVIDER' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+              formControlName="provider"
+              [pTooltip]="'PRODUCT.TOOLTIPS.PROVIDER' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            ></textarea>
+            <label for="product_detail_item_provider">{{ 'PRODUCT.PROVIDER' | translate }}</label>
+          </span>
         </span>
-      </span>
       </div>
 
       <div class="w-full sm:w-12 md:w-9 lg:w-12 px-3">
