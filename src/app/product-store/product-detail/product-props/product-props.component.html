@@ -2,15 +2,17 @@
   <div class="surface-section flex flex-column row-gap-4 my-3 sm:my-5">
     <div class="flex flex-wrap row-gap-4">
       <div class="w-full sm:w-10 md:w-9 lg:w-6 px-3">
-        <span
-          controlErrorAnchor
-          class="p-float-label"
-          [pTooltip]="'PRODUCT.TOOLTIPS.NAME' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        >
-          >
-          <input pInputText type="text" class="w-full" id="product_detail_item_name" formControlName="name" />
+        <span controlErrorAnchor class="p-float-label">
+          <input
+            pInputText
+            type="text"
+            class="w-full"
+            id="product_detail_item_name"
+            formControlName="name"
+            [pTooltip]="'PRODUCT.TOOLTIPS.NAME' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          />
           <label class="ocx-required-label" for="product_detail_item_name">{{ 'PRODUCT.NAME' | translate }}</label>
         </span>
         <!-- Custom validator message -->

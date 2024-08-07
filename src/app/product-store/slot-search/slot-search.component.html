@@ -95,7 +95,7 @@
                 tooltipPosition="top"
                 tooltipEvent="hover"
               ></span>
-              <span
+              <a
                 *ngIf="hasDeletePermission"
                 [id]="'slot_search_data_' + slot.name + '_delete_slot'"
                 class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text pseudo-button-link"
@@ -103,7 +103,7 @@
                 [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
-              ></span>
+              ></a>
               <div class="h-3rem flex flex-column justify-content-between gap-1 text-center">
                 <div
                   [id]="'slot_search_data_grid_' + idx + '_slot_name'"

@@ -157,6 +157,7 @@
     "CREATION_USER": "Erstellt von",
     "MODIFICATION_DATE": "Geändert am",
     "MODIFICATION_USER": "Geändert von",
+    "OPERATOR": "Automatisiert erstellt",
     "TOOLTIPS": {
       "CREATION_DATE": "Zeitpunkt der Erstellung",
       "CREATION_USER": "Name des Benutzers der Erstellung",
@@ -228,6 +229,8 @@
     "MFE.COMPONENT": "MFE - Component",
     "REMOTE_BASE_URL": "Remote Base URL",
     "REMOTE_ENTRY": "Remote Entry",
+    "REMOTE_NAME": "Remote Name",
+    "TAG_NAME": "Tag Name",
     "CLASSIFICATIONS": "Klassifizierungen",
     "CONTACT": "Kontakt",
     "ICON_NAME": "Icon-Name",
@@ -239,7 +242,6 @@
     "GROUP.INTERNALS": "Weitere Details",
     "DEPRECATED": "Veraltet",
     "UNDEPLOYED": "Unverfügbar",
-    "OPERATOR": "Automatisch erstellt",
     "TOOLTIPS": {
       "APP_ID": "Eindeutige ID - Basis Bezeichner der App",
       "APP_NAME": "Name der App",
@@ -251,6 +253,8 @@
       "TYPE": "Typ des Microfrontends",
       "REMOTE_BASE_URL": "Remote Base URL",
       "REMOTE_ENTRY": "Remote Entry",
+      "REMOTE_NAME": "Einstiegspunkt in der JavaScript-Datei bei WebComponents",
+      "TAG_NAME": "Name des WebComponent Tags",
       "CLASSIFICATIONS": "Kommaseparierte Liste von Begriffen zur Klassifizierung der App, z.b. Game, Tool etc. Kann zur Filterung benutzt werden.",
       "CONTACT": "Kontakt zum Anbieter (E-Mail-Adresse o.ä.)",
       "ICON_NAME": "Name eines Icons aus der PrimeNG Icon Bibliothek. Wird z.b. als Default bei Menüeinträgen benutzt",
@@ -264,7 +268,11 @@
       "DEPRECATED_SEARCH": "Diese App ist als veraltet markiert. Sie kann derzeit weiter verwendet werden wird aber in Zukunft nicht mehr zur Verfügung stehen.",
       "UNDEPLOYED": "Wenn gesetzt, dann ist diese APP nicht länger nutzbar. Eine weitere Nutzung führt zu Fehlermeldungen.",
       "UNDEPLOYED_SEARCH": "Diese App ist nicht länger nutzbar. Eine weitere Nutzung führt zu Fehlermeldungen.",
-      "OPERATOR": "Wenn gesetzt, dann wurde die App automatisch erstellt. Alle Änderungen gehen beim beim nächsten Deployment verloren."
+      "OPERATOR": "Wenn gesetzt, dann wurde die App automatisiert erstellt. Alle Änderungen gehen beim beim nächsten Deployment verloren."
+    },
+    "WEBCOMPONENT": {
+      "MODULE": "WebComponent (Modul)",
+      "SCRIPT": "WebComponent (Skript)"
     }
   },
   "PRODUCT": {
@@ -273,7 +281,6 @@
     "DESCRIPTION": "Beschreibung",
     "DISPLAY_NAME": "Anzeigename",
     "PROVIDER": "Anbieter",
-    "OPERATOR": "Automatisch erstellt",
     "IMAGE_URL": "Externe Image URL",
     "BASE_PATH": "Basispfad",
     "ICON_NAME": "Iconname",
@@ -286,7 +293,7 @@
       "DESCRIPTION": "Beschreibung der Applikation",
       "PROVIDER": "Anbieterinformation, sollte bei der Bereitstellung mitgeliefert werden (Helm chart)",
       "DISPLAY_NAME": "Anzeigename der Applikation",
-      "OPERATOR": "Wenn gesetzt, dann wurde die Applikation automatisch erstellt. Alle Änderungen gehen beim beim nächsten Deployment verloren.",
+      "OPERATOR": "Wenn gesetzt, dann wurde die Applikation automatisiert erstellt. Alle Änderungen gehen beim beim nächsten Deployment verloren.",
       "IMAGE_URL": "URL für ein Image ausserhalb des Application Stores",
       "BASE_PATH": "Der Basispfad wie die Applikation erreichbar ist. Muss eindeutig über alle Applikationen sein",
       "ICON_NAME": "Name eines Icons aus der PrimeNG Icon Bibliothek. Wird z.b. als Default bei Menüeinträgen benutzt",

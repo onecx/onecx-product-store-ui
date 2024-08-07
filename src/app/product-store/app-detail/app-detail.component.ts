@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, Renderer2, ViewChild } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 import { finalize } from 'rxjs'
 import { SelectItem } from 'primeng/api'
+import { TabView } from 'primeng/tabview'
 
 import { PortalMessageService, UserService } from '@onecx/portal-integration-angular'
 import { IconService } from 'src/app/shared/iconservice'
@@ -31,7 +32,9 @@ export interface MfeForm {
   technology: FormControl<string | null>
   type: FormControl<string | null>
   remoteBaseUrl: FormControl<string | null>
+  remoteName: FormControl<string | null>
   remoteEntry: FormControl<string | null>
+  tagName: FormControl<string | null>
   classifications: FormControl<string | null>
   contact?: FormControl<string | null>
   iconName?: FormControl<string | null>
@@ -51,28 +54,27 @@ export interface MsForm {
   templateUrl: './app-detail.component.html',
   styleUrls: ['./app-detail.component.scss']
 })
-export class AppDetailComponent implements OnChanges {
+export class AppDetailComponent implements OnInit, OnChanges {
   @Input() appAbstract: AppAbstract | undefined
   @Input() dateFormat = 'medium'
   @Input() changeMode: ChangeMode = 'VIEW'
   @Input() displayDialog = false
   @Output() appChanged = new EventEmitter<boolean>()
 
+  @ViewChild('panelDetail') panelDetail: TabView | undefined
   public mfe: Microfrontend | undefined
   public ms: Microservice | undefined
   public formGroupMfe: FormGroup
   public formGroupMs: FormGroup
-  public dialogTitelKey = ''
+  public tabIndex = 0
+  public dialogTitleKey = ''
   public loading = false
   public operator = false
   public undeployed = false
   public deprecated = false
   public hasCreatePermission = false
   public hasEditPermission = false
-  public technologies: SelectItem[] = [
-    { label: 'Angular', value: 'ANGULAR' },
-    { label: 'WebComponent', value: 'WEBCOMPONENTMODULE' }
-  ]
+  public technologies: SelectItem[] = []
   public types: SelectItem[] = [
     { label: 'Module', value: 'MODULE' },
     { label: 'Component', value: 'COMPONENT' }
@@ -86,7 +88,8 @@ export class AppDetailComponent implements OnChanges {
     private msApi: MicroservicesAPIService,
     private mfeApi: MicrofrontendsAPIService,
     private msgService: PortalMessageService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private renderer: Renderer2
   ) {
     this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
     this.hasEditPermission = this.user.hasPermission('APP#EDIT')
@@ -104,6 +107,8 @@ export class AppDetailComponent implements OnChanges {
       type: new FormControl(null),
       remoteBaseUrl: new FormControl(null, [Validators.maxLength(255)]),
       remoteEntry: new FormControl(null, [Validators.maxLength(255)]),
+      remoteName: new FormControl(null, [Validators.maxLength(255)]),
+      tagName: new FormControl(null, [Validators.maxLength(255)]),
       exposedModule: new FormControl(null, [Validators.maxLength(255)]),
       classifications: new FormControl(null, [Validators.maxLength(255)]),
       contact: new FormControl(null, [Validators.maxLength(255)]),
@@ -117,6 +122,10 @@ export class AppDetailComponent implements OnChanges {
       productName: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
       description: new FormControl(null, [Validators.maxLength(255)])
     })
+  }
+
+  ngOnInit() {
+    this.getDropdownTranslations()
   }
 
   ngOnChanges() {
@@ -174,7 +183,7 @@ export class AppDetailComponent implements OnChanges {
             }
             this.enableForms()
           }
-          this.dialogTitelKey = 'ACTIONS.' + this.changeMode + '.MFE.HEADER'
+          this.dialogTitleKey = 'ACTIONS.' + this.changeMode + '.MFE.HEADER'
         }
       })
   }
@@ -200,7 +209,7 @@ export class AppDetailComponent implements OnChanges {
             }
             this.enableForms()
           }
-          this.dialogTitelKey = 'ACTIONS.' + this.changeMode + '.MS.HEADER'
+          this.dialogTitleKey = 'ACTIONS.' + this.changeMode + '.MS.HEADER'
         }
       })
   }
@@ -216,6 +225,8 @@ export class AppDetailComponent implements OnChanges {
       type: mfe['type'],
       remoteBaseUrl: mfe['remoteBaseUrl'],
       remoteEntry: mfe['remoteEntry'],
+      remoteName: mfe['remoteName'],
+      tagName: mfe['tagName'],
       exposedModule: mfe['exposedModule'],
       classifications: mfe['classifications'],
       contact: mfe['contact'],
@@ -258,6 +269,9 @@ export class AppDetailComponent implements OnChanges {
     }
   }
 
+  public onTabPanelChange(e: any): void {
+    this.tabIndex = e.index
+  }
   private createMfe() {
     this.mfeApi.createMicrofrontend({ createMicrofrontendRequest: this.mfe as CreateMicrofrontendRequest }).subscribe({
       next: () => {
@@ -329,5 +343,15 @@ export class AppDetailComponent implements OnChanges {
           : 'VALIDATION.ERRORS.INTERNAL_ERROR'
     })
     console.error('err', err)
+  }
+
+  private getDropdownTranslations() {
+    this.translate.get(['APP.WEBCOMPONENT.MODULE', 'APP.WEBCOMPONENT.SCRIPT']).subscribe((data) => {
+      this.technologies = [
+        { label: 'Angular', value: 'ANGULAR' },
+        { label: data['APP.WEBCOMPONENT.MODULE'], value: 'WEBCOMPONENTMODULE' },
+        { label: data['APP.WEBCOMPONENT.SCRIPT'], value: 'WEBCOMPONENTSCRIPT' }
+      ]
+    })
   }
 }

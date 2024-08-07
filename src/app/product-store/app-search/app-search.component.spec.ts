@@ -193,48 +193,6 @@ describe('AppSearchComponent', () => {
     }
   })
 
-  it('should update viewMode onLayoutChange', () => {
-    component.onLayoutChange('list')
-
-    expect(component.viewMode).toBe('list')
-  })
-
-  it('should update filter and call dv.filter onFilterChange', () => {
-    const filter = 'testFilter'
-
-    component.onFilterChange(filter)
-
-    expect(component.filter).toBe(filter)
-  })
-
-  it('should update filterBy and filterValue onQuickFilterChange: ALL', () => {
-    component.onQuickFilterChange({ value: 'ALL' })
-
-    expect(component.filterBy).toBe(component.filterValueDefault)
-    expect(component.filterValue).toBe('')
-  })
-
-  it('should update filterBy and filterValue onQuickFilterChange: other', () => {
-    component.onQuickFilterChange({ value: 'other' })
-
-    expect(component.filterValue).toBe('other')
-    expect(component.filterBy).toBe('appType')
-  })
-
-  it('should update sortField onSortChange', () => {
-    component.onSortChange('field')
-
-    expect(component.sortField).toBe('field')
-  })
-
-  it('should update sortOrder based on asc boolean onSortDirChange', () => {
-    component.onSortDirChange(true)
-    expect(component.sortOrder).toBe(-1)
-
-    component.onSortDirChange(false)
-    expect(component.sortOrder).toBe(1)
-  })
-
   it('should call searchApps onSearch', () => {
     spyOn(component, 'searchApps')
 
@@ -363,13 +321,85 @@ describe('AppSearchComponent', () => {
     })
   })
 
-  it('should reset appSearchCriteriaGroup onSearchReset is called', () => {
-    component.appSearchCriteriaGroup = form
-    spyOn(form, 'reset').and.callThrough()
+  /*
+   * UI ACTIONS
+   */
+  it('should update viewMode onLayoutChange', () => {
+    component.onLayoutChange('list')
 
-    component.onSearchReset()
+    expect(component.viewMode).toBe('list')
+  })
 
-    expect(component.appSearchCriteriaGroup.reset).toHaveBeenCalled()
+  it('should update filter and call dv.filter onFilterChange', () => {
+    const filter = 'testFilter'
+
+    component.onFilterChange(filter)
+
+    expect(component.filter).toBe(filter)
+  })
+
+  describe('onAppTypeFilterChange', () => {
+    it('should set appTypeFilterValue when ev.value is provided', () => {
+      const event = { value: 'testValue' }
+      component.onAppTypeFilterChange(event)
+      expect(component.appTypeFilterValue).toBe('testValue')
+    })
+
+    it('should not change appTypeFilterValue when ev.value is not provided', () => {
+      component.appTypeFilterValue = 'initialValue'
+      const event = { value: null }
+      component.onAppTypeFilterChange(event)
+      expect(component.appTypeFilterValue).toBe('initialValue')
+    })
+  })
+
+  describe('onQuickFilterChange', () => {
+    it('should update filterBy and filterValue onQuickFilterChange: ALL', () => {
+      component.onQuickFilterChange({ value: 'ALL' })
+
+      expect(component.filterBy).toBe(component.filterValueDefault)
+      expect(component.filterValue).toBe('')
+    })
+
+    it('should update filterBy and filterValue onQuickFilterChange: other', () => {
+      component.onQuickFilterChange({ value: 'other' })
+
+      expect(component.filterValue).toBe('other')
+      expect(component.filterBy).toBe('appType')
+    })
+
+    it('should set to quickFulterVaule to the original one if there is no current value', () => {
+      component.quickFilterValueOld = 'old'
+
+      component.onQuickFilterChange({})
+
+      expect(component.quickFilterValue).toBe('old')
+    })
+  })
+
+  it('should update sortField onSortChange', () => {
+    component.onSortChange('field')
+
+    expect(component.sortField).toBe('field')
+  })
+
+  describe('onSortDirChange', () => {
+    it('should update sortOrder based on asc boolean onSortDirChange', () => {
+      component.onSortDirChange(true)
+      expect(component.sortOrder).toBe(-1)
+
+      component.onSortDirChange(false)
+      expect(component.sortOrder).toBe(1)
+    })
+
+    it('should reset appSearchCriteriaGroup onSearchReset is called', () => {
+      component.appSearchCriteriaGroup = form
+      spyOn(form, 'reset').and.callThrough()
+
+      component.onSearchReset()
+
+      expect(component.appSearchCriteriaGroup.reset).toHaveBeenCalled()
+    })
   })
 
   it('should navigate back onBack', () => {
@@ -431,6 +461,9 @@ describe('AppSearchComponent', () => {
     expect(component.app).toBe(msApp)
   })
 
+  /**
+   * MODAL Dialog feedback
+   */
   it('should call searchApps if app changed', () => {
     spyOn(component, 'searchApps')
 
