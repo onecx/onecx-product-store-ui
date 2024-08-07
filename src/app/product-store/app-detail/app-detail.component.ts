@@ -67,7 +67,6 @@ export class AppDetailComponent implements OnInit, OnChanges {
   public formGroupMfe: FormGroup
   public formGroupMs: FormGroup
   public tabIndex = 0
-  private panelHeight = 0
   public dialogTitleKey = ''
   public loading = false
   public operator = false

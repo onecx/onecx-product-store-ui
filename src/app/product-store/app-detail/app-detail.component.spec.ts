@@ -16,7 +16,6 @@ import {
   MicrofrontendType
 } from 'src/app/shared/generated'
 import { AppAbstract } from '../app-search/app-search.component'
-import { TabView } from 'primeng/tabview'
 
 const form = new FormGroup<MfeForm>({
   appId: new FormControl('id', Validators.minLength(2)),
@@ -598,38 +597,10 @@ describe('AppDetailComponent', () => {
 
   it('should update tabIndex onTabPanelChange', () => {
     const mockEvent = { index: 3 }
-    spyOn(component as any, 'preparePanelHeight')
 
     component.onTabPanelChange(mockEvent)
 
     expect(component.tabIndex).toBe(mockEvent.index)
-    expect((component as any).preparePanelHeight).toHaveBeenCalled()
-  })
-
-  it('should return when no panelDetail preparePanelHeight', () => {
-    component.panelDetail = undefined
-
-    component.onTabPanelChange({ index: 3 })
-
-    expect((component as any).panelHeight).toBe(0)
-  })
-
-  it('should preparePanelHeight', () => {
-    const nativeElement = document.createElement('div')
-    nativeElement.style.height = '100px' // cannot reach the correct value offsetHeight, this test is quite useless
-    const mockTabView: Partial<TabView> = {
-      el: {
-        nativeElement: nativeElement
-      },
-      style: {},
-      styleClass: ''
-    }
-    component.panelDetail = mockTabView as any
-    spyOn((component as any).renderer, 'setStyle').and.callThrough()
-
-    component.onTabPanelChange({ index: 3 })
-
-    expect((component as any).panelHeight).toBe(0)
   })
 
   it('should call this.user.lang$ from the constructor and set this.dateFormat to the default format if user.lang$ is not de', () => {
