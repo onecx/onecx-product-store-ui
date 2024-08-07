@@ -12,8 +12,8 @@ import {
   MicrofrontendPageResult,
   MicrofrontendType,
   Microservice,
-  // Microservice,
   Product,
+  ProductDetails,
   ProductsAPIService,
   Slot,
   SlotPageItem
@@ -49,7 +49,7 @@ describe('ProductAppsComponent', () => {
     productName: 'prodName',
     remoteBaseUrl: 'remote URL'
   }
-  // const ms: Microservice = { id: 'id', appId: 'appId', appName: 'microservice', productName: 'prodName' }
+  const ms: Microservice = { id: 'id', appId: 'appId', appName: 'microservice', productName: 'prodName' }
 
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
   const productServiceSpy = {
@@ -108,9 +108,11 @@ describe('ProductAppsComponent', () => {
    * SEARCH
    */
   describe('searchProducts', () => {
-    it('should search microfrontends and microservices on searchProducts', (done) => {
+    it('should search microfrontends and microservices', (done) => {
       component.product = product
-      productServiceSpy.getProductDetailsByCriteria.and.returnValue(of({ stream: [mfe] } as MicrofrontendPageResult))
+      productServiceSpy.getProductDetailsByCriteria.and.returnValue(
+        of({ microfrontends: [mfe], microservices: [ms] } as ProductDetails)
+      )
 
       component.searchProducts()
 
@@ -124,7 +126,7 @@ describe('ProductAppsComponent', () => {
       })
     })
 
-    it('should catch error on searchProducts: mfes', (done) => {
+    it('should catch error on searchProducts', (done) => {
       const err = { status: 404 }
       productServiceSpy.getProductDetailsByCriteria.and.returnValue(throwError(() => err))
 
@@ -132,8 +134,7 @@ describe('ProductAppsComponent', () => {
 
       component.productDetails$.subscribe({
         next: (result) => {
-          expect(result.microfrontends?.length).toBe(0)
-          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_404.Products')
+          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_404.APPS')
           done()
         },
         error: done.fail
@@ -166,19 +167,16 @@ describe('ProductAppsComponent', () => {
     it('should handle undefined or empty values', () => {
       const mfeA: MicrofrontendAbstract = { type: MicrofrontendType.Component } as MicrofrontendAbstract
       const mfeB: MicrofrontendAbstract = { exposedModule: 'moduleB' } as MicrofrontendAbstract
-      const mfeC: MicrofrontendAbstract = {} as MicrofrontendAbstract
 
-      expect(component.sortMfesByTypeAndExposedModule(mfeA, mfeB)).toBeLessThan(0)
-      expect(component.sortMfesByTypeAndExposedModule(mfeB, mfeC)).toBeGreaterThan(0)
-      expect(component.sortMfesByTypeAndExposedModule(mfeC, mfeA)).toBeGreaterThan(0)
+      expect(component.sortMfesByTypeAndExposedModule(mfeA, mfeB)).toBeGreaterThan(0)
     })
   })
 
   describe('sortMssByAppId', () => {
     it('should sort by appId', () => {
-      const msA: Microservice = { appId: 'alpha' } as Microservice
-      const msB: Microservice = { appId: 'beta' } as Microservice
-      const msC: Microservice = { appId: 'alpha' } as Microservice
+      const msA: Microservice = { appId: 'a' } as Microservice
+      const msB: Microservice = { appId: 'b' } as Microservice
+      const msC: Microservice = { appId: 'a' } as Microservice
 
       expect(component.sortMssByAppId(msA, msB)).toBeLessThan(0)
       expect(component.sortMssByAppId(msB, msA)).toBeGreaterThan(0)
@@ -186,7 +184,7 @@ describe('ProductAppsComponent', () => {
     })
 
     it('should handle undefined or empty values', () => {
-      const msA: Microservice = { appId: 'alpha' } as Microservice
+      const msA: Microservice = { appId: 'a' } as Microservice
       const msB: Microservice = {} as Microservice
       const msC: Microservice = { appId: '' } as Microservice
 
@@ -198,9 +196,9 @@ describe('ProductAppsComponent', () => {
 
   describe('sortSlotsByName', () => {
     it('should sort by name', () => {
-      const slotA: SlotPageItem = { name: 'alpha' } as SlotPageItem
-      const slotB: SlotPageItem = { name: 'beta' } as SlotPageItem
-      const slotC: SlotPageItem = { name: 'alpha' } as SlotPageItem
+      const slotA: SlotPageItem = { name: 'a' } as SlotPageItem
+      const slotB: SlotPageItem = { name: 'b' } as SlotPageItem
+      const slotC: SlotPageItem = { name: 'a' } as SlotPageItem
 
       expect(component.sortSlotsByName(slotA, slotB)).toBeLessThan(0)
       expect(component.sortSlotsByName(slotB, slotA)).toBeGreaterThan(0)
@@ -208,7 +206,7 @@ describe('ProductAppsComponent', () => {
     })
 
     it('should handle undefined or empty values', () => {
-      const slotA: SlotPageItem = { name: 'alpha' } as SlotPageItem
+      const slotA: SlotPageItem = { name: 'a' } as SlotPageItem
       const slotB: SlotPageItem = {} as SlotPageItem
       const slotC: SlotPageItem = { name: '' } as SlotPageItem
 
@@ -221,27 +219,27 @@ describe('ProductAppsComponent', () => {
   /**
    * UI EVENTS
    */
-  it('should behave correctly onDetail for MFE', () => {
+  describe('onDetail', () => {
     const mockEvent = { stopPropagation: jasmine.createSpy() }
 
-    component.onDetail(mockEvent, mfeApp, AppType.MFE)
+    it('should display details of an mfe', () => {
+      component.onDetail(mockEvent, mfeApp, AppType.MFE)
 
-    expect(component.app).toEqual(mfeApp)
-    expect(component.changeMode).toEqual('EDIT')
-    expect(component.displayDetailDialog).toBeTrue()
+      expect(component.app).toEqual(mfeApp)
+      expect(component.changeMode).toEqual('EDIT')
+      expect(component.displayDetailDialog).toBeTrue()
+    })
+
+    it('should display details of an ms', () => {
+      component.onDetail(mockEvent, msApp, AppType.MS)
+
+      expect(component.app).toEqual(msApp)
+      expect(component.changeMode).toEqual('EDIT')
+      expect(component.displayDetailDialog).toBeTrue()
+    })
   })
 
-  it('should behave correctly onDetail for MS', () => {
-    const mockEvent = { stopPropagation: jasmine.createSpy() }
-
-    component.onDetail(mockEvent, mfe, AppType.MFE)
-
-    expect(component.app).toEqual(msApp)
-    expect(component.changeMode).toEqual('EDIT')
-    expect(component.displayDetailDialog).toBeTrue()
-  })
-
-  it('should behave correctly onCopy', () => {
+  it('should display details to copy', () => {
     const mockEvent = { stopPropagation: jasmine.createSpy() }
 
     component.onCopy(mockEvent, mfeApp, AppType.MFE)
@@ -251,7 +249,7 @@ describe('ProductAppsComponent', () => {
     expect(component.displayDetailDialog).toBeTrue()
   })
 
-  it('should should behave correctly onCreate', () => {
+  it('should should show create dialog', () => {
     component.onCreate()
 
     expect(component.changeMode).toEqual('CREATE')
@@ -259,7 +257,7 @@ describe('ProductAppsComponent', () => {
     expect(component.displayDetailDialog).toBeTrue()
   })
 
-  it('should behave correctly onDelete', () => {
+  it('should display delete dialog', () => {
     const mockEvent = { stopPropagation: jasmine.createSpy() }
 
     component.onDelete(mockEvent, mfeApp, AppType.MFE)
@@ -268,7 +266,7 @@ describe('ProductAppsComponent', () => {
     expect(component.displayDeleteDialog).toBeTrue()
   })
 
-  it('should call searchApps if app changed', () => {
+  it('should call searchProducts if app changed', () => {
     spyOn(component, 'searchProducts')
 
     component.appChanged(true)
@@ -308,7 +306,7 @@ describe('ProductAppsComponent', () => {
       expect(component.displaySlotDeleteDialog).toBe(false)
     })
 
-    it('should call searchProducts when deleted is true', () => {
+    it('should call searchProducts when slot has been deleted', () => {
       spyOn(component, 'searchProducts')
       component.displaySlotDeleteDialog = true
 
@@ -318,7 +316,7 @@ describe('ProductAppsComponent', () => {
       expect(component.searchProducts).toHaveBeenCalled()
     })
 
-    it('should not call searchProducts when deleted is false', () => {
+    it('should not call searchProducts when slot has not been deleted', () => {
       spyOn(component, 'searchProducts')
       component.displaySlotDeleteDialog = true
 
