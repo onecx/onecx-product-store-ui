@@ -142,7 +142,6 @@ export class AppDetailComponent implements OnInit, OnChanges {
     if (this.appAbstract?.id) {
       if (this.appAbstract.appType === 'MFE') this.getMfe()
       if (this.appAbstract.appType === 'MS') this.getMs()
-      this.preparePanelHeight()
     }
   }
 
@@ -273,16 +272,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
 
   public onTabPanelChange(e: any): void {
     this.tabIndex = e.index
-    this.preparePanelHeight()
   }
-  // use the same height on all TABs
-  private preparePanelHeight(): void {
-    if (!this.panelDetail?.el?.nativeElement) return
-    this.renderer.setStyle(this.panelDetail?.el.nativeElement, 'display', 'block')
-    if (this.panelHeight === 0) this.panelHeight = this.panelDetail?.el.nativeElement.offsetHeight
-    this.renderer.setStyle(this.panelDetail?.el.nativeElement, 'height', this.panelHeight - 10 + 'px')
-  }
-
   private createMfe() {
     this.mfeApi.createMicrofrontend({ createMicrofrontendRequest: this.mfe as CreateMicrofrontendRequest }).subscribe({
       next: () => {
