@@ -261,7 +261,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
       this.mfe = { ...this.formGroupMfe.value, id: this.mfe?.id }
       if (this.mfe) {
         this.mfe.classifications = this.convertToUniqueStringArray(this.formGroupMfe.controls['classifications'].value)
-        this.mfe.endpoints = this.endpoints
+        this.mfe.endpoints = this.endpoints.filter((endpoint) => !(endpoint.name === '' && endpoint.path === ''))
       }
       this.changeMode === 'CREATE' ? this.createMfe() : this.updateMfe()
     }
@@ -361,10 +361,14 @@ export class AppDetailComponent implements OnInit, OnChanges {
     })
   }
 
-  public addNewEndpoint() {
-    if (this.newEndpoint.name || this.newEndpoint.path) {
-      this.endpoints.push(this.newEndpoint)
-      this.newEndpoint = { name: '', path: '' }
-    }
+  // public addNewEndpoint() {
+  //   if (this.newEndpoint.name || this.newEndpoint.path) {
+  //     this.endpoints.push(this.newEndpoint)
+  //     this.newEndpoint = { name: '', path: '' }
+  //   }
+  // }
+
+  public addNewRow() {
+    return { name: '', path: '' }
   }
 }

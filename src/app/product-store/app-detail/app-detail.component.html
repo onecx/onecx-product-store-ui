@@ -435,7 +435,7 @@
       [header]="'DIALOG.TABS.ENDPOINTS' | translate"
       [tooltip]="'DIALOG.TABS.TOOLTIPS.ENDPOINTS' | translate"
     >
-      <p-table [value]="endpoints" [tableStyle]="{ 'min-width': '50rem' }">
+      <p-table #epTable [value]="endpoints" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template pTemplate="header">
           <tr>
             <th [pTooltip]="'APP.TOOLTIPS.ENDPOINTS.NAME' | translate" tooltipPosition="top" tooltipEvent="hover">
@@ -464,40 +464,53 @@
                 <ng-template pTemplate="output"> {{ endpoint.path }} </ng-template>
               </p-cellEditor>
             </td>
-            <td [pEditableColumn]="newEndpoint.name" pEditableColumnField="name">
+            <!-- <td [pEditableColumn]="newEndpoint.name" pEditableColumnField="name">
               <p-cellEditor>
                 <ng-template pTemplate="input">
                   <input pInputText type="text" [(ngModel)]="newEndpoint.name" />
                 </ng-template>
                 <ng-template pTemplate="output">{{ newEndpoint.name }}</ng-template>
               </p-cellEditor>
-            </td>
+            </td> -->
           </tr>
         </ng-template>
-        <!-- <ng-template pTemplate="body">
-          <tr>
-            <td [pEditableColumn]="newEndpoint.name" pEditableColumnField="name">
-              <p-cellEditor>
-                <ng-template pTemplate="input">
-                  <input pInputText type="text" [(ngModel)]="newEndpoint.name" />
-                </ng-template>
-                <ng-template pTemplate="output">{{ newEndpoint.name }}</ng-template>
-              </p-cellEditor>
-            </td>
-            <td [pEditableColumn]="newEndpoint.path" pEditableColumnField="path">
-              <p-cellEditor>
-                <ng-template pTemplate="input">
-                  <input pInputText type="text" [(ngModel)]="newEndpoint.path" />
-                </ng-template>
-                <ng-template pTemplate="output">{{ newEndpoint.path }}</ng-template>
-              </p-cellEditor>
-            </td>
-            <td>
-              <button pButton type="button" icon="pi pi-check" (click)="addNewEndpoint()"></button>
-            </td>
-          </tr>
-        </ng-template> -->
       </p-table>
+      <!-- <ng-template pTemplate="body">
+        <input pInputText type="text" [(ngModel)]="newEndpoint.name" />
+        <input pInputText type="text" [(ngModel)]="newEndpoint.path" />
+
+        <tr>
+          <td [pEditableColumn]="newEndpoint.name" pEditableColumnField="name">
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="newEndpoint.name" />
+              </ng-template>
+              <ng-template pTemplate="output">{{ newEndpoint.name }}</ng-template>
+            </p-cellEditor>
+          </td>
+          <td [pEditableColumn]="newEndpoint.path" pEditableColumnField="path">
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="newEndpoint.path" />
+              </ng-template>
+              <ng-template pTemplate="output">{{ newEndpoint.path }}</ng-template>
+            </p-cellEditor>
+          </td>
+          <td>
+            <button pButton type="button" icon="pi pi-check" (click)="addNewEndpoint()"></button>
+          </td>
+        </tr>
+      </ng-template> -->
+      <button
+        pButton
+        type="button"
+        icon="pi pi-plus"
+        class="ui-button-info"
+        [label]="'Add'"
+        pAddRow
+        [table]="epTable"
+        [newRow]="addNewRow()"
+      ></button>
     </p-tabPanel>
   </p-tabView>
 

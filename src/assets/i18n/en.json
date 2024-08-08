@@ -67,8 +67,8 @@
       "MS.HEADER": "Edit Microservice",
       "APP": {
         "TOOLTIP": "Edit App properties",
-        "OK": "Das App wurde erfolgreich geändert",
-        "NOK": "Ein Fehler ist aufgetreten. Das App wurde nicht geändert."
+        "OK": "The Application was changed successfully",
+        "NOK": "An error has occurred. The Application was not changed."
       },
       "PRODUCT": {
         "HEADER": "Edit Application",
