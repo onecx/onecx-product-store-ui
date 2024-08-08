@@ -101,6 +101,10 @@
       "VIEW_MODE_LIST": "Listenansicht",
       "VIEW_MODE_TABLE": "Tabellenansicht"
     },
+    "TABLE": {
+      "ADD_ROW": "Zeile hinzufügen",
+      "ADD.TOOLTIP": "Eine neue Zeile zur Tabelle hinzufügen"
+    },
     "SEARCH": {
       "NOT_FOUND": "Keine Daten gefunden",
       "WILDCARD_SUPPORT": " (Wildcards: ?, *)",

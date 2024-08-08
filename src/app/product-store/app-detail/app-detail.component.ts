@@ -82,7 +82,6 @@ export class AppDetailComponent implements OnInit, OnChanges {
   ]
   public iconItems: SelectItem[] = []
   public endpoints: UIEndpoint[] = []
-  public newEndpoint: UIEndpoint = { name: '', path: '' }
   public convertToUniqueStringArray = convertToUniqueStringArray
 
   constructor(
@@ -361,14 +360,14 @@ export class AppDetailComponent implements OnInit, OnChanges {
     })
   }
 
-  // public addNewEndpoint() {
-  //   if (this.newEndpoint.name || this.newEndpoint.path) {
-  //     this.endpoints.push(this.newEndpoint)
-  //     this.newEndpoint = { name: '', path: '' }
-  //   }
-  // }
-
-  public addNewRow() {
+  public onAddEndpointsRow() {
     return { name: '', path: '' }
+  }
+
+  public deleteRow(row: number) {
+    const delBtn = confirm('Do you want to delete ?')
+    if (delBtn == true) {
+      this.endpoints.splice(row, 1)
+    }
   }
 }

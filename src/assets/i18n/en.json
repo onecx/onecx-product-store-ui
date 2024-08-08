@@ -101,6 +101,10 @@
       "VIEW_MODE_LIST": "List view",
       "VIEW_MODE_TABLE": "Table view"
     },
+    "TABLE": {
+      "ADD_ROW": "Add row",
+      "ADD.TOOLTIP": "Add a new row to the table"
+    },
     "SEARCH": {
       "NOT_FOUND": "No data found",
       "WILDCARD_SUPPORT": " Wildcards: ?, *",
