@@ -18,7 +18,8 @@ import {
   Microfrontend,
   Microservice,
   UpdateMicrofrontendRequest,
-  UpdateMicroserviceRequest
+  UpdateMicroserviceRequest,
+  UIEndpoint
 } from 'src/app/shared/generated'
 
 import { AppAbstract, ChangeMode } from '../app-search/app-search.component'
@@ -80,6 +81,8 @@ export class AppDetailComponent implements OnInit, OnChanges {
     { label: 'Component', value: 'COMPONENT' }
   ]
   public iconItems: SelectItem[] = []
+  public endpoints: UIEndpoint[] = []
+  public newEndpoint: UIEndpoint = { name: '', path: '' }
   public convertToUniqueStringArray = convertToUniqueStringArray
 
   constructor(
@@ -173,6 +176,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
             this.operator = this.mfe?.operator ?? false
             this.undeployed = this.mfe?.undeployed ?? false
             this.deprecated = this.mfe?.deprecated ?? false
+            this.endpoints = this.mfe?.endpoints ?? []
             if (this.changeMode === 'COPY') {
               if (this.mfe?.id) {
                 this.mfe.id = undefined
@@ -255,8 +259,10 @@ export class AppDetailComponent implements OnInit, OnChanges {
         return
       }
       this.mfe = { ...this.formGroupMfe.value, id: this.mfe?.id }
-      if (this.mfe)
+      if (this.mfe) {
         this.mfe.classifications = this.convertToUniqueStringArray(this.formGroupMfe.controls['classifications'].value)
+        this.mfe.endpoints = this.endpoints
+      }
       this.changeMode === 'CREATE' ? this.createMfe() : this.updateMfe()
     }
     if (this.appAbstract?.appType === 'MS') {
@@ -353,5 +359,12 @@ export class AppDetailComponent implements OnInit, OnChanges {
         { label: data['APP.WEBCOMPONENT.SCRIPT'], value: 'WEBCOMPONENTSCRIPT' }
       ]
     })
+  }
+
+  public addNewEndpoint() {
+    if (this.newEndpoint.name || this.newEndpoint.path) {
+      this.endpoints.push(this.newEndpoint)
+      this.newEndpoint = { name: '', path: '' }
+    }
   }
 }

@@ -198,10 +198,12 @@
       "APPS": "Komponenten",
       "INTERN": "Intern",
       "PROPERTIES": "Eigenschaften",
+      "ENDPOINTS": "UI-Endpunkte",
       "TOOLTIPS": {
         "APPS": "Komponenten verwalten",
         "INTERN": "Interne Eigenschaften",
-        "PROPERTIES": "Eigenschaften verwalten"
+        "PROPERTIES": "Eigenschaften verwalten",
+        "ENDPOINTS": "UI-Endpunkte verwalten"
       }
     },
     "COMPONENTS": {
@@ -236,7 +238,8 @@
     "ICON_NAME": "Icon-Name",
     "NOTE": "Notiz",
     "EXPOSED_MODULE": "Exposed Module",
-    "ENDPOINTS": "UI Endpunkte",
+    "ENDPOINTS.NAME": "Name",
+    "ENDPOINTS.PATH": "Pfad zum UI-Endpunkt",
     "GROUP.REMOTE_MODULE": "Remote Modul",
     "GROUP.LOCAL_MODULE": "Modul Management Details",
     "GROUP.INTERNALS": "Weitere Details",
@@ -260,7 +263,8 @@
       "ICON_NAME": "Name eines Icons aus der PrimeNG Icon Bibliothek. Wird z.b. als Default bei Menüeinträgen benutzt",
       "NOTE": "Notiz",
       "EXPOSED_MODULE": "Exposed Module",
-      "ENDPOINTS": "UI Endpunkte",
+      "ENDPOINTS.NAME": "Name des UI-Endpunkts",
+      "ENDPOINTS.PATH": "Pfad zum UI-Endpunkt",
       "GROUP.REMOTE_MODULE": "Details des zu verwendeten Remote Moduls",
       "GROUP.LOCAL_MODULE": "Details der lokalen Registrierung des Moduls",
       "GROUP.INTERNALS": "Weitere Details der Objektverwaltung und Verwendung",
