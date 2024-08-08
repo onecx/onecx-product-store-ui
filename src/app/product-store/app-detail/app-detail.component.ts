@@ -364,10 +364,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
     return { name: '', path: '' }
   }
 
-  public deleteRow(row: number) {
-    const delBtn = confirm('Do you want to delete ?')
-    if (delBtn == true) {
-      this.endpoints.splice(row, 1)
-    }
+  public onDeleteRow(row: number) {
+    this.endpoints.splice(row, 1)
   }
 }

@@ -435,7 +435,7 @@
       [header]="'DIALOG.TABS.ENDPOINTS' | translate"
       [tooltip]="'DIALOG.TABS.TOOLTIPS.ENDPOINTS' | translate"
     >
-      <p-table #epTable [value]="endpoints" [tableStyle]="{ 'min-width': '50rem' }">
+      <p-table #endpointTable [value]="endpoints" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template pTemplate="header">
           <tr>
             <th [pTooltip]="'APP.TOOLTIPS.ENDPOINTS.NAME' | translate" tooltipPosition="top" tooltipEvent="hover">
@@ -465,7 +465,7 @@
               </p-cellEditor>
             </td>
             <td>
-              <button (click)="deleteRow(i)"><i class="pi pi-trash"></i></button>
+              <button (click)="onDeleteRow(i)"><i class="pi pi-trash"></i></button>
             </td>
           </tr>
         </ng-template>
@@ -475,7 +475,7 @@
         type="button"
         icon="pi pi-plus"
         pAddRow
-        [table]="epTable"
+        [table]="endpointTable"
         [newRow]="onAddEndpointsRow()"
         [label]="'ACTIONS.TABLE.ADD_ROW' | translate"
         [pTooltip]="'ACTIONS.TABLE.ADD.TOOLTIP' | translate"
