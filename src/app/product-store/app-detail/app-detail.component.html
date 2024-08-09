@@ -429,6 +429,60 @@
       <app-app-intern *ngIf="appAbstract?.appType === 'MFE'" [app]="mfe"></app-app-intern>
       <app-app-intern *ngIf="appAbstract?.appType === 'MS'" [app]="ms"></app-app-intern>
     </p-tabPanel>
+
+    <p-tabPanel
+      *ngIf="appAbstract?.appType === 'MFE'"
+      [header]="'DIALOG.TABS.ENDPOINTS' | translate"
+      [tooltip]="'DIALOG.TABS.TOOLTIPS.ENDPOINTS' | translate"
+    >
+      <p-table #endpointTable [value]="endpoints" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="header">
+          <tr>
+            <th [pTooltip]="'APP.TOOLTIPS.ENDPOINTS.NAME' | translate" tooltipPosition="top" tooltipEvent="hover">
+              {{ 'APP.ENDPOINTS.PATH' | translate }}
+            </th>
+            <th [pTooltip]="'APP.TOOLTIPS.ENDPOINTS.PATH' | translate" tooltipPosition="top" tooltipEvent="hover">
+              {{ 'APP.ENDPOINTS.NAME' | translate }}
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-endpoint let-i="index">
+          <tr>
+            <td [pEditableColumn]="endpoint.name" pEditableColumnField="name">
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText type="text" [(ngModel)]="endpoint.name" />
+                </ng-template>
+                <ng-template pTemplate="output"> {{ endpoint.name }} </ng-template>
+              </p-cellEditor>
+            </td>
+            <td [pEditableColumn]="endpoint.path" pEditableColumnField="path">
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText type="text" [(ngModel)]="endpoint.path" />
+                </ng-template>
+                <ng-template pTemplate="output"> {{ endpoint.path }} </ng-template>
+              </p-cellEditor>
+            </td>
+            <td>
+              <button (click)="onDeleteRow(i)"><i class="pi pi-trash"></i></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-plus"
+        pAddRow
+        [table]="endpointTable"
+        [newRow]="onAddEndpointsRow()"
+        [label]="'ACTIONS.TABLE.ADD_ROW' | translate"
+        [pTooltip]="'ACTIONS.TABLE.ADD.TOOLTIP' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      ></button>
+    </p-tabPanel>
   </p-tabView>
 
   <ng-template pTemplate="footer">

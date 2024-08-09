@@ -278,6 +278,10 @@ describe('AppDetailComponent', () => {
       component.appAbstract = appMfe
       component.formGroupMfe = form
       component.changeMode = 'CREATE'
+      component.endpoints = [
+        { name: 'name', path: 'path' },
+        { name: '', path: 'path' }
+      ]
 
       component.onSave()
 
@@ -609,5 +613,22 @@ describe('AppDetailComponent', () => {
     component = fixture.componentInstance
     fixture.detectChanges()
     expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm:ss')
+  })
+
+  it('should add a row in the UI endpoints row', () => {
+    const returnValue = component.onAddEndpointsRow()
+
+    expect(returnValue).toEqual({ name: '', path: '' })
+  })
+
+  it('should delete an endpoint item', () => {
+    component.endpoints = [
+      { name: 'name', path: 'path' },
+      { name: '', path: 'path' }
+    ]
+
+    component.onDeleteRow(1)
+
+    expect(component.endpoints.length).toBe(1)
   })
 })
