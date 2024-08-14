@@ -18,7 +18,7 @@
     "format": "ng lint --fix",
     "eslint": "eslint --quiet --ext .js,.ts src",
     "browser": "npx browserslist",
-    "prepare": "husky",
+    "prepare": "husky || true",
     "start": "ng serve --configuration=development --proxy-config=proxy.conf.js",
     "test": "ng test",
     "test:ci": "ng test --watch=false --browsers=ChromeHeadless --code-coverage",

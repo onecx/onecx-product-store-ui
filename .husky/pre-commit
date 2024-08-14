@@ -2,6 +2,9 @@
 
 bash << EOF
 
+echo "hooks"
+exit 1
+
 echo "[Husky] Running lint check on changed files:"
 ng lint --cache=true
 echo "[Husky] Running prettier check on changed files:"
