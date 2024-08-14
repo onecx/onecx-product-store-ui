@@ -28,14 +28,12 @@ app:
             CREATE: Create app
             DELETE: Delete app
             EDIT: Edit app
-            SAVE: Update and save app
             SEARCH: Search apps
             VIEW: View app details
           PRODUCT:
             CREATE: Create product
             DELETE: Delete product
             EDIT: Edit product
-            SAVE: Update and save product
             SEARCH: Search products
             VIEW: View product details
           SLOT:
