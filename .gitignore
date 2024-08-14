@@ -4,8 +4,6 @@
 /dist
 /tmp
 /out-tsc
-# Only exists if Bazel was run
-/bazel-out
 
 # dependencies
 /node_modules
@@ -32,7 +30,8 @@ speed-measure-plugin*.json
 .history/*
 
 # misc
-.angular/cache
+.angular
+.eslintcache
 .sass-cache
 .gitlab*
 .scannerwork
