@@ -184,7 +184,7 @@
   },
   "DIALOG": {
     "SEARCH.HEADER": "Application Store",
-    "SEARCH.SUBHEADER": "Applikationen und deren Apps verwalten",
+    "SEARCH.SUBHEADER": "Applikationen und deren Komponenten (Microfrontends, Microservices, Slots) verwalten",
     "DETAIL.SUBHEADER": "Application Details",
     "SEARCH.APPS.LABEL": "Apps",
     "SEARCH.APPS.TOOLTIP": "Microfrontends und Microservices suchen und verwalten",
