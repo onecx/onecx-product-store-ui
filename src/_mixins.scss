@@ -61,6 +61,14 @@
   }
 }
 
+@mixin compact-dropdown-list-items {
+  :host ::ng-deep {
+    .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+      padding: 0.4rem 1rem !important;
+    }
+  }
+}
+
 @mixin invisible {
   :host ::ng-deep {
     .invisible {

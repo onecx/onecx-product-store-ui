@@ -3,16 +3,12 @@
 @include danger-action;
 @include dialog-footer-buttons;
 @include displaying-text-responsive;
+@include dropdown-zebra-rows;
+@include compact-dropdown-list-items;
+@include dialog-non-full-size-modal;
 
 /* limit deletion dialog */
 :host ::ng-deep {
-  // popup dialogues
-  @media (max-width: 991px) {
-    .p-dialog.p-dialog {
-      max-height: unset !important;
-      height: unset !important;
-    }
-  }
   .p-dialog {
     .p-dialog-content {
       border-radius: unset !important;

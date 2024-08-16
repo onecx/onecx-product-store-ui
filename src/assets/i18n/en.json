@@ -202,11 +202,15 @@
       "APPS": "Components",
       "INTERN": "Internal",
       "PROPERTIES": "Properties",
+      "REMOTE": "Remote Module",
+      "LOCAL": "Management Details",
       "ENDPOINTS": "UI Endpoints",
       "TOOLTIPS": {
         "APPS": "Manage Components",
         "INTERN": "Internal properties",
         "PROPERTIES": "Manage Properties",
+        "REMOTE": "Remote Module",
+        "LOCAL": "Management Details",
         "ENDPOINTS": "Manage UI Endpoints"
       }
     },
