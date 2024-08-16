@@ -5,7 +5,8 @@ import { Microfrontend, Microservice } from 'src/app/shared/generated'
 
 @Component({
   selector: 'app-app-intern',
-  templateUrl: './app-intern.component.html'
+  templateUrl: './app-intern.component.html',
+  styleUrls: ['./app-intern.component.scss']
 })
 export class AppInternComponent implements OnChanges {
   @Input() app: (Microfrontend | Microservice) | undefined
