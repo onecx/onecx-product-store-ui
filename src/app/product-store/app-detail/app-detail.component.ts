@@ -257,7 +257,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
     this.appChanged.emit(false)
   }
 
-  public onAddEndpointsRow() {
+  public onAddEndpointRow() {
     this.endpoints.push({ name: '', path: '' })
   }
 
