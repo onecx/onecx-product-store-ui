@@ -1,18 +1,11 @@
 @import '/src/_mixins.scss';
 
 @include danger-action;
+@include dialog-non-full-size-modal;
 
-/* limit deletion dialog */
 :host ::ng-deep {
   // each tab panel manages its own padding separately
   .p-tabview .p-tabview-panels {
     padding: 0;
-  }
-  // popup dialogues
-  @media (max-width: 991px) {
-    .p-dialog.p-dialog {
-      max-height: unset !important;
-      height: unset !important;
-    }
   }
 }

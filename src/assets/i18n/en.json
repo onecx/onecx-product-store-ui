@@ -1,5 +1,7 @@
 {
   "ACTIONS": {
+    "LABEL": "Actions",
+    "TOOLTIP": "Actions for table data",
     "CONFIRMATION": {
       "NO": "No",
       "YES": "Yes",
@@ -36,6 +38,7 @@
     },
     "DELETE": {
       "LABEL": "Delete",
+      "ENDPOINT.TOOLTIP": "Delete Endpoint",
       "MFE.HEADER": "Delete Microfrontend",
       "MS.HEADER": "Delete Microservice",
       "APP": {
@@ -103,7 +106,7 @@
     },
     "TABLE": {
       "ADD_ROW": "Add row",
-      "ADD.TOOLTIP": "Add a new row to the table"
+      "ADD_ROW.TOOLTIP": "Add a new row to the table"
     },
     "SEARCH": {
       "NOT_FOUND": "No data found",
@@ -146,7 +149,8 @@
     "UPLOAD": "Upload",
     "TOOLTIPS": {
       "CANCEL": "Cancel action",
-      "SAVE": "Save changes"
+      "SAVE": "Save changes",
+      "SAVE_AND_CLOSE": "Save changes and close dialog"
     }
   },
   "BREADCRUMBS": {

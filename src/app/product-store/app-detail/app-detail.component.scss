@@ -6,23 +6,20 @@
 @include dropdown-zebra-rows;
 @include compact-dropdown-list-items;
 @include dialog-non-full-size-modal;
+@include table-inline-buttons;
+@include table-zebra-rows;
 
-/* limit deletion dialog */
 :host ::ng-deep {
-  .p-dialog {
-    .p-dialog-content {
-      border-radius: unset !important;
-      padding-bottom: 0;
+  .p-datatable .p-datatable-tbody > tr > td {
+    &:not(:first-of-type) {
+      min-width: 220px;
+      border-left-width: 1px;
     }
-  }
-  .p-fieldset {
-    &.p-fieldset-toggleable .p-fieldset-legend a,
-    .p-fieldset-legend {
-      background-color: transparent;
-      padding: 0.3rem 0.4rem;
+    &:not(:has(p-celleditor .p-inputtext)) {
+      padding: var(--table-body-cell-padding);
     }
-    .p-fieldset-content {
-      padding: 1rem 0.2rem 0rem;
+    &:has(p-celleditor .p-inputtext) {
+      padding: 0.4rem;
     }
   }
 }

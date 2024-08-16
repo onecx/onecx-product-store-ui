@@ -397,6 +397,16 @@
     }
   }
 }
+@mixin table-zebra-rows {
+  :host ::ng-deep {
+    .p-datatable .p-datatable-tbody > tr:nth-child(odd) > td {
+      background-color: #f8f9fa;
+    }
+    .p-datatable .p-datatable-tbody > tr > td {
+      color: red !important;
+    }
+  }
+}
 
 // PICKLIST
 @mixin picklist-hide-double-buttons {

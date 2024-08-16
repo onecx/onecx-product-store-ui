@@ -1,5 +1,7 @@
 {
   "ACTIONS": {
+    "LABEL": "Aktionen",
+    "TOOLTIP": "Aktionen für Tabellendaten",
     "CONFIRMATION": {
       "NO": "Nein",
       "YES": "Ja",
@@ -36,6 +38,7 @@
     },
     "DELETE": {
       "LABEL": "Löschen",
+      "ENDPOINT.TOOLTIP": "Endpunkt löschen",
       "MFE.HEADER": "Microfrontend löschen",
       "MS.HEADER": "Microservice löschen",
       "APP": {
@@ -103,7 +106,7 @@
     },
     "TABLE": {
       "ADD_ROW": "Zeile hinzufügen",
-      "ADD.TOOLTIP": "Eine neue Zeile zur Tabelle hinzufügen"
+      "ADD_ROW.TOOLTIP": "Eine neue Zeile zur Tabelle hinzufügen"
     },
     "SEARCH": {
       "NOT_FOUND": "Keine Daten gefunden",
@@ -146,7 +149,8 @@
     "UPLOAD": "Hochladen",
     "TOOLTIPS": {
       "CANCEL": "Aktion abbrechen ",
-      "SAVE": "Änderungen speichern"
+      "SAVE": "Änderungen speichern",
+      "SAVE_AND_CLOSE": "Änderungen speichern und Dialog schließen"
     }
   },
   "BREADCRUMBS": {

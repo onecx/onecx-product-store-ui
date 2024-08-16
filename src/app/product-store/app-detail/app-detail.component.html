@@ -393,53 +393,75 @@
       [header]="'DIALOG.TABS.ENDPOINTS' | translate"
       [tooltip]="'DIALOG.TABS.TOOLTIPS.ENDPOINTS' | translate"
     >
-      <p-table #endpointTable [value]="endpoints" [tableStyle]="{ 'min-width': '50rem' }">
-        <ng-template pTemplate="header">
-          <tr>
-            <th [pTooltip]="'APP.TOOLTIPS.ENDPOINTS.NAME' | translate" tooltipPosition="top" tooltipEvent="hover">
-              {{ 'APP.ENDPOINTS.PATH' | translate }}
-            </th>
-            <th [pTooltip]="'APP.TOOLTIPS.ENDPOINTS.PATH' | translate" tooltipPosition="top" tooltipEvent="hover">
-              {{ 'APP.ENDPOINTS.NAME' | translate }}
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-endpoint let-i="index">
-          <tr>
-            <td [pEditableColumn]="endpoint.name" pEditableColumnField="name">
-              <p-cellEditor>
-                <ng-template pTemplate="input">
-                  <input pInputText type="text" [(ngModel)]="endpoint.name" />
-                </ng-template>
-                <ng-template pTemplate="output"> {{ endpoint.name }} </ng-template>
-              </p-cellEditor>
-            </td>
-            <td [pEditableColumn]="endpoint.path" pEditableColumnField="path">
-              <p-cellEditor>
-                <ng-template pTemplate="input">
-                  <input pInputText type="text" [(ngModel)]="endpoint.path" />
-                </ng-template>
-                <ng-template pTemplate="output"> {{ endpoint.path }} </ng-template>
-              </p-cellEditor>
-            </td>
-            <td>
-              <button (click)="onDeleteRow(i)"><i class="pi pi-trash"></i></button>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-      <button
-        pButton
-        type="button"
-        icon="pi pi-plus"
-        pAddRow
-        [table]="endpointTable"
-        [newRow]="onAddEndpointsRow()"
-        [label]="'ACTIONS.TABLE.ADD_ROW' | translate"
-        [pTooltip]="'ACTIONS.TABLE.ADD.TOOLTIP' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-      ></button>
+      <div class="mt-3 flex flex-column row-gap-4">
+        <p-table #endpointTable [value]="endpoints">
+          <ng-template pTemplate="header">
+            <tr>
+              <th
+                class="px-0 text-center"
+                [pTooltip]="'ACTIONS.TOOLTIP' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+                {{ 'ACTIONS.LABEL' | translate }}
+              </th>
+              <th [pTooltip]="'APP.TOOLTIPS.ENDPOINTS.NAME' | translate" tooltipPosition="top" tooltipEvent="hover">
+                {{ 'APP.ENDPOINTS.NAME' | translate }}
+              </th>
+              <th [pTooltip]="'APP.TOOLTIPS.ENDPOINTS.PATH' | translate" tooltipPosition="top" tooltipEvent="hover">
+                {{ 'APP.ENDPOINTS.PATH' | translate }}
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-endpoint let-i="rowIndex">
+            <tr>
+              <td class="px-0 text-center white-space-nowrap">
+                <button
+                  pbutton
+                  class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
+                  [id]="'am_announcement_search_table_row_' + i + '_delete_action'"
+                  (click)="onDeleteRow(i)"
+                  [disabled]="i === endpoints.length - 1"
+                  aria-label="'ACTIONS.DELETE.ENDPOINT.TOOLTIP' | translate"
+                  [pTooltip]="'ACTIONS.DELETE.ENDPOINT.TOOLTIP' | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  <span class="text-primary font-medium p-button-icon pi pi-trash"></span>
+                </button>
+                <button
+                  pbutton
+                  class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
+                  [id]="'am_announcement_search_table_row_' + i + '_add_action'"
+                  (click)="onAddRow()"
+                  aria-label="'ACTIONS.TABLE.ADD_ROW.LABEL' | translate"
+                  [pTooltip]="'ACTIONS.TABLE.ADD_ROW.TOOLTIP' | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  <span class="text-primary font-medium p-button-icon pi pi-plus-circle"></span>
+                </button>
+              </td>
+              <td [pEditableColumn]="endpoint.name" pEditableColumnField="name">
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <input pInputText type="text" [(ngModel)]="endpoint.name" />
+                  </ng-template>
+                  <ng-template pTemplate="output"> {{ endpoint.name }} </ng-template>
+                </p-cellEditor>
+              </td>
+              <td [pEditableColumn]="endpoint.path" pEditableColumnField="path">
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <input pInputText type="text" [(ngModel)]="endpoint.path" />
+                  </ng-template>
+                  <ng-template pTemplate="output"> {{ endpoint.path }} </ng-template>
+                </p-cellEditor>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
     </p-tabPanel>
   </p-tabView>
 
@@ -475,7 +497,7 @@
           (appAbstract?.appType === 'MS' && !formGroupMs.valid)
         "
         [label]="'ACTIONS.SAVE' | translate"
-        [pTooltip]="'ACTIONS.TOOLTIPS.SAVE' | translate"
+        [pTooltip]="'ACTIONS.TOOLTIPS.SAVE_AND_CLOSE' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
       ></p-button>
