@@ -14,9 +14,6 @@
     '600px': '100vw'
   }"
 >
-  <!--
-  [style]="{ 'amax-width': '800px' }"
--->
   <ng-template pTemplate="header">
     <div *ngIf="loading" class="pi pi-spinner"></div>
     <div *ngIf="!loading" class="w-full flex flex-row justify-content-between align-items-center">
@@ -50,7 +47,7 @@
         <ng-template pTemplate="header">
           <span>{{ 'ACTIONS.' + this.changeMode + '.MFE.HEADER' | translate }}</span>
         </ng-template>
-        <div class="mt-5 mb-3 flex flex-column row-gap-4">
+        <div class="mt-3 flex flex-column row-gap-4">
           <div class="flex flex-row flex-wrap gap-4">
             <span class="flex-grow-1 p-float-label" controlErrorAnchor>
               <input
@@ -163,7 +160,7 @@
           <span>{{ 'ACTIONS.' + this.changeMode + '.MFE.HEADER' | translate }}</span>
         </ng-template>
 
-        <div class="mt-5 mb-3 flex flex-column row-gap-4">
+        <div class="mt-3 flex flex-column row-gap-4">
           <div class="flex flex-row flex-wrap gap-4">
             <span class="flex-grow-1 p-float-label" controlErrorAnchor>
               <input
@@ -302,7 +299,7 @@
         <ng-template pTemplate="header">
           <span>{{ 'ACTIONS.' + this.changeMode + '.MS.HEADER' | translate }}</span>
         </ng-template>
-        <div class="mt-5 mb-3 flex flex-column row-gap-4">
+        <div class="mt-3 flex flex-column row-gap-4">
           <div class="flex flex-row flex-wrap gap-4">
             <span class="flex-grow-1 p-float-label" controlErrorAnchor>
               <input
@@ -393,7 +390,13 @@
       [header]="'DIALOG.TABS.ENDPOINTS' | translate"
       [tooltip]="'DIALOG.TABS.TOOLTIPS.ENDPOINTS' | translate"
     >
-      <div class="mt-3 flex flex-column row-gap-4">
+      <div class="mt-3 flex flex-column row-gap-2">
+        <p-message
+          id="app_detail_endpoint_info_message"
+          severity="info"
+          [text]="'APP.ENDPOINTS.CELL_EDITING_MESSAGE' | translate"
+        ></p-message>
+
         <p-table #endpointTable [value]="endpoints">
           <ng-template pTemplate="header">
             <tr>
@@ -419,27 +422,27 @@
                 <button
                   pbutton
                   class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-                  [id]="'am_announcement_search_table_row_' + i + '_delete_action'"
-                  (click)="onDeleteRow(i)"
-                  [disabled]="i === endpoints.length - 1"
-                  aria-label="'ACTIONS.DELETE.ENDPOINT.TOOLTIP' | translate"
-                  [pTooltip]="'ACTIONS.DELETE.ENDPOINT.TOOLTIP' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                >
-                  <span class="text-primary font-medium p-button-icon pi pi-trash"></span>
-                </button>
-                <button
-                  pbutton
-                  class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-                  [id]="'am_announcement_search_table_row_' + i + '_add_action'"
-                  (click)="onAddRow()"
+                  [id]="'app_detail_endpoint_table_row_' + i + '_add_action'"
+                  (click)="onAddEndpointsRow()"
+                  [disabled]="i !== endpoints.length - 1"
                   aria-label="'ACTIONS.TABLE.ADD_ROW.LABEL' | translate"
                   [pTooltip]="'ACTIONS.TABLE.ADD_ROW.TOOLTIP' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
                   <span class="text-primary font-medium p-button-icon pi pi-plus-circle"></span>
+                </button>
+                <button
+                  pbutton
+                  class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
+                  [id]="'app_detail_endpoint_table_row_' + i + '_delete_action'"
+                  (click)="onDeleteEndpointRow(i)"
+                  aria-label="'ACTIONS.DELETE.ENDPOINT.TOOLTIP' | translate"
+                  [pTooltip]="'ACTIONS.DELETE.ENDPOINT.TOOLTIP' | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  <span class="text-primary font-medium p-button-icon danger-action-text pi pi-trash"></span>
                 </button>
               </td>
               <td [pEditableColumn]="endpoint.name" pEditableColumnField="name">

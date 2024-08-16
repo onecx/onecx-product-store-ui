@@ -423,8 +423,7 @@
 @mixin dialog-modal-dialog-content {
   :host ::ng-deep {
     .p-dialog .p-dialog-content {
-      border-bottom-left-radius: unset;
-      border-bottom-right-radius: unset;
+      border-radius: unset !important;
     }
   }
 }

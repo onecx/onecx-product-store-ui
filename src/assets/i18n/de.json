@@ -250,8 +250,11 @@
     "ICON_NAME": "Icon-Name",
     "NOTE": "Notiz",
     "EXPOSED_MODULE": "Exposed Module",
-    "ENDPOINTS.NAME": "Name",
-    "ENDPOINTS.PATH": "Pfad zum UI-Endpunkt",
+    "ENDPOINTS": {
+      "NAME": "Name",
+      "PATH": "Pfad zum UI-Endpunkt",
+      "CELL_EDITING_MESSAGE": "Das Erfassen und Ändern erfolgt direkt in der Tabelle."
+    },
     "GROUP.REMOTE_MODULE": "Remote Modul",
     "GROUP.LOCAL_MODULE": "Modul Management Details",
     "GROUP.INTERNALS": "Weitere Details",

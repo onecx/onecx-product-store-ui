@@ -187,7 +187,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
               this.changeMode = 'CREATE'
             }
             this.enableForms()
-            this.endpoints.push({ name: '', path: '' })
+            //this.endpoints.push({ name: '', path: '' })
           }
           this.dialogTitleKey = 'ACTIONS.' + this.changeMode + '.MFE.HEADER'
         }
@@ -258,13 +258,10 @@ export class AppDetailComponent implements OnInit, OnChanges {
   }
 
   public onAddEndpointsRow() {
-    return { name: '', path: '' }
-  }
-  public onAddRow() {
     this.endpoints.push({ name: '', path: '' })
   }
 
-  public onDeleteRow(row: number) {
+  public onDeleteEndpointRow(row: number) {
     if (this.endpoints.length > 1) this.endpoints.splice(row, 1)
   }
 

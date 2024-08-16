@@ -1,5 +1,6 @@
 @import '/src/_mixins.scss';
 
+@include danger-action;
 @include displaying-text-responsive;
 @include dropdown-zebra-rows;
 @include compact-dropdown-list-items;
