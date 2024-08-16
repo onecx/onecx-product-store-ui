@@ -252,7 +252,7 @@
     "EXPOSED_MODULE": "Exposed Module",
     "ENDPOINTS": {
       "NAME": "Name",
-      "PATH": "Path to UI Endpoint",
+      "PATH": "Path",
       "CELL_EDITING_MESSAGE": "Data entry and changes are made directly in the table."
     },
     "GROUP.REMOTE_MODULE": "Remote Module",
@@ -278,7 +278,7 @@
       "ICON_NAME": "Name of the icons from the PrimeNG icon library. Used, for example, as a default icon for menu entries",
       "NOTE": "Note",
       "EXPOSED_MODULE": "Exposed Module",
-      "ENDPOINTS.NAME": "Name of the UI Endpoint",
+      "ENDPOINTS.NAME": "Unique name of the UI Endpoint",
       "ENDPOINTS.PATH": "Path to the UI Endpoint",
       "GROUP.REMOTE_MODULE": "Details of the remote module to be used",
       "GROUP.LOCAL_MODULE": "Details of the module's local registration",

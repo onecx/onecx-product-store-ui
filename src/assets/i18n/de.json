@@ -252,7 +252,7 @@
     "EXPOSED_MODULE": "Exposed Module",
     "ENDPOINTS": {
       "NAME": "Name",
-      "PATH": "Pfad zum UI-Endpunkt",
+      "PATH": "Pfad",
       "CELL_EDITING_MESSAGE": "Das Erfassen und Ändern erfolgt direkt in der Tabelle."
     },
     "GROUP.REMOTE_MODULE": "Remote Modul",

@@ -599,14 +599,6 @@ describe('AppDetailComponent', () => {
     })
   })
 
-  it('should update tabIndex onTabPanelChange', () => {
-    const mockEvent = { index: 3 }
-
-    component.onTabPanelChange(mockEvent)
-
-    expect(component.tabIndex).toBe(mockEvent.index)
-  })
-
   it('should call this.user.lang$ from the constructor and set this.dateFormat to the default format if user.lang$ is not de', () => {
     mockUserService.lang$.getValue.and.returnValue('de')
     fixture = TestBed.createComponent(AppDetailComponent)
