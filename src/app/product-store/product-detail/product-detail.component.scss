@@ -2,10 +2,3 @@
 
 @include danger-action;
 @include dialog-non-full-size-modal;
-
-:host ::ng-deep {
-  // each tab panel manages its own padding separately
-  .p-tabview .p-tabview-panels {
-    padding: 0;
-  }
-}

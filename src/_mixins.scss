@@ -451,6 +451,13 @@
   }
 }
 
+@mixin tabview-reduce-padding {
+  :host ::ng-deep {
+    .p-tabview .p-tabview-panels {
+      padding: 1.4rem 0 0 0;
+    }
+  }
+}
 /* **********************************************
  *  TABLE
  * **********************************************/

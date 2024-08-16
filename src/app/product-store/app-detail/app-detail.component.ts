@@ -69,7 +69,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
   public ms: Microservice | undefined
   public formGroupMfe: FormGroup
   public formGroupMs: FormGroup
-  public tabIndex = 0
+  public selectedTabIndex = 0
   public dialogTitleKey = ''
   public loading = false
   public operator = false
@@ -134,6 +134,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     this.enableForms()
+    this.selectedTabIndex = 0
     if (this.changeMode === 'CREATE') {
       this.ms = undefined
       this.mfe = undefined
@@ -178,6 +179,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
             this.undeployed = this.mfe?.undeployed ?? false
             this.deprecated = this.mfe?.deprecated ?? false
             this.endpoints = this.mfe?.endpoints ?? []
+            if (this.endpoints.length === 0) this.onAddEndpointRow()
             if (this.changeMode === 'COPY') {
               if (this.mfe?.id) {
                 this.mfe.id = undefined
@@ -187,7 +189,6 @@ export class AppDetailComponent implements OnInit, OnChanges {
               this.changeMode = 'CREATE'
             }
             this.enableForms()
-            //this.endpoints.push({ name: '', path: '' })
           }
           this.dialogTitleKey = 'ACTIONS.' + this.changeMode + '.MFE.HEADER'
         }
@@ -286,10 +287,6 @@ export class AppDetailComponent implements OnInit, OnChanges {
       this.ms = { ...this.formGroupMs.value, id: this.ms?.id }
       this.changeMode === 'CREATE' ? this.createMs() : this.updateMs()
     }
-  }
-
-  public onTabPanelChange(e: any): void {
-    this.tabIndex = e.index
   }
 
   /**
