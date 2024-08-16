@@ -213,18 +213,18 @@
                 tooltipPosition="top"
                 tooltipEvent="hover"
               ></span>
-              <div class="h-4rem flex flex-column justify-content-between gap-1 text-center">
+              <div class="px-4 h-4rem flex flex-column justify-content-between gap-1 text-center">
                 <div
-                  class="font-bold"
+                  class="font-bold text-responsive"
                   [pTooltip]="app.appId.length <= 22 ? '' : app.appId"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
-                  {{ limitText(app.appId, 22) }}
+                  {{ app.appId }}
                 </div>
                 <div
                   *ngIf="app.appType === 'MS'"
-                  class="text-sm"
+                  class="text-sm text-responsive"
                   [pTooltip]="'ACTIONS.SEARCH.APP.QUICK_FILTER.MS' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
@@ -233,20 +233,20 @@
                 </div>
                 <div
                   *ngIf="app.appType === 'MFE'"
-                  class="text-sm"
+                  class="px-3 text-sm text-responsive"
                   [pTooltip]="app.exposedModule.length <= 25 ? '' : app.exposedModule"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
-                  {{ limitText(app.exposedModule, 25) }}
+                  {{ app.exposedModule }}
                 </div>
                 <div
-                  class="text-xs"
+                  class="px-4 text-xs text-responsive"
                   [pTooltip]="app.productName.length <= 25 ? '' : app.productName"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
-                  {{ limitText(app.productName, 25) }}
+                  {{ app.productName }}
                 </div>
               </div>
             </a>

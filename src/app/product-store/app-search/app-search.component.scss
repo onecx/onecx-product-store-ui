@@ -1,5 +1,6 @@
 @import '/src/_mixins.scss';
 
+@include displaying-text-responsive;
 @include correct-data-view-control;
 @include correct-select-button;
 @include correct-search-criteria;
@@ -13,9 +14,10 @@
   .h-05rem {
     height: 0.5rem;
   }
+  .card-badge-left,
   .card-badge-right {
     &.badge-2 {
-      top: 38px;
+      top: 39px;
     }
   }
 }

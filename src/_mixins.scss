@@ -111,12 +111,16 @@
   }
 }
 
+/* **********************************************
+ *  Card Badges
+ * **********************************************/
 @mixin card-badges {
   :host ::ng-deep {
-    .card-badge-right {
+    .card-badge-right,
+    .card-badge-left {
       display: inline-block;
       position: absolute;
-      right: 3px;
+      padding: 4px !important;
       &.badge-1 {
         top: 3px;
       }
@@ -124,16 +128,11 @@
         top: 35px;
       }
     }
+    .card-badge-right {
+      right: 1px;
+    }
     .card-badge-left {
-      display: inline-block;
-      position: absolute;
-      left: 3px;
-      &.badge-1 {
-        top: 3px;
-      }
-      &.badge-2 {
-        top: 35px;
-      }
+      left: 1px;
     }
     .pseudo-button-link {
       border-radius: var(--border-radius);
@@ -141,7 +140,6 @@
         color: var(--primary-color-text);
         background: var(--button-hover-bg);
         cursor: pointer;
-        padding: 5px !important;
       }
     }
   }
@@ -422,11 +420,11 @@
 /* **********************************************
  *  DIALOG
  * **********************************************/
-@mixin correct-modal-dialog {
+@mixin dialog-modal-dialog-content {
   :host ::ng-deep {
     .p-dialog .p-dialog-content {
-      border-bottom-left-radius: var(--border-radius);
-      border-bottom-right-radius: var(--border-radius);
+      border-bottom-left-radius: unset;
+      border-bottom-right-radius: unset;
     }
   }
 }
@@ -471,6 +469,15 @@
       }
       &:disabled {
         opacity: 0.38 !important;
+      }
+    }
+  }
+}
+@mixin table-vertical-lines {
+  :host ::ng-deep {
+    .p-datatable .p-datatable-tbody > tr > td {
+      &:not(:first-of-type) {
+        border-left-width: 1px;
       }
     }
   }

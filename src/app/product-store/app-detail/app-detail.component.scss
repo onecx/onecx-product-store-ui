@@ -1,25 +1,37 @@
 @import '/src/_mixins.scss';
 
-@include danger-action;
-@include dialog-footer-buttons;
 @include displaying-text-responsive;
 @include dropdown-zebra-rows;
 @include compact-dropdown-list-items;
+@include dialog-footer-buttons;
+@include dialog-modal-dialog-content;
 @include dialog-non-full-size-modal;
-@include table-inline-buttons;
 @include table-zebra-rows;
+@include table-inline-buttons;
+@include table-vertical-lines;
 
 :host ::ng-deep {
+  /**
+   * adjustments for tables with cell editing => endpoints
+  */
   .p-datatable .p-datatable-tbody > tr > td {
     &:not(:first-of-type) {
       min-width: 220px;
-      border-left-width: 1px;
     }
     &:not(:has(p-celleditor .p-inputtext)) {
       padding: var(--table-body-cell-padding);
     }
     &:has(p-celleditor .p-inputtext) {
       padding: 0.4rem;
+    }
+  }
+  /**
+   * position aligned to card dimensions
+  */
+  .card-badge-right,
+  .card-badge-left {
+    &.badge-2 {
+      top: 39px;
     }
   }
 }
