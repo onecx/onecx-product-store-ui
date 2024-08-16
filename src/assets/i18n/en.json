@@ -1,5 +1,7 @@
 {
   "ACTIONS": {
+    "LABEL": "Actions",
+    "TOOLTIP": "Actions for table data",
     "CONFIRMATION": {
       "NO": "No",
       "YES": "Yes",
@@ -36,6 +38,7 @@
     },
     "DELETE": {
       "LABEL": "Delete",
+      "ENDPOINT.TOOLTIP": "Delete Endpoint",
       "MFE.HEADER": "Delete Microfrontend",
       "MS.HEADER": "Delete Microservice",
       "APP": {
@@ -103,7 +106,7 @@
     },
     "TABLE": {
       "ADD_ROW": "Add row",
-      "ADD.TOOLTIP": "Add a new row to the table"
+      "ADD_ROW.TOOLTIP": "Add a new row to the table"
     },
     "SEARCH": {
       "NOT_FOUND": "No data found",
@@ -146,7 +149,8 @@
     "UPLOAD": "Upload",
     "TOOLTIPS": {
       "CANCEL": "Cancel action",
-      "SAVE": "Save changes"
+      "SAVE": "Save changes",
+      "SAVE_AND_CLOSE": "Save changes and close dialog"
     }
   },
   "BREADCRUMBS": {
@@ -202,11 +206,15 @@
       "APPS": "Components",
       "INTERN": "Internal",
       "PROPERTIES": "Properties",
+      "REMOTE": "Remote Module",
+      "LOCAL": "Management Details",
       "ENDPOINTS": "UI Endpoints",
       "TOOLTIPS": {
         "APPS": "Manage Components",
         "INTERN": "Internal properties",
         "PROPERTIES": "Manage Properties",
+        "REMOTE": "Remote Module",
+        "LOCAL": "Management Details",
         "ENDPOINTS": "Manage UI Endpoints"
       }
     },
@@ -242,8 +250,11 @@
     "ICON_NAME": "Icon Name",
     "NOTE": "Note",
     "EXPOSED_MODULE": "Exposed Module",
-    "ENDPOINTS.NAME": "Name",
-    "ENDPOINTS.PATH": "Path",
+    "ENDPOINTS": {
+      "NAME": "Name",
+      "PATH": "Path to UI Endpoint",
+      "CELL_EDITING_MESSAGE": "Data entry and changes are made directly in the table."
+    },
     "GROUP.REMOTE_MODULE": "Remote Module",
     "GROUP.LOCAL_MODULE": "Module Management Details",
     "GROUP.INTERNALS": "More Details",

@@ -1,12 +1,12 @@
 <form>
-  <p-fieldset styleClass="surface-100 pt-0 pb-1 mt-3 mx-0">
+  <div class="mt-3">
     <ng-template pTemplate="header">
       <span [pTooltip]="'APP.TOOLTIPS.GROUP.INTERNALS' | translate" tooltipPosition="top" tooltipEvent="hover">
         {{ 'APP.GROUP.INTERNALS' | translate }}</span
       >
     </ng-template>
-    <div class="grid row-gap-2">
-      <div class="col-12 md:col-6 pt-0 pb-3 px-4">
+    <div class="flex flex-column row-gap-4">
+      <div class="mx-3 flex flex-row flex-wrap column-gap-6 row-gap-3">
         <p-checkbox
           type="text"
           [readonly]="true"
@@ -19,8 +19,6 @@
           tooltipPosition="top"
           tooltipEvent="hover"
         ></p-checkbox>
-      </div>
-      <div class="col-12 md:col-3 pt-0 pb-3 px-4" style="min-width: 12rem">
         <p-checkbox
           type="text"
           [readonly]="true"
@@ -33,9 +31,6 @@
           tooltipPosition="top"
           tooltipEvent="hover"
         ></p-checkbox>
-      </div>
-
-      <div class="col-12 md:col-3 pt-0 pb-3 px-4" style="min-width: 12rem">
         <p-checkbox
           type="text"
           [readonly]="true"
@@ -50,76 +45,67 @@
         ></p-checkbox>
       </div>
 
-      <div class="flex flex-wrap row-gap-4">
-        <div class="w-12 sm:w-5 pr-3" style="min-width: 12rem">
-          <span class="p-float-label mb-1">
-            <input
-              pInputText
-              type="text"
-              readonly
-              id="app_detail_form_mfe_field_creationDate"
-              class="w-full pt-3 pb-2"
-              [value]="app?.creationDate ? (app?.creationDate | date: dateFormat) : ''"
-              [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label for="app_detail_form_app_field_creationDate">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
-          </span>
-        </div>
-        <div class="w-12 sm:w-7 pl-3" style="min-width: 12rem">
-          <span class="p-float-label mb-1">
-            <input
-              pInputText
-              type="text"
-              readonly
-              id="app_detail_form_app_field_creationUser"
-              class="w-full pt-3 pb-2 text-responsive"
-              [value]="app?.creationUser ? (app?.creationUser | date: dateFormat) : ''"
-              [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_USER' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label for="app_detail_form_app_field_creationUser"> {{ 'INTERNAL.CREATION_USER' | translate }} </label>
-          </span>
-        </div>
-        <div class="w-12 sm:w-5 pr-3" style="min-width: 12rem">
-          <span class="p-float-label mb-1">
-            <input
-              pInputText
-              type="text"
-              readonly
-              id="app_detail_form_app_field_modificationDate"
-              class="w-full pt-3 pb-2"
-              [value]="app?.modificationDate ? (app?.modificationDate | date: dateFormat) : ''"
-              [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label for="app_detail_form_app_field_modificationDate">
-              {{ 'INTERNAL.MODIFICATION_DATE' | translate }}
-            </label>
-          </span>
-        </div>
-        <div class="w-12 sm:w-7 pl-3" style="min-width: 12rem">
-          <span class="p-float-label mb-1">
-            <input
-              pInputText
-              type="text"
-              readonly
-              id="app_detail_form_app_field_modificationUser"
-              class="w-full pt-3 pb-2 text-responsive"
-              [value]="app?.modificationUser ? (app?.modificationUser | date: dateFormat) : ''"
-              [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_USER' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label for="app_detail_form_mfe_field_modificationUser">
-              {{ 'INTERNAL.MODIFICATION_USER' | translate }}
-            </label>
-          </span>
-        </div>
+      <div class="flex flex-row flex-wrap gap-4">
+        <span class="p-float-label">
+          <input
+            pInputText
+            type="text"
+            readonly
+            id="app_detail_intern_form_creation_date"
+            class="w-full sm:w-14rem pt-3 pb-2 text-responsive"
+            [value]="app?.creationDate ? (app?.creationDate | date: dateFormat) : ''"
+            [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          />
+          <label for="app_detail_intern_form_creation_date">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
+        </span>
+        <span class="flex-grow-1 p-float-label">
+          <input
+            pInputText
+            type="text"
+            readonly
+            id="app_detail_intern_form_creation_user"
+            class="w-full pt-3 pb-2 text-responsive"
+            [value]="app?.creationUser"
+            [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_USER' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          />
+          <label for="app_detail_intern_form_creation_user"> {{ 'INTERNAL.CREATION_USER' | translate }} </label>
+        </span>
+      </div>
+
+      <div class="flex flex-row flex-wrap gap-4">
+        <span class="p-float-label">
+          <input
+            pInputText
+            type="text"
+            readonly
+            id="app_detail_intern_form_modification_date"
+            class="w-full sm:w-14rem pt-3 pb-2"
+            [value]="app?.modificationDate ? (app?.modificationDate | date: dateFormat) : ''"
+            [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          />
+          <label for="app_detail_intern_form_modification_date"> {{ 'INTERNAL.MODIFICATION_DATE' | translate }} </label>
+        </span>
+        <span class="flex-grow-1 p-float-label">
+          <input
+            pInputText
+            type="text"
+            readonly
+            id="app_detail_intern_form_modification_user"
+            class="w-full pt-3 pb-2 text-responsive"
+            [value]="app?.modificationUser"
+            [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_USER' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          />
+          <label for="app_detail_intern_form_modification_user"> {{ 'INTERNAL.MODIFICATION_USER' | translate }} </label>
+        </span>
       </div>
     </div>
-  </p-fieldset>
+  </div>
 </form>

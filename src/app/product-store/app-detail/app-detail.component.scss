@@ -1,39 +1,38 @@
 @import '/src/_mixins.scss';
 
 @include danger-action;
+@include displaying-text-responsive;
+@include dropdown-zebra-rows;
+@include compact-dropdown-list-items;
+@include dialog-footer-buttons;
+@include dialog-modal-dialog-content;
+@include dialog-non-full-size-modal;
+@include table-zebra-rows;
+@include table-inline-buttons;
+@include table-vertical-lines;
 
-/* limit deletion dialog */
 :host ::ng-deep {
-  // popup dialogues
-  @media (max-width: 991px) {
-    .p-dialog.p-dialog {
-      max-height: unset !important;
-      height: unset !important;
+  /**
+   * adjustments for tables with cell editing => endpoints
+  */
+  .p-datatable .p-datatable-tbody > tr > td {
+    &:not(:first-of-type) {
+      min-width: 220px;
+    }
+    &:not(:has(p-celleditor .p-inputtext)) {
+      padding: var(--table-body-cell-padding);
+    }
+    &:has(p-celleditor .p-inputtext) {
+      padding: 0.4rem;
     }
   }
-
-  .p-dialog {
-    background: var(--panel-content-bg);
-    .p-dialog-content {
-      border-radius: unset !important;
-      padding-bottom: 0.5rem;
-      margin-bottom: 0.5rem;
-    }
-    .p-dialog-footer button {
-      margin: unset;
-    }
-    .p-dialog-header .p-dialog-header-icons {
-      display: none;
-    }
-  }
-  .p-fieldset {
-    &.p-fieldset-toggleable .p-fieldset-legend a,
-    .p-fieldset-legend {
-      background-color: transparent;
-      padding: 0.3rem 0.4rem;
-    }
-    .p-fieldset-content {
-      padding: 1rem 0.2rem 0rem;
+  /**
+   * position aligned to card dimensions
+  */
+  .card-badge-right,
+  .card-badge-left {
+    &.badge-2 {
+      top: 39px;
     }
   }
 }

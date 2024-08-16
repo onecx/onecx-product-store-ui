@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core'
 import { finalize } from 'rxjs'
 import { SelectItem } from 'primeng/api'
 import { TabView } from 'primeng/tabview'
+import { Table } from 'primeng/table'
 
 import { PortalMessageService, UserService } from '@onecx/portal-integration-angular'
 import { IconService } from 'src/app/shared/iconservice'
@@ -63,6 +64,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
   @Output() appChanged = new EventEmitter<boolean>()
 
   @ViewChild('panelDetail') panelDetail: TabView | undefined
+  @ViewChild('endpointTable') endpointTable: Table | undefined
   public mfe: Microfrontend | undefined
   public ms: Microservice | undefined
   public formGroupMfe: FormGroup
@@ -185,6 +187,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
               this.changeMode = 'CREATE'
             }
             this.enableForms()
+            //this.endpoints.push({ name: '', path: '' })
           }
           this.dialogTitleKey = 'ACTIONS.' + this.changeMode + '.MFE.HEADER'
         }
@@ -247,8 +250,19 @@ export class AppDetailComponent implements OnInit, OnChanges {
     })
   }
 
+  /**
+   * CLICK Actions
+   */
   public onDialogHide() {
     this.appChanged.emit(false)
+  }
+
+  public onAddEndpointRow() {
+    this.endpoints.push({ name: '', path: '' })
+  }
+
+  public onDeleteEndpointRow(row: number) {
+    if (this.endpoints.length > 1) this.endpoints.splice(row, 1)
   }
 
   public onSave() {
@@ -277,6 +291,10 @@ export class AppDetailComponent implements OnInit, OnChanges {
   public onTabPanelChange(e: any): void {
     this.tabIndex = e.index
   }
+
+  /**
+   * DATA
+   */
   private createMfe() {
     this.mfeApi.createMicrofrontend({ createMicrofrontendRequest: this.mfe as CreateMicrofrontendRequest }).subscribe({
       next: () => {
@@ -358,13 +376,5 @@ export class AppDetailComponent implements OnInit, OnChanges {
         { label: data['APP.WEBCOMPONENT.SCRIPT'], value: 'WEBCOMPONENTSCRIPT' }
       ]
     })
-  }
-
-  public onAddEndpointsRow() {
-    return { name: '', path: '' }
-  }
-
-  public onDeleteRow(row: number) {
-    this.endpoints.splice(row, 1)
   }
 }
