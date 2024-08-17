@@ -66,8 +66,8 @@
     },
     "EDIT": {
       "LABEL": "Bearbeiten",
-      "MFE.HEADER": "Microfrontend Details",
-      "MS.HEADER": "Microservice Details",
+      "MFE.HEADER": "Microfrontend Ändern",
+      "MS.HEADER": "Microservice Ändern",
       "APP": {
         "TOOLTIP": "Die App-Eigenschaften bearbeiten",
         "OK": "Die App wurde erfolgreich geändert",
@@ -255,9 +255,6 @@
       "PATH": "Pfad",
       "CELL_EDITING_MESSAGE": "Das Erfassen und Ändern erfolgt direkt in der Tabelle."
     },
-    "GROUP.REMOTE_MODULE": "Remote Modul",
-    "GROUP.LOCAL_MODULE": "Modul Management Details",
-    "GROUP.INTERNALS": "Weitere Details",
     "DEPRECATED": "Veraltet",
     "UNDEPLOYED": "Unverfügbar",
     "TOOLTIPS": {

@@ -7,18 +7,20 @@
           <input
             pInputText
             type="text"
-            class="w-full"
-            id="product_detail_item_name"
+            class="w-full text-responsive"
+            id="ps_product_detail_prop_field_name"
             formControlName="name"
             [pTooltip]="'PRODUCT.TOOLTIPS.NAME' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           />
-          <label class="ocx-required-label" for="product_detail_item_name">{{ 'PRODUCT.NAME' | translate }}</label>
+          <label class="ocx-required-label" for="ps_product_detail_prop_field_name">
+            {{ 'PRODUCT.NAME' | translate }}</label
+          >
         </span>
         <!-- Custom validator message -->
         <div *ngIf="this.formGroup.controls['name'].errors?.['invalidProductName']">
-          <label class="control-error" for="product_detail_item_name">
+          <label class="control-error" for="ps_product_detail_prop_field_name">
             {{ 'VALIDATION.PRODUCT.INVALID_NAME' | translate }}</label
           >
         </div>
@@ -27,14 +29,16 @@
         <input
           pInputText
           type="text"
-          class="w-full"
-          id="product_detail_item_version"
+          class="w-full text-responsive"
+          id="ps_product_detail_prop_field_version"
           formControlName="version"
           [pTooltip]="'PRODUCT.TOOLTIPS.VERSION' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label class="ocx-required-label" for="product_detail_item_version"> {{ 'PRODUCT.VERSION' | translate }}</label>
+        <label class="ocx-required-label" for="ps_product_detail_prop_field_version">
+          {{ 'PRODUCT.VERSION' | translate }}</label
+        >
       </span>
     </div>
 
@@ -44,14 +48,14 @@
         <input
           pInputText
           type="text"
-          class="w-full"
-          id="product_detail_item_display_name"
+          class="w-full text-responsive"
+          id="ps_product_detail_prop_field_display_name"
           formControlName="displayName"
           [pTooltip]="'PRODUCT.TOOLTIPS.DISPLAY_NAME' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label class="ocx-required-label" for="product_detail_item_display_name">
+        <label class="ocx-required-label" for="ps_product_detail_prop_field_display_name">
           {{ 'PRODUCT.DISPLAY_NAME' | translate }}</label
         >
       </span>
@@ -59,14 +63,14 @@
         <input
           pInputText
           type="text"
-          class="w-full"
-          id="product_detail_item_basePath"
+          class="w-full text-responsive"
+          id="ps_product_detail_prop_field_basePath"
           formControlName="basePath"
           [pTooltip]="'PRODUCT.TOOLTIPS.BASE_PATH' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label class="ocx-required-label" for="product_detail_item_basePath">
+        <label class="ocx-required-label" for="ps_product_detail_prop_field_basePath">
           {{ 'PRODUCT.BASE_PATH' | translate }}</label
         >
       </span>
@@ -82,7 +86,7 @@
       <input hidden type="file" accept="image/*" #selectedFileInputLogo (change)="onFileUpload($event)" />
       <button
         pButton
-        id="product_detail_item_upload_logo2"
+        id="ps_product_detail_prop_field_upload_logo2"
         icon="pi pi-upload"
         (click)="selectedFileInputLogo.click()"
         class="action-button p-button-icon-only"
@@ -98,8 +102,8 @@
           <input
             pInputText
             type="text"
-            class="w-full"
-            id="product_detail_item_image_url"
+            class="w-full text-responsive"
+            id="ps_product_detail_prop_field_image_url"
             formControlName="imageUrl"
             (paste)="onInputChange(product, $event)"
             (change)="onInputChange(product, $event)"
@@ -107,7 +111,7 @@
             tooltipPosition="top"
             tooltipEvent="hover"
           />
-          <label for="product_detail_item_image_url">{{ 'PRODUCT.IMAGE_URL' | translate }}</label>
+          <label for="ps_product_detail_prop_field_image_url">{{ 'PRODUCT.IMAGE_URL' | translate }}</label>
         </span>
         <label *ngIf="changeMode === 'EDIT'" class="ocx-control-hint block" for="workspace_detail_form_logo_url">
           {{ ('VALIDATION.HINTS.FORMAT_URL' | translate) + externUrlPattern }}
@@ -119,7 +123,7 @@
     <div class="flex flex-row flex-wrap gap-4">
       <span class="flex-grow-1 p-float-label" controlErrorAnchor>
         <p-dropdown
-          id="product_detail_item_icon-name"
+          id="ps_product_detail_prop_field_icon-name"
           styleClass="w-full min-w-min input-field-correction"
           formControlName="iconName"
           [options]="iconItems"
@@ -142,20 +146,20 @@
             </div>
           </ng-template>
         </p-dropdown>
-        <label for="product_detail_item_icon-name">{{ 'PRODUCT.ICON_NAME' | translate }}</label>
+        <label for="ps_product_detail_prop_field_icon-name">{{ 'PRODUCT.ICON_NAME' | translate }}</label>
       </span>
       <span class="flex-grow-1 p-float-label">
         <input
           pInputText
           type="text"
-          class="w-full"
-          id="product_detail_item_classifications"
+          class="w-full text-responsive"
+          id="ps_product_detail_prop_field_classifications"
           formControlName="classifications"
           [pTooltip]="'PRODUCT.TOOLTIPS.CLASSIFICATIONS' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="product_detail_item_classifications">{{ 'PRODUCT.CLASSIFICATIONS' | translate }}</label>
+        <label for="ps_product_detail_prop_field_classifications">{{ 'PRODUCT.CLASSIFICATIONS' | translate }}</label>
       </span>
     </div>
 
@@ -166,7 +170,7 @@
         class="w-full"
         autoresize="true"
         rows="1"
-        id="product_detail_item_provider"
+        id="ps_product_detail_prop_field_provider"
         [pTooltip]="'PRODUCT.PROVIDER' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
@@ -175,7 +179,7 @@
         tooltipPosition="top"
         tooltipEvent="hover"
       ></textarea>
-      <label for="product_detail_item_provider">{{ 'PRODUCT.PROVIDER' | translate }}</label>
+      <label for="ps_product_detail_prop_field_provider">{{ 'PRODUCT.PROVIDER' | translate }}</label>
     </span>
 
     <!-- row 6 -->
@@ -185,13 +189,13 @@
         class="w-full"
         autoresize="true"
         rows="3"
-        id="product_detail_item_description"
+        id="ps_product_detail_prop_field_description"
         formControlName="description"
         [pTooltip]="'PRODUCT.TOOLTIPS.DESCRIPTION' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
       ></textarea>
-      <label for="product_detail_item_description">{{ 'PRODUCT.DESCRIPTION' | translate }}</label>
+      <label for="ps_product_detail_prop_field_description">{{ 'PRODUCT.DESCRIPTION' | translate }}</label>
     </span>
   </div>
 </form>

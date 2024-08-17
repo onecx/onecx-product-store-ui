@@ -1,4 +1,6 @@
 @import '/src/_mixins.scss';
 
 @include danger-action;
+@include dialog-footer-buttons;
 @include dialog-non-full-size-modal;
+@include displaying-text-responsive;

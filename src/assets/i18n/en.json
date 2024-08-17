@@ -255,9 +255,6 @@
       "PATH": "Path",
       "CELL_EDITING_MESSAGE": "Data entry and changes are made directly in the table."
     },
-    "GROUP.REMOTE_MODULE": "Remote Module",
-    "GROUP.LOCAL_MODULE": "Module Management Details",
-    "GROUP.INTERNALS": "More Details",
     "DEPRECATED": "Outdated",
     "UNDEPLOYED": "Undeployed",
     "TOOLTIPS": {

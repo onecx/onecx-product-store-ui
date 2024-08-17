@@ -10,7 +10,12 @@
   </ocx-page-header>
   <ocx-page-content>
     <div *ngIf="!loading && !product && changeMode !== 'CREATE'" class="card px-3 align-items-center">
-      <p-message severity="error" styleClass="p-2" [text]="'ACTIONS.SEARCH.PRODUCT.NOT_EXISTS' | translate"></p-message>
+      <p-message
+        id="ps_product_detail_message_not_exists"
+        severity="error"
+        styleClass="p-2"
+        [text]="'ACTIONS.SEARCH.PRODUCT.NOT_EXISTS' | translate"
+      ></p-message>
     </div>
     <p-tabView
       *ngIf="(product && !loading) || changeMode === 'CREATE'"
@@ -18,7 +23,7 @@
       [activeIndex]="selectedTabIndex"
     >
       <p-tabPanel
-        id="product_detail_panel_props"
+        id="ps_product_detail_panel_props"
         [header]="'DIALOG.TABS.PROPERTIES' | translate"
         [tooltip]="'DIALOG.TABS.TOOLTIPS.PROPERTIES' | translate"
       >
@@ -32,7 +37,7 @@
       </p-tabPanel>
 
       <p-tabPanel
-        id="product_detail_panel_intern"
+        id="ps_product_detail_panel_intern"
         [disabled]="changeMode !== 'VIEW'"
         [header]="'DIALOG.TABS.INTERN' | translate"
         [tooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate"
@@ -41,7 +46,7 @@
       </p-tabPanel>
 
       <p-tabPanel
-        id="product_detail_panel_apps"
+        id="ps_product_detail_panel_apps"
         [disabled]="changeMode !== 'VIEW'"
         [header]="'DIALOG.TABS.APPS' | translate"
         [tooltip]="'DIALOG.TABS.TOOLTIPS.APPS' | translate"
@@ -70,33 +75,24 @@
   </div>
   <ng-template pTemplate="footer">
     <div class="flex flex-wrap column-gap-2 row-gap-1 justify-content-end">
-      <button
-        pButton
-        id="product_detail_dialog_no_confirm"
-        autofocus
-        type="button"
-        class="m-0"
+      <p-button
+        id="ps_product_detail_delete_footer_button_no"
         icon="pi pi-times"
-        iconPos="left"
         (click)="productDeleteVisible = false"
         [label]="'ACTIONS.CONFIRMATION.NO' | translate"
         [pTooltip]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
-      ></button>
-      <button
-        pButton
-        id="product_detail_dialog_confirm"
-        type="button"
-        class="m-0"
+      ></p-button>
+      <p-button
+        id="ps_product_detail_delete_footer_button_yes"
         icon="pi pi-check"
-        iconPos="left"
         (click)="onDeleteConfirmation()"
         [label]="'ACTIONS.CONFIRMATION.YES' | translate"
         [pTooltip]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
-      ></button>
+      ></p-button>
     </div>
   </ng-template>
 </p-dialog>

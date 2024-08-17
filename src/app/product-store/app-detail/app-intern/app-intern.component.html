@@ -5,6 +5,7 @@
     >
   </ng-template>
   <div class="flex flex-column row-gap-4">
+    <!-- row 1 -->
     <div class="mx-3 flex flex-row flex-wrap column-gap-6 row-gap-3">
       <p-checkbox
         type="text"
@@ -44,6 +45,7 @@
       ></p-checkbox>
     </div>
 
+    <!-- row 2 -->
     <div class="flex flex-row flex-wrap gap-4">
       <span class="p-float-label">
         <input
@@ -51,7 +53,7 @@
           type="text"
           readonly
           id="app_detail_intern_form_creation_date"
-          class="w-full sm:w-14rem pt-3 pb-2 text-responsive"
+          class="w-full sm:w-15rem pt-3 pb-2 text-responsive"
           [value]="app?.creationDate ? (app?.creationDate | date: dateFormat) : ''"
           [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
           tooltipPosition="top"
@@ -75,6 +77,7 @@
       </span>
     </div>
 
+    <!-- row 3 -->
     <div class="flex flex-row flex-wrap gap-4">
       <span class="p-float-label">
         <input
@@ -82,7 +85,7 @@
           type="text"
           readonly
           id="app_detail_intern_form_modification_date"
-          class="w-full sm:w-14rem pt-3 pb-2"
+          class="w-full sm:w-15rem pt-3 pb-2"
           [value]="app?.modificationDate ? (app?.modificationDate | date: dateFormat) : ''"
           [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
           tooltipPosition="top"
