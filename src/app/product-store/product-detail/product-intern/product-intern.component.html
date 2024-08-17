@@ -1,128 +1,115 @@
 <div class="surface-section px-1">
-  <div class="flex flex-wrap flex-column row-gap-4 w-12 md:w-10 xl:w-6">
-    <div class="flex flex-wrap row-gap-2">
-      <div class="w-12 sm:w-5 px-3 flex align-items-center">
-        <p-checkbox
+  <div class="surface-section flex flex-column row-gap-4 mt-3 px-1">
+    <!-- row 1 -->
+    <div class="mx-3 flex flex-row flex-wrap column-gap-6 row-gap-3">
+      <p-checkbox
+        inputId="ps_product_detail_intern_field_operator"
+        styleClass="cursor-auto"
+        [readonly]="true"
+        [(ngModel)]="operator"
+        [binary]="true"
+        [label]="'INTERNAL.OPERATOR' | translate"
+        [pTooltip]="'PRODUCT.TOOLTIPS.OPERATOR' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      ></p-checkbox>
+      <p-checkbox
+        inputId="ps_product_detail_intern_field_undeployed"
+        styleClass="cursor-auto"
+        [readonly]="true"
+        [(ngModel)]="undeployed"
+        [binary]="true"
+        [label]="'PRODUCT.UNDEPLOYED' | translate"
+        [pTooltip]="'PRODUCT.TOOLTIPS.UNDEPLOYED' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      ></p-checkbox>
+    </div>
+
+    <!-- row 2 -->
+    <div class="flex flex-row flex-wrap gap-4">
+      <span class="flex-grow-1 sm:flex-grow-0 p-float-label">
+        <input
+          pInputText
           type="text"
-          styleClass="cursor-auto"
-          [readonly]="true"
-          inputId="product_detail_intern_field_operator"
-          [(ngModel)]="operator"
-          [binary]="true"
-          [label]="'INTERNAL.OPERATOR' | translate"
-          [pTooltip]="'PRODUCT.TOOLTIPS.OPERATOR' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        ></p-checkbox>
-      </div>
-      <div class="w-12 sm:w-7 px-3 flex align-items-center">
-        <p-checkbox
-          type="text"
-          styleClass="cursor-auto"
-          [readonly]="true"
-          inputId="product_detail_intern_field_undeployed"
-          [(ngModel)]="undeployed"
-          [binary]="true"
-          [label]="'PRODUCT.UNDEPLOYED' | translate"
-          [pTooltip]="'PRODUCT.TOOLTIPS.UNDEPLOYED' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        ></p-checkbox>
-      </div>
-    </div>
-
-    <div class="flex flex-wrap row-gap-4">
-      <div class="w-12 sm:w-5 sm:pr-3">
-        <span class="p-float-label mb-1">
-          <input
-            pInputText
-            type="text"
-            readonly
-            id="product_detail_intern_field_creationDate"
-            class="w-full pt-3 pb-2"
-            [value]="product?.creationDate | date: dateFormat"
-            [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          />
-          <label for="product_detail_intern_field_creationDate">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
-        </span>
-      </div>
-      <div class="w-12 sm:w-7 sm:pl-3">
-        <span class="p-float-label">
-          <input
-            pInputText
-            type="text"
-            readonly
-            id="product_detail_intern_field_creationUser"
-            class="w-full pt-3 pb-2"
-            [value]="product?.creationUser"
-            [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_USER' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          />
-          <label for="product_detail_intern_field_creationUser">{{ 'INTERNAL.CREATION_USER' | translate }}</label>
-        </span>
-      </div>
-    </div>
-
-    <div class="flex flex-wrap row-gap-4">
-      <div class="w-12 sm:w-5 sm:pr-3">
-        <span class="p-float-label mb-1">
-          <input
-            pInputText
-            type="text"
-            readonly
-            id="product_detail_intern_field_modificationDate"
-            class="w-full pt-3 pb-2"
-            [value]="product?.modificationDate | date: dateFormat"
-            [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          />
-          <label for="product_detail_intern_field_modificationDate">
-            {{ 'INTERNAL.MODIFICATION_DATE' | translate }}</label
-          >
-        </span>
-      </div>
-
-      <div class="w-12 sm:w-7 sm:pl-3">
-        <span class="p-float-label">
-          <input
-            pInputText
-            type="text"
-            readonly
-            id="product_detail_intern_field_modificationUser"
-            class="w-full pt-3 pb-2"
-            [value]="product?.modificationUser"
-            [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_USER' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          />
-          <label for="product_detail_intern_field_modificationUser">
-            {{ 'INTERNAL.MODIFICATION_USER' | translate }}</label
-          >
-        </span>
-      </div>
-    </div>
-
-    <div class="w-12">
-      <span class="p-float-label mb-1">
-        <textarea
-          #usedInWorkspaces
-          pInputTextarea
           readonly
-          class="w-full"
-          autoresize="true"
-          rows="3"
-          id="product_detail_intern_field_workspaces"
-          [pTooltip]="'PRODUCT.TOOLTIPS.WORKSPACES' | translate"
+          id="ps_product_detail_intern_field_creationDate"
+          class="w-full sm:w-15rem pt-3 pb-2 text-responsive"
+          [value]="product?.creationDate | date: dateFormat"
+          [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
-        >
-        </textarea>
-        <label for="product_detail_intern_field_workspaces">{{ 'PRODUCT.WORKSPACES' | translate }}</label>
+        />
+        <label for="ps_product_detail_intern_field_creationDate">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
+      </span>
+      <span class="flex-grow-1 p-float-label">
+        <input
+          pInputText
+          type="text"
+          readonly
+          id="ps_product_detail_intern_field_creation_user"
+          class="w-full pt-3 pb-2 text-responsive"
+          [value]="product?.creationUser"
+          [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_USER' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        />
+        <label for="ps_product_detail_intern_field_creation_user">{{ 'INTERNAL.CREATION_USER' | translate }}</label>
       </span>
     </div>
+
+    <!-- row 3 -->
+    <div class="flex flex-row flex-wrap gap-4">
+      <span class="flex-grow-1 sm:flex-grow-0 p-float-label">
+        <input
+          pInputText
+          type="text"
+          readonly
+          id="ps_product_detail_intern_field_modification_date"
+          class="w-full sm:w-15rem pt-3 pb-2 text-responsive"
+          [value]="product?.modificationDate | date: dateFormat"
+          [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        />
+        <label for="ps_product_detail_intern_field_modification_date">
+          {{ 'INTERNAL.MODIFICATION_DATE' | translate }}</label
+        >
+      </span>
+      <span class="flex-grow-1 p-float-label">
+        <input
+          pInputText
+          type="text"
+          readonly
+          id="ps_product_detail_intern_field_modification_user"
+          class="w-full pt-3 pb-2 text-responsive"
+          [value]="product?.modificationUser"
+          [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_USER' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        />
+        <label for="ps_product_detail_intern_field_modification_user">
+          {{ 'INTERNAL.MODIFICATION_USER' | translate }}</label
+        >
+      </span>
+    </div>
+
+    <!-- row 4 -->
+    <span class="p-float-label">
+      <textarea
+        #usedInWorkspaces
+        pInputTextarea
+        readonly
+        rows="4"
+        class="w-full"
+        autoresize="true"
+        id="ps_product_detail_intern_field_workspaces"
+        [pTooltip]="'PRODUCT.TOOLTIPS.WORKSPACES' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      >
+      </textarea>
+      <label for="ps_product_detail_intern_field_workspaces">{{ 'PRODUCT.WORKSPACES' | translate }}</label>
+    </span>
   </div>
 </div>

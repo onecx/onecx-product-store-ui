@@ -12,7 +12,7 @@
         <input
           pInputText
           type="text"
-          id="app_search_criteria_app_id"
+          id="ps_app_search_criteria_app_id"
           class="w-18rem"
           formControlName="appId"
           [clear]="true"
@@ -20,13 +20,13 @@
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="app_search_criteria_app_id">{{ 'APP.APP_ID' | translate }}</label>
+        <label for="ps_app_search_criteria_app_id">{{ 'APP.APP_ID' | translate }}</label>
       </span>
       <span class="p-float-label">
         <input
           pInputText
           type="text"
-          id="app_search_criteria_product_name"
+          id="ps_app_search_criteria_product_name"
           class="w-18rem"
           formControlName="productName"
           [clear]="true"
@@ -34,7 +34,7 @@
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="app_search_criteria_product_name">{{ 'APP.PRODUCT_NAME' | translate }}</label>
+        <label for="ps_app_search_criteria_product_name">{{ 'APP.PRODUCT_NAME' | translate }}</label>
       </span>
       <div class="flex flex-wrap align-items-center ml-1 gap-2">
         <div
@@ -47,13 +47,18 @@
         </div>
         <div class="slim-selectbutton search-criteria-selectbutton">
           <p-selectButton
-            inputid="app_search_criteria_app_type"
+            inputid="ps_app_search_criteria_app_type"
             formControlName="appType"
             [options]="appTypeItems"
             (onChange)="onAppTypeFilterChange($event)"
           >
             <ng-template let-item pTemplate
-              ><span [pTooltip]="item.label | translate" tooltipPosition="top" tooltipEvent="hover">
+              ><span
+                [id]="'ps_app_search_criteria_app_type_' + item.value"
+                [pTooltip]="item.label | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
                 {{ item.value }}</span
               ></ng-template
             >
@@ -67,9 +72,9 @@
   </ocx-search-header>
 
   <ocx-page-content>
-    <div *ngIf="exceptionKey" id="app_search_criteria_error" class="card px-3 align-items-center">
+    <div *ngIf="exceptionKey" id="ps_app_search_criteria_error" class="card px-3 align-items-center">
       <p-message
-        id="app_search_criteria_error_message"
+        id="ps_app_search_criteria_error_message"
         severity="error"
         styleClass="p-2"
         [text]="exceptionKey | translate"
@@ -77,7 +82,7 @@
     </div>
     <p-dataView
       *ngIf="!exceptionKey"
-      id="product_search_dataview"
+      id="ps_app_search_dataview"
       [value]="(apps$ | async) ?? []"
       [paginator]="true"
       [alwaysShowPaginator]="true"
@@ -102,14 +107,19 @@
             </div>
             <div class="slim-selectbutton filter-selectbutton">
               <p-selectButton
-                inputid="app_search_quick_filter"
+                inputid="ps_app_search_quick_filter"
                 styleClass="data-view-control opacity-90a"
                 [options]="quickFilterItems"
                 [(ngModel)]="quickFilterValue"
                 (onChange)="onQuickFilterChange($event)"
               >
                 <ng-template let-item pTemplate
-                  ><span [pTooltip]="item.label | translate" tooltipPosition="top" tooltipEvent="hover">
+                  ><span
+                    [id]="'ps_app_search_quick_filter_' + item.value"
+                    [pTooltip]="item.label | translate"
+                    tooltipPosition="top"
+                    tooltipEvent="hover"
+                  >
                     {{ item.value }}</span
                   ></ng-template
                 >
@@ -151,17 +161,18 @@
       </ng-template>
       <ng-template let-apps pTemplate="gridItem">
         <div class="p-grid p-nogutter grid grid-nogutter">
-          <div *ngFor="let app of apps" class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3">
+          <div *ngFor="let app of apps" class="col-6 md:col-4 lg:col-4 xl:col-3 p-2 md:p-3">
             <a
               tabindex="0"
-              class="card block relative p-1 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
+              [id]="'ps_app_search_data_' + app.appId"
+              class="card block relative p-1 px-4 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
               [class.bg-primary]="app.appType === 'MFE'"
               (click)="onDetail($event, app)"
             >
               <a
                 tabindex="0"
                 *ngIf="hasCreatePermission"
-                [id]="'app_search_data_' + app.appId + '_copy_app'"
+                [id]="'ps_app_search_data_' + app.appId + '_copy_app'"
                 class="card-badge-left badge-1 p-2 pi pi-copy pseudo-button-link"
                 (click)="onCopy($event, app)"
                 [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
@@ -171,7 +182,7 @@
               <a
                 tabindex="0"
                 *ngIf="hasDeletePermission"
-                [id]="'app_search_data_' + app.appId + '_delete_app'"
+                [id]="'ps_app_search_data_' + app.appId + '_delete_app'"
                 class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text pseudo-button-link"
                 (click)="onDelete($event, app)"
                 [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
@@ -181,7 +192,7 @@
               <a
                 tabindex="0"
                 *ngIf="!(app?.deprecated || app?.undeployed)"
-                [id]="'app_search_data_' + app.appId + '_goto_product'"
+                [id]="'ps_app_search_data_' + app.appId + '_goto_product'"
                 class="card-badge-right badge-1 p-2 pi pi-external-link pseudo-button-link"
                 (click)="onGotoProduct($event, app.productName)"
                 [pTooltip]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
@@ -190,7 +201,7 @@
               ></a>
               <span
                 *ngIf="app?.undeployed"
-                [id]="'app_search_data_' + app.appId + '_undeployed'"
+                [id]="'ps_app_search_data_' + app.appId + '_undeployed'"
                 class="card-badge-right badge-1 p-2 pi pi-ban danger-action-text font-bold cursor-auto"
                 [pTooltip]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
                 tooltipPosition="top"
@@ -198,7 +209,7 @@
               ></span>
               <span
                 *ngIf="app?.deprecated && !app?.undeployed"
-                [id]="'app_search_data_' + app.appId + '_deprecated'"
+                [id]="'ps_app_search_data_' + app.appId + '_deprecated'"
                 class="card-badge-right badge-1 p-2 pi pi-exclamation-circle danger-action-text font-bold cursor-auto"
                 [pTooltip]="'APP.TOOLTIPS.DEPRECATED_SEARCH' | translate"
                 tooltipPosition="top"
@@ -206,17 +217,18 @@
               ></span>
               <span
                 *ngIf="app.appType === 'MFE'"
-                [id]="'app_search_data_icon'"
+                [id]="'ps_app_search_data_' + app.appId + '_icon'"
                 class="card-badge-right badge-2 p-2 pi cursor-auto"
                 [ngClass]="'pi-' + app.iconName"
                 [pTooltip]="'Icon'"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               ></span>
-              <div class="px-4 h-4rem flex flex-column justify-content-between gap-1 text-center">
+              <div class="h-4rem flex flex-column justify-content-between gap-1 text-center">
                 <div
+                  [id]="'ps_app_search_data_' + app.appId + '_app_id'"
                   class="font-bold text-responsive"
-                  [pTooltip]="app.appId.length <= 22 ? '' : app.appId"
+                  [pTooltip]="app.appId.length <= 15 ? '' : app.appId"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
@@ -224,8 +236,9 @@
                 </div>
                 <div
                   *ngIf="app.appType === 'MS'"
+                  [id]="'ps_app_search_data_' + app.appId + '_app_type_key'"
                   class="text-sm text-responsive"
-                  [pTooltip]="'ACTIONS.SEARCH.APP.QUICK_FILTER.MS' | translate"
+                  [pTooltip]="'APP.TOOLTIPS.MS' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
@@ -233,7 +246,8 @@
                 </div>
                 <div
                   *ngIf="app.appType === 'MFE'"
-                  class="px-3 text-sm text-responsive"
+                  [id]="'ps_app_search_data_' + app.appId + '_app_type_key'"
+                  class="text-sm text-responsive"
                   [pTooltip]="app.exposedModule.length <= 25 ? '' : app.exposedModule"
                   tooltipPosition="top"
                   tooltipEvent="hover"
@@ -241,7 +255,8 @@
                   {{ app.exposedModule }}
                 </div>
                 <div
-                  class="px-4 text-xs text-responsive"
+                  [id]="'ps_app_search_data_' + app.appId + '_product_name'"
+                  class="text-xs text-responsive"
                   [pTooltip]="app.productName.length <= 25 ? '' : app.productName"
                   tooltipPosition="top"
                   tooltipEvent="hover"
@@ -263,6 +278,7 @@
   [changeMode]="changeMode"
   (appChanged)="appChanged($event)"
 ></app-app-detail>
+
 <app-app-delete
   [displayDialog]="displayDeleteDialog"
   [appAbstract]="app"

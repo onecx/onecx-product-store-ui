@@ -6,7 +6,8 @@ import { Slot, SlotsAPIService } from 'src/app/shared/generated'
 
 @Component({
   selector: 'app-slot-delete',
-  templateUrl: './slot-delete.component.html'
+  templateUrl: './slot-delete.component.html',
+  styleUrls: ['./slot-delete.component.scss']
 })
 export class SlotDeleteComponent {
   @Input() slot: Slot | undefined

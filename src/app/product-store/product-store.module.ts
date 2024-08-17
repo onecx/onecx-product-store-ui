@@ -23,7 +23,6 @@ import { ProductInternComponent } from './product-detail/product-intern/product-
 import { ProductAppsComponent } from './product-detail/product-apps/product-apps.component'
 import { SlotSearchComponent } from './slot-search/slot-search.component'
 import { SlotDeleteComponent } from './slot-delete/slot-delete.component'
-import { AddRowDirective } from './app-detail/add-row.directive'
 
 const routes: Routes = [
   {
@@ -68,8 +67,7 @@ const routes: Routes = [
     ProductInternComponent,
     ProductAppsComponent,
     SlotSearchComponent,
-    SlotDeleteComponent,
-    AddRowDirective
+    SlotDeleteComponent
   ],
   imports: [
     CommonModule,

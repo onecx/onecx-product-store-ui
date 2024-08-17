@@ -45,19 +45,20 @@
         </ng-template>
 
         <div class="flex flex-column row-gap-4">
+          <!-- row 1 -->
           <div class="flex flex-row flex-wrap gap-4">
             <span class="flex-grow-1 p-float-label" controlErrorAnchor>
               <input
                 pInputText
                 type="text"
-                id="app_detail_form_mfe_app_id"
+                id="ps_app_detail_form_mfe_field_app_id"
                 class="w-full pt-3 pb-2 text-responsive"
                 formControlName="appId"
                 [pTooltip]="'APP.TOOLTIPS.APP_ID' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label class="ocx-required-label" for="app_detail_form_mfe_app_id">
+              <label class="ocx-required-label" for="ps_app_detail_form_mfe_field_app_id">
                 {{ 'APP.APP_ID' | translate }}
               </label>
             </span>
@@ -65,31 +66,33 @@
               <input
                 pInputText
                 type="text"
-                id="app_detail_form_mfe_app_name"
+                id="ps_app_detail_form_mfe_field_app_name"
                 class="w-full pt-3 pb-2 text-responsive"
                 formControlName="appName"
                 [pTooltip]="'APP.TOOLTIPS.APP_NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label class="ocx-required-label" for="app_detail_form_mfe_app_name">
+              <label class="ocx-required-label" for="ps_app_detail_form_mfe_field_app_name">
                 {{ 'APP.APP_NAME' | translate }}
               </label>
             </span>
           </div>
+
+          <!-- row 2 -->
           <div class="flex flex-row flex-wrap gap-4">
             <span class="flex-grow-1 p-float-label" controlErrorAnchor>
               <input
                 pInputText
                 type="text"
-                id="app_detail_form_mfe_app_version"
+                id="ps_app_detail_form_mfe_field_app_version"
                 class="w-full pt-3 pb-2 text-responsive"
                 formControlName="appVersion"
                 [pTooltip]="'APP.TOOLTIPS.APP_VERSION' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label class="ocx-required-label" for="app_detail_form_mfe_app_version">
+              <label class="ocx-required-label" for="ps_app_detail_form_mfe_field_app_version">
                 {{ 'APP.APP_VERSION' | translate }}
               </label>
             </span>
@@ -97,22 +100,24 @@
               <input
                 pInputText
                 type="text"
-                id="app_detail_form_mfe_product_name"
+                id="ps_app_detail_form_mfe_field_product_name"
                 class="w-full pt-3 pb-2 text-responsive"
                 formControlName="productName"
                 [pTooltip]="'APP.TOOLTIPS.PRODUCT_NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label class="ocx-required-label" for="app_detail_form_mfe_product_name">
+              <label class="ocx-required-label" for="ps_app_detail_form_mfe_field_product_name">
                 {{ 'APP.PRODUCT_NAME' | translate }}
               </label>
             </span>
           </div>
+
+          <!-- row 3 -->
           <div class="flex flex-row flex-wrap gap-4">
             <span class="flex-grow-1 p-float-label" controlErrorAnchor>
               <p-dropdown
-                id="app_detail_form_mfe_icon_name"
+                id="ps_app_detail_form_mfe_field_icon_name"
                 styleClass="w-full"
                 formControlName="iconName"
                 [options]="iconItems"
@@ -134,47 +139,52 @@
                   </div>
                 </ng-template>
               </p-dropdown>
-              <label for="app_detail_form_mfe_icon_name"> {{ 'APP.ICON_NAME' | translate }} </label>
+              <label for="ps_app_detail_form_mfe_field_icon_name"> {{ 'APP.ICON_NAME' | translate }} </label>
             </span>
             <span class="flex-grow-1 p-float-label" controlErrorAnchor>
               <input
                 pInputText
                 type="text"
-                id="app_detail_form_mfe_classifications"
+                id="ps_app_detail_form_mfe_field_classifications"
                 class="w-full pt-3 pb-2 text-responsive"
                 formControlName="classifications"
                 [pTooltip]="'APP.TOOLTIPS.CLASSIFICATIONS' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label for="app_detail_form_mfe_classifications"> {{ 'APP.CLASSIFICATIONS' | translate }} </label>
+              <label for="ps_app_detail_form_mfe_field_classifications">
+                {{ 'APP.CLASSIFICATIONS' | translate }}
+              </label>
             </span>
           </div>
+
+          <!-- row 4 -->
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
               type="text"
-              id="app_detail_form_mfe_description"
+              id="ps_app_detail_form_mfe_field_description"
               class="w-full pt-3 pb-2 text-responsive"
               formControlName="description"
               [pTooltip]="'APP.TOOLTIPS.DESCRIPTION' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
             />
-            <label for="app_detail_form_mfe_description"> {{ 'APP.DESCRIPTION' | translate }} </label>
+            <label for="ps_app_detail_form_mfe_field_description"> {{ 'APP.DESCRIPTION' | translate }} </label>
           </span>
+          <!-- row 5 -->
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
               type="text"
-              id="app_detail_form_mfe_contact"
+              id="ps_app_detail_form_mfe_field_contact"
               class="w-full pt-3 pb-2 text-responsive"
               formControlName="contact"
               [pTooltip]="'APP.TOOLTIPS.CONTACT' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
             />
-            <label for="app_detail_form_mfe_contact"> {{ 'APP.CONTACT' | translate }} </label>
+            <label for="ps_app_detail_form_mfe_field_contact"> {{ 'APP.CONTACT' | translate }} </label>
           </span>
         </div>
       </form>
@@ -184,50 +194,54 @@
           <span>{{ 'ACTIONS.' + this.changeMode + '.MS.HEADER' | translate }}</span>
         </ng-template>
         <div class="flex flex-column row-gap-4">
+          <!-- row 1 -->
           <div class="flex flex-row flex-wrap gap-4">
             <span class="flex-grow-1 p-float-label" controlErrorAnchor>
               <input
                 pInputText
                 type="text"
-                id="app_detail_form_ms_app_id"
+                id="ps_app_detail_form_ms_field_app_id"
                 class="w-full pt-3 pb-2 text-responsive"
                 formControlName="appId"
                 [pTooltip]="'APP.TOOLTIPS.APP_ID' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label class="ocx-required-label" for="app_detail_form_ms_app_id"> {{ 'APP.APP_ID' | translate }} </label>
+              <label class="ocx-required-label" for="ps_app_detail_form_ms_field_app_id">
+                {{ 'APP.APP_ID' | translate }}
+              </label>
             </span>
             <span class="flex-grow-1 p-float-label" controlErrorAnchor>
               <input
                 pInputText
                 type="text"
-                id="app_detail_form_ms_app_name"
+                id="ps_app_detail_form_ms_field_app_name"
                 class="w-full pt-3 pb-2"
                 formControlName="appName"
                 [pTooltip]="'APP.TOOLTIPS.APP_NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label class="ocx-required-label" for="app_detail_form_ms_app_name">
+              <label class="ocx-required-label" for="ps_app_detail_form_ms_field_app_name">
                 {{ 'APP.APP_NAME' | translate }}
               </label>
             </span>
           </div>
 
+          <!-- row 2 -->
           <div class="flex flex-row flex-wrap gap-4">
             <span class="flex-grow-1 p-float-label" controlErrorAnchor>
               <input
                 pInputText
                 type="text"
-                id="app_detail_form_ms_app_version"
+                id="ps_app_detail_form_ms_field_app_version"
                 class="w-full pt-3 pb-2 text-responsive"
                 formControlName="appVersion"
                 [pTooltip]="'APP.TOOLTIPS.APP_VERSION' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label class="ocx-required-label" for="app_detail_form_ms_app_version">
+              <label class="ocx-required-label" for="ps_app_detail_form_ms_field_app_version">
                 {{ 'APP.APP_VERSION' | translate }}
               </label>
             </span>
@@ -235,30 +249,32 @@
               <input
                 pInputText
                 type="text"
-                id="app_detail_form_ms_product_name"
+                id="ps_app_detail_form_ms_field_product_name"
                 class="w-full pt-3 pb-2 text-responsive"
                 formControlName="productName"
                 [pTooltip]="'APP.TOOLTIPS.PRODUCT_NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label class="ocx-required-label" for="app_detail_form_ms_product_name">
+              <label class="ocx-required-label" for="ps_app_detail_form_ms_field_product_name">
                 {{ 'APP.PRODUCT_NAME' | translate }}
               </label>
             </span>
           </div>
+
+          <!-- row 3 -->
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
               type="text"
-              id="app_detail_form_ms_description"
+              id="ps_app_detail_form_ms_field_description"
               class="w-full pt-3 pb-2 text-responsive"
               formControlName="description"
               [pTooltip]="'APP.TOOLTIPS.DESCRIPTION' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
             />
-            <label for="app_detail_form_ms_description"> {{ 'APP.DESCRIPTION' | translate }} </label>
+            <label for="ps_app_detail_form_ms_field_description"> {{ 'APP.DESCRIPTION' | translate }} </label>
           </span>
         </div>
       </form>
@@ -274,25 +290,26 @@
           <span>{{ 'ACTIONS.' + this.changeMode + '.MFE.HEADER' | translate }}</span>
         </ng-template>
         <div class="flex flex-column row-gap-4">
+          <!-- row 1 -->
           <div class="flex flex-row flex-wrap gap-4">
             <span class="flex-grow-1 p-float-label" controlErrorAnchor>
               <input
                 pInputText
                 type="text"
-                id="app_detail_form_mfe_exposed_module"
+                id="ps_app_detail_form_mfe_field_exposed_module"
                 class="w-full pt-3 pb-2 text-responsive"
                 formControlName="exposedModule"
                 [pTooltip]="'APP.TOOLTIPS.EXPOSED_MODULE' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label class="ocx-required-label" for="app_detail_form_mfe_exposed_module">
+              <label class="ocx-required-label" for="ps_app_detail_form_mfe_field_exposed_module">
                 {{ 'APP.EXPOSED_MODULE' | translate }}
               </label>
             </span>
             <span class="p-float-label" controlErrorAnchor>
               <p-dropdown
-                id="app_detail_form_mfe_type"
+                id="ps_app_detail_form_mfe_field_type"
                 styleClass="w-full"
                 formControlName="type"
                 [options]="types"
@@ -301,11 +318,13 @@
                 tooltipEvent="hover"
               >
               </p-dropdown>
-              <label class="ocx-required-label" for="app_detail_form_mfe_type"> {{ 'APP.TYPE' | translate }} </label>
+              <label class="ocx-required-label" for="ps_app_detail_form_mfe_field_type">
+                {{ 'APP.TYPE' | translate }}
+              </label>
             </span>
             <span class="p-float-label" controlErrorAnchor>
               <p-dropdown
-                id="app_detail_form_mfe_technology"
+                id="ps_app_detail_form_mfe_field_technology"
                 styleClass="w-full"
                 formControlName="technology"
                 [options]="technologies"
@@ -314,67 +333,73 @@
                 tooltipEvent="hover"
               >
               </p-dropdown>
-              <label class="ocx-required-label" for="app_detail_form_mfe_technology">
+              <label class="ocx-required-label" for="ps_app_detail_form_mfe_field_technology">
                 {{ 'APP.TECHNOLOGY' | translate }}
               </label>
             </span>
           </div>
+
+          <!-- row 2 -->
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
               type="text"
-              id="app_detail_form_mfe_remote_entry"
+              id="ps_app_detail_form_mfe_field_remote_entry"
               class="w-full pt-3 pb-2"
               formControlName="remoteEntry"
               [pTooltip]="'APP.TOOLTIPS.REMOTE_ENTRY' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
             />
-            <label class="ocx-required-label" for="app_detail_form_mfe_remote_entry">
+            <label class="ocx-required-label" for="ps_app_detail_form_mfe_field_remote_entry">
               {{ 'APP.REMOTE_ENTRY' | translate }}
             </label>
           </span>
+
+          <!-- row 3 -->
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
               type="text"
-              id="app_detail_form_mfe_remote_base_url"
+              id="ps_app_detail_form_mfe_field_remote_base_url"
               class="w-full pt-3 pb-2"
               formControlName="remoteBaseUrl"
               [pTooltip]="'APP.TOOLTIPS.REMOTE_BASE_URL' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
             />
-            <label class="ocx-required-label" for="app_detail_form_mfe_remote_base_url">
+            <label class="ocx-required-label" for="ps_app_detail_form_mfe_field_remote_base_url">
               {{ 'APP.REMOTE_BASE_URL' | translate }}
             </label>
           </span>
+
+          <!-- row 4 -->
           <div class="flex flex-row flex-wrap gap-4">
             <span class="flex-grow-1 sm:flex-grow-0 p-float-label" controlErrorAnchor>
               <input
                 pInputText
                 type="text"
-                id="app_detail_form_mfe_remote_name"
+                id="ps_app_detail_form_mfe_field_remote_name"
                 class="w-full sm:w-18rem pt-3 pb-2 text-responsive"
                 formControlName="remoteName"
                 [pTooltip]="'APP.TOOLTIPS.REMOTE_NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label for="app_detail_form_mfe_remote_name"> {{ 'APP.REMOTE_NAME' | translate }} </label>
+              <label for="ps_app_detail_form_mfe_field_remote_name"> {{ 'APP.REMOTE_NAME' | translate }} </label>
             </span>
             <span class="flex-grow-1 p-float-label" controlErrorAnchor>
               <input
                 pInputText
                 type="text"
-                id="app_detail_form_mfe_tag_name"
+                id="ps_app_detail_form_mfe_field_tag_name"
                 class="w-full pt-3 pb-2 text-responsive"
                 formControlName="tagName"
                 [pTooltip]="'APP.TOOLTIPS.TAG_NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label for="app_detail_form_mfe_tag_name"> {{ 'APP.TAG_NAME' | translate }} </label>
+              <label for="ps_app_detail_form_mfe_field_tag_name"> {{ 'APP.TAG_NAME' | translate }} </label>
             </span>
           </div>
         </div>
