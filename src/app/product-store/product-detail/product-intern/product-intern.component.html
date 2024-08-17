@@ -3,10 +3,9 @@
     <!-- row 1 -->
     <div class="mx-3 flex flex-row flex-wrap column-gap-6 row-gap-3">
       <p-checkbox
-        type="text"
+        inputId="ps_product_detail_intern_field_operator"
         styleClass="cursor-auto"
         [readonly]="true"
-        inputId="ps_product_detail_intern_field_operator"
         [(ngModel)]="operator"
         [binary]="true"
         [label]="'INTERNAL.OPERATOR' | translate"
@@ -15,10 +14,9 @@
         tooltipEvent="hover"
       ></p-checkbox>
       <p-checkbox
-        type="text"
+        inputId="ps_product_detail_intern_field_undeployed"
         styleClass="cursor-auto"
         [readonly]="true"
-        inputId="ps_product_detail_intern_field_undeployed"
         [(ngModel)]="undeployed"
         [binary]="true"
         [label]="'PRODUCT.UNDEPLOYED' | translate"

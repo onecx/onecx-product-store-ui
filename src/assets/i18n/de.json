@@ -266,6 +266,7 @@
       "PRODUCT_NAME": "Name der Applikation der die App zugeordnet ist",
       "TECHNOLOGY": "Technologie",
       "TYPE": "Typ des Microfrontends",
+      "MS": "Microservice",
       "REMOTE_BASE_URL": "Remote Base URL",
       "REMOTE_ENTRY": "Remote Entry",
       "REMOTE_NAME": "Einstiegspunkt in der JavaScript-Datei bei WebComponents",
