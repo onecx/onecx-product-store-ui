@@ -157,7 +157,7 @@
             <a
               tabindex="0"
               [id]="'ps_app_search_data_' + app.appId"
-              class="card block relative p-1 px-4 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
+              class="card block relative p-1 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
               [class.bg-primary]="app.appType === 'MFE'"
               (click)="onDetail($event, app)"
             >
@@ -229,7 +229,7 @@
                 <div
                   *ngIf="app.appType === 'MS'"
                   [id]="'ps_app_search_data_' + app.appId + '_app_type_key'"
-                  class="text-sm text-responsive"
+                  class="text-xs sm:text-sm text-responsive"
                   [pTooltip]="'APP.TOOLTIPS.MS' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
@@ -239,7 +239,7 @@
                 <div
                   *ngIf="app.appType === 'MFE'"
                   [id]="'ps_app_search_data_' + app.appId + '_app_type_key'"
-                  class="text-sm text-responsive"
+                  class="text-xs sm:text-sm text-responsive"
                   [pTooltip]="app.exposedModule.length <= 25 ? '' : app.exposedModule"
                   tooltipPosition="top"
                   tooltipEvent="hover"
