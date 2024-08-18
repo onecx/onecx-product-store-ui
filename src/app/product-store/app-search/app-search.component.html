@@ -7,13 +7,13 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <div [formGroup]="appSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-3 px-2">
+    <div [formGroup]="appSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-3 md:px-2">
       <span class="p-float-label">
         <input
           pInputText
           type="text"
           id="ps_app_search_criteria_app_id"
-          class="w-18rem"
+          class="w-15rem"
           formControlName="appId"
           [clear]="true"
           [pTooltip]="'APP.TOOLTIPS.APP_ID' | translate"
@@ -27,7 +27,7 @@
           pInputText
           type="text"
           id="ps_app_search_criteria_product_name"
-          class="w-18rem"
+          class="w-15rem"
           formControlName="productName"
           [clear]="true"
           [pTooltip]="'APP.TOOLTIPS.PRODUCT_NAME' | translate"
@@ -36,36 +36,32 @@
         />
         <label for="ps_app_search_criteria_product_name">{{ 'APP.PRODUCT_NAME' | translate }}</label>
       </span>
-      <div class="flex flex-wrap align-items-center ml-1 gap-2">
+      <div class="slim-selectbutton search-criteria-selectbutton">
+        <p-selectButton
+          inputid="ps_app_search_criteria_app_type"
+          formControlName="appType"
+          [options]="appTypeItems"
+          (onChange)="onAppTypeFilterChange($event)"
+        >
+          <ng-template let-item pTemplate
+            ><span
+              [id]="'ps_app_search_criteria_app_type_' + item.value"
+              [pTooltip]="item.label | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            >
+              {{ item.value }}</span
+            ></ng-template
+          >
+        </p-selectButton>
         <div
-          class="p-selectbutton-title opacity-90 text-sm"
+          class="p-selectbutton-subtitle flex flex-row flex-nowrap column-gap-3 opacity-90"
           [pTooltip]="'ACTIONS.SEARCH.APP.FILTER.TOOLTIP' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
         >
-          {{ 'ACTIONS.SEARCH.APP.FILTER.LABEL' | translate }}
-        </div>
-        <div class="slim-selectbutton search-criteria-selectbutton">
-          <p-selectButton
-            inputid="ps_app_search_criteria_app_type"
-            formControlName="appType"
-            [options]="appTypeItems"
-            (onChange)="onAppTypeFilterChange($event)"
-          >
-            <ng-template let-item pTemplate
-              ><span
-                [id]="'ps_app_search_criteria_app_type_' + item.value"
-                [pTooltip]="item.label | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              >
-                {{ item.value }}</span
-              ></ng-template
-            >
-          </p-selectButton>
-          <div class="p-selectbutton-subtitle">
-            {{ 'ACTIONS.SEARCH.APP.QUICK_FILTER.' + appTypeFilterValue | translate }}
-          </div>
+          <span> {{ 'ACTIONS.SEARCH.APP.FILTER.LABEL' | translate }}: </span>
+          <span> {{ 'ACTIONS.SEARCH.APP.QUICK_FILTER.' + appTypeFilterValue | translate }}</span>
         </div>
       </div>
     </div>
@@ -96,37 +92,33 @@
     >
       <ng-template pTemplate="header">
         <div class="flex flex-wrap align-items-center mx-1">
-          <div class="flex flex-wrap align-items-center ml-1 gap-2">
+          <div class="slim-selectbutton filter-selectbutton">
+            <p-selectButton
+              inputid="ps_app_search_quick_filter"
+              styleClass="data-view-control opacity-90a"
+              [options]="quickFilterItems"
+              [(ngModel)]="quickFilterValue"
+              (onChange)="onQuickFilterChange($event)"
+            >
+              <ng-template let-item pTemplate
+                ><span
+                  [id]="'ps_app_search_quick_filter_' + item.value"
+                  [pTooltip]="item.label | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  {{ item.value }}</span
+                ></ng-template
+              >
+            </p-selectButton>
             <div
-              class="p-selectbutton-title data-view-control opacity-90 text-sm"
+              class="p-selectbutton-subtitle flex flex-row flex-nowrap column-gap-3 opacity-80"
               [pTooltip]="'ACTIONS.SEARCH.APP.QUICK_FILTER.TOOLTIP' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
             >
-              {{ 'ACTIONS.SEARCH.APP.FILTER.LABEL' | translate }}
-            </div>
-            <div class="slim-selectbutton filter-selectbutton">
-              <p-selectButton
-                inputid="ps_app_search_quick_filter"
-                styleClass="data-view-control opacity-90a"
-                [options]="quickFilterItems"
-                [(ngModel)]="quickFilterValue"
-                (onChange)="onQuickFilterChange($event)"
-              >
-                <ng-template let-item pTemplate
-                  ><span
-                    [id]="'ps_app_search_quick_filter_' + item.value"
-                    [pTooltip]="item.label | translate"
-                    tooltipPosition="top"
-                    tooltipEvent="hover"
-                  >
-                    {{ item.value }}</span
-                  ></ng-template
-                >
-              </p-selectButton>
-              <div class="p-selectbutton-subtitle">
-                {{ 'ACTIONS.SEARCH.APP.QUICK_FILTER.' + quickFilterValue | translate }}
-              </div>
+              <span> {{ 'ACTIONS.SEARCH.APP.FILTER.LABEL' | translate }}: </span>
+              <span> {{ 'ACTIONS.SEARCH.APP.QUICK_FILTER.' + quickFilterValue | translate }}</span>
             </div>
           </div>
           <ocx-data-view-controls
@@ -161,11 +153,11 @@
       </ng-template>
       <ng-template let-apps pTemplate="gridItem">
         <div class="p-grid p-nogutter grid grid-nogutter">
-          <div *ngFor="let app of apps" class="col-6 md:col-4 lg:col-4 xl:col-3 p-2 md:p-3">
+          <div *ngFor="let app of apps" class="col-6 md:col-4 lg:col-4 xl:col-3 p-2 md:px-3">
             <a
               tabindex="0"
               [id]="'ps_app_search_data_' + app.appId"
-              class="card block relative p-1 px-4 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
+              class="card block relative p-1 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
               [class.bg-primary]="app.appType === 'MFE'"
               (click)="onDetail($event, app)"
             >
@@ -237,7 +229,7 @@
                 <div
                   *ngIf="app.appType === 'MS'"
                   [id]="'ps_app_search_data_' + app.appId + '_app_type_key'"
-                  class="text-sm text-responsive"
+                  class="text-xs sm:text-sm text-responsive"
                   [pTooltip]="'APP.TOOLTIPS.MS' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
@@ -247,7 +239,7 @@
                 <div
                   *ngIf="app.appType === 'MFE'"
                   [id]="'ps_app_search_data_' + app.appId + '_app_type_key'"
-                  class="text-sm text-responsive"
+                  class="text-xs sm:text-sm text-responsive"
                   [pTooltip]="app.exposedModule.length <= 25 ? '' : app.exposedModule"
                   tooltipPosition="top"
                   tooltipEvent="hover"

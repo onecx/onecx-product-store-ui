@@ -7,7 +7,11 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <div id="ps_slot_search_criteria" [formGroup]="slotSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-3 px-2">
+    <div
+      id="ps_slot_search_criteria"
+      [formGroup]="slotSearchCriteriaGroup"
+      class="flex flex-wrap gap-4 row-gap-3 md:px-2"
+    >
       <span class="p-float-label">
         <input
           pInputText
@@ -76,7 +80,7 @@
           <div
             *ngFor="let slot of slots"
             [id]="'ps_slot_search_data_grid_' + idx"
-            class="col-6 md:col-4 lg:col-4 xl:col-3 p-2 md:p-3"
+            class="col-6 md:col-4 lg:col-4 xl:col-3 p-2 md:px-3"
           >
             <div class="card relative py-2 px-4 flex flex-column justify-content-center">
               <span
