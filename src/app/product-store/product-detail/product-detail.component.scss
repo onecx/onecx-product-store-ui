@@ -1,11 +1,6 @@
 @import '/src/_mixins.scss';
 
 @include danger-action;
+@include dialog-footer-buttons;
 @include dialog-non-full-size-modal;
-
-:host ::ng-deep {
-  // each tab panel manages its own padding separately
-  .p-tabview .p-tabview-panels {
-    padding: 0;
-  }
-}
+@include displaying-text-responsive;

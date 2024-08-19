@@ -301,7 +301,6 @@
       flex-wrap: wrap;
       flex-direction: column;
       row-gap: 0.1rem;
-      align-items: center;
 
       .p-selectbutton .p-button {
         text-align: center;
@@ -312,8 +311,8 @@
         border: var(--input-border);
       }
       .p-selectbutton-subtitle {
-        color: var(--emphasis-medium);
         font-size: 0.8rem;
+        padding-left: 0.25rem;
       }
     }
   }
@@ -451,6 +450,13 @@
   }
 }
 
+@mixin tabview-reduce-padding {
+  :host ::ng-deep {
+    .p-tabview .p-tabview-panels {
+      padding: 1.4rem 0 0 0;
+    }
+  }
+}
 /* **********************************************
  *  TABLE
  * **********************************************/

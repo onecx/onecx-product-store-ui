@@ -7,11 +7,15 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <div id="slot_search_criteria" [formGroup]="slotSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-3 px-2">
+    <div
+      id="ps_slot_search_criteria"
+      [formGroup]="slotSearchCriteriaGroup"
+      class="flex flex-wrap gap-4 row-gap-3 md:px-2"
+    >
       <span class="p-float-label">
         <input
           pInputText
-          id="slot_search_criteria_slot_name"
+          id="ps_slot_search_criteria_slot_name"
           type="text"
           formControlName="slotName"
           class="w-18rem"
@@ -20,15 +24,15 @@
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="slot_search_criteria_slot_name">{{ 'SLOT.NAME' | translate }}</label>
+        <label for="ps_slot_search_criteria_slot_name">{{ 'SLOT.NAME' | translate }}</label>
       </span>
     </div>
   </ocx-search-header>
 
   <ocx-page-content>
-    <div *ngIf="exceptionKey" id="slot_search_criteria_error" class="card px-3 align-items-center">
+    <div *ngIf="exceptionKey" id="ps_slot_search_error" class="card px-3 align-items-center">
       <p-message
-        id="slot_search_criteria_error_message"
+        id="ps_slot_search_error_message"
         severity="error"
         styleClass="p-2"
         [text]="exceptionKey | translate"
@@ -36,21 +40,21 @@
     </div>
     <p-dataView
       *ngIf="!exceptionKey"
-      id="slot_search_dataview"
+      id="ps_slot_search_dataview"
       [value]="(slots$ | async)?.stream!.sort(sortSlotsByName)"
-      [paginator]="true"
-      [alwaysShowPaginator]="true"
-      [rowsPerPageOptions]="[20, 40, 100]"
-      [rows]="12"
       [layout]="viewMode"
       [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
       filterBy="name"
+      [paginator]="true"
+      [alwaysShowPaginator]="true"
+      [rowsPerPageOptions]="[20, 40, 100]"
+      [rows]="20"
       [sortField]="sortField"
       [sortOrder]="sortOrder"
     >
       <ng-template pTemplate="header">
         <ocx-data-view-controls
-          id="slot_search_dataview_controls"
+          id="ps_slot_search_dataview_controls"
           [enableFiltering]="true"
           [enableSorting]="true"
           [supportedViews]="['grid']"
@@ -75,13 +79,13 @@
         <div class="p-grid p-nogutter grid grid-nogutter">
           <div
             *ngFor="let slot of slots"
-            [id]="'slot_search_data_grid_' + idx"
-            class="col-12 sm:col-6 md:col-4 lg:col-4 xl:col-3 p-3"
+            [id]="'ps_slot_search_data_grid_' + idx"
+            class="col-6 md:col-4 lg:col-4 xl:col-3 p-2 md:px-3"
           >
-            <div class="card relative p-2 flex flex-column justify-content-center">
+            <div class="card relative py-2 px-4 flex flex-column justify-content-center">
               <span
                 *ngIf="slot.undeployed"
-                [id]="'slot_search_data_grid_idx_' + idx + '_undeployed'"
+                [id]="'ps_slot_search_data_grid_idx_' + idx + '_undeployed'"
                 class="card-badge-right badge-1 danger-action-text font-bold p-2 pi pi-ban"
                 [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
                 tooltipPosition="top"
@@ -89,7 +93,7 @@
               ></span>
               <span
                 *ngIf="!slot.undeployed && slot.deprecated"
-                [id]="'slot_search_data_grid_idx_' + idx + '_deprecated'"
+                [id]="'ps_slot_search_data_grid_idx_' + idx + '_deprecated'"
                 class="card-badge-right badge-1 p-2 danger-action-text font-bold pi pi-exclamation-circle"
                 [pTooltip]="'SLOT.DEPRECATED_SEARCH' | translate"
                 tooltipPosition="top"
@@ -97,7 +101,7 @@
               ></span>
               <a
                 *ngIf="hasDeletePermission"
-                [id]="'slot_search_data_' + slot.name + '_delete_slot'"
+                [id]="'ps_slot_search_data_' + slot.name + '_delete_slot'"
                 class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text pseudo-button-link"
                 (click)="onDelete($event, slot)"
                 [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
@@ -106,22 +110,22 @@
               ></a>
               <div class="h-3rem flex flex-column justify-content-between gap-1 text-center">
                 <div
-                  [id]="'slot_search_data_grid_' + idx + '_slot_name'"
-                  class="font-bold"
+                  [id]="'ps_slot_search_data_grid_' + idx + '_slot_name'"
+                  class="font-bold text-responsive"
                   [pTooltip]="slot.name.length <= 25 ? '' : slot.name"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
-                  {{ limitText(slot.name, 25) }}
+                  {{ slot.name }}
                 </div>
                 <div
-                  class="text-xs"
-                  [id]="'slot_search_data_grid_' + idx + '_product_name'"
+                  [id]="'ps_slot_search_data_grid_' + idx + '_product_name'"
+                  class="text-xs text-responsive"
                   [pTooltip]="slot.productName.length <= 20 ? '' : limitText(slot.productName, 100)"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
-                  {{ limitText(slot.productName, 20) }}
+                  {{ slot.productName }}
                 </div>
               </div>
             </div>

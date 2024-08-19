@@ -1,5 +1,6 @@
 @import '/src/_mixins.scss';
 
+@include displaying-text-responsive;
 @include correct-data-view-control;
 @include correct-search-criteria;
 @include dataview-list-zebra-rows;
@@ -9,7 +10,7 @@
 :host ::ng-deep {
   .card-badge-left {
     &.badge-2 {
-      top: 30px;
+      top: 33px;
     }
   }
 }
