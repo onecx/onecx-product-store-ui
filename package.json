@@ -93,7 +93,7 @@
     "@svgr/webpack": "^8.1.0",
     "@swc-node/register": "^1.10.9",
     "@types/jasmine": "~5.1.4",
-    "@types/node": "~22.2.0",
+    "@types/node": "~22.4.2",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
     "css-loader": "^7.1.2",
