@@ -7,8 +7,7 @@ import { MicrofrontendsAPIService, MicroservicesAPIService } from 'src/app/share
 
 @Component({
   selector: 'app-app-delete',
-  templateUrl: './app-delete.component.html',
-  styleUrls: ['./app-delete.component.scss']
+  templateUrl: './app-delete.component.html'
 })
 export class AppDeleteComponent {
   @Input() appAbstract: AppAbstract | undefined

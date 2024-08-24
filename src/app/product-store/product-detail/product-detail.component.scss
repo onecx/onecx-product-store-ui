@@ -1,6 +1,9 @@
-@import '/src/_mixins.scss';
+@import '/src/_ps_mixins.scss';
 
 @include danger-action;
+@include dropdown-zebra-rows;
+@include compact-dropdown-list-items;
+@include dialog-modal-dialog-content;
 @include dialog-footer-buttons;
 @include dialog-non-full-size-modal;
 @include displaying-text-responsive;
