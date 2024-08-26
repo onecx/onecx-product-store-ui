@@ -17,8 +17,7 @@ const prodAndWsUndeployed: ProductAndWorkspaces = {
 const prodAndWsDeployed: ProductAndWorkspaces = {
   id: 'id',
   name: 'name',
-  basePath: 'basePath',
-  undeployed: false
+  basePath: 'basePath'
 }
 
 describe('ProductInternComponent', () => {

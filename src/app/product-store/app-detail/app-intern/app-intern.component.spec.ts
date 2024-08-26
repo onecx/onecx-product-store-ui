@@ -50,6 +50,7 @@ describe('AppInternComponent', () => {
   describe('ngOnChanges', () => {
     it('should set relevant values correctly when viewed app is Microfrontend', () => {
       component.app = appMfe
+      component.appType = 'MFE'
 
       component.ngOnChanges()
 
@@ -60,6 +61,7 @@ describe('AppInternComponent', () => {
 
     it('should set relevant values to false when viewed app is Microservice', () => {
       component.app = appMs
+      component.appType = 'MS'
 
       component.ngOnChanges()
 
@@ -84,6 +86,7 @@ describe('AppInternComponent', () => {
         undeployed: true
       }
       component.app = appMfeNoDeprecated as Microfrontend
+      component.appType = 'MFE'
 
       component.ngOnChanges()
 
