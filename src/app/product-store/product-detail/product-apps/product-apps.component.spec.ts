@@ -165,10 +165,16 @@ describe('ProductAppsComponent', () => {
     })
 
     it('should handle undefined or empty values', () => {
-      const mfeA: MicrofrontendAbstract = { type: MicrofrontendType.Component } as MicrofrontendAbstract
-      const mfeB: MicrofrontendAbstract = { exposedModule: 'moduleB' } as MicrofrontendAbstract
+      let mfeA, mfeB: MicrofrontendAbstract
+      // test undefined exposedModule
+      mfeA = { type: MicrofrontendType.Component } as MicrofrontendAbstract
+      mfeB = { type: MicrofrontendType.Component } as MicrofrontendAbstract
+      expect(component.sortMfesByTypeAndExposedModule(mfeA, mfeB)).toBe(0)
 
-      expect(component.sortMfesByTypeAndExposedModule(mfeA, mfeB)).toBeGreaterThan(0)
+      // test undefined type
+      mfeA = { exposedModule: 'modA' } as MicrofrontendAbstract
+      mfeB = { exposedModule: 'modB' } as MicrofrontendAbstract
+      expect(component.sortMfesByTypeAndExposedModule(mfeA, mfeB)).toBe(-1)
     })
   })
 

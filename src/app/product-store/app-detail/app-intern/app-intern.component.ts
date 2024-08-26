@@ -9,6 +9,7 @@ import { Microfrontend, Microservice } from 'src/app/shared/generated'
 })
 export class AppInternComponent implements OnChanges {
   @Input() app: (Microfrontend | Microservice) | undefined
+  @Input() appType: 'MFE' | 'MS' = 'MFE'
   @Input() dateFormat = 'medium'
 
   public undeployed = false
@@ -20,14 +21,10 @@ export class AppInternComponent implements OnChanges {
   public ngOnChanges(): void {
     this.undeployed = this.app?.undeployed ?? false
     this.operator = this.app?.operator ?? false
-    if (this.isMicrofrontend(this.app)) {
-      this.deprecated = this.app.deprecated ?? false
+    if (this.appType === 'MFE') {
+      this.deprecated = (this.app as Microfrontend)?.deprecated ?? false
     } else {
       this.deprecated = false
     }
-  }
-
-  private isMicrofrontend(app: Microfrontend | Microservice | undefined): app is Microfrontend {
-    return (app as Microfrontend)?.deprecated !== undefined
   }
 }

@@ -20,8 +20,8 @@ export class ProductInternComponent implements OnChanges {
 
   public ngOnChanges(): void {
     if (this.product) {
-      this.operator = this.product.operator ? this.product.operator : false
-      this.undeployed = this.product.undeployed ? this.product.undeployed : false
+      this.operator = this.product.operator ?? false
+      this.undeployed = this.product.undeployed ?? false
     }
     setTimeout(() => {
       if (this.usedInWorkspaces?.nativeElement) {

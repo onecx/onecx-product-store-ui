@@ -22,6 +22,7 @@
       </div>
       <div
         *ngIf="undeployed"
+        id="ps_app_detail_header_field_undeployed"
         class="p-dialog-title danger-action-text font-bold pi pi-ban"
         [pTooltip]="'APP.TOOLTIPS.UNDEPLOYED' | translate"
         tooltipPosition="top"
@@ -29,6 +30,7 @@
       ></div>
       <div
         *ngIf="!undeployed && deprecated"
+        id="ps_app_detail_header_field_deprecated"
         class="p-dialog-title danger-action-text font-bold pi pi-exclamation-circle"
         [pTooltip]="'APP.TOOLTIPS.DEPRECATED' | translate"
         tooltipPosition="top"
@@ -407,8 +409,8 @@
     </p-tabPanel>
 
     <p-tabPanel [header]="'DIALOG.TABS.INTERN' | translate" [tooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate">
-      <app-app-intern *ngIf="appAbstract?.appType === 'MFE'" [app]="mfe"></app-app-intern>
-      <app-app-intern *ngIf="appAbstract?.appType === 'MS'" [app]="ms"></app-app-intern>
+      <app-app-intern *ngIf="appAbstract?.appType === 'MFE'" [app]="mfe" appType="MFE"></app-app-intern>
+      <app-app-intern *ngIf="appAbstract?.appType === 'MS'" [app]="ms" appType="MS"></app-app-intern>
     </p-tabPanel>
 
     <p-tabPanel
@@ -418,7 +420,7 @@
     >
       <div class="flex flex-column row-gap-2">
         <p-message
-          id="app_detail_endpoint_info_message"
+          id="ps_app_detail_endpoint_info_message"
           severity="info"
           [text]="'APP.ENDPOINTS.CELL_EDITING_MESSAGE' | translate"
         ></p-message>
@@ -427,6 +429,7 @@
           <ng-template pTemplate="header">
             <tr>
               <th
+                id="ps_app_detail_endpoint_table_header_actions"
                 class="text-center"
                 [pTooltip]="'ACTIONS.TOOLTIP' | translate"
                 tooltipPosition="top"
@@ -434,10 +437,20 @@
               >
                 {{ 'ACTIONS.LABEL' | translate }}
               </th>
-              <th [pTooltip]="'APP.TOOLTIPS.ENDPOINTS.NAME' | translate" tooltipPosition="top" tooltipEvent="hover">
+              <th
+                id="ps_app_detail_endpoint_table_header_endpoint_name"
+                [pTooltip]="'APP.TOOLTIPS.ENDPOINTS.NAME' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
                 {{ 'APP.ENDPOINTS.NAME' | translate }}
               </th>
-              <th [pTooltip]="'APP.TOOLTIPS.ENDPOINTS.PATH' | translate" tooltipPosition="top" tooltipEvent="hover">
+              <th
+                id="ps_app_detail_endpoint_table_header_endpoint_path"
+                [pTooltip]="'APP.TOOLTIPS.ENDPOINTS.PATH' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
                 {{ 'APP.ENDPOINTS.PATH' | translate }}
               </th>
             </tr>
@@ -448,7 +461,7 @@
                 <button
                   pbutton
                   class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-                  [id]="'app_detail_endpoint_table_row_' + i + '_add_action'"
+                  [id]="'ps_app_detail_endpoint_table_row_' + i + '_add_action'"
                   (click)="onAddEndpointRow()"
                   [disabled]="i !== endpoints.length - 1"
                   aria-label="'ACTIONS.TABLE.ADD_ROW.LABEL' | translate"
@@ -461,7 +474,7 @@
                 <button
                   pbutton
                   class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
-                  [id]="'app_detail_endpoint_table_row_' + i + '_delete_action'"
+                  [id]="'ps_app_detail_endpoint_table_row_' + i + '_delete_action'"
                   (click)="onDeleteEndpointRow(i)"
                   [disabled]="i === 0 && endpoints.length === 1"
                   aria-label="'ACTIONS.DELETE.ENDPOINT.TOOLTIP' | translate"
@@ -475,7 +488,12 @@
               <td [pEditableColumn]="endpoint.name" pEditableColumnField="name">
                 <p-cellEditor>
                   <ng-template pTemplate="input">
-                    <input pInputText type="text" [(ngModel)]="endpoint.name" />
+                    <input
+                      [id]="'ps_app_detail_endpoint_table_row_' + i + '_endpoint_name'"
+                      pInputText
+                      type="text"
+                      [(ngModel)]="endpoint.name"
+                    />
                   </ng-template>
                   <ng-template pTemplate="output"> {{ endpoint.name }} </ng-template>
                 </p-cellEditor>
@@ -483,7 +501,12 @@
               <td [pEditableColumn]="endpoint.path" pEditableColumnField="path">
                 <p-cellEditor>
                   <ng-template pTemplate="input">
-                    <input pInputText type="text" [(ngModel)]="endpoint.path" />
+                    <input
+                      pInputText
+                      [id]="'ps_app_detail_endpoint_table_row_' + i + '_endpoint_path'"
+                      type="text"
+                      [(ngModel)]="endpoint.path"
+                    />
                   </ng-template>
                   <ng-template pTemplate="output"> {{ endpoint.path }} </ng-template>
                 </p-cellEditor>
@@ -499,7 +522,7 @@
     <div class="flex flex-wrap justify-content-end gap-2 mb-1">
       <p-button
         *ngIf="!allowEditing()"
-        id="app_detail_button_close"
+        id="ps_app_detail_button_close"
         icon="pi pi-times"
         (onClick)="onDialogHide()"
         [label]="'ACTIONS.NAVIGATION.CLOSE' | translate"
@@ -509,7 +532,7 @@
       ></p-button>
       <p-button
         *ngIf="allowEditing()"
-        id="app_detail_button_cancel"
+        id="ps_app_detail_button_cancel"
         icon="pi pi-times"
         (onClick)="onDialogHide()"
         [label]="'ACTIONS.CANCEL' | translate"
@@ -519,7 +542,7 @@
       ></p-button>
       <p-button
         *ngIf="allowEditing()"
-        id="app_detail_button_save"
+        id="ps_app_detail_button_save"
         icon="pi pi-save"
         (onClick)="onSave()"
         [disabled]="
