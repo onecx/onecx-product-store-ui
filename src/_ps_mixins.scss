@@ -51,7 +51,7 @@
 
 // disable preset of opacity in form: not readable
 @mixin readable-disabled-form-controls {
-  :host {
+  :host ::ng-deep {
     .p-inputtext.p-component:disabled,
     .p-dropdown.p-component.p-disabled,
     .p-checkbox-box.p-disabled,
@@ -116,6 +116,7 @@
  * **********************************************/
 @mixin card-badges {
   :host ::ng-deep {
+    // badge basics: position
     .card-badge-right,
     .card-badge-left {
       display: inline-block;
@@ -134,7 +135,20 @@
     .card-badge-left {
       left: 1px;
     }
-    .pseudo-button-link {
+    // correct colors on clickable badges
+    .card-primary-color {
+      background-color: var(--primary-color);
+      color: var(--primary-color-text);
+      &:hover {
+        color: inherit;
+        * {
+          color: inherit;
+          background-color: inherit;
+        }
+      }
+    }
+    // clickable icon-only buttons
+    .button-icon-only {
       border-radius: var(--border-radius);
       &:hover {
         color: var(--primary-color-text);

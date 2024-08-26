@@ -19,6 +19,13 @@ app:
           technology: WEBCOMPONENTMODULE
           remoteName: onecx-product-store
           tagName: ocx-product-store-component
+          endpoints:
+            - name: product-detail
+              path: /{product-name}
+            - name: apps
+              path: /apps
+            - name: slots
+              path: /slots
     # Permission
     permission:
       enabled: true
