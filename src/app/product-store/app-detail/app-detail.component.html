@@ -427,6 +427,7 @@
           <ng-template pTemplate="header">
             <tr>
               <th
+                id="app_detail_endpoint_table_header_actions"
                 class="text-center"
                 [pTooltip]="'ACTIONS.TOOLTIP' | translate"
                 tooltipPosition="top"
@@ -434,10 +435,20 @@
               >
                 {{ 'ACTIONS.LABEL' | translate }}
               </th>
-              <th [pTooltip]="'APP.TOOLTIPS.ENDPOINTS.NAME' | translate" tooltipPosition="top" tooltipEvent="hover">
+              <th
+                id="app_detail_endpoint_table_header_endpoint_name"
+                [pTooltip]="'APP.TOOLTIPS.ENDPOINTS.NAME' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
                 {{ 'APP.ENDPOINTS.NAME' | translate }}
               </th>
-              <th [pTooltip]="'APP.TOOLTIPS.ENDPOINTS.PATH' | translate" tooltipPosition="top" tooltipEvent="hover">
+              <th
+                id="app_detail_endpoint_table_header_endpoint_path"
+                [pTooltip]="'APP.TOOLTIPS.ENDPOINTS.PATH' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
                 {{ 'APP.ENDPOINTS.PATH' | translate }}
               </th>
             </tr>
@@ -475,7 +486,12 @@
               <td [pEditableColumn]="endpoint.name" pEditableColumnField="name">
                 <p-cellEditor>
                   <ng-template pTemplate="input">
-                    <input pInputText type="text" [(ngModel)]="endpoint.name" />
+                    <input
+                      [id]="'app_detail_endpoint_table_row_' + i + '_endpoint_name'"
+                      pInputText
+                      type="text"
+                      [(ngModel)]="endpoint.name"
+                    />
                   </ng-template>
                   <ng-template pTemplate="output"> {{ endpoint.name }} </ng-template>
                 </p-cellEditor>
@@ -483,7 +499,12 @@
               <td [pEditableColumn]="endpoint.path" pEditableColumnField="path">
                 <p-cellEditor>
                   <ng-template pTemplate="input">
-                    <input pInputText type="text" [(ngModel)]="endpoint.path" />
+                    <input
+                      pInputText
+                      [id]="'app_detail_endpoint_table_row_' + i + '_endpoint_path'"
+                      type="text"
+                      [(ngModel)]="endpoint.path"
+                    />
                   </ng-template>
                   <ng-template pTemplate="output"> {{ endpoint.path }} </ng-template>
                 </p-cellEditor>

@@ -80,7 +80,7 @@
       <p-button
         id="ps_product_delete_button_no"
         icon="pi pi-times"
-        (click)="productDeleteVisible = false"
+        (onClick)="productDeleteVisible = false"
         [label]="'ACTIONS.CONFIRMATION.NO' | translate"
         [pTooltip]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
         tooltipPosition="top"
@@ -89,7 +89,7 @@
       <p-button
         id="ps_product_delete_button_yes"
         icon="pi pi-check"
-        (click)="onDeleteConfirmation()"
+        (onClick)="onDeleteConfirmation()"
         [label]="'ACTIONS.CONFIRMATION.YES' | translate"
         [pTooltip]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
         tooltipPosition="top"
