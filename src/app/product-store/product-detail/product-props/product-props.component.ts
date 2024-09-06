@@ -187,7 +187,6 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
   /** File Handling
    */
   public onFileUpload(ev: Event): void {
-    ev.stopPropagation()
     const workspaceName = this.formGroup.controls['name'].value
     if (!workspaceName || workspaceName === '') {
       this.msgService.error({
