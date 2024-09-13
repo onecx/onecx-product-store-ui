@@ -1,0 +1,3 @@
+== onecx-product-store-ui
+
+include::onecx-product-store-ui-userdocs.adoc[opts=optional]
