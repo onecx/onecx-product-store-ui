@@ -12,7 +12,7 @@ import {
   Slot,
   SlotPageItem
 } from 'src/app/shared/generated'
-import { dropDownSortItemsByLabel, limitText } from 'src/app/shared/utils'
+import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
 import { IconService } from 'src/app/shared/iconservice'
 
 import { AppAbstract, ChangeMode } from '../../app-search/app-search.component'
@@ -35,7 +35,6 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   private readonly destroy$ = new Subject()
   public exceptionKey = ''
   public searchInProgress = false
-  public limitText = limitText
 
   public AppType = AppType
   public productDetails$!: Observable<ProductDetails>
