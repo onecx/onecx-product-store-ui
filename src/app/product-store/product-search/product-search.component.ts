@@ -14,7 +14,7 @@ import {
   ProductsAPIService,
   RefType
 } from 'src/app/shared/generated'
-import { bffImageUrl, limitText } from 'src/app/shared/utils'
+import { bffImageUrl } from 'src/app/shared/utils'
 
 export interface ProductSearchCriteria {
   displayName: FormControl<string | null>
@@ -35,7 +35,6 @@ export class ProductSearchComponent implements OnInit {
   public filter: string | undefined
   public sortField = 'displayName'
   public sortOrder = 1
-  public limitText = limitText
 
   public dataViewControlsTranslations: DataViewControlTranslations = {}
   @ViewChild(DataView) dv: DataView | undefined
