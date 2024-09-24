@@ -1,40 +1,39 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
-/tmp
-/out-tsc
+tmp
+out-tsc
+reports
 
 # dependencies
-/node_modules
+node_modules
+
+# profiling files
+chrome-profiler-events*.json
+speed-measure-plugin*.json
 
 # IDEs and editors
-/.idea
+.idea
 .project
 .classpath
-.c9/
+.c9
+.history
+.settings
+.vscode
 *.launch
-.settings/
 *.sublime-workspace
 
-# IDE - VSCode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-
 # misc
+.angular
+.eslintcache
+.husky/_
 .sass-cache
 .gitlab*
 .scannerwork
 connect.lock
-reports
 typings
 *.log
-
-# e2e
-/e2e/*.js
-/e2e/*.map
+*.sh
 
 # System Files
 .DS_Store

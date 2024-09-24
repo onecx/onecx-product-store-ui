@@ -408,7 +408,11 @@
       </form>
     </p-tabPanel>
 
-    <p-tabPanel [header]="'DIALOG.TABS.INTERN' | translate" [tooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate">
+    <p-tabPanel
+      [disabled]="changeMode === 'CREATE'"
+      [header]="'DIALOG.TABS.INTERN' | translate"
+      [tooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate"
+    >
       <app-app-intern *ngIf="appAbstract?.appType === 'MFE'" [app]="mfe" appType="MFE"></app-app-intern>
       <app-app-intern *ngIf="appAbstract?.appType === 'MS'" [app]="ms" appType="MS"></app-app-intern>
     </p-tabPanel>
