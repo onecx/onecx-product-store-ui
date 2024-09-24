@@ -142,6 +142,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
       this.formGroupMfe.reset()
       this.formGroupMfe.controls['type'].setValue('MODULE')
       this.formGroupMfe.controls['technology'].setValue('ANGULAR')
+      this.dialogTitleKey = 'ACTIONS.' + this.changeMode + '.' + this.appAbstract?.appType + '.HEADER'
     }
     if (this.appAbstract?.id) {
       if (this.appAbstract.appType === 'MFE') this.getMfe()

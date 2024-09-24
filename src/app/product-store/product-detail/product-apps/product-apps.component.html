@@ -10,7 +10,7 @@
         {{ 'DIALOG.COMPONENTS.MFE' | translate }}
       </span>
     </ng-template>
-    <div class="flex flex-row flex-wrap column-gap-3 row-gap-3">
+    <div class="flex flex-row flex-wrap column-gap-3 sm:column-gap-4 row-gap-2 sm:row-gap-3">
       <ng-container *ngFor="let mfe of details.microfrontends.sort(sortMfesByTypeAndExposedModule)">
         <a
           class="card relative w-full sm:w-21rem m-0 py-2 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
@@ -96,7 +96,7 @@
         {{ 'DIALOG.COMPONENTS.MS' | translate }}
       </span>
     </ng-template>
-    <div class="flex flex-row flex-wrap column-gap-4 row-gap-3">
+    <div class="flex flex-row flex-wrap column-gap-3 sm:column-gap-4 row-gap-2 sm:row-gap-3">
       <ng-container *ngFor="let ms of details.microservices.sort(sortMssByAppId)">
         <a
           class="card relative w-full sm:w-21rem m-0 py-2 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
@@ -156,9 +156,9 @@
         {{ 'DIALOG.COMPONENTS.SLOT' | translate }}
       </span>
     </ng-template>
-    <div class="flex flex-row flex-wrap column-gap-4 row-gap-3">
+    <div class="flex flex-row flex-wrap column-gap-3 sm:column-gap-4 row-gap-2 sm:row-gap-3">
       <ng-container *ngFor="let slot of details.slots.sort(sortSlotsByName)">
-        <div class="card relative m-0 py-0 px-0 flex flex-column justify-content-center">
+        <div class="card relative w-full sm:w-21rem m-0 py-0 px-0 flex flex-column justify-content-center">
           <a
             *ngIf="hasDeletePermission"
             tabindex="0"
@@ -185,7 +185,7 @@
             tooltipPosition="top"
             tooltipEvent="hover"
           ></span>
-          <div class="h-2-5rem w-12rem my-2 mx-6 flex flex-column justify-content-around text-center">
+          <div class="h-2-5rem my-2 mx-6 flex flex-column justify-content-around text-center">
             <div
               class="font-bold text-responsive"
               [pTooltip]="slot.name.length <= 25 ? '' : slot.name"
