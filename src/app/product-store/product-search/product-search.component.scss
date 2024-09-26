@@ -1,4 +1,4 @@
-@import '/src/_ps_mixins.scss';
+@import '/src/app/_ps-mixins.scss';
 
 @include correct-data-view-control;
 @include correct-search-criteria;
@@ -6,3 +6,4 @@
 @include displaying-text-responsive;
 @include card-badges;
 @include danger-action;
+@include dataview-list-zebra-rows-4;
