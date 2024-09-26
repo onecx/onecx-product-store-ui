@@ -383,6 +383,25 @@
     }
   }
 }
+@mixin dataview-list-zebra-rows-4 {
+  :host ::ng-deep {
+    .p-dataview-list .p-dataview-content .p-grid > div {
+      &:nth-child(4n + 1),
+      &:nth-child(4n + 2) {
+        background-color: #f8f9fa;
+      }
+    }
+  }
+}
+@mixin dataview-list-flex-zebra-rows {
+  :host ::ng-deep {
+    .p-dataview-list .p-dataview-content > div {
+      &:nth-child(odd) {
+        background-color: #f8f9fa;
+      }
+    }
+  }
+}
 @mixin dropdown-zebra-rows {
   :host ::ng-deep {
     .p-dropdown-panel .p-dropdown-items *:nth-child(odd) .p-dropdown-item {

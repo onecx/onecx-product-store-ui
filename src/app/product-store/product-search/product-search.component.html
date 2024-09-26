@@ -100,10 +100,10 @@
           <div *ngFor="let product of products; index as i" class="col-12 md:col-6">
             <div
               [id]="'product_search_data_list_row_' + i"
-              class="flex flex-row flex-nowrap justify-content-start align-items-center column-gap-3 py-1 px-3 hover:bg-gray-200 cursor-pointer"
+              class="flex flex-row flex-nowrap justify-content-start align-items-center column-gap-3 py-1 sm:px-3 hover:bg-gray-200 cursor-pointer"
               [routerLink]="['./' + product.name]"
             >
-              <div class="p-0 col-4 sm:col-2 text-center">
+              <div class="p-0 col-3 text-center">
                 <app-image-container
                   [id]="'product_search_data_list_row_' + i + '_image'"
                   [small]="true"
@@ -111,8 +111,7 @@
                   [imageUrl]="getLogoUrl(product)"
                 ></app-image-container>
               </div>
-              <div class="p-0 hidden sm:block col-1"></div>
-              <div class="p-0 col-8 sm:col-9">
+              <div class="p-0 col-9">
                 <div class="flex flex-column justify-content-center gap-1">
                   <div
                     [id]="'product_search_data_list_row_' + i + '_product_display_name'"

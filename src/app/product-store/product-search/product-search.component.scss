@@ -1,4 +1,4 @@
-@import '/src/_ps_mixins.scss';
+@import '/src/app/_ps-mixins.scss';
 
 @include correct-data-view-control;
 @include correct-search-criteria;
@@ -6,3 +6,27 @@
 @include displaying-text-responsive;
 @include card-badges;
 @include danger-action;
+
+@media screen and (min-width: 768px) {
+  :host ::ng-deep {
+    .p-dataview-list .p-dataview-content .p-grid > div {
+      &:nth-child(4n + 1),
+      &:nth-child(4n + 2) {
+        background-color: #f8f9fa;
+      }
+      &:nth-child(4n + 1),
+      &:nth-child(4n + 3) {
+        border-right: var(--data-view-list-item-border);
+      }
+    }
+  }
+}
+@media screen and (max-width: 768px) {
+  :host ::ng-deep {
+    .p-dataview-list .p-dataview-content .p-grid > div {
+      &:nth-child(odd) {
+        background-color: #f8f9fa;
+      }
+    }
+  }
+}
