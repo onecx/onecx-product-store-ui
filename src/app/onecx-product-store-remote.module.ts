@@ -63,7 +63,7 @@ const routes: Routes = [
   schemas: []
 })
 export class OneCXProductStoreModule implements DoBootstrap {
-  constructor(private injector: Injector) {
+  constructor(private readonly injector: Injector) {
     console.info('OneCX Product Store Module constructor')
   }
 

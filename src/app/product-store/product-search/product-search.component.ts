@@ -40,11 +40,11 @@ export class ProductSearchComponent implements OnInit {
   @ViewChild(DataView) dv: DataView | undefined
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private productApi: ProductsAPIService,
-    private translate: TranslateService,
-    private imageApi: ImagesInternalAPIService
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly productApi: ProductsAPIService,
+    private readonly translate: TranslateService,
+    private readonly imageApi: ImagesInternalAPIService
   ) {
     this.productSearchCriteriaGroup = new FormGroup<ProductSearchCriteria>({
       displayName: new FormControl<string | null>(null),

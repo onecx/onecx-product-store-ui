@@ -32,7 +32,7 @@ export function convertToUniqueStringArray(unsorted: string | undefined | null):
   unsorted
     .toString()
     .split(',')
-    .map((a) => ar?.push(a.trim()))
+    .forEach((a) => ar?.push(a.trim()))
   return ar.sort(sortByLocale)
 }
 

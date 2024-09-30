@@ -15,9 +15,9 @@ export class SlotDeleteComponent {
   @Output() slotDeleted = new EventEmitter<boolean>()
 
   constructor(
-    private slotApi: SlotsAPIService,
-    private msgService: PortalMessageService,
-    private translate: TranslateService
+    private readonly slotApi: SlotsAPIService,
+    private readonly msgService: PortalMessageService,
+    private readonly translate: TranslateService
   ) {}
 
   public onDialogHide(): void {

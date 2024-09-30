@@ -38,14 +38,14 @@ export class ProductDetailComponent implements OnInit {
   @ViewChild(ProductPropertyComponent, { static: false }) productPropsComponent!: ProductPropertyComponent
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private user: UserService,
-    private location: Location,
-    private productApi: ProductsAPIService,
-    private imageApi: ImagesInternalAPIService,
-    private msgService: PortalMessageService,
-    private translate: TranslateService
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
+    private readonly user: UserService,
+    private readonly location: Location,
+    private readonly productApi: ProductsAPIService,
+    private readonly imageApi: ImagesInternalAPIService,
+    private readonly msgService: PortalMessageService,
+    private readonly translate: TranslateService
   ) {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'medium'
     this.productName = this.route.snapshot.paramMap.get('name') || ''
