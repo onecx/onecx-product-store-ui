@@ -16,7 +16,7 @@ export class AppInternComponent implements OnChanges {
   public operator = false
   public deprecated = false
 
-  constructor(private translate: TranslateService) {}
+  constructor(private readonly translate: TranslateService) {}
 
   public ngOnChanges(): void {
     this.undeployed = this.app?.undeployed ?? false

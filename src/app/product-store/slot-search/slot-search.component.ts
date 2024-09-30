@@ -37,11 +37,11 @@ export class SlotSearchComponent implements OnInit {
   @ViewChild(DataView) dv: DataView | undefined
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private user: UserService,
-    private slotApi: SlotsAPIService,
-    private translate: TranslateService
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly user: UserService,
+    private readonly slotApi: SlotsAPIService,
+    private readonly translate: TranslateService
   ) {
     this.hasDeletePermission = this.user.hasPermission('SLOT#DELETE')
     this.slotSearchCriteriaGroup = new FormGroup<SlotSearchCriteria>({

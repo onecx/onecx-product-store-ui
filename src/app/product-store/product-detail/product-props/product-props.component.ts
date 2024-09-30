@@ -59,11 +59,11 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
   public convertToUniqueStringArray = convertToUniqueStringArray
 
   constructor(
-    private icon: IconService,
-    private elements: ElementRef,
-    private productApi: ProductsAPIService,
-    private imageApi: ImagesInternalAPIService,
-    private msgService: PortalMessageService
+    private readonly icon: IconService,
+    private readonly elements: ElementRef,
+    private readonly productApi: ProductsAPIService,
+    private readonly imageApi: ImagesInternalAPIService,
+    private readonly msgService: PortalMessageService
   ) {
     this.formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl(null),

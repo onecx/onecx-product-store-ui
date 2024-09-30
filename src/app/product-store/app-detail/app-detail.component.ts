@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, Renderer2, ViewChild } from '@angular/core'
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 import { finalize } from 'rxjs'
@@ -87,13 +87,12 @@ export class AppDetailComponent implements OnInit, OnChanges {
   public convertToUniqueStringArray = convertToUniqueStringArray
 
   constructor(
-    private user: UserService,
-    private icon: IconService,
-    private msApi: MicroservicesAPIService,
-    private mfeApi: MicrofrontendsAPIService,
-    private msgService: PortalMessageService,
-    private translate: TranslateService,
-    private renderer: Renderer2
+    private readonly user: UserService,
+    private readonly icon: IconService,
+    private readonly msApi: MicroservicesAPIService,
+    private readonly mfeApi: MicrofrontendsAPIService,
+    private readonly msgService: PortalMessageService,
+    private readonly translate: TranslateService
   ) {
     this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
     this.hasEditPermission = this.user.hasPermission('APP#EDIT')

@@ -15,10 +15,10 @@ export class AppDeleteComponent {
   @Output() appDeleted = new EventEmitter<boolean>()
 
   constructor(
-    private msApi: MicroservicesAPIService,
-    private mfeApi: MicrofrontendsAPIService,
-    private msgService: PortalMessageService,
-    private translate: TranslateService
+    private readonly msApi: MicroservicesAPIService,
+    private readonly mfeApi: MicrofrontendsAPIService,
+    private readonly msgService: PortalMessageService,
+    private readonly translate: TranslateService
   ) {}
 
   public onDialogHide(): void {

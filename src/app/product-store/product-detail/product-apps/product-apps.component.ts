@@ -48,9 +48,9 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   public hasDeletePermission = false
 
   constructor(
-    private icon: IconService,
-    private user: UserService,
-    private productApi: ProductsAPIService
+    private readonly icon: IconService,
+    private readonly user: UserService,
+    private readonly productApi: ProductsAPIService
   ) {
     this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
     this.hasDeletePermission = this.user.hasPermission('APP#DELETE')

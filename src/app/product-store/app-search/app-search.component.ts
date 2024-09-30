@@ -67,12 +67,12 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   @ViewChild(DataView) dv: DataView | undefined
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private user: UserService,
-    private mfeApi: MicrofrontendsAPIService,
-    private msApi: MicroservicesAPIService,
-    private translate: TranslateService
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly user: UserService,
+    private readonly mfeApi: MicrofrontendsAPIService,
+    private readonly msApi: MicroservicesAPIService,
+    private readonly translate: TranslateService
   ) {
     this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
     this.hasDeletePermission = this.user.hasPermission('APP#DELETE')
