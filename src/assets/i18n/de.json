@@ -153,6 +153,9 @@
       "SAVE_AND_CLOSE": "Änderungen speichern und Dialog schließen"
     }
   },
+  "GENERAL": {
+    "OF": "von"
+  },
   "BREADCRUMBS": {
     "APPS": "Apps",
     "SLOTS": "Slots",
