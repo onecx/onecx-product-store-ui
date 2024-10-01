@@ -133,7 +133,8 @@
         "NOT_EXISTS": "An Application with this name could not be found.",
         "LOAD_ERROR": "Failed to load the Application",
         "NOT_FOUND": "Application was not found"
-      }
+      },
+      "OF": "of"
     },
     "VIEW": {
       "LABEL": "View",

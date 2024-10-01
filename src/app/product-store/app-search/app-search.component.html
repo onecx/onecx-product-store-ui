@@ -89,6 +89,8 @@
       [filterBy]="filterValueDefault"
       [sortField]="sortField"
       [sortOrder]="sortOrder"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="{first} - {last} {{ 'ACTIONS.SEARCH.OF' | translate }} {totalRecords}"
     >
       <ng-template pTemplate="header">
         <div class="flex flex-wrap align-items-center mx-1">

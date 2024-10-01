@@ -133,7 +133,8 @@
         "NOT_EXISTS": "Eine Applikation mit diesem Namen konnte nicht gefunden werden.",
         "LOAD_ERROR": "Applikation konnte nicht geladen werden",
         "NOT_FOUND": "Applikation nicht gefunden"
-      }
+      },
+      "OF": "von"
     },
     "VIEW": {
       "LABEL": "Ansehen",
