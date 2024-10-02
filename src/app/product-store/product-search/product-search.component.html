@@ -153,6 +153,7 @@
               class="card relative px-2 p-1 sm:p-2 flex flex-column sm:gap-1 justify-content-between text-center hover:bg-gray-200 cursor-pointer"
               [routerLink]="['./', product.name]"
             >
+              <!-- BADGES -->
               <span
                 *ngIf="product?.undeployed"
                 [id]="'product_search_data_grid_row_' + i + '_undeployed'"
@@ -169,6 +170,7 @@
                   [imageUrl]="getLogoUrl(product)"
                 ></app-image-container>
               </div>
+              <!-- CONTENT -->
               <div class="flex flex-column justify-content-between sm:gap-1 text-center">
                 <div
                   [id]="'product_search_data_grid_row_' + i + '_product_display_name'"

@@ -19,9 +19,9 @@
     },
     "CREATE": {
       "LABEL": "Create",
-      "MFE.LABEL": "Create Microfrontend",
+      "MFE.LABEL": "Create UI Component",
       "MS.LABEL": "Create Microservice",
-      "MFE.HEADER": "Create Microfrontend",
+      "MFE.HEADER": "Create UI Component",
       "MS.HEADER": "Create Microservice",
       "APP": {
         "TOOLTIP": "Create a new App",
@@ -39,7 +39,7 @@
     "DELETE": {
       "LABEL": "Delete",
       "ENDPOINT.TOOLTIP": "Delete Endpoint",
-      "MFE.HEADER": "Delete Microfrontend",
+      "MFE.HEADER": "Delete UI Component",
       "MS.HEADER": "Delete Microservice",
       "APP": {
         "TOOLTIP": "Delete App",
@@ -66,7 +66,7 @@
     },
     "EDIT": {
       "LABEL": "Edit",
-      "MFE.HEADER": "Edit Microfrontend",
+      "MFE.HEADER": "Edit UI Component",
       "MS.HEADER": "Edit Microservice",
       "APP": {
         "TOOLTIP": "Edit App properties",
@@ -120,13 +120,13 @@
           "TOOLTIP": "App Type selection",
           "ALL": "All",
           "MS": "MS",
-          "MFE": "MFE"
+          "MFE": "UI"
         },
         "QUICK_FILTER": {
           "TOOLTIP": "Quick Filter for App type",
           "ALL": "All",
           "MS": "Microservices",
-          "MFE": "Microfrontends"
+          "MFE": "UI Components"
         }
       },
       "PRODUCT": {
@@ -138,7 +138,7 @@
     },
     "VIEW": {
       "LABEL": "View",
-      "MFE.HEADER": "Microfrontend Details",
+      "MFE.HEADER": "UI Component Details",
       "MS.HEADER": "Microservice Details",
       "PRODUCT": {
         "HEADER": "Edit Application"
@@ -183,18 +183,18 @@
     "CONSTRAINT_NAME": "Please add a Workspace name before uploading a file.",
     "CONSTRAINT_SIZE": "The image file size exceeds the maximum length of 100,000 bytes.",
     "TOOLTIPS": {
-      "URL": "As an alternative to uploading, a URL to an image can be specified here",
+      "URL": "As an alternative to uploading, you can enter a URL to an image here.",
       "UPLOAD": "Select and upload image"
     }
   },
   "DIALOG": {
     "SEARCH.HEADER": "Application Store",
-    "SEARCH.SUBHEADER": "Managing Applications and their Components (Microfrontends, Microservices, Slots)",
+    "SEARCH.SUBHEADER": "Managing Applications and their Components (UI Components, Microservices, Slots)",
     "DETAIL.SUBHEADER": "Application Details",
     "SEARCH.APPS.LABEL": "Apps",
-    "SEARCH.APPS.TOOLTIP": "Search and Management of Microfrontends and Microservices",
+    "SEARCH.APPS.TOOLTIP": "Search and Management of UI Components and Microservices",
     "SEARCH.APPS.HEADER": "Apps",
-    "SEARCH.APPS.SUBHEADER": "Searching and Management of Microfrontends and Microservices",
+    "SEARCH.APPS.SUBHEADER": "Searching and Management of UI Components and Microservices",
     "SEARCH.SLOTS.LABEL": "Slots",
     "SEARCH.SLOTS.TOOLTIP": "Display Slots",
     "SEARCH.SLOTS.HEADER": "Slots",
@@ -220,12 +220,12 @@
       }
     },
     "COMPONENTS": {
-      "MFE": "Microfrontends",
+      "MFE": "UI Components",
       "MS": "Microservices",
       "SLOT": "Slots",
       "TOOLTIPS": {
         "MFE": "UI Components: Modules, Remote Components",
-        "MS": "List of backend and frontend services",
+        "MS": "Deployed backend and frontend services",
         "SLOT": "Areas in UI components where you want to have special functionality. This is assigned when used in Workspaces."
       }
     }
@@ -240,8 +240,6 @@
     "TECHNOLOGY": "Technology",
     "TYPE": "Type",
     "MS": "MS",
-    "MFE.MODULE": "MFE - Module",
-    "MFE.COMPONENT": "MFE - Component",
     "REMOTE_BASE_URL": "Remote Base URL",
     "REMOTE_ENTRY": "Remote Entry",
     "REMOTE_NAME": "Remote Name",
@@ -261,12 +259,12 @@
     "TOOLTIPS": {
       "APP_ID": "Unique ID - base identifier for this App",
       "APP_NAME": "Business name of the App",
-      "APP_TYPE": "Type of the App: Microfrontend or Microservice",
+      "APP_TYPE": "Type of the App: UI Component or Microservice",
       "APP_VERSION": "Version",
       "DESCRIPTION": "Description",
       "PRODUCT_NAME": "Name of the Produkt the App is assigned to",
       "TECHNOLOGY": "Technology",
-      "TYPE": "Type of the Microfrontends",
+      "TYPE": "Type of the UI Component",
       "MS": "Microservice",
       "REMOTE_BASE_URL": "Remote Base URL",
       "REMOTE_ENTRY": "Remote Entry",
