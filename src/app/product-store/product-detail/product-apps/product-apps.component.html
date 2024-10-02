@@ -59,7 +59,6 @@
             tooltipPosition="top"
             tooltipEvent="hover"
           ></span>
-
           <!-- CONTENT -->
           <div class="flex flex-column justify-content-between gap-1 text-center">
             <div
@@ -102,6 +101,7 @@
           class="card relative w-full sm:w-21rem m-0 py-2 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
           (click)="onDetail($event, ms, AppType.MS)"
         >
+          <!-- BADGES -->
           <a
             *ngIf="hasCreatePermission"
             tabindex="0"
@@ -130,14 +130,23 @@
             tooltipPosition="top"
             tooltipEvent="hover"
           ></span>
+          <!-- CONTENT -->
           <div class="h-2-5rem flex flex-column justify-content-around text-center">
             <div
-              class="font-bold white-space-nowrap"
+              class="font-bold text-responsive"
               [pTooltip]="ms.appId && ms.appId.length <= 25 ? '' : (ms.appId ?? '')"
               tooltipPosition="top"
               tooltipEvent="hover"
             >
               {{ ms.appId }}
+            </div>
+            <div
+              class="text-responsive"
+              [pTooltip]="'APP.TOOLTIPS.APP_VERSION' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            >
+              {{ ms.appVersion }}
             </div>
           </div>
         </a>
@@ -159,6 +168,7 @@
     <div class="flex flex-row flex-wrap column-gap-3 sm:column-gap-4 row-gap-2 sm:row-gap-3">
       <ng-container *ngFor="let slot of details.slots.sort(sortSlotsByName)">
         <div class="card relative w-full sm:w-21rem m-0 py-0 px-0 flex flex-column justify-content-center">
+          <!-- BADGES -->
           <a
             *ngIf="hasDeletePermission"
             tabindex="0"
@@ -185,6 +195,7 @@
             tooltipPosition="top"
             tooltipEvent="hover"
           ></span>
+          <!-- CONTENT -->
           <div class="h-2-5rem my-2 mx-6 flex flex-column justify-content-around text-center">
             <div
               class="font-bold text-responsive"

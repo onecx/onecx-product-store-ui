@@ -50,7 +50,7 @@
               tooltipPosition="top"
               tooltipEvent="hover"
             >
-              {{ item.value }}</span
+              {{ 'ACTIONS.SEARCH.APP.FILTER.' + item.value | translate }}</span
             ></ng-template
           >
         </p-selectButton>
@@ -109,7 +109,7 @@
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
-                  {{ item.value }}</span
+                  {{ 'ACTIONS.SEARCH.APP.FILTER.' + item.value | translate }}</span
                 ></ng-template
               >
             </p-selectButton>
@@ -156,6 +156,7 @@
       <ng-template let-apps pTemplate="gridItem">
         <div class="p-grid p-nogutter grid grid-nogutter">
           <div *ngFor="let app of apps" class="col-6 md:col-4 lg:col-4 xl:col-3 p-2 md:px-3">
+            <!-- BADGES -->
             <a
               tabindex="0"
               [id]="'ps_app_search_data_' + app.appId"
@@ -220,6 +221,7 @@
                 tooltipPosition="top"
                 tooltipEvent="hover"
               ></span>
+              <!-- CONTENT -->
               <div class="h-4rem flex flex-column justify-content-between gap-1 text-center">
                 <div
                   [id]="'ps_app_search_data_' + app.appId + '_app_id'"
@@ -234,11 +236,11 @@
                   *ngIf="app.appType === 'MS'"
                   [id]="'ps_app_search_data_' + app.appId + '_app_type_key'"
                   class="text-xs sm:text-sm text-responsive"
-                  [pTooltip]="'APP.TOOLTIPS.MS' | translate"
+                  [pTooltip]="('APP.TOOLTIPS.MS' | translate) + ': ' + ('APP.APP_VERSION' | translate)"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
-                  {{ app.appTypeKey | translate }}
+                  {{ app.appVersion }}
                 </div>
                 <div
                   *ngIf="app.appType === 'MFE'"
@@ -253,7 +255,7 @@
                 <div
                   [id]="'ps_app_search_data_' + app.appId + '_product_name'"
                   class="text-xs text-responsive"
-                  [pTooltip]="app.productName.length <= 25 ? '' : app.productName"
+                  [pTooltip]="('APP.PRODUCT_NAME' | translate) + (app.productName.length <= 25 ? '' : app.productName)"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >

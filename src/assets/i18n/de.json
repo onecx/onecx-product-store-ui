@@ -19,9 +19,9 @@
     },
     "CREATE": {
       "LABEL": "Erstellen",
-      "MFE.LABEL": "Microfrontend erstellen",
+      "MFE.LABEL": "UI Komponente erstellen",
       "MS.LABEL": "Microservice erstellen",
-      "MFE.HEADER": "Microfrontend erstellen",
+      "MFE.HEADER": "UI Komponente erstellen",
       "MS.HEADER": "Microservice erstellen",
       "APP": {
         "TOOLTIP": "Eine neue App erstellen",
@@ -39,7 +39,7 @@
     "DELETE": {
       "LABEL": "Löschen",
       "ENDPOINT.TOOLTIP": "Endpunkt löschen",
-      "MFE.HEADER": "Microfrontend löschen",
+      "MFE.HEADER": "UI Komponente löschen",
       "MS.HEADER": "Microservice löschen",
       "APP": {
         "TOOLTIP": "App löschen",
@@ -66,8 +66,8 @@
     },
     "EDIT": {
       "LABEL": "Bearbeiten",
-      "MFE.HEADER": "Microfrontend Ändern",
-      "MS.HEADER": "Microservice Ändern",
+      "MFE.HEADER": "UI Komponente ändern",
+      "MS.HEADER": "Microservice ändern",
       "APP": {
         "TOOLTIP": "Die App-Eigenschaften bearbeiten",
         "OK": "Die App wurde erfolgreich geändert",
@@ -120,13 +120,13 @@
           "TOOLTIP": "App Typ Auswahl",
           "ALL": "Alle",
           "MS": "MS",
-          "MFE": "MFE"
+          "MFE": "UI"
         },
         "QUICK_FILTER": {
           "TOOLTIP": "Quickfilter für App Typ",
           "ALL": "Alle",
           "MS": "Microservices",
-          "MFE": "Microfrontends"
+          "MFE": "UI Komponenten"
         }
       },
       "PRODUCT": {
@@ -138,7 +138,7 @@
     },
     "VIEW": {
       "LABEL": "Ansehen",
-      "MFE.HEADER": "Microfrontend Details",
+      "MFE.HEADER": "UI Komponente Details",
       "MS.HEADER": "Microservice Details",
       "PRODUCT": {
         "HEADER": "Applikation bearbeiten"
@@ -189,12 +189,12 @@
   },
   "DIALOG": {
     "SEARCH.HEADER": "Application Store",
-    "SEARCH.SUBHEADER": "Applikationen und deren Komponenten (Microfrontends, Microservices, Slots) verwalten",
+    "SEARCH.SUBHEADER": "Applikationen und deren Komponenten (UI Komponenten, Microservices, Slots) verwalten",
     "DETAIL.SUBHEADER": "Application Details",
     "SEARCH.APPS.LABEL": "Apps",
-    "SEARCH.APPS.TOOLTIP": "Microfrontends und Microservices suchen und verwalten",
+    "SEARCH.APPS.TOOLTIP": "UI Komponenten und Microservices suchen und verwalten",
     "SEARCH.APPS.HEADER": "Apps",
-    "SEARCH.APPS.SUBHEADER": "Suchen und verwalten von Microfrontends und Microservices",
+    "SEARCH.APPS.SUBHEADER": "Suchen und verwalten von UI Komponenten und Microservices",
     "SEARCH.SLOTS.LABEL": "Slots",
     "SEARCH.SLOTS.TOOLTIP": "Slots anzeigen",
     "SEARCH.SLOTS.HEADER": "Slots",
@@ -220,12 +220,12 @@
       }
     },
     "COMPONENTS": {
-      "MFE": "Microfrontends",
+      "MFE": "UI Komponenten",
       "MS": "Microservices",
       "SLOT": "Slots",
       "TOOLTIPS": {
         "MFE": "UI Komponenten: Module, Remote Components",
-        "MS": "Liste der Backend und Frontend Services",
+        "MS": "Bereitgestellte Backend und Frontend Services",
         "SLOT": "Bereiche in UI Komponenten in denen man spezielle Funktionalität haben möchte. Diese wird bei der Verwendung in Workspaces zugeordnet."
       }
     }
@@ -240,8 +240,6 @@
     "TECHNOLOGY": "Technologie",
     "TYPE": "Typ",
     "MS": "MS",
-    "MFE.MODULE": "MFE - Module",
-    "MFE.COMPONENT": "MFE - Component",
     "REMOTE_BASE_URL": "Remote Base URL",
     "REMOTE_ENTRY": "Remote Entry",
     "REMOTE_NAME": "Remote Name",
@@ -262,11 +260,11 @@
       "APP_ID": "Eindeutige ID - Basis Bezeichner der App",
       "APP_NAME": "Name der App",
       "APP_TYPE": "Typ der App",
-      "APP_VERSION": "Version",
+      "APP_VERSION": "Bereitgestellte Version",
       "DESCRIPTION": "Beschreibung",
       "PRODUCT_NAME": "Name der Applikation der die App zugeordnet ist",
       "TECHNOLOGY": "Technologie",
-      "TYPE": "Typ des Microfrontends",
+      "TYPE": "Typ der UI Komponente",
       "MS": "Microservice",
       "REMOTE_BASE_URL": "Remote Base URL",
       "REMOTE_ENTRY": "Remote Entry",
