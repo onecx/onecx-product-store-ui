@@ -7,46 +7,42 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <div
-      id="product_search_criteria"
-      [formGroup]="productSearchCriteriaGroup"
-      class="flex flex-wrap gap-4 row-gap-3 md:px-2"
-    >
+    <div id="ps_product_search_criteria" [formGroup]="productSearchCriteriaGroup" class="flex flex-row flex-wrap gap-3">
       <span class="p-float-label">
         <input
-          id="product_search_criteria_display_name"
+          id="ps_product_search_criteria_display_name"
           pInputText
           type="text"
-          class="w-18rem"
+          class="w-11rem sm:w-18rem text-responsive"
           [clear]="true"
           formControlName="displayName"
           [pTooltip]="('PRODUCT.TOOLTIPS.DISPLAY_NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="product_search_criteria_display_name">{{ 'PRODUCT.DISPLAY_NAME' | translate }}</label>
+        <label for="ps_product_search_criteria_display_name">{{ 'PRODUCT.DISPLAY_NAME' | translate }}</label>
       </span>
       <span class="p-float-label">
         <input
-          id="product_search_criteria_product_name"
+          id="ps_product_search_criteria_product_name"
           pInputText
           type="text"
-          class="w-18rem"
+          class="w-11rem sm:w-18rem text-responsive"
           [clear]="true"
           formControlName="productName"
           [pTooltip]="('PRODUCT.TOOLTIPS.NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="product_search_criteria_product_name">{{ 'PRODUCT.NAME' | translate }}</label>
+        <label for="ps_product_search_criteria_product_name">{{ 'PRODUCT.NAME' | translate }}</label>
       </span>
     </div>
   </ocx-search-header>
 
   <ocx-page-content>
-    <div *ngIf="exceptionKey" id="product_search_criteria_error" class="card px-3 align-items-center">
+    <div *ngIf="exceptionKey" id="ps_product_search_criteria_error" class="card px-3 align-items-center">
       <p-message
-        id="product_search_criteria_error_message"
+        id="ps_product_search_criteria_error_message"
         severity="error"
         styleClass="p-2"
         [text]="exceptionKey | translate"
@@ -54,7 +50,7 @@
     </div>
     <p-dataView
       *ngIf="!exceptionKey"
-      id="product_search_dataview"
+      id="ps_product_search_dataview"
       [value]="(products$ | async)?.stream!.sort(sortProductsByDisplayName)"
       [paginator]="true"
       [alwaysShowPaginator]="true"
@@ -70,7 +66,7 @@
     >
       <ng-template pTemplate="header">
         <ocx-data-view-controls
-          id="product_search_dataview_controls"
+          id="ps_product_search_dataview_controls"
           [enableFiltering]="true"
           [enableSorting]="true"
           [supportedViews]="['grid', 'list']"
@@ -101,13 +97,13 @@
         <div class="p-grid p-nogutter grid grid-nogutter">
           <div *ngFor="let product of products; index as i" class="col-12 md:col-6">
             <div
-              [id]="'product_search_data_list_row_' + i"
+              [id]="'ps_product_search_data_list_row_' + i"
               class="flex flex-row flex-nowrap justify-content-start align-items-center column-gap-3 py-1 sm:px-3 hover:bg-gray-200 cursor-pointer"
               [routerLink]="['./' + product.name]"
             >
               <div class="p-0 col-3 text-center">
                 <app-image-container
-                  [id]="'product_search_data_list_row_' + i + '_image'"
+                  [id]="'ps_product_search_data_list_row_' + i + '_image'"
                   [small]="true"
                   styleClass="h-2rem sm:h-3rem max-h-2rem sm:max-h-3rem max-w-5rem"
                   [imageUrl]="getLogoUrl(product)"
@@ -116,7 +112,7 @@
               <div class="p-0 col-9">
                 <div class="flex flex-column justify-content-center gap-1">
                   <div
-                    [id]="'product_search_data_list_row_' + i + '_product_display_name'"
+                    [id]="'ps_product_search_data_list_row_' + i + '_product_display_name'"
                     class="font-bold text-md text-responsive"
                     [class.danger-action-text]="product.undeployed"
                     [pTooltip]="
@@ -130,7 +126,7 @@
                   </div>
                   <div
                     class="text-sm text-responsive"
-                    [id]="'product_search_data_list_row_' + i + '_product_name'"
+                    [id]="'ps_product_search_data_list_row_' + i + '_product_name'"
                     [pTooltip]="'PRODUCT.NAME' | translate"
                     tooltipPosition="top"
                     tooltipEvent="hover"
@@ -149,14 +145,14 @@
         <div class="grid grid-nogutter">
           <div *ngFor="let product of products; index as i" class="col-6 md:col-4 xl:col-3 p-2 md:px-3">
             <div
-              [id]="'product_search_data_grid_row_' + i"
+              [id]="'ps_product_search_data_grid_row_' + i"
               class="card relative px-2 p-1 sm:p-2 flex flex-column sm:gap-1 justify-content-between text-center hover:bg-gray-200 cursor-pointer"
               [routerLink]="['./', product.name]"
             >
               <!-- BADGES -->
               <span
                 *ngIf="product?.undeployed"
-                [id]="'product_search_data_grid_row_' + i + '_undeployed'"
+                [id]="'ps_product_search_data_grid_row_' + i + '_undeployed'"
                 class="card-badge-right badge-1 p-2 pi pi-ban danger-action-text font-bold"
                 [pTooltip]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
                 tooltipPosition="top"
@@ -164,7 +160,7 @@
               ></span>
               <div class="h-2rem sm:h-3rem flex flex-column justify-content-center align-items-center text-center">
                 <app-image-container
-                  [id]="'product_search_data_grid_row_' + i + '_image'"
+                  [id]="'ps_product_search_data_grid_row_' + i + '_image'"
                   [small]="false"
                   styleClass="h-2rem sm:h-3rem max-h-2rem sm:max-h-3rem max-w-10rem"
                   [imageUrl]="getLogoUrl(product)"
@@ -173,7 +169,7 @@
               <!-- CONTENT -->
               <div class="flex flex-column justify-content-between sm:gap-1 text-center">
                 <div
-                  [id]="'product_search_data_grid_row_' + i + '_product_display_name'"
+                  [id]="'ps_product_search_data_grid_row_' + i + '_product_display_name'"
                   class="mt-2 font-bold text-md text-responsive"
                   [class.danger-action-text]="product.undeployed"
                   [pTooltip]="product.displayName.length <= 20 ? '' : product.displayName"
@@ -183,7 +179,7 @@
                   {{ product.displayName }}
                 </div>
                 <div
-                  [id]="'product_search_data_grid_row_' + i + '_product_name'"
+                  [id]="'ps_product_search_data_grid_row_' + i + '_product_name'"
                   class="text-sm text-responsive"
                   [pTooltip]="product.name.length <= 25 ? '' : product.name"
                   tooltipPosition="top"

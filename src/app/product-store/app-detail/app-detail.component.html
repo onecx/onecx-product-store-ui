@@ -526,7 +526,7 @@
     <div class="flex flex-wrap justify-content-end gap-2 mb-1">
       <p-button
         *ngIf="!allowEditing()"
-        id="ps_app_detail_button_close"
+        id="ps_app_detail_action_close"
         icon="pi pi-times"
         (onClick)="onDialogHide()"
         [label]="'ACTIONS.NAVIGATION.CLOSE' | translate"
@@ -536,7 +536,7 @@
       ></p-button>
       <p-button
         *ngIf="allowEditing()"
-        id="ps_app_detail_button_cancel"
+        id="ps_app_detail_action_cancel"
         icon="pi pi-times"
         (onClick)="onDialogHide()"
         [label]="'ACTIONS.CANCEL' | translate"
@@ -546,7 +546,7 @@
       ></p-button>
       <p-button
         *ngIf="allowEditing()"
-        id="ps_app_detail_button_save"
+        id="ps_app_detail_action_save"
         icon="pi pi-save"
         (onClick)="onSave()"
         [disabled]="
