@@ -86,7 +86,7 @@
     "@commitlint/cli": "^19.5.0",
     "@commitlint/config-conventional": "^19.5.0",
     "@openapitools/openapi-generator-cli": "^2.14.1",
-    "@schematics/angular": "18.2.8",
+    "@schematics/angular": "18.2.10",
     "@types/jasmine": "~5.1.4",
     "@types/node": "~22.7.3",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
