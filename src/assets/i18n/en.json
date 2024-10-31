@@ -206,6 +206,7 @@
     "TABS": {
       "APPS": "Components",
       "INTERN": "Internal",
+      "USE": "Use",
       "PROPERTIES": "Properties",
       "REMOTE": "Remote Module",
       "LOCAL": "Management Details",
@@ -213,6 +214,7 @@
       "TOOLTIPS": {
         "APPS": "Manage Components",
         "INTERN": "Internal properties",
+        "USE": "List of Workspaces using the Application",
         "PROPERTIES": "Manage Properties",
         "REMOTE": "Remote Module",
         "LOCAL": "Management Details",
