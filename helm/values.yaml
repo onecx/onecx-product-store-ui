@@ -26,6 +26,12 @@ app:
               path: /apps
             - name: slots
               path: /slots
+    slot:
+      enabled: true
+      specs:
+        onecx-product-list-workspaces-using-product:
+          name: 'onecx-product-list-workspaces-using-product'
+          description: 'List Workspaces using a given Product'
     # Permission
     permission:
       enabled: true

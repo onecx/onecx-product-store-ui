@@ -2,7 +2,15 @@
   <ocx-slot
     *ngIf="isListWorkspacesUsingProductComponentDefined$ | async"
     [name]="listWorkspacesUsingProductSlotName"
-    [inputs]="{ themeName: product?.name }"
+    [inputs]="{ productName: product?.name }"
   >
   </ocx-slot>
+  <div *ngIf="(isListWorkspacesUsingProductComponentDefined$ | async) === false" id="ps_product_use_error">
+    <p-message
+      id="ps_product_use_error_message"
+      severity="info"
+      styleClass="p-2"
+      [text]="'SLOT.NOT_DEFINED' | translate"
+    ></p-message>
+  </div>
 </div>
