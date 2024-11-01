@@ -1,14 +1,14 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { HttpClientTestingModule } from '@angular/common/http/testing'
-import { RouterTestingModule } from '@angular/router/testing'
-import { Router } from '@angular/router'
+import { provideRouter, Router } from '@angular/router'
 import { of, throwError } from 'rxjs'
 import { DataViewModule } from 'primeng/dataview'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { Product, ProductAbstract, ProductPageResult, ProductsAPIService } from 'src/app/shared/generated'
 
 import { ProductSearchComponent } from './product-search.component'
+import { provideHttpClient } from '@angular/common/http'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 
 describe('ProductSearchComponent', () => {
   let component: ProductSearchComponent
@@ -30,15 +30,18 @@ describe('ProductSearchComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ProductSearchComponent],
       imports: [
-        RouterTestingModule,
-        HttpClientTestingModule,
         DataViewModule,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
-      providers: [{ provide: ProductsAPIService, useValue: apiProductServiceSpy }],
+      providers: [
+        provideHttpClientTesting(),
+        provideHttpClient(),
+        provideRouter([{ path: '', component: ProductSearchComponent }]),
+        { provide: ProductsAPIService, useValue: apiProductServiceSpy }
+      ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents()
   }))

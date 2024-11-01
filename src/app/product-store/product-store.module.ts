@@ -23,6 +23,7 @@ import { ProductInternComponent } from './product-detail/product-intern/product-
 import { ProductAppsComponent } from './product-detail/product-apps/product-apps.component'
 import { SlotSearchComponent } from './slot-search/slot-search.component'
 import { SlotDeleteComponent } from './slot-delete/slot-delete.component'
+import { ProductUseComponent } from './product-detail/product-use/product-use.component'
 
 const routes: Routes = [
   {
@@ -65,6 +66,7 @@ const routes: Routes = [
     ProductDetailComponent,
     ProductPropertyComponent,
     ProductInternComponent,
+    ProductUseComponent,
     ProductAppsComponent,
     SlotSearchComponent,
     SlotDeleteComponent

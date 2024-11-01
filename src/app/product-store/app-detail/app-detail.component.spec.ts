@@ -1,7 +1,5 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { HttpClientTestingModule } from '@angular/common/http/testing'
-import { RouterTestingModule } from '@angular/router/testing'
 import { of, throwError } from 'rxjs'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { TranslateTestingModule } from 'ngx-translate-testing'
@@ -16,6 +14,8 @@ import {
   MicrofrontendType
 } from 'src/app/shared/generated'
 import { AppAbstract } from '../app-search/app-search.component'
+import { provideHttpClient } from '@angular/common/http'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 
 const form = new FormGroup<MfeForm>({
   appId: new FormControl('id', Validators.minLength(2)),
@@ -135,14 +135,14 @@ describe('AppDetailComponent', () => {
     TestBed.configureTestingModule({
       declarations: [AppDetailComponent],
       imports: [
-        RouterTestingModule,
-        HttpClientTestingModule,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
       providers: [
+        provideHttpClientTesting(),
+        provideHttpClient(),
         { provide: MicrofrontendsAPIService, useValue: mfeApiServiceSpy },
         { provide: MicroservicesAPIService, useValue: msApiServiceSpy },
         { provide: PortalMessageService, useValue: msgServiceSpy },

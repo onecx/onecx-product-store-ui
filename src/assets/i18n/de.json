@@ -206,12 +206,14 @@
     "TABS": {
       "APPS": "Komponenten",
       "INTERN": "Intern",
+      "USE": "Verwendung",
       "PROPERTIES": "Eigenschaften",
       "REMOTE": "Remote Modul",
       "LOCAL": "Management Details",
       "ENDPOINTS": "UI-Endpunkte",
       "TOOLTIPS": {
         "APPS": "Komponenten verwalten",
+        "USE": "Liste der Workspaces, die die Applikation verwenden",
         "INTERN": "Interne Eigenschaften",
         "PROPERTIES": "Eigenschaften verwalten",
         "REMOTE": "Remote Modul",
@@ -327,7 +329,8 @@
       "NAME": "Eindeutiger Name des Slots"
     },
     "DEPRECATED_SEARCH": "Dieser Slot ist als veraltet markiert. Er kann derzeit weiter verwendet werden wird aber in Zukunft nicht mehr zur Verfügung stehen.",
-    "UNDEPLOYED_SEARCH": "Dieser Slot ist nicht länger nutzbar. Eine weitere Nutzung führt zu Fehlermeldungen."
+    "UNDEPLOYED_SEARCH": "Dieser Slot ist nicht länger nutzbar. Eine weitere Nutzung führt zu Fehlermeldungen.",
+    "NOT_DEFINED": "Diese Funktionalität ist derzeit nicht vefügbar."
   },
   "EXCEPTIONS": {
     "HTTP_STATUS_0": {

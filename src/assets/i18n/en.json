@@ -206,6 +206,7 @@
     "TABS": {
       "APPS": "Components",
       "INTERN": "Internal",
+      "USE": "Use",
       "PROPERTIES": "Properties",
       "REMOTE": "Remote Module",
       "LOCAL": "Management Details",
@@ -213,6 +214,7 @@
       "TOOLTIPS": {
         "APPS": "Manage Components",
         "INTERN": "Internal properties",
+        "USE": "List of Workspaces using the Application",
         "PROPERTIES": "Manage Properties",
         "REMOTE": "Remote Module",
         "LOCAL": "Management Details",
@@ -327,7 +329,8 @@
       "NAME": "Unique Name of the Slot"
     },
     "DEPRECATED_SEARCH": "This Slot is marked as deprecated. It can currently be used but will no longer be available in the future.",
-    "UNDEPLOYED_SEARCH": "This Slot is no longer usable. Further use leads to error messages."
+    "UNDEPLOYED_SEARCH": "This Slot is no longer usable. Further use leads to error messages.",
+    "NOT_DEFINED": "This functionality is not available at the moment."
   },
   "EXCEPTIONS": {
     "HTTP_STATUS_0": {

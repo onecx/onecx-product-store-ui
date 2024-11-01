@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { provideErrorTailorConfig } from '@ngneat/error-tailor'
 
+import { AngularRemoteComponentsModule } from '@onecx/angular-remote-components'
 import { AutoCompleteModule } from 'primeng/autocomplete'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { ConfirmPopupModule } from 'primeng/confirmpopup'
@@ -31,6 +32,7 @@ import { ImageContainerComponent } from './image-container/image-container.compo
   declarations: [ImageContainerComponent],
   imports: [
     PortalCoreModule.forMicroFrontend(),
+    AngularRemoteComponentsModule,
     AutoCompleteModule,
     CommonModule,
     ConfirmDialogModule,
@@ -52,6 +54,7 @@ import { ImageContainerComponent } from './image-container/image-container.compo
     TranslateModule
   ],
   exports: [
+    AngularRemoteComponentsModule,
     AutoCompleteModule,
     CommonModule,
     ConfirmDialogModule,
