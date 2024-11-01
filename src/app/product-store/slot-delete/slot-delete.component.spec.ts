@@ -1,12 +1,13 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
 import { Slot, SlotsAPIService } from 'src/app/shared/generated'
 import { SlotDeleteComponent } from './slot-delete.component'
+import { provideHttpClient } from '@angular/common/http'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 
 describe('SlotDeleteComponent', () => {
   let component: SlotDeleteComponent
@@ -26,13 +27,14 @@ describe('SlotDeleteComponent', () => {
     TestBed.configureTestingModule({
       declarations: [SlotDeleteComponent],
       imports: [
-        HttpClientTestingModule,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
       providers: [
+        provideHttpClientTesting(),
+        provideHttpClient(),
         { provide: SlotsAPIService, useValue: apiSlotServiceSpy },
         { provide: PortalMessageService, useValue: msgServiceSpy }
       ],

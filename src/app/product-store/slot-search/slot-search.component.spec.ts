@@ -1,7 +1,5 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { HttpClientTestingModule } from '@angular/common/http/testing'
-import { RouterTestingModule } from '@angular/router/testing'
 import { Router, ActivatedRoute } from '@angular/router'
 import { of, throwError } from 'rxjs'
 import { DataViewModule } from 'primeng/dataview'
@@ -9,6 +7,8 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 import { SlotsAPIService, SlotPageResult, Slot } from 'src/app/shared/generated'
 
 import { SlotSearchComponent } from './slot-search.component'
+import { provideHttpClient } from '@angular/common/http'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 
 const slots: Slot[] = [
   {
@@ -40,8 +40,6 @@ describe('SlotSearchComponent', () => {
     TestBed.configureTestingModule({
       declarations: [SlotSearchComponent],
       imports: [
-        RouterTestingModule,
-        HttpClientTestingModule,
         DataViewModule,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
@@ -49,6 +47,8 @@ describe('SlotSearchComponent', () => {
         }).withDefaultLanguage('en')
       ],
       providers: [
+        provideHttpClientTesting(),
+        provideHttpClient(),
         { provide: SlotsAPIService, useValue: apiSlotsServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: routeMock }

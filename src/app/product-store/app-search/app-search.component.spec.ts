@@ -1,7 +1,5 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { HttpClientTestingModule } from '@angular/common/http/testing'
-import { RouterTestingModule } from '@angular/router/testing'
 import { Router, ActivatedRoute } from '@angular/router'
 import { of, throwError } from 'rxjs'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
@@ -18,6 +16,8 @@ import {
   MicroservicePageResult,
   MicroservicesAPIService
 } from 'src/app/shared/generated'
+import { provideHttpClient } from '@angular/common/http'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 
 const form = new FormGroup<AppSearchCriteria>({
   appId: new FormControl<string | null>(null, Validators.minLength(2)),
@@ -88,14 +88,14 @@ describe('AppSearchComponent', () => {
     TestBed.configureTestingModule({
       declarations: [AppSearchComponent],
       imports: [
-        RouterTestingModule,
-        HttpClientTestingModule,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
       providers: [
+        provideHttpClientTesting(),
+        provideHttpClient(),
         { provide: MicrofrontendsAPIService, useValue: apiMfeServiceSpy },
         { provide: MicroservicesAPIService, useValue: apiMsServiceSpy },
         { provide: UserService, useValue: mockUserService },

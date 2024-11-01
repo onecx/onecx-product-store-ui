@@ -1,11 +1,11 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { HttpClientTestingModule } from '@angular/common/http/testing'
-import { RouterTestingModule } from '@angular/router/testing'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { ProductInternComponent } from './product-intern.component'
 import { ProductAndWorkspaces } from 'src/app/shared/generated'
+import { provideHttpClient } from '@angular/common/http'
 
 const prodAndWsUndeployed: ProductAndWorkspaces = {
   id: 'id',
@@ -28,13 +28,12 @@ describe('ProductInternComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ProductInternComponent],
       imports: [
-        RouterTestingModule,
-        HttpClientTestingModule,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
+      providers: [provideHttpClientTesting(), provideHttpClient()],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents()
   }))
