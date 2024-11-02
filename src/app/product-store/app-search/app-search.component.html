@@ -153,6 +153,7 @@
           </ocx-data-view-controls>
         </div>
       </ng-template>
+
       <ng-template let-apps pTemplate="gridItem">
         <div class="p-grid p-nogutter grid grid-nogutter">
           <div *ngFor="let app of apps" class="col-6 md:col-4 lg:col-4 xl:col-3 p-2 md:px-3">
@@ -245,12 +246,19 @@
                 <div
                   *ngIf="app.appType === 'MFE'"
                   [id]="'ps_app_search_data_' + app.appId + '_app_type_key'"
-                  class="text-xs sm:text-sm text-responsive"
+                  class="text-xs text-responsive"
                   [pTooltip]="app.exposedModule.length <= 25 ? '' : app.exposedModule"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
                   {{ app.exposedModule }}
+                </div>
+                <div
+                  *ngIf="app.appType === 'MFE'"
+                  [id]="'ps_app_search_data_' + app.appId + '_app_version'"
+                  class="text-xs text-responsive"
+                >
+                  {{ app.appVersion }}
                 </div>
                 <div
                   [id]="'ps_app_search_data_' + app.appId + '_product_name'"
