@@ -203,7 +203,6 @@ export class ProductDetailComponent implements OnInit {
   }
 
   public onRouteToCreatedProduct(product: any) {
-    console.log('onRouteToCreatedProduct', product)
     this.changeMode = 'VIEW'
     this.router.navigate(['../', product?.name], { relativeTo: this.route })
   }

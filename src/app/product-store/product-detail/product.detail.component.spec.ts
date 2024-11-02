@@ -118,7 +118,7 @@ describe('ProductDetailComponent', () => {
     expect(component.changeMode).toEqual('CREATE')
   })
 
-  it('should get product onInit', () => {
+  it('should get product onInit', (done) => {
     const p = { id: 'id', name: 'name', basePath: 'path' }
     apiServiceSpy.getProductByName.and.returnValue(of(p))
 
@@ -126,7 +126,15 @@ describe('ProductDetailComponent', () => {
 
     component.ngOnInit()
 
-    expect(component.product?.id).toEqual(p.id)
+    component.product$.subscribe({
+      next: (result) => {
+        if (result) {
+          expect(result.id).toBe('id')
+        }
+        done()
+      },
+      error: done.fail
+    })
   })
 
   it('should prepare action buttons on init', () => {
@@ -167,7 +175,7 @@ describe('ProductDetailComponent', () => {
     let actions: any = []
     component.actions$!.subscribe((act) => (actions = act))
 
-    actions[2].actionCallback()
+    actions[1].actionCallback()
 
     expect(component.onEdit).toHaveBeenCalled()
   })
@@ -187,7 +195,7 @@ describe('ProductDetailComponent', () => {
   })
 
   it('should behave correctly onCopy', () => {
-    component.onCopy()
+    component.onCopy({})
 
     expect(component.changeMode).toEqual('COPY')
   })
@@ -240,10 +248,9 @@ describe('ProductDetailComponent', () => {
   it('should behave correctly onCreate', () => {
     const routerSpy = spyOn(router, 'navigate')
 
-    component.onCreate(product)
+    component.onRouteToCreatedProduct(product)
 
-    expect(component.product).toEqual(product)
-    expect(routerSpy).toHaveBeenCalledWith(['./../', product.name], jasmine.any(Object))
+    expect(routerSpy).toHaveBeenCalledWith(['../', product.name], jasmine.any(Object))
   })
 
   it('should behave correctly onChange if change false', () => {
@@ -255,9 +262,7 @@ describe('ProductDetailComponent', () => {
   })
 
   it('should behave correctly onDelete', () => {
-    const event: MouseEvent = new MouseEvent('type')
-
-    component.onDelete(event, product)
+    component.onDelete(product)
 
     expect(component.product).toEqual(product)
   })
@@ -289,11 +294,10 @@ describe('ProductDetailComponent', () => {
     expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm:ss')
   })
 
-  it('should behave correctly onTabChange: 2', () => {
-    component.product = product
-    component.onTabChange({ index: 2 })
+  it('should behave correctly onTabChange: 3', () => {
+    component.onTabChange({ index: 3 }, product)
 
-    expect(component.selectedTabIndex).toEqual(2)
+    expect(component.selectedTabIndex).toEqual(3)
     expect(component.product_for_apps).toEqual(product)
   })
 
