@@ -111,7 +111,7 @@ describe('ProductDetailComponent', () => {
   })
 
   it('should be set up correctly onInit if no product name', () => {
-    component.productName = ''
+    component.productName = null
 
     component.ngOnInit()
 

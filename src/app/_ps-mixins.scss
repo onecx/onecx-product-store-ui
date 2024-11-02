@@ -490,6 +490,15 @@
     }
   }
 }
+@mixin tabview-fix-color-selected-tab {
+  :host ::ng-deep {
+    // correct the background color on inital selected tab
+    .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link[aria-selected='true'] {
+      background-color: rgba(var(--primary-color-rgb), 0.12);
+    }
+  }
+}
+
 /* **********************************************
  *  TABLE
  * **********************************************/

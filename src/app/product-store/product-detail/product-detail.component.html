@@ -8,30 +8,41 @@
     [figureBackground]="!currentLogoUrl"
   >
   </ocx-page-header>
-  <ocx-page-content>
-    <div *ngIf="!loading && !product && changeMode !== 'CREATE'" class="card px-3 align-items-center">
-      <p-message
-        id="ps_product_detail_message_not_exists"
-        severity="error"
-        styleClass="p-2"
-        [text]="'ACTIONS.SEARCH.PRODUCT.NOT_EXISTS' | translate"
-      ></p-message>
-    </div>
+
+  <ocx-page-content *ngIf="product$ | async as product">
+    <p-message
+      *ngIf="loading"
+      id="ps_product_detail_loading_message"
+      severity="info"
+      styleClass="m-3 p-2"
+      [text]="'ACTIONS.LOADING' | translate"
+    ></p-message>
+    <p-message
+      *ngIf="!loading && exceptionKey"
+      id="ps_product_detail_error_message"
+      severity="error"
+      styleClass="m-3 p-2"
+      [text]="exceptionKey | translate"
+    ></p-message>
+
     <p-tabView
-      *ngIf="(product && !loading) || changeMode === 'CREATE'"
-      (onChange)="onTabChange($event)"
+      *ngIf="(product && !exceptionKey) || changeMode === 'CREATE'"
+      (onChange)="onTabChange($event, product)"
       [activeIndex]="selectedTabIndex"
     >
       <p-tabPanel
         id="ps_product_detail_panel_props"
         [header]="'DIALOG.TABS.PROPERTIES' | translate"
+        [attr.aria-label]="'DIALOG.TABS.PROPERTIES' | translate"
         [tooltip]="'DIALOG.TABS.TOOLTIPS.PROPERTIES' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
       >
         <app-product-props
           [product]="product"
           [changeMode]="changeMode"
-          (productCreated)="onCreate($event)"
-          (productChanged)="onChange()"
+          (productCreated)="onRouteToCreatedProduct($event)"
+          (productChanged)="onChange($event)"
           (currentLogoUrl)="onUpdateLogoUrl($event)"
         ></app-product-props>
       </p-tabPanel>
@@ -40,12 +51,17 @@
         id="ps_product_detail_panel_intern"
         [disabled]="changeMode !== 'VIEW'"
         [header]="'DIALOG.TABS.INTERN' | translate"
+        [attr.aria-label]="'DIALOG.TABS.INTERN' | translate"
         [tooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
       >
         <app-product-intern [product]="product" [dateFormat]="dateFormat"></app-product-intern>
       </p-tabPanel>
 
       <p-tabPanel
+        id="ps_product_detail_panel_use"
+        [disabled]="changeMode !== 'VIEW'"
         [header]="'DIALOG.TABS.USE' | translate"
         [attr.aria-label]="'DIALOG.TABS.USE' | translate"
         [tooltip]="'DIALOG.TABS.TOOLTIPS.USE' | translate"
@@ -59,7 +75,10 @@
         id="ps_product_detail_panel_apps"
         [disabled]="changeMode !== 'VIEW'"
         [header]="'DIALOG.TABS.APPS' | translate"
+        [attr.aria-label]="'DIALOG.TABS.APPS' | translate"
         [tooltip]="'DIALOG.TABS.TOOLTIPS.APPS' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
       >
         <app-product-apps [product]="product_for_apps" [changeMode]="changeMode"></app-product-apps>
       </p-tabPanel>
@@ -71,6 +90,8 @@
   [(visible)]="productDeleteVisible"
   [header]="'ACTIONS.DELETE.PRODUCT.HEADER' | translate"
   [modal]="true"
+  [closeable]="true"
+  [dragable]="true"
   [resizable]="false"
   [dismissableMask]="true"
   [style]="{ 'max-width': '500px' }"
@@ -78,10 +99,11 @@
   <div class="flex column-gap-3 row-gap-1 justify-content-start align-items-center">
     <div class="pi pi-question-circle text-3xl danger-action-text"></div>
     <div>
-      <div id="ps_product_delete_message" class="font-bold">
-        {{('ACTIONS.DELETE.MESSAGE' | translate).replace('{{ITEM}}', product?.name)}}
+      <div id="ps_product_delete_message" class="font-bold">{{ 'ACTIONS.DELETE.PRODUCT.MESSAGE' | translate }}</div>
+      <div id="ps_product_delete_product_name" class="my-1 font-bold danger-action-text text-center">
+        {{ product?.name }}
       </div>
-      <div *ngIf="product?.operator" class="mt-3">{{ 'ACTIONS.DELETE.PRODUCT.OPERATOR_TEXT' | translate }}</div>
+      <div *ngIf="product?.operator" class="mt-2">{{ 'ACTIONS.DELETE.PRODUCT.OPERATOR_TEXT' | translate }}</div>
       <div class="mt-2">{{ 'ACTIONS.DELETE.MESSAGE_INFO' | translate }}</div>
     </div>
   </div>

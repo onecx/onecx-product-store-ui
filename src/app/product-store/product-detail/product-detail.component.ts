@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { Location } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
-import { Observable, finalize, map } from 'rxjs'
+import { catchError, Observable, of, finalize, map } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 
 import { Action, PortalMessageService, UserService } from '@onecx/portal-integration-angular'
@@ -22,12 +22,14 @@ export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
   styleUrls: ['./product-detail.component.scss']
 })
 export class ProductDetailComponent implements OnInit {
+  public exceptionKey: string | undefined
+  public loading = false
   public actions$: Observable<Action[]> | undefined
-  public productName: string
+  public productName: string | null = null
+  public product$!: Observable<ProductAndWorkspaces>
   public product: ProductAndWorkspaces | undefined
   public product_for_apps: ProductAndWorkspaces | undefined
-  public changeMode: ChangeMode = 'CREATE'
-  public loading = false
+  public changeMode: ChangeMode = 'VIEW'
   public dateFormat = 'medium'
   public headerImageUrl?: string
   public productDeleteVisible = false
@@ -48,46 +50,45 @@ export class ProductDetailComponent implements OnInit {
     private readonly translate: TranslateService
   ) {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'medium'
-    this.productName = this.route.snapshot.paramMap.get('name') || ''
+    this.productName = this.route.snapshot.paramMap.get('name')
   }
 
   ngOnInit(): void {
-    if (this.productName !== '') {
+    this.product = undefined
+    if (this.productName) {
       this.changeMode = 'VIEW'
       this.getProduct()
     } else {
-      this.product = undefined
+      this.changeMode = 'CREATE'
+      this.product$ = of({} as ProductAndWorkspaces)
       this.prepareActionButtons()
     }
   }
 
-  public onTabChange($event: any) {
+  public onTabChange($event: any, product: ProductAndWorkspaces) {
     this.selectedTabIndex = $event.index
-    this.prepareActionButtons()
-    if (this.selectedTabIndex === 2) this.product_for_apps = this.product // lazy load
+    this.prepareActionButtons(product)
+    if (this.selectedTabIndex === 3) this.product_for_apps = product // lazy load
   }
 
-  public getProduct() {
+  public getProduct(): void {
     this.loading = true
-    this.productApi
-      .getProductByName({ name: this.productName })
-      .pipe(
-        finalize(() => {
-          this.loading = false
-        })
-      )
-      .subscribe({
-        next: (data: any) => {
-          if (data) {
-            this.product = data
-            this.prepareActionButtons()
-            this.currentLogoUrl = this.getLogoUrl(this.product!)
-          }
-        }
-      })
+    this.product$ = this.productApi.getProductByName({ name: this.productName ?? '' }).pipe(
+      map((data: ProductAndWorkspaces) => {
+        this.prepareActionButtons(data)
+        this.currentLogoUrl = this.getLogoUrl(data)
+        return data
+      }),
+      catchError((err) => {
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCT'
+        console.error('getProductByName():', err)
+        return of({} as ProductAndWorkspaces)
+      }),
+      finalize(() => (this.loading = false))
+    )
   }
 
-  public prepareActionButtons(): void {
+  public prepareActionButtons(product?: ProductAndWorkspaces): void {
     this.actions$ = this.translate
       .get([
         'ACTIONS.COPY.LABEL',
@@ -114,17 +115,7 @@ export class ProductDetailComponent implements OnInit {
               icon: 'pi pi-arrow-left',
               show: 'always',
               conditional: true,
-              showCondition: this.changeMode === 'VIEW'
-            },
-            {
-              label: data['ACTIONS.COPY.LABEL'],
-              title: data['ACTIONS.COPY.PRODUCT.HEADER'],
-              actionCallback: () => this.onCopy(),
-              icon: 'pi pi-copy',
-              show: 'always',
-              conditional: true,
-              showCondition: this.selectedTabIndex === 0 && this.changeMode === 'VIEW' && this.product !== undefined,
-              permission: 'PRODUCT#CREATE'
+              showCondition: product && this.changeMode === 'VIEW'
             },
             {
               label: data['ACTIONS.EDIT.LABEL'],
@@ -136,8 +127,8 @@ export class ProductDetailComponent implements OnInit {
               showCondition:
                 this.selectedTabIndex === 0 &&
                 this.changeMode === 'VIEW' &&
-                this.product !== undefined &&
-                !this.product.undeployed,
+                product !== undefined &&
+                !product.undeployed,
               permission: 'PRODUCT#EDIT'
             },
             {
@@ -160,16 +151,23 @@ export class ProductDetailComponent implements OnInit {
               permission: 'PRODUCT#EDIT'
             },
             {
+              label: data['ACTIONS.COPY.LABEL'],
+              title: data['ACTIONS.COPY.PRODUCT.HEADER'],
+              actionCallback: () => this.onCopy(product),
+              icon: 'pi pi-copy',
+              show: 'asOverflow',
+              conditional: true,
+              showCondition: this.selectedTabIndex === 0 && this.changeMode === 'VIEW' && product !== undefined,
+              permission: 'PRODUCT#CREATE'
+            },
+            {
               label: data['ACTIONS.DELETE.LABEL'],
               title: data['ACTIONS.DELETE.PRODUCT.TOOLTIP'],
-              actionCallback: () => {
-                this.productDeleteMessage = data['ACTIONS.DELETE.MESSAGE'].replace('{{ITEM}}', this.product?.name)
-                this.productDeleteVisible = true
-              },
+              actionCallback: () => this.onDelete(product),
               icon: 'pi pi-trash',
               show: 'asOverflow',
               conditional: true,
-              showCondition: this.changeMode === 'VIEW' && this.product !== undefined,
+              showCondition: this.changeMode === 'VIEW' && product !== undefined,
               permission: 'PRODUCT#DELETE'
             }
           ]
@@ -184,9 +182,9 @@ export class ProductDetailComponent implements OnInit {
     this.close()
   }
 
-  public onCopy(): void {
+  public onCopy(item: any): void {
     this.changeMode = 'COPY'
-    this.prepareActionButtons()
+    this.prepareActionButtons(item)
   }
   public onEdit() {
     this.changeMode = 'EDIT'
@@ -204,20 +202,21 @@ export class ProductDetailComponent implements OnInit {
     this.productPropsComponent.onSave()
   }
 
-  public onCreate(data: any) {
-    this.product = data
+  public onRouteToCreatedProduct(product: any) {
+    console.log('onRouteToCreatedProduct', product)
     this.changeMode = 'VIEW'
-    this.router.navigate(['./../', this.product?.name], { relativeTo: this.route })
+    this.router.navigate(['../', product?.name], { relativeTo: this.route })
   }
 
-  public onChange() {
+  public onChange(product?: Product) {
     this.changeMode = 'VIEW'
+    // update observable with response data => null
+    // this.product$ = new Observable((sub) => sub.next(product as ProductAndWorkspaces))
     this.getProduct()
   }
 
-  public onDelete(ev: MouseEvent, item: Product): void {
-    ev.stopPropagation()
-    this.product = item
+  public onDelete(product?: Product): void {
+    this.product = product
     this.productDeleteVisible = true
   }
   public onDeleteConfirmation(): void {

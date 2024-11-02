@@ -17,20 +17,18 @@ speed-measure-plugin*.json
 .idea
 .project
 .classpath
-.c9/
 .history
 .settings
 .vscode
 *.launch
-*.sublime-workspace
 
 # misc
 .angular
 .eslintcache
-.husky/_
 .sass-cache
-.gitlab*
 .scannerwork
+.husky/_
+.gitlab*
 connect.lock
 typings
 *.log
