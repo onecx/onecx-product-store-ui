@@ -43,6 +43,7 @@
       "MS.HEADER": "Delete Microservice",
       "APP": {
         "TOOLTIP": "Delete App",
+        "MESSAGE": "Do you want to delete the following Component?",
         "NOK": "App could not be deleted",
         "OK": "App deleted successfully",
         "OPERATOR_TEXT": "This App was created by automation. If still needed it will be restored during the next deployment."
@@ -58,6 +59,7 @@
       "SLOT": {
         "TOOLTIP": "Delete Slot",
         "HEADER": "Delete Slot",
+        "MESSAGE": "Do you want to delete the following Slot?",
         "NOK": "Slot could not be deleted",
         "OK": "Slot deleted successfully",
         "OPERATOR_TEXT": "This Slot was created by automation. If still needed it will be restored during the next deployment."

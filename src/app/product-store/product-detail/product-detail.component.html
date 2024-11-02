@@ -87,8 +87,8 @@
 </ocx-portal-page>
 
 <p-dialog
-  [(visible)]="productDeleteVisible"
   [header]="'ACTIONS.DELETE.PRODUCT.HEADER' | translate"
+  [(visible)]="productDeleteVisible"
   [modal]="true"
   [closeable]="true"
   [dragable]="true"
@@ -100,10 +100,10 @@
     <div class="pi pi-question-circle text-3xl danger-action-text"></div>
     <div>
       <div id="ps_product_delete_message" class="font-bold">{{ 'ACTIONS.DELETE.PRODUCT.MESSAGE' | translate }}</div>
-      <div id="ps_product_delete_product_name" class="my-1 font-bold danger-action-text text-center">
+      <div id="ps_product_delete_product_name" class="my-2 font-bold danger-action-text text-center">
         {{ product?.name }}
       </div>
-      <div *ngIf="product?.operator" class="mt-2">{{ 'ACTIONS.DELETE.PRODUCT.OPERATOR_TEXT' | translate }}</div>
+      <div *ngIf="product?.operator">{{ 'ACTIONS.DELETE.PRODUCT.OPERATOR_TEXT' | translate }}</div>
       <div class="mt-2">{{ 'ACTIONS.DELETE.MESSAGE_INFO' | translate }}</div>
     </div>
   </div>
@@ -114,6 +114,7 @@
         icon="pi pi-times"
         (onClick)="productDeleteVisible = false"
         [label]="'ACTIONS.CONFIRMATION.NO' | translate"
+        [ariaLabel]="'ACTIONS.CONFIRMATION.NO' | translate"
         [pTooltip]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
@@ -123,6 +124,7 @@
         icon="pi pi-check"
         (onClick)="onDeleteConfirmation()"
         [label]="'ACTIONS.CONFIRMATION.YES' | translate"
+        [ariaLabel]="'ACTIONS.CONFIRMATION.YES' | translate"
         [pTooltip]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"

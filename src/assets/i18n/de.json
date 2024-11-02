@@ -43,6 +43,7 @@
       "MS.HEADER": "Microservice löschen",
       "APP": {
         "TOOLTIP": "App löschen",
+        "MESSAGE": "Möchten sie die folgende Komponente löschen?",
         "NOK": "App konnte nicht gelöscht werden",
         "OK": "App erfolgreich gelöscht",
         "OPERATOR_TEXT": "Diese App wurde automatisiert erstellt. Wenn weiterhin benötigt dann wird sie beim nächsten Deployment wiederhergestellt."
@@ -58,6 +59,7 @@
       "SLOT": {
         "TOOLTIP": "Slot löschen",
         "HEADER": "SLot löschen",
+        "MESSAGE": "Möchten sie den folgenden Slot löschen?",
         "NOK": "Slot konnte nicht gelöscht werden",
         "OK": "Slot erfolgreich gelöscht",
         "OPERATOR_TEXT": "Dieser Slot wurde automatisiert erstellt. Wenn weiterhin benötigt dann wird er beim nächsten Deployment wiederhergestellt."
