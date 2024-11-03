@@ -8,7 +8,7 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 import { PortalMessageService, ConfigurationService, UserService } from '@onecx/portal-integration-angular'
 import { ProductDetailComponent } from './product-detail.component'
 import { ProductPropertyComponent } from './product-props/product-props.component'
-import { ProductsAPIService } from 'src/app/shared/generated'
+import { ProductAndWorkspaces, ProductsAPIService } from 'src/app/shared/generated'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 
@@ -118,19 +118,32 @@ describe('ProductDetailComponent', () => {
     expect(component.changeMode).toEqual('CREATE')
   })
 
-  it('should get product onInit', (done) => {
-    const p = { id: 'id', name: 'name', basePath: 'path' }
-    apiServiceSpy.getProductByName.and.returnValue(of(p))
-
+  it('should get product onInit - successful found', (done) => {
+    const product = { id: 'id', name: 'name', basePath: 'path' }
+    apiServiceSpy.getProductByName.and.returnValue(of(product))
     component.productName = 'name'
+    component.ngOnInit()
+
+    component.product$.subscribe({
+      next: (result) => {
+        expect(result.id).toBe('id')
+        done()
+      },
+      error: done.fail
+    })
+  })
+
+  it('should get product onInit - not found', (done) => {
+    const err = { status: 404 }
+    apiServiceSpy.getProductByName.and.returnValue(throwError(() => err))
+    component.productName = 'unknown'
 
     component.ngOnInit()
 
     component.product$.subscribe({
       next: (result) => {
-        if (result) {
-          expect(result.id).toBe('id')
-        }
+        expect(result).toEqual({} as ProductAndWorkspaces)
+        expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_404.PRODUCT')
         done()
       },
       error: done.fail
@@ -167,10 +180,9 @@ describe('ProductDetailComponent', () => {
 
   it('should fulfill all conditions for edit button', () => {
     spyOn(component, 'onEdit')
-    component.product = product
     component.changeMode = 'VIEW'
 
-    component.prepareActionButtons()
+    component.prepareActionButtons(product)
 
     let actions: any = []
     component.actions$!.subscribe((act) => (actions = act))

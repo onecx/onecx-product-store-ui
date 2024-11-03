@@ -121,12 +121,10 @@ describe('ProductSearchComponent', () => {
 
     component.products$.subscribe({
       next: (result) => {
-        if (result) {
-          expect(result.length).toBe(1)
-          result.forEach((product) => {
-            expect(product.id).toEqual('id')
-          })
-        }
+        expect(result.length).toBe(1)
+        result.forEach((product) => {
+          expect(product.id).toEqual('id')
+        })
         done()
       },
       error: done.fail
@@ -140,9 +138,21 @@ describe('ProductSearchComponent', () => {
 
     component.products$.subscribe({
       next: (result) => {
-        if (result) {
-          expect(result.length).toBe(0)
-        }
+        expect(result.length).toBe(0)
+        done()
+      },
+      error: done.fail
+    })
+  })
+
+  it('should search products - no stream', (done) => {
+    apiProductServiceSpy.searchProducts.and.returnValue(of({} as ProductPageResult))
+
+    component.onSearch()
+
+    component.products$.subscribe({
+      next: (result) => {
+        expect(result.length).toBe(0)
         done()
       },
       error: done.fail

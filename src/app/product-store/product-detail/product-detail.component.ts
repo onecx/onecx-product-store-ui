@@ -73,7 +73,7 @@ export class ProductDetailComponent implements OnInit {
 
   public getProduct(): void {
     this.loading = true
-    this.product$ = this.productApi.getProductByName({ name: this.productName ?? '' }).pipe(
+    this.product$ = this.productApi.getProductByName({ name: this.productName! }).pipe(
       map((data: ProductAndWorkspaces) => {
         this.prepareActionButtons(data)
         this.currentLogoUrl = this.getLogoUrl(data)
