@@ -1,9 +1,9 @@
-<div *ngIf="productDetails$ | async as details" class="mb-1">
+<div *ngIf="productDetails$ | async as details" class="mb-1 mx-1">
   <p-fieldset
     *ngIf="details.microfrontends && details.microfrontends.length > 0"
     [toggleable]="false"
     [collapsed]="false"
-    styleClass="surface-100 py-0 mb-3"
+    styleClass="surface-100 py-0 mt-1 mb-3 mx-1"
   >
     <ng-template pTemplate="header">
       <span [pTooltip]="'DIALOG.COMPONENTS.TOOLTIPS.MFE' | translate" tooltipPosition="top" tooltipEvent="hover">

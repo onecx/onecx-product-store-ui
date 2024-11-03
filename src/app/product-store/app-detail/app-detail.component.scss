@@ -4,6 +4,8 @@
 @include table-zebra-rows;
 @include table-inline-buttons;
 @include table-vertical-lines;
+@include dialog-footer-buttons;
+@include dialog-modal-dialog-content;
 
 :host ::ng-deep {
   /**

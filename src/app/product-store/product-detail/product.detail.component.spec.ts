@@ -8,7 +8,7 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 import { PortalMessageService, ConfigurationService, UserService } from '@onecx/portal-integration-angular'
 import { ProductDetailComponent } from './product-detail.component'
 import { ProductPropertyComponent } from './product-props/product-props.component'
-import { ProductsAPIService } from 'src/app/shared/generated'
+import { ProductAndWorkspaces, ProductsAPIService } from 'src/app/shared/generated'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 
@@ -111,22 +111,43 @@ describe('ProductDetailComponent', () => {
   })
 
   it('should be set up correctly onInit if no product name', () => {
-    component.productName = ''
+    component.productName = null
 
     component.ngOnInit()
 
     expect(component.changeMode).toEqual('CREATE')
   })
 
-  it('should get product onInit', () => {
-    const p = { id: 'id', name: 'name', basePath: 'path' }
-    apiServiceSpy.getProductByName.and.returnValue(of(p))
-
+  it('should get product onInit - successful found', (done) => {
+    const product = { id: 'id', name: 'name', basePath: 'path' }
+    apiServiceSpy.getProductByName.and.returnValue(of(product))
     component.productName = 'name'
+    component.ngOnInit()
+
+    component.product$.subscribe({
+      next: (result) => {
+        expect(result.id).toBe('id')
+        done()
+      },
+      error: done.fail
+    })
+  })
+
+  it('should get product onInit - not found', (done) => {
+    const err = { status: 404 }
+    apiServiceSpy.getProductByName.and.returnValue(throwError(() => err))
+    component.productName = 'unknown'
 
     component.ngOnInit()
 
-    expect(component.product?.id).toEqual(p.id)
+    component.product$.subscribe({
+      next: (result) => {
+        expect(result).toEqual({} as ProductAndWorkspaces)
+        expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_404.PRODUCT')
+        done()
+      },
+      error: done.fail
+    })
   })
 
   it('should prepare action buttons on init', () => {
@@ -159,15 +180,14 @@ describe('ProductDetailComponent', () => {
 
   it('should fulfill all conditions for edit button', () => {
     spyOn(component, 'onEdit')
-    component.product = product
     component.changeMode = 'VIEW'
 
-    component.prepareActionButtons()
+    component.prepareActionButtons(product)
 
     let actions: any = []
     component.actions$!.subscribe((act) => (actions = act))
 
-    actions[2].actionCallback()
+    actions[1].actionCallback()
 
     expect(component.onEdit).toHaveBeenCalled()
   })
@@ -187,7 +207,7 @@ describe('ProductDetailComponent', () => {
   })
 
   it('should behave correctly onCopy', () => {
-    component.onCopy()
+    component.onCopy({})
 
     expect(component.changeMode).toEqual('COPY')
   })
@@ -240,10 +260,9 @@ describe('ProductDetailComponent', () => {
   it('should behave correctly onCreate', () => {
     const routerSpy = spyOn(router, 'navigate')
 
-    component.onCreate(product)
+    component.onRouteToCreatedProduct(product)
 
-    expect(component.product).toEqual(product)
-    expect(routerSpy).toHaveBeenCalledWith(['./../', product.name], jasmine.any(Object))
+    expect(routerSpy).toHaveBeenCalledWith(['../', product.name], jasmine.any(Object))
   })
 
   it('should behave correctly onChange if change false', () => {
@@ -255,9 +274,7 @@ describe('ProductDetailComponent', () => {
   })
 
   it('should behave correctly onDelete', () => {
-    const event: MouseEvent = new MouseEvent('type')
-
-    component.onDelete(event, product)
+    component.onDelete(product)
 
     expect(component.product).toEqual(product)
   })
@@ -289,11 +306,10 @@ describe('ProductDetailComponent', () => {
     expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm:ss')
   })
 
-  it('should behave correctly onTabChange: 2', () => {
-    component.product = product
-    component.onTabChange({ index: 2 })
+  it('should behave correctly onTabChange: 3', () => {
+    component.onTabChange({ index: 3 }, product)
 
-    expect(component.selectedTabIndex).toEqual(2)
+    expect(component.selectedTabIndex).toEqual(3)
     expect(component.product_for_apps).toEqual(product)
   })
 

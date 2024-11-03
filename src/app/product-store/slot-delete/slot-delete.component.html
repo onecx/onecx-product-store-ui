@@ -1,8 +1,10 @@
 <p-dialog
+  [header]="'ACTIONS.DELETE.SLOT.HEADER' | translate"
   [(visible)]="displayDialog"
   (onHide)="onDialogHide()"
-  [header]="'ACTIONS.DELETE.SLOT.HEADER' | translate"
   [modal]="true"
+  [closable]="true"
+  [dragable]="true"
   [resizable]="false"
   [dismissableMask]="true"
   [style]="{ 'max-width': '425px' }"
@@ -10,11 +12,10 @@
   <div class="flex column-gap-4 row-gap-1 justify-content-start align-items-center">
     <div class="pi pi-question-circle text-3xl danger-action-text"></div>
     <div>
-      <div id="ps_slot_delete_message" class="font-bold">
-        {{ ('ACTIONS.DELETE.MESSAGE' | translate).replace("{{ITEM}}", slot?.name ?? '') }}
-      </div>
-      <div class="mt-3" *ngIf="slot?.operator">{{ 'ACTIONS.DELETE.SLOT.OPERATOR_TEXT' | translate }}</div>
-      <div class="mt-3">{{ 'ACTIONS.DELETE.MESSAGE_INFO' | translate }}</div>
+      <div id="ps_slot_delete_message" class="font-bold">{{ 'ACTIONS.DELETE.SLOT.MESSAGE' | translate }}</div>
+      <div id="ps_slot_delete_message" class="my-2 font-bold danger-action-text text-center">{{ slot?.name }}</div>
+      <div *ngIf="slot?.operator">{{ 'ACTIONS.DELETE.SLOT.OPERATOR_TEXT' | translate }}</div>
+      <div class="mt-2">{{ 'ACTIONS.DELETE.MESSAGE_INFO' | translate }}</div>
     </div>
   </div>
   <ng-template pTemplate="footer">

@@ -43,6 +43,7 @@
       "MS.HEADER": "Delete Microservice",
       "APP": {
         "TOOLTIP": "Delete App",
+        "MESSAGE": "Do you want to delete the following Component?",
         "NOK": "App could not be deleted",
         "OK": "App deleted successfully",
         "OPERATOR_TEXT": "This App was created by automation. If still needed it will be restored during the next deployment."
@@ -50,6 +51,7 @@
       "PRODUCT": {
         "TOOLTIP": "Delete Application",
         "HEADER": "Delete Application",
+        "MESSAGE": "Do you want to delete the following Application?",
         "NOK": "Application could not be deleted",
         "OK": "Application deleted successfully",
         "OPERATOR_TEXT": "This Application was created by automation. If still needed it will be restored during the next deployment."
@@ -57,6 +59,7 @@
       "SLOT": {
         "TOOLTIP": "Delete Slot",
         "HEADER": "Delete Slot",
+        "MESSAGE": "Do you want to delete the following Slot?",
         "NOK": "Slot could not be deleted",
         "OK": "Slot deleted successfully",
         "OPERATOR_TEXT": "This Slot was created by automation. If still needed it will be restored during the next deployment."
@@ -146,6 +149,7 @@
     },
     "CANCEL": "Cancel",
     "CHOOSE": "Choose",
+    "LOADING": "...is loading",
     "SAVE": "Save",
     "UPLOAD": "Upload",
     "TOOLTIPS": {
@@ -296,6 +300,7 @@
   "PRODUCT": {
     "NAME": "Name",
     "VERSION": "Version",
+    "VERSION.MISSING": "Version not set",
     "DESCRIPTION": "Description",
     "DISPLAY_NAME": "Display Name",
     "PROVIDER": "Provider",
@@ -332,33 +337,6 @@
     "UNDEPLOYED_SEARCH": "This Slot is no longer usable. Further use leads to error messages.",
     "NOT_DEFINED": "This functionality is not available at the moment."
   },
-  "EXCEPTIONS": {
-    "HTTP_STATUS_0": {
-      "PRODUCTS": "Unknown problem retrieving Application data - please try again.",
-      "APPS": "Unknown problem retrieving App data - please try again.",
-      "SLOTS": "Unknown problem retrieving Slot data - please try again."
-    },
-    "HTTP_STATUS_401": {
-      "PRODUCTS": "You are not authorized to see Applications.",
-      "APPS": "You are not authorized to see Apps.",
-      "SLOTS": "You are not authorized to see Slots."
-    },
-    "HTTP_STATUS_403": {
-      "PRODUCTS": "You have no permissions to see Applications.",
-      "APPS": "You have no permissions to see Apps.",
-      "SLOTS": "You have no permissions to see Slots."
-    },
-    "HTTP_STATUS_404": {
-      "PRODUCTS": "No Applications could be found.",
-      "APPS": "No Apps could be found.",
-      "SLOTS": "No Slots could be found."
-    },
-    "HTTP_STATUS_500": {
-      "PRODUCTS": "Unknown server problem retrieving Application data - please try again.",
-      "APPS": "Unknown server problem retrieving App data - please try again.",
-      "SLOTS": "Unknown server problem retrieving Slot data - please try again."
-    }
-  },
   "VALIDATION": {
     "FORM_INVALID": "The data are not ready to store.",
     "HINTS": {
@@ -377,6 +355,38 @@
       "MINIMUM_LENGTH": "At least {{chars}} characters are required.",
       "PATTERN_ERROR": "Your input does not match the required pattern",
       "FILETYPE_PATTERN_ERROR": "Your file does not match the allowed filetypes: .png, .jpg, .jpeg"
+    }
+  },
+  "EXCEPTIONS": {
+    "HTTP_STATUS_0": {
+      "PRODUCT": "Unknown problem retrieving Application data - please try again.",
+      "PRODUCTS": "Unknown problem retrieving Application data - please try again.",
+      "APPS": "Unknown problem retrieving App data - please try again.",
+      "SLOTS": "Unknown problem retrieving Slot data - please try again."
+    },
+    "HTTP_STATUS_401": {
+      "PRODUCT": "You are not authorized to see Application details.",
+      "PRODUCTS": "You are not authorized to see Applications.",
+      "APPS": "You are not authorized to see Apps.",
+      "SLOTS": "You are not authorized to see Slots."
+    },
+    "HTTP_STATUS_403": {
+      "PRODUCT": "You have no permission to see Application details.",
+      "PRODUCTS": "You have no permissions to see Applications.",
+      "APPS": "You have no permissions to see Apps.",
+      "SLOTS": "You have no permissions to see Slots."
+    },
+    "HTTP_STATUS_404": {
+      "PRODUCT": "Application could be found.",
+      "PRODUCTS": "No Applications could be found.",
+      "APPS": "No Apps could be found.",
+      "SLOTS": "No Slots could be found."
+    },
+    "HTTP_STATUS_500": {
+      "PRODUCT": "Unknown server problem retrieving Application data - please try again.",
+      "PRODUCTS": "Unknown server problem retrieving Application data - please try again.",
+      "APPS": "Unknown server problem retrieving App data - please try again.",
+      "SLOTS": "Unknown server problem retrieving Slot data - please try again."
     }
   }
 }
