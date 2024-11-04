@@ -128,6 +128,8 @@ describe('AppSearchComponent', () => {
       'ACTIONS.DATAVIEW.FILTER_OF': 'searchFilterOf ',
       'APP.APP_ID': 'appId',
       'APP.APP_TYPE': 'appType',
+      'APP.APP_VERSION': 'appVersion',
+      'APP.CLASSIFICATIONS': 'classes',
       'APP.PRODUCT_NAME': 'productName'
     }
     spyOn(translateService, 'get').and.returnValue(of(dialogTranslations))
@@ -135,7 +137,7 @@ describe('AppSearchComponent', () => {
     await component.ngOnInit()
 
     expect(component.dataViewControlsTranslations).toEqual({
-      filterInputTooltip: 'searchFilterOf appId, appType, productName'
+      filterInputTooltip: 'searchFilterOf appId, appType, appVersion, classes, productName'
     })
   })
 
