@@ -377,7 +377,7 @@
       "SLOTS": "You have no permissions to see Slots."
     },
     "HTTP_STATUS_404": {
-      "PRODUCT": "Application could be found.",
+      "PRODUCT": "Application could not be found.",
       "PRODUCTS": "No Applications could be found.",
       "APPS": "No Apps could be found.",
       "SLOTS": "No Slots could be found."
