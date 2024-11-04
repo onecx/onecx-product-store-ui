@@ -50,7 +50,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public quickFilterValue: string = 'ALL'
   public quickFilterItems: SelectItem[]
   public filterValue: string | undefined
-  public filterValueDefault = 'appId,appType,productName,classifications'
+  public filterValueDefault = 'appId,appType,appVersion,productName,classifications'
   public filterBy = this.filterValueDefault
   public filter: string | undefined
   public sortField = 'appId'
@@ -255,7 +255,14 @@ export class AppSearchComponent implements OnInit, OnDestroy {
 
   public prepareDialogTranslations(): void {
     this.translate
-      .get(['APP.APP_ID', 'APP.APP_TYPE', 'APP.PRODUCT_NAME', 'ACTIONS.DATAVIEW.FILTER_OF'])
+      .get([
+        'APP.APP_ID',
+        'APP.APP_TYPE',
+        'APP.APP_VERSION',
+        'APP.CLASSIFICATIONS',
+        'APP.PRODUCT_NAME',
+        'ACTIONS.DATAVIEW.FILTER_OF'
+      ])
       .pipe(
         map((data) => {
           this.dataViewControlsTranslations = {
@@ -264,6 +271,10 @@ export class AppSearchComponent implements OnInit, OnDestroy {
               data['APP.APP_ID'] +
               ', ' +
               data['APP.APP_TYPE'] +
+              ', ' +
+              data['APP.APP_VERSION'] +
+              ', ' +
+              data['APP.CLASSIFICATIONS'] +
               ', ' +
               data['APP.PRODUCT_NAME']
           }
