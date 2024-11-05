@@ -8,7 +8,7 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 import { PortalMessageService, ConfigurationService, UserService } from '@onecx/portal-integration-angular'
 import { ProductDetailComponent } from './product-detail.component'
 import { ProductPropertyComponent } from './product-props/product-props.component'
-import { ProductAndWorkspaces, ProductsAPIService } from 'src/app/shared/generated'
+import { Product, ProductsAPIService } from 'src/app/shared/generated'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 
@@ -142,7 +142,7 @@ describe('ProductDetailComponent', () => {
 
     component.product$.subscribe({
       next: (result) => {
-        expect(result).toEqual({} as ProductAndWorkspaces)
+        expect(result).toEqual({} as Product)
         expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_404.PRODUCT')
         done()
       },

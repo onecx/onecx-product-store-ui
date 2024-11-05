@@ -340,7 +340,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductAndWorkspaces'
+                $ref: '#/components/schemas/Product'
         '400':
           description: Bad Request
           content:
@@ -967,15 +967,6 @@ components:
           type: boolean
         provider:
           type: string
-    ProductAndWorkspaces:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/Product'
-      properties:
-        workspaces:
-          type: array
-          items:
-            type: string
     ProductAbstract:
       type: object
       required:
@@ -988,6 +979,9 @@ components:
         name:
           type: string
           description: business key for identifying product
+        version:
+          type: string
+          description: product version
         description:
           type: string
           description: textual description for a product.
@@ -1084,6 +1078,9 @@ components:
         appName:
           type: string
           description: Readable name of the app
+        appVersion:
+          type: string
+          description: App version
         exposedModule:
           type: string
         description:

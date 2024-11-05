@@ -5,13 +5,7 @@ import { catchError, Observable, of, finalize, map } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 
 import { Action, PortalMessageService, UserService } from '@onecx/portal-integration-angular'
-import {
-  ImagesInternalAPIService,
-  Product,
-  ProductAndWorkspaces,
-  ProductsAPIService,
-  RefType
-} from 'src/app/shared/generated'
+import { ImagesInternalAPIService, Product, ProductsAPIService, RefType } from 'src/app/shared/generated'
 import { bffImageUrl } from 'src/app/shared/utils'
 import { ProductPropertyComponent } from './product-props/product-props.component'
 
@@ -26,9 +20,9 @@ export class ProductDetailComponent implements OnInit {
   public loading = false
   public actions$: Observable<Action[]> | undefined
   public productName: string | null = null
-  public product$!: Observable<ProductAndWorkspaces>
-  public product: ProductAndWorkspaces | undefined
-  public product_for_apps: ProductAndWorkspaces | undefined
+  public product$!: Observable<Product>
+  public product: Product | undefined
+  public product_for_apps: Product | undefined
   public changeMode: ChangeMode = 'VIEW'
   public dateFormat = 'medium'
   public headerImageUrl?: string
@@ -60,12 +54,12 @@ export class ProductDetailComponent implements OnInit {
       this.getProduct()
     } else {
       this.changeMode = 'CREATE'
-      this.product$ = of({} as ProductAndWorkspaces)
+      this.product$ = of({} as Product)
       this.prepareActionButtons()
     }
   }
 
-  public onTabChange($event: any, product: ProductAndWorkspaces) {
+  public onTabChange($event: any, product: Product) {
     this.selectedTabIndex = $event.index
     this.prepareActionButtons(product)
     if (this.selectedTabIndex === 3) this.product_for_apps = product // lazy load
@@ -74,7 +68,7 @@ export class ProductDetailComponent implements OnInit {
   public getProduct(): void {
     this.loading = true
     this.product$ = this.productApi.getProductByName({ name: this.productName! }).pipe(
-      map((data: ProductAndWorkspaces) => {
+      map((data: Product) => {
         this.prepareActionButtons(data)
         this.currentLogoUrl = this.getLogoUrl(data)
         return data
@@ -82,13 +76,13 @@ export class ProductDetailComponent implements OnInit {
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCT'
         console.error('getProductByName():', err)
-        return of({} as ProductAndWorkspaces)
+        return of({} as Product)
       }),
       finalize(() => (this.loading = false))
     )
   }
 
-  public prepareActionButtons(product?: ProductAndWorkspaces): void {
+  public prepareActionButtons(product?: Product): void {
     this.actions$ = this.translate
       .get([
         'ACTIONS.COPY.LABEL',
@@ -210,7 +204,7 @@ export class ProductDetailComponent implements OnInit {
   public onChange(product?: Product) {
     this.changeMode = 'VIEW'
     // update observable with response data => null
-    // this.product$ = new Observable((sub) => sub.next(product as ProductAndWorkspaces))
+    // this.product$ = new Observable((sub) => sub.next(product as Product))
     this.getProduct()
   }
 
