@@ -65,7 +65,7 @@
       [rows]="viewMode === 'grid' ? 16 : 20"
       [layout]="viewMode"
       [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
-      filterBy="name,displayName,classification"
+      filterBy="name,displayName,classification,version"
       [sortField]="sortField"
       [sortOrder]="sortOrder"
       [showCurrentPageReport]="true"
@@ -87,11 +87,6 @@
           [defaultSortDirection]="false"
           (dataViewChange)="onLayoutChange($event)"
           (filterChange)="onFilterChange($event)"
-          [filterColumns]="[
-            'PRODUCT.DISPLAY_NAME' | translate,
-            'PRODUCT.NAME' | translate,
-            'PRODUCT.CLASSIFICATIONS' | translate
-          ]"
           (sortChange)="onSortChange($event)"
           (sortDirectionChange)="onSortDirChange($event)"
           [translations]="dataViewControlsTranslations"

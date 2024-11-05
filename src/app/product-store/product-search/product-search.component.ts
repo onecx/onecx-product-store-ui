@@ -94,6 +94,7 @@ export class ProductSearchComponent implements OnInit {
         'PRODUCT.NAME',
         'PRODUCT.DISPLAY_NAME',
         'PRODUCT.CLASSIFICATIONS',
+        'PRODUCT.VERSION',
         'ACTIONS.DATAVIEW.VIEW_MODE_GRID',
         'ACTIONS.DATAVIEW.VIEW_MODE_LIST',
         'ACTIONS.DATAVIEW.VIEW_MODE_TABLE',
@@ -113,7 +114,9 @@ export class ProductSearchComponent implements OnInit {
             ', ' +
             data['PRODUCT.NAME'] +
             ', ' +
-            data['PRODUCT.CLASSIFICATIONS'],
+            data['PRODUCT.CLASSIFICATIONS'] +
+            ', ' +
+            data['PRODUCT.VERSION'],
           viewModeToggleTooltips: {
             grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID'],
             list: data['ACTIONS.DATAVIEW.VIEW_MODE_LIST']
