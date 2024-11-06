@@ -25,8 +25,6 @@ import { ProblemDetailResponse } from '../model/problemDetailResponse';
 // @ts-ignore
 import { Product } from '../model/product';
 // @ts-ignore
-import { ProductAndWorkspaces } from '../model/productAndWorkspaces';
-// @ts-ignore
 import { ProductDetails } from '../model/productDetails';
 // @ts-ignore
 import { ProductPageResult } from '../model/productPageResult';
@@ -327,9 +325,9 @@ export class ProductsAPIService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getProductByName(requestParameters: GetProductByNameRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ProductAndWorkspaces>;
-    public getProductByName(requestParameters: GetProductByNameRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ProductAndWorkspaces>>;
-    public getProductByName(requestParameters: GetProductByNameRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ProductAndWorkspaces>>;
+    public getProductByName(requestParameters: GetProductByNameRequestParams, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Product>;
+    public getProductByName(requestParameters: GetProductByNameRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Product>>;
+    public getProductByName(requestParameters: GetProductByNameRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Product>>;
     public getProductByName(requestParameters: GetProductByNameRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         const name = requestParameters.name;
         if (name === null || name === undefined) {
@@ -368,7 +366,7 @@ export class ProductsAPIService {
         }
 
         let localVarPath = `/products/name/${this.configuration.encodeParam({name: "name", value: name, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<ProductAndWorkspaces>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Product>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,

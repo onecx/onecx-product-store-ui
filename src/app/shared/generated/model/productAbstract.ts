@@ -21,6 +21,10 @@ export interface ProductAbstract {
      */
     name: string;
     /**
+     * product version
+     */
+    version?: string;
+    /**
      * textual description for a product.
      */
     description?: string;

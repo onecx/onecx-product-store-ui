@@ -4,17 +4,17 @@ import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { ProductInternComponent } from './product-intern.component'
-import { ProductAndWorkspaces } from 'src/app/shared/generated'
+import { Product } from 'src/app/shared/generated'
 import { provideHttpClient } from '@angular/common/http'
 
-const prodAndWsUndeployed: ProductAndWorkspaces = {
+const prodAndWsUndeployed: Product = {
   id: 'id',
   name: 'name',
   basePath: 'basePath',
   undeployed: true
 }
 
-const prodAndWsDeployed: ProductAndWorkspaces = {
+const prodAndWsDeployed: Product = {
   id: 'id',
   name: 'name',
   basePath: 'basePath'

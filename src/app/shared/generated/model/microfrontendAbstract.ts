@@ -27,6 +27,10 @@ export interface MicrofrontendAbstract {
      * Readable name of the app
      */
     appName: string;
+    /**
+     * App version
+     */
+    appVersion?: string;
     exposedModule?: string;
     /**
      * textual description of MFE
