@@ -415,7 +415,7 @@ describe('ProductPropertyComponent', () => {
   })
 
   it('should not upload a file that is too large', () => {
-    const largeBlob = new Blob(['a'.repeat(100001)], { type: 'image/png' })
+    const largeBlob = new Blob(['a'.repeat(200001)], { type: 'image/png' })
     const largeFile = new File([largeBlob], 'test.png', { type: 'image/png' })
     const event = {
       target: {
