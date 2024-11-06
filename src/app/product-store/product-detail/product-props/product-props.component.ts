@@ -198,7 +198,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
     if (ev.target && (ev.target as HTMLInputElement).files) {
       const files = (ev.target as HTMLInputElement).files
       if (files) {
-        if (files[0].size > 100000) {
+        if (files[0].size > 200000) {
           this.msgService.error({
             summaryKey: 'IMAGE.CONSTRAINT_FAILED',
             detailKey: 'IMAGE.CONSTRAINT_SIZE'
