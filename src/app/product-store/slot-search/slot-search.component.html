@@ -10,7 +10,7 @@
     <div
       id="ps_slot_search_criteria"
       [formGroup]="slotSearchCriteriaGroup"
-      class="flex flex-wrap gap-4 row-gap-3 md:px-2"
+      class="flex flex-row flex-wrap gap-4 row-gap-3 md:px-2"
     >
       <span class="p-float-label">
         <input
@@ -18,13 +18,27 @@
           id="ps_slot_search_criteria_slot_name"
           type="text"
           formControlName="slotName"
-          class="w-18rem"
+          class="w-15rem"
           [clear]="true"
           [pTooltip]="'SLOT.TOOLTIPS.NAME' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
         <label for="ps_slot_search_criteria_slot_name">{{ 'SLOT.NAME' | translate }}</label>
+      </span>
+      <span class="p-float-label">
+        <input
+          pInputText
+          id="ps_slot_search_criteria_product_name"
+          type="text"
+          formControlName="productName"
+          class="w-15rem"
+          [clear]="true"
+          [pTooltip]="'SLOT.TOOLTIPS.PRODUCT_NAME' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        />
+        <label for="ps_slot_search_criteria_product_name">{{ 'SLOT.PRODUCT_NAME' | translate }}</label>
       </span>
     </div>
   </ocx-search-header>

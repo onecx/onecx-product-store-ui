@@ -178,7 +178,7 @@ describe('ProductDetailComponent', () => {
     expect(component.onSave).toHaveBeenCalled()
   })
 
-  it('should fulfill all conditions for edit button', () => {
+  it('should fulfill all conditions for detail button', () => {
     spyOn(component, 'onEdit')
     component.changeMode = 'VIEW'
 

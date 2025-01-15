@@ -108,8 +108,14 @@
       "VIEW_MODE_TABLE": "Table view"
     },
     "TABLE": {
-      "ADD_ROW": "Add row",
-      "ADD_ROW.TOOLTIP": "Add a new row to the table"
+      "ADD_ROW": {
+        "LABEL": "Add Row",
+        "TOOLTIP": "Add a new row to the table"
+      },
+      "DELETE_ROW": {
+        "LABEL": "Delete Row",
+        "TOOLTIP": "Delete Row"
+      }
     },
     "SEARCH": {
       "NOT_FOUND": "No data found",
@@ -331,7 +337,8 @@
     "PRODUCT_NAME": "Application name",
     "TOOLTIPS": {
       "ID": "Unique technical ID of the Slot",
-      "NAME": "Unique Name of the Slot"
+      "NAME": "Unique Name of the Slot",
+      "PRODUCT_NAME": "Name of the Application which provides the Slot"
     },
     "DEPRECATED_SEARCH": "This Slot is marked as deprecated. It can currently be used but will no longer be available in the future.",
     "UNDEPLOYED_SEARCH": "This Slot is no longer usable. Further use leads to error messages.",

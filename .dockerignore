@@ -29,7 +29,6 @@ speed-measure-plugin*.json
 .husky/_
 .sass-cache
 .gitlab*
-.scannerwork
 connect.lock
 typings
 *.log
