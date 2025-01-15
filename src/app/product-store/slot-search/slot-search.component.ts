@@ -12,6 +12,7 @@ import { limitText } from 'src/app/shared/utils'
 
 export interface SlotSearchCriteria {
   slotName: FormControl<string | null>
+  productName: FormControl<string | null>
 }
 
 @Component({
@@ -45,7 +46,8 @@ export class SlotSearchComponent implements OnInit {
   ) {
     this.hasDeletePermission = this.user.hasPermission('SLOT#DELETE')
     this.slotSearchCriteriaGroup = new FormGroup<SlotSearchCriteria>({
-      slotName: new FormControl<string | null>(null)
+      slotName: new FormControl<string | null>(null),
+      productName: new FormControl<string | null>(null)
     })
   }
 
@@ -59,7 +61,11 @@ export class SlotSearchComponent implements OnInit {
     this.searchInProgress = true
     this.slots$ = this.slotApi
       .searchSlots({
-        slotSearchCriteria: { name: this.slotSearchCriteriaGroup.controls['slotName'].value!, pageSize: 1000 }
+        slotSearchCriteria: {
+          name: this.slotSearchCriteriaGroup.controls['slotName'].value!,
+          productName: this.slotSearchCriteriaGroup.controls['productName'].value!,
+          pageSize: 1000
+        }
       })
       .pipe(
         catchError((err) => {

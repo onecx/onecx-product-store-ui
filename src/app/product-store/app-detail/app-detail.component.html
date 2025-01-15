@@ -469,7 +469,7 @@
                   (click)="onAddEndpointRow()"
                   [disabled]="i !== endpoints.length - 1"
                   [aria-label]="'ACTIONS.TABLE.ADD_ROW.LABEL' | translate"
-                  [pTooltip]="'ACTIONS.TABLE.ADD_ROW.TOOLTIP' | translate"
+                  [pTooltip]="'ACTIONS.TABLE.ADD_ROW.LABEL' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
@@ -481,8 +481,8 @@
                   [id]="'ps_app_detail_endpoint_table_row_' + i + '_delete_action'"
                   (click)="onDeleteEndpointRow(i)"
                   [disabled]="i === 0 && endpoints.length === 1"
-                  [aria-label]="'ACTIONS.DELETE.ENDPOINT.TOOLTIP' | translate"
-                  [pTooltip]="'ACTIONS.DELETE.ENDPOINT.TOOLTIP' | translate"
+                  [aria-label]="'ACTIONS.TABLE.DELETE_ROW.LABEL' | translate"
+                  [pTooltip]="'ACTIONS.TABLE.DELETE_ROW.LABEL' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >

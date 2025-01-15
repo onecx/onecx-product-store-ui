@@ -2,13 +2,13 @@
 .husky/**
 .docusaurus/
 .github/**
-.scannerwork/
+.dockerignore
 .prettierignore
 .browserslistrc
 dist/**
 helm/**
 nginx/**
-reports/**
+reports
 node_modules
 CHANGELOG.md
 README.md
@@ -16,5 +16,5 @@ Dockerfile
 *.log
 *.sh
 src/app/shared/generated/**
-src/app/api/*
+src/app/assets/*
 src/app/model/*

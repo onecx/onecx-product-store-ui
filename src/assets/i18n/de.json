@@ -108,8 +108,14 @@
       "VIEW_MODE_TABLE": "Tabellenansicht"
     },
     "TABLE": {
-      "ADD_ROW": "Zeile hinzufügen",
-      "ADD_ROW.TOOLTIP": "Eine neue Zeile zur Tabelle hinzufügen"
+      "ADD_ROW": {
+        "LABEL": "Zeile hinzufügen",
+        "TOOLTIP": "Eine neue Zeile zur Tabelle hinzufügen"
+      },
+      "DELETE_ROW": {
+        "LABEL": "Löschen",
+        "TOOLTIP": "Zeile löschen"
+      }
     },
     "SEARCH": {
       "NOT_FOUND": "Keine Daten gefunden",
@@ -331,7 +337,8 @@
     "PRODUCT_NAME": "Applikationsname",
     "TOOLTIPS": {
       "ID": "Eindeutige technische ID des Slots",
-      "NAME": "Eindeutiger Name des Slots"
+      "NAME": "Eindeutiger Name des Slots",
+      "PRODUCT_NAME": "Name der Applikation die den Slot anbietet"
     },
     "DEPRECATED_SEARCH": "Dieser Slot ist als veraltet markiert. Er kann derzeit weiter verwendet werden wird aber in Zukunft nicht mehr zur Verfügung stehen.",
     "UNDEPLOYED_SEARCH": "Dieser Slot ist nicht länger nutzbar. Eine weitere Nutzung führt zu Fehlermeldungen.",
