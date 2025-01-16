@@ -1124,6 +1124,8 @@ components:
         productName:
           type: string
           nullable: true
+        type:
+          $ref: '#/components/schemas/MicrofrontendType'
         pageNumber:
           format: int32
           description: The number of page.

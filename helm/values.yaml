@@ -43,6 +43,8 @@ app:
             EDIT: Edit app
             SEARCH: Search apps
             VIEW: View app details
+          ENDPOINT:
+            SEARCH: Search endpoints
           PRODUCT:
             CREATE: Create product
             DELETE: Delete product

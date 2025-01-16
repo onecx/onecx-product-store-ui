@@ -23,8 +23,9 @@
       <p-button
         id="ps_app_delete_action_no"
         icon="pi pi-times"
-        [label]="'ACTIONS.CONFIRMATION.NO' | translate"
         (onClick)="onDialogHide()"
+        [label]="'ACTIONS.CONFIRMATION.NO' | translate"
+        [attr.aria-label]="'ACTIONS.CONFIRMATION.NO' | translate"
         [pTooltip]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
@@ -34,6 +35,7 @@
         icon="pi pi-check"
         (onClick)="onConfirmDeletion()"
         [label]="'ACTIONS.CONFIRMATION.YES' | translate"
+        [attr.aria-label]="'ACTIONS.CONFIRMATION.YES' | translate"
         [pTooltip]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
