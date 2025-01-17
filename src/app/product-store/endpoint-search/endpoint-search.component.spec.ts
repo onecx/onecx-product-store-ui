@@ -1,244 +1,213 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { provideRouter, Router } from '@angular/router'
-import { of, throwError } from 'rxjs'
-import { DataViewModule } from 'primeng/dataview'
-import { TranslateTestingModule } from 'ngx-translate-testing'
-import { Product, ProductAbstract, ProductPageResult, ProductsAPIService } from 'src/app/shared/generated'
-
-import { EndpointSearchComponent } from './endpoint-search.component'
-import { provideHttpClient } from '@angular/common/http'
+import { provideHttpClient, HttpClient } from '@angular/common/http'
+import { FormControl, FormGroup } from '@angular/forms'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
+import { of, throwError } from 'rxjs'
 
-describe('EndpointSearchComponent', () => {
+import { AppStateService, UserService } from '@onecx/angular-integration-interface'
+import { Column, createTranslateLoader, PortalMessageService } from '@onecx/portal-integration-angular'
+
+import { MicrofrontendsAPIService, MicrofrontendType } from 'src/app/shared/generated'
+import { TranslateServiceMock } from 'src/app/shared/TranslateServiceMock'
+import { EndpointSearchComponent, MfeEndpoint, MicrofrontendSearchCriteria } from './endpoint-search.component'
+
+const searchCriteriaForm = new FormGroup<MicrofrontendSearchCriteria>({
+  productName: new FormControl<string | null>(null)
+})
+
+const itemData: MfeEndpoint[] = [
+  {
+    id: 'id1',
+    unique_id: 'id1_1',
+    productName: 'product1',
+    appName: 'MFE 1',
+    appId: 'mfe1',
+    remoteBaseUrl: '/mfe1/remoteEntry.js',
+    type: MicrofrontendType.Module,
+    endpoint: { name: 'endpoint1', path: '/{name}' }
+  },
+  {
+    id: 'id1',
+    unique_id: 'id1_2',
+    productName: 'product1',
+    appName: 'MFE 1',
+    appId: 'mfe1',
+    remoteBaseUrl: '/mfe1/remoteEntry.js',
+    type: MicrofrontendType.Module,
+    endpoint: { name: 'endpoint2', path: '/{name}' }
+  },
+  {
+    id: 'id2',
+    unique_id: 'id2_1',
+    productName: 'product2',
+    appName: 'MFE 2',
+    appId: 'mfe2',
+    remoteBaseUrl: '/mfe2/remoteEntry.js',
+    type: MicrofrontendType.Module,
+    endpoint: { name: 'endpoint1', path: '/{name}' }
+  }
+]
+
+describe('ParameterSearchComponent', () => {
   let component: EndpointSearchComponent
   let fixture: ComponentFixture<EndpointSearchComponent>
-  let router: Router
 
-  const product: Product = {
-    id: 'id',
-    name: 'name',
-    basePath: 'basePath',
-    displayName: 'displayName'
-  }
-  const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
-  const apiProductServiceSpy = {
-    searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of({ stream: [] }))
-  }
+  const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
+  const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
+  const mfeApiServiceSpy = { searchMicrofrontends: jasmine.createSpy('searchMicrofrontends').and.returnValue(of({})) }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [EndpointSearchComponent],
       imports: [
-        DataViewModule,
-        TranslateTestingModule.withTranslations({
-          de: require('src/assets/i18n/de.json'),
-          en: require('src/assets/i18n/en.json')
-        }).withDefaultLanguage('en')
+        TranslateModule.forRoot({
+          isolate: true,
+          loader: {
+            provide: TranslateLoader,
+            useFactory: createTranslateLoader,
+            deps: [HttpClient, AppStateService]
+          }
+        })
       ],
+      schemas: [NO_ERRORS_SCHEMA],
       providers: [
-        provideHttpClientTesting(),
         provideHttpClient(),
-        provideRouter([{ path: '', component: EndpointSearchComponent }]),
-        { provide: ProductsAPIService, useValue: apiProductServiceSpy }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
+        provideHttpClientTesting(),
+        { provide: UserService, useValue: mockUserService },
+        { provide: TranslateService, useClass: TranslateServiceMock },
+        { provide: PortalMessageService, useValue: msgServiceSpy },
+        { provide: MicrofrontendsAPIService, useValue: mfeApiServiceSpy }
+      ]
     }).compileComponents()
+    msgServiceSpy.success.calls.reset()
+    msgServiceSpy.error.calls.reset()
+    msgServiceSpy.info.calls.reset()
+    mockUserService.lang$.getValue.and.returnValue('de')
+    // reset data services
+    mfeApiServiceSpy.searchMicrofrontends.calls.reset()
+    // to spy data: refill with neutral data
+    mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of({}))
   }))
 
-  beforeEach(async () => {
+  beforeEach(() => {
     fixture = TestBed.createComponent(EndpointSearchComponent)
     component = fixture.componentInstance
-    router = TestBed.inject(Router)
-    fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
+    fixture.detectChanges()
   })
 
-  afterEach(() => {
-    apiProductServiceSpy.searchProducts.calls.reset(), translateServiceSpy.get.calls.reset()
-  })
+  describe('construction', () => {
+    it('should create', () => {
+      expect(component).toBeTruthy()
+    })
 
-  it('should create', () => {
-    expect(component).toBeTruthy()
-  })
-
-  it('should prepare action buttons on init', () => {
-    spyOn(component, 'onAppSearch')
-    spyOn(component, 'onSlotSearch')
-    spyOn(component, 'onNewProduct')
-
-    component.ngOnInit()
-
-    let actions: any = []
-    component.actions$!.subscribe((act) => (actions = act))
-
-    actions[0].actionCallback()
-    actions[1].actionCallback()
-    actions[2].actionCallback()
-
-    expect(component.onAppSearch).toHaveBeenCalled()
-    expect(component.onSlotSearch).toHaveBeenCalled()
-    expect(component.onNewProduct).toHaveBeenCalled()
-  })
-
-  it('should set correct value onLayoutChange', () => {
-    const viewMode = 'list'
-
-    component.onLayoutChange(viewMode)
-
-    expect(component.viewMode).toEqual('list')
-  })
-
-  it('should set correct values onFilterChange', () => {
-    const filter = 'filter'
-
-    component.onFilterChange(filter)
-
-    expect(component.filter).toEqual(filter)
-  })
-
-  it('should set correct value onSortChange', () => {
-    const sortField = 'field'
-
-    component.onSortChange(sortField)
-
-    expect(component.sortField).toEqual(sortField)
-  })
-
-  it('should set correct value onSortDirChange', () => {
-    let asc = true
-    component.onSortDirChange(asc)
-    expect(component.sortOrder).toEqual(-1)
-
-    asc = false
-    component.onSortDirChange(asc)
-    expect(component.sortOrder).toEqual(1)
-  })
-
-  it('should search products - successful found', (done) => {
-    apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product] } as ProductPageResult))
-
-    component.onSearch()
-
-    component.products$.subscribe({
-      next: (result) => {
-        expect(result.length).toBe(1)
-        result.forEach((product) => {
-          expect(product.id).toEqual('id')
-        })
-        done()
-      },
-      error: done.fail
+    it('should call OnInit and populate filteredColumns/actions correctly', () => {
+      component.ngOnInit()
+      expect(component.filteredColumns[0]).toEqual(component.columns[0])
     })
   })
 
-  it('should search products - successful not found', (done) => {
-    apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [] } as ProductPageResult))
+  describe('search', () => {
+    it('should search enpoints without search criteria', (done) => {
+      mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: itemData }))
 
-    component.onSearch()
+      component.onSearch()
 
-    component.products$.subscribe({
-      next: (result) => {
-        expect(result.length).toBe(0)
-        done()
-      },
-      error: done.fail
+      component.endpoints$?.subscribe({
+        next: (data) => {
+          expect(data).toEqual(itemData)
+          done()
+        },
+        error: done.fail
+      })
     })
-  })
 
-  it('should search products - no stream', (done) => {
-    apiProductServiceSpy.searchProducts.and.returnValue(of({} as ProductPageResult))
+    it('should display an info message if there is no result', (done) => {
+      mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of({ totalElements: 0, stream: [] }))
 
-    component.onSearch()
+      component.onSearch()
 
-    component.products$.subscribe({
-      next: (result) => {
-        expect(result.length).toBe(0)
-        done()
-      },
-      error: done.fail
+      component.endpoints$?.subscribe({
+        next: (data) => {
+          expect(data.length).toEqual(0)
+          expect(msgServiceSpy.info).toHaveBeenCalledOnceWith({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
+          done()
+        },
+        error: done.fail
+      })
     })
-  })
 
-  it('should search products - failed', (done) => {
-    const err = { status: 403 }
-    apiProductServiceSpy.searchProducts.and.returnValue(throwError(() => err))
+    it('should display an error message if the search fails', (done) => {
+      const errorResponse = { status: '403', statusText: 'Not authorized' }
+      mfeApiServiceSpy.searchMicrofrontends.and.returnValue(throwError(() => errorResponse))
+      spyOn(console, 'error')
 
-    component.onSearch()
+      component.onSearch()
 
-    component.products$.subscribe({
-      next: (result) => {
-        if (result) {
-          expect(result.length).toBe(0)
-          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_403.PRODUCTS')
+      component.endpoints$?.subscribe({
+        next: (data) => {
+          expect(data).toEqual([])
+          done()
+        },
+        error: () => {
+          expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.SEARCH_FAILED' })
+          expect(console.error).toHaveBeenCalledWith('searchParametersByCriteria', errorResponse)
+          done.fail
         }
-        done()
-      },
-      error: done.fail
+      })
     })
   })
 
-  it('should reset productSearchCriteriaGroup onSearchReset', () => {
-    spyOn(component.productSearchCriteriaGroup, 'reset')
+  /*
+   * UI ACTIONS
+   */
+  describe('filter columns', () => {
+    it('should update the columns that are seen in data', () => {
+      const columns: Column[] = [{ field: 'productName', header: 'PRODUCT_NAME' }]
+      const expectedColumn = { field: 'productName', header: 'PRODUCT_NAME' }
+      component.columns = columns
 
-    component.onSearchReset()
+      component.onColumnsChange(['productName'])
 
-    expect(component.productSearchCriteriaGroup.reset).toHaveBeenCalled()
+      expect(component.filteredColumns).not.toContain(columns[1])
+      expect(component.filteredColumns).toEqual([jasmine.objectContaining(expectedColumn)])
+    })
+
+    it('should apply a filter to the result table', () => {
+      component.dataTable = jasmine.createSpyObj('dataTable', ['filterGlobal'])
+
+      component.onFilterChange('test')
+
+      expect(component.dataTable?.filterGlobal).toHaveBeenCalledWith('test', 'contains')
+    })
   })
 
-  it('should navigate to new product onNewProduct', () => {
-    const routerSpy = spyOn(router, 'navigate')
+  describe('onCriteriaReset', () => {
+    it('should reset criteria, reset the form group, and disable the applicationId control', () => {
+      component.mfeSearchCriteriaGroup = searchCriteriaForm
+      spyOn(searchCriteriaForm, 'reset').and.callThrough()
 
-    component.onNewProduct()
+      component.onCriteriaReset()
 
-    expect(routerSpy).toHaveBeenCalledWith(['./new'], jasmine.any(Object))
+      expect(component.mfeSearchCriteriaGroup.reset).toHaveBeenCalled()
+    })
   })
 
-  it('should navigate to apps onAppSearch', () => {
-    const routerSpy = spyOn(router, 'navigate')
+  /**
+   * Language tests
+   */
+  describe('Language tests', () => {
+    it('should set a German date format', () => {
+      expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm:ss')
+    })
 
-    component.onAppSearch()
-
-    expect(routerSpy).toHaveBeenCalledWith(['./apps'], jasmine.any(Object))
-  })
-
-  it('should navigate to slots onSlotSearch', () => {
-    const routerSpy = spyOn(router, 'navigate')
-
-    component.onSlotSearch()
-
-    expect(routerSpy).toHaveBeenCalledWith(['./slots'], jasmine.any(Object))
-  })
-
-  it('should sort products by display name', () => {
-    const p1 = { displayName: 'b product' }
-    const p2 = { displayName: 'a product' }
-
-    const result = component.sortProductsByDisplayName(p1 as ProductAbstract, p2 as ProductAbstract)
-
-    expect(result).toBe(1)
-  })
-
-  it('should getLogoUrl from existing product', () => {
-    const product = { id: 'id', name: 'product', imageUrl: 'url' }
-
-    const result = component.getLogoUrl(product)
-
-    expect(result).toEqual(product.imageUrl)
-  })
-
-  it('should getLogoUrl from image api if not from existing product', () => {
-    const product = { id: 'id', name: '' }
-
-    const result = component.getLogoUrl(product)
-
-    expect(result).toEqual('')
-  })
-
-  it('should getLogoUrl from image api if not from existing product', () => {
-    const product = undefined
-
-    const result = component.getLogoUrl(product)
-
-    expect(result).toBeUndefined()
+    it('should set default date format', () => {
+      mockUserService.lang$.getValue.and.returnValue('en')
+      fixture = TestBed.createComponent(EndpointSearchComponent)
+      component = fixture.componentInstance
+      fixture.detectChanges()
+      expect(component.dateFormat).toEqual('M/d/yy, hh:mm:ss a')
+    })
   })
 })

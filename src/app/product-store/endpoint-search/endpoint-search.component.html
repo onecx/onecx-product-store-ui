@@ -3,7 +3,7 @@
     [header]="'DIALOG.SEARCH.ENDPOINTS.HEADER' | translate"
     [subheader]="'DIALOG.SEARCH.ENDPOINTS.SUBHEADER' | translate"
     (searched)="onSearch()"
-    (resetted)="onSearchReset()"
+    (resetted)="onCriteriaReset()"
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >

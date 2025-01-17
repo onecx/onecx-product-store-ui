@@ -134,8 +134,8 @@
         "QUICK_FILTER": {
           "TOOLTIP": "Quick Filter for App type",
           "ALL": "All",
-          "MS": "Microservices",
-          "MFE": "UI Components"
+          "MS": "Microservice",
+          "MFE": "UI Component"
         }
       },
       "PRODUCT": {

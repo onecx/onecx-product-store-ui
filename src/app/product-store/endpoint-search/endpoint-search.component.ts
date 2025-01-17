@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core'
 import { catchError, finalize, map, Observable, of } from 'rxjs'
 import { Table } from 'primeng/table'
 
+import { UserService } from '@onecx/angular-integration-interface'
 import { Action, Column, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 
 import {
@@ -19,7 +20,8 @@ import { limitText } from 'src/app/shared/utils'
 export interface MicrofrontendSearchCriteria {
   productName: FormControl<string | null>
 }
-export type MfeEndpoint = MicrofrontendAbstract & { endpoint: UIEndpoint }
+export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
+export type MfeEndpoint = MicrofrontendAbstract & { unique_id: string; endpoint: UIEndpoint }
 type ExtendedColumn = Column & {
   hasFilter?: boolean
   isDate?: boolean
@@ -37,6 +39,8 @@ export class EndpointSearchComponent implements OnInit {
   // dialog
   public loading = false
   public exceptionKey: string | undefined = undefined
+  public changeMode: ChangeMode = 'VIEW'
+  public dateFormat: string
   public actions$: Observable<Action[]> | undefined
   public mfeSearchCriteriaGroup!: FormGroup<MicrofrontendSearchCriteria>
 
@@ -73,11 +77,13 @@ export class EndpointSearchComponent implements OnInit {
     }
   ]
   constructor(
+    private readonly user: UserService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
     private readonly mfeApi: MicrofrontendsAPIService,
     private readonly translate: TranslateService
   ) {
+    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.mfeSearchCriteriaGroup = new FormGroup<MicrofrontendSearchCriteria>({
       productName: new FormControl<string | null>(null)
     })
@@ -182,7 +188,7 @@ export class EndpointSearchComponent implements OnInit {
   public onSearch() {
     this.searchEndpoints()
   }
-  public onSearchReset() {
+  public onCriteriaReset() {
     this.mfeSearchCriteriaGroup.reset()
   }
 
@@ -205,8 +211,8 @@ export class EndpointSearchComponent implements OnInit {
           const mfeend: MfeEndpoint[] = []
           if (!data.stream) return mfeend
           data.stream.forEach((mfe) => {
-            mfe.endpoints?.forEach((ep) => {
-              mfeend.push({ ...mfe, endpoint: ep })
+            mfe.endpoints?.forEach((ep, i) => {
+              mfeend.push({ ...mfe, unique_id: mfe.id + '_' + i, endpoint: ep })
             })
           })
           mfeend.sort(this.sortMfes)
