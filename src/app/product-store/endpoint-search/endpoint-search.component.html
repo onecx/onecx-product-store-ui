@@ -83,8 +83,12 @@
 
       <ng-template pTemplate="header" let-columns>
         <tr>
-          <th colspan="2" class="text-center border-right-1">{{ 'ACTIONS.SEARCH.PRODUCT.LABEL' | translate }}</th>
-          <th colspan="2" class="text-center">{{ 'ACTIONS.SEARCH.ENDPOINT.LABEL' | translate }}</th>
+          <th id="ps_endpoint_search_table_header_product_info" colspan="2" class="text-center border-right-1">
+            {{ 'ACTIONS.SEARCH.PRODUCT.LABEL' | translate }}
+          </th>
+          <th id="ps_endpoint_search_table_header_endpoint_info" colspan="2" class="text-center">
+            {{ 'ACTIONS.SEARCH.ENDPOINT.LABEL' | translate }}
+          </th>
         </tr>
         <tr>
           <!--th

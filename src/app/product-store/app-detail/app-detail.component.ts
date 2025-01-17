@@ -16,6 +16,7 @@ import {
   GetMicroserviceRequestParams,
   MicrofrontendsAPIService,
   MicroservicesAPIService,
+  MicrofrontendType,
   Microfrontend,
   Microservice,
   UpdateMicrofrontendRequest,
@@ -85,6 +86,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
   public iconItems: SelectItem[] = []
   public endpoints: UIEndpoint[] = []
   public convertToUniqueStringArray = convertToUniqueStringArray
+  public MicrofrontendType = MicrofrontendType
 
   constructor(
     private readonly user: UserService,

@@ -9,11 +9,11 @@
     <div class="mx-3 flex flex-row flex-wrap column-gap-6 row-gap-3">
       <p-checkbox
         type="text"
-        [readonly]="true"
         inputId="ps_app_detail_form_field_operator"
         [(ngModel)]="operator"
         [ngModelOptions]="{ standalone: true }"
         [binary]="true"
+        [disabled]="true"
         [label]="'INTERNAL.OPERATOR' | translate"
         [ariaLabel]="'INTERNAL.OPERATOR' | translate"
         [pTooltip]="'APP.TOOLTIPS.OPERATOR' | translate"
@@ -22,11 +22,11 @@
       ></p-checkbox>
       <p-checkbox
         type="text"
-        [readonly]="true"
         inputId="ps_app_detail_form_field_undeployed"
         [(ngModel)]="undeployed"
         [ngModelOptions]="{ standalone: true }"
         [binary]="true"
+        [disabled]="true"
         [label]="'APP.UNDEPLOYED' | translate"
         [ariaLabel]="'APP.UNDEPLOYED' | translate"
         [pTooltip]="'APP.TOOLTIPS.UNDEPLOYED' | translate"
@@ -35,11 +35,11 @@
       ></p-checkbox>
       <p-checkbox
         type="text"
-        [readonly]="true"
         inputId="ps_app_detail_form_field_deprecated"
         [(ngModel)]="deprecated"
         [ngModelOptions]="{ standalone: true }"
         [binary]="true"
+        [disabled]="true"
         [label]="'APP.DEPRECATED' | translate"
         [ariaLabel]="'APP.DEPRECATED' | translate"
         [pTooltip]="'APP.TOOLTIPS.DEPRECATED' | translate"
@@ -54,10 +54,10 @@
         <input
           pInputText
           type="text"
-          readonly
           id="ps_app_detail_form_field_creation_date"
-          class="w-full sm:w-15rem pt-3 pb-2 text-responsive"
+          class="w-full sm:w-13rem pt-3 pb-2 text-responsive"
           [value]="app?.creationDate ? (app?.creationDate | date: dateFormat) : ''"
+          [disabled]="true"
           [attr.aria-label]="'INTERNAL.CREATION_DATE' | translate"
           [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
           tooltipPosition="top"
@@ -69,10 +69,10 @@
         <input
           pInputText
           type="text"
-          readonly
           id="ps_app_detail_form_field_creation_user"
           class="w-full pt-3 pb-2 text-responsive"
           [value]="app?.creationUser"
+          [disabled]="true"
           [attr.aria-label]="'INTERNAL.CREATION_USER' | translate"
           [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_USER' | translate"
           tooltipPosition="top"
@@ -88,10 +88,10 @@
         <input
           pInputText
           type="text"
-          readonly
           id="ps_app_detail_form_field_modification_date"
-          class="w-full sm:w-15rem pt-3 pb-2"
+          class="w-full sm:w-13rem pt-3 pb-2"
           [value]="app?.modificationDate ? (app?.modificationDate | date: dateFormat) : ''"
+          [disabled]="true"
           [attr.aria-label]="'INTERNAL.MODIFICATION_DATE' | translate"
           [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
           tooltipPosition="top"
@@ -103,10 +103,10 @@
         <input
           pInputText
           type="text"
-          readonly
           id="ps_app_detail_form_field_modification_user"
           class="w-full pt-3 pb-2 text-responsive"
           [value]="app?.modificationUser"
+          [disabled]="true"
           [attr.aria-label]="'INTERNAL.MODIFICATION_USER' | translate"
           [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_USER' | translate"
           tooltipPosition="top"

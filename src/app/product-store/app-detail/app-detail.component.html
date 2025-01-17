@@ -307,23 +307,7 @@
         <div class="flex flex-column row-gap-4">
           <!-- row 1 -->
           <div class="flex flex-row flex-wrap gap-4">
-            <span class="flex-grow-1 p-float-label" controlErrorAnchor>
-              <input
-                pInputText
-                type="text"
-                id="ps_app_detail_form_mfe_field_exposed_module"
-                class="w-full pt-3 pb-2 text-responsive"
-                formControlName="exposedModule"
-                [attr.aria-label]="'APP.EXPOSED_MODULE' | translate"
-                [pTooltip]="'APP.TOOLTIPS.EXPOSED_MODULE' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              />
-              <label class="ocx-required-label" for="ps_app_detail_form_mfe_field_exposed_module">
-                {{ 'APP.EXPOSED_MODULE' | translate }}
-              </label>
-            </span>
-            <span class="p-float-label" controlErrorAnchor>
+            <span class="flex-grow-1 sm:flex-grow-0 p-float-label" controlErrorAnchor>
               <p-dropdown
                 id="ps_app_detail_form_mfe_field_type"
                 styleClass="w-full"
@@ -339,7 +323,7 @@
                 {{ 'APP.TYPE' | translate }}
               </label>
             </span>
-            <span class="p-float-label" controlErrorAnchor>
+            <span class="flex-grow-1 p-float-label" controlErrorAnchor>
               <p-dropdown
                 id="ps_app_detail_form_mfe_field_technology"
                 styleClass="w-full"
@@ -362,6 +346,24 @@
             <input
               pInputText
               type="text"
+              id="ps_app_detail_form_mfe_field_exposed_module"
+              class="w-full pt-3 pb-2 text-responsive"
+              formControlName="exposedModule"
+              [attr.aria-label]="'APP.EXPOSED_MODULE' | translate"
+              [pTooltip]="'APP.TOOLTIPS.EXPOSED_MODULE' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <label class="ocx-required-label" for="ps_app_detail_form_mfe_field_exposed_module">
+              {{ 'APP.EXPOSED_MODULE' | translate }}
+            </label>
+          </span>
+
+          <!-- row 3 -->
+          <span class="p-float-label" controlErrorAnchor>
+            <input
+              pInputText
+              type="text"
               id="ps_app_detail_form_mfe_field_remote_entry"
               class="w-full pt-3 pb-2"
               formControlName="remoteEntry"
@@ -375,7 +377,7 @@
             </label>
           </span>
 
-          <!-- row 3 -->
+          <!-- row 4 -->
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
@@ -393,7 +395,7 @@
             </label>
           </span>
 
-          <!-- row 4 -->
+          <!-- row 5 -->
           <div class="flex flex-row flex-wrap gap-4">
             <span class="flex-grow-1 sm:flex-grow-0 p-float-label" controlErrorAnchor>
               <input
@@ -438,7 +440,7 @@
     </p-tabPanel>
 
     <p-tabPanel
-      *ngIf="appAbstract?.appType === 'MFE'"
+      *ngIf="appAbstract?.appType === 'MFE' && appAbstract?.mfeType === MicrofrontendType.Module"
       [header]="'DIALOG.TABS.ENDPOINTS' | translate"
       [tooltip]="'DIALOG.TABS.TOOLTIPS.ENDPOINTS' | translate"
     >

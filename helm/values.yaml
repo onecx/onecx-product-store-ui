@@ -24,6 +24,8 @@ app:
               path: /{product-name}
             - name: apps
               path: /apps
+            - name: endpoints
+              path: /endpoints
             - name: slots
               path: /slots
     slot:

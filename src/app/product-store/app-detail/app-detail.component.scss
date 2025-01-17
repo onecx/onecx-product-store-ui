@@ -1,5 +1,6 @@
 @import '/src/app/_ps-mixins.scss';
 
+@include readable-disabled-form-controls;
 @include tabview-reduce-padding;
 @include table-zebra-rows;
 @include table-inline-buttons;
