@@ -1,6 +1,7 @@
-# See http://help.github.com/ignore-files/ for more about ignoring files.
+# Copy of .gitignore AND removed "dist" directory
 
 # compiled output
+# dist
 tmp
 out-tsc
 reports
@@ -16,18 +17,17 @@ speed-measure-plugin*.json
 .idea
 .project
 .classpath
-.c9
 .history
 .settings
 .vscode
 *.launch
-*.sublime-workspace
 
 # misc
 .angular
 .eslintcache
-.husky/_
 .sass-cache
+.scannerwork
+.husky/_
 .gitlab*
 connect.lock
 typings

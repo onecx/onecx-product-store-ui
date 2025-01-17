@@ -1,0 +1,131 @@
+<ocx-portal-page permission="ENDPOINT#SEARCH" helpArticleId="PAGE_ENDPOINT_SEARCH">
+  <ocx-search-header
+    [header]="'DIALOG.SEARCH.ENDPOINTS.HEADER' | translate"
+    [subheader]="'DIALOG.SEARCH.ENDPOINTS.SUBHEADER' | translate"
+    (searched)="onSearch()"
+    (resetted)="onCriteriaReset()"
+    [manualBreadcrumbs]="false"
+    [actions]="(actions$ | async) ?? []"
+  >
+    <div id="ps_endpoint_search_criteria" [formGroup]="mfeSearchCriteriaGroup" class="flex flex-row flex-wrap gap-3">
+      <span class="p-float-label">
+        <input
+          id="ps_endpoint_search_criteria_product_name"
+          pInputText
+          type="text"
+          class="w-11rem sm:w-18rem text-responsive"
+          formControlName="productName"
+          [pTooltip]="
+            ('ACTIONS.SEARCH.ENDPOINT.PRODUCT_NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)
+          "
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        />
+        <label for="ps_endpoint_search_criteria_product_name">{{ 'APP.PRODUCT_NAME' | translate }}</label>
+      </span>
+    </div>
+  </ocx-search-header>
+
+  <ocx-page-content *ngIf="endpoints$ | async as endpoints">
+    <p-message
+      *ngIf="loading"
+      id="ps_endpoint_search_loading_message"
+      severity="info"
+      styleClass="m-3 p-2"
+      [text]="'ACTIONS.LOADING' | translate"
+    ></p-message>
+    <p-message
+      *ngIf="!loading && exceptionKey"
+      id="ps_endpoint_search_error_message"
+      severity="error"
+      styleClass="m-3 p-2"
+      [text]="exceptionKey | translate"
+    ></p-message>
+
+    <p-table
+      *ngIf="!(loading || exceptionKey)"
+      #dataTable
+      id="ps_endpoint_search_table"
+      styleClass="mx-3 mb-2"
+      [value]="endpoints"
+      [columns]="filteredColumns"
+      dataKey="id"
+      [globalFilterFields]="['productName', 'applicationId']"
+      [reorderableColumns]="false"
+      [scrollable]="true"
+      scrollHeight="590px"
+      groupRowsBy="productName"
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 30, 100]"
+      [paginator]="true"
+      paginatorPosition="bottom"
+      [alwaysShowPaginator]="true"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="{first} - {last} {{ 'ACTIONS.SEARCH.OF' | translate }} {totalRecords}"
+    >
+      <ng-template pTemplate="caption">
+        <ocx-data-view-controls
+          [supportedViews]="['table']"
+          [enableFiltering]="true"
+          [enableSorting]="false"
+          [columnDefinitions]="columns"
+          (columnsChange)="onColumnsChange($event)"
+          (filterChange)="onFilterChange($event)"
+          [translations]="dataViewControlsTranslations"
+        ></ocx-data-view-controls>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td id="ps_endpoint_search_table_emptymessage" colspan="16">{{ 'ACTIONS.SEARCH.NO_DATA' | translate }}</td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th colspan="2" class="text-center border-right-1">{{ 'ACTIONS.SEARCH.PRODUCT.LABEL' | translate }}</th>
+          <th colspan="2" class="text-center">{{ 'ACTIONS.SEARCH.ENDPOINT.LABEL' | translate }}</th>
+        </tr>
+        <tr>
+          <!--th
+            pFrozenColumn
+            id="ps_endpoint_search_table_header_actions"
+            class="border-right-1 text-center white-space-nowrap"
+          >
+            {{ 'ACTIONS.LABEL' | translate }}
+          </th-->
+          <th
+            *ngFor="let col of columns"
+            [id]="'ps_endpoint_search_table_header_col_' + col.field"
+            [class]="'white-space-nowrap'"
+            [ngClass]="{ 'border-right-1': col.field === 'appId' }"
+            [pSortableColumn]="col.field"
+            [attr.aria-label]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
+            [pTooltip]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
+            <span>{{ col.translationPrefix + '.' + col.header | translate }}</span>
+            <p-sortIcon [field]="col.field"></p-sortIcon>
+            <p-columnFilter *ngIf="col.hasFilter" type="text" [field]="col.field" display="menu"></p-columnFilter>
+          </th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-i="rowIndex" let-rowData let-columns="columns">
+        <tr [pSelectableRow]="endpoints">
+          <td
+            *ngFor="let col of columns"
+            [id]="'ps_endpoint_search_table_row_' + i + '_' + col.field"
+            [class]="col.css"
+            [ngClass]="{ 'border-right-1': col.field === 'appId' }"
+          >
+            <!-- needs a div due to manage ellipsis -->
+            <div *ngIf="col.limit" class="text-ellipsis-2-lines">{{ rowData[col.field] }}</div>
+            <div *ngIf="!col.limit">{{ rowData[col.field] }}</div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </ocx-page-content>
+</ocx-portal-page>

@@ -71,30 +71,42 @@ describe('SlotSearchComponent', () => {
     expect(component).toBeTruthy()
   })
 
-  it('should call onBack when actionCallback is executed', () => {
-    spyOn(component, 'onBack')
+  describe('page actions', () => {
+    it('should navigate to Products when button clicked and actionCallback executed', () => {
+      component.ngOnInit()
 
-    component.ngOnInit()
+      if (component.actions$) {
+        component.actions$.subscribe((actions) => {
+          const firstAction = actions[0]
+          firstAction.actionCallback()
+          expect(routerSpy.navigate).toHaveBeenCalledWith(['..'], { relativeTo: routeMock })
+        })
+      }
+    })
 
-    if (component.actions$) {
-      component.actions$.subscribe((actions) => {
-        const firstAction = actions[0]
-        firstAction.actionCallback()
-        expect(component.onBack).toHaveBeenCalled()
-      })
-    }
-  })
+    it('should navigate to Endpoints when button clicked and actionCallback executed', () => {
+      component.ngOnInit()
 
-  it('should navigate to Apps when button clicked and actionCallback executed', () => {
-    component.ngOnInit()
+      if (component.actions$) {
+        component.actions$.subscribe((actions) => {
+          const firstAction = actions[1]
+          firstAction.actionCallback()
+          expect(routerSpy.navigate).toHaveBeenCalledWith(['../endpoints'], { relativeTo: routeMock })
+        })
+      }
+    })
 
-    if (component.actions$) {
-      component.actions$.subscribe((actions) => {
-        const firstAction = actions[1]
-        firstAction.actionCallback()
-        expect(routerSpy.navigate).toHaveBeenCalledWith(['../apps'], { relativeTo: routeMock })
-      })
-    }
+    it('should navigate to Apps when button clicked and actionCallback executed', () => {
+      component.ngOnInit()
+
+      if (component.actions$) {
+        component.actions$.subscribe((actions) => {
+          const firstAction = actions[2]
+          firstAction.actionCallback()
+          expect(routerSpy.navigate).toHaveBeenCalledWith(['../apps'], { relativeTo: routeMock })
+        })
+      }
+    })
   })
 
   it('should set correct values onFilterChange', () => {
@@ -159,8 +171,9 @@ describe('SlotSearchComponent', () => {
   })
 
   it('should search slots - failed', (done) => {
-    const err = { status: 403 }
-    apiSlotsServiceSpy.searchSlots.and.returnValue(throwError(() => err))
+    const errorResponse = { status: 401, statusText: 'Not authorized' }
+    apiSlotsServiceSpy.searchSlots.and.returnValue(throwError(() => errorResponse))
+    spyOn(console, 'error')
 
     component.onSearch()
 
@@ -168,7 +181,8 @@ describe('SlotSearchComponent', () => {
       next: (result) => {
         if (result.stream) {
           expect(result.stream.length).toBe(0)
-          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_403.SLOTS')
+          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.SLOTS')
+          expect(console.error).toHaveBeenCalledWith('searchSlots', errorResponse)
         }
         done()
       },

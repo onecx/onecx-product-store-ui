@@ -71,8 +71,8 @@ describe('ProductDetailComponent', () => {
         }).withDefaultLanguage('en')
       ],
       providers: [
-        provideHttpClientTesting(),
         provideHttpClient(),
+        provideHttpClientTesting(),
         provideRouter([{ path: '', component: ProductDetailComponent }]),
         { provide: ProductsAPIService, useValue: apiServiceSpy },
         { provide: PortalMessageService, useValue: msgServiceSpy },
@@ -134,16 +134,18 @@ describe('ProductDetailComponent', () => {
   })
 
   it('should get product onInit - not found', (done) => {
-    const err = { status: 404 }
-    apiServiceSpy.getProductByName.and.returnValue(throwError(() => err))
+    const errorResponse = { status: 404, statusText: 'Not Found' }
+    apiServiceSpy.getProductByName.and.returnValue(throwError(() => errorResponse))
     component.productName = 'unknown'
+    spyOn(console, 'error')
 
     component.ngOnInit()
 
     component.product$.subscribe({
       next: (result) => {
         expect(result).toEqual({} as Product)
-        expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_404.PRODUCT')
+        expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PRODUCT')
+        expect(console.error).toHaveBeenCalledWith('getProductByName', errorResponse)
         done()
       },
       error: done.fail

@@ -9,12 +9,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { MicrofrontendType } from './microfrontendType';
 
 
 export interface MfeAndMsSearchCriteria { 
     appId?: string | null;
     appName?: string | null;
     productName?: string | null;
+    type?: MicrofrontendType;
     /**
      * The number of page.
      */
@@ -24,4 +26,6 @@ export interface MfeAndMsSearchCriteria {
      */
     pageSize?: number;
 }
+
+
 

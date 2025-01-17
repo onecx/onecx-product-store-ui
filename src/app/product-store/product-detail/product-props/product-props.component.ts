@@ -230,18 +230,18 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
       refType: RefType.Logo,
       body: blob
     }
-    this.imageApi.getImage({ refId: name, refType: RefType.Logo }).subscribe(
-      () => {
+    this.imageApi.getImage({ refId: name, refType: RefType.Logo }).subscribe({
+      next: () => {
         this.imageApi.updateImage(saveRequestParameter).subscribe(() => {
           this.prepareImageResponse(name)
         })
       },
-      (err) => {
+      error: (err) => {
         this.imageApi.uploadImage(saveRequestParameter).subscribe(() => {
           this.prepareImageResponse(name)
         })
       }
-    )
+    })
   }
   private prepareImageResponse(name: string): void {
     this.fetchingLogoUrl = bffImageUrl(this.imageApi.configuration.basePath, name, RefType.Logo)

@@ -70,7 +70,7 @@ export class SlotSearchComponent implements OnInit {
       .pipe(
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.SLOTS'
-          console.error('searchSlots():', err)
+          console.error('searchSlots', err)
           return of({ stream: [] } as SlotPageResult)
         }),
         finalize(() => (this.searchInProgress = false))
@@ -114,8 +114,10 @@ export class SlotSearchComponent implements OnInit {
   private prepareActionButtons(): void {
     this.actions$ = this.translate
       .get([
-        'ACTIONS.NAVIGATION.BACK',
-        'ACTIONS.NAVIGATION.BACK.TOOLTIP',
+        'DIALOG.SEARCH.PRODUCTS.LABEL',
+        'DIALOG.SEARCH.PRODUCTS.TOOLTIP',
+        'DIALOG.SEARCH.ENDPOINTS.LABEL',
+        'DIALOG.SEARCH.ENDPOINTS.TOOLTIP',
         'DIALOG.SEARCH.APPS.LABEL',
         'DIALOG.SEARCH.APPS.TOOLTIP'
       ])
@@ -123,10 +125,19 @@ export class SlotSearchComponent implements OnInit {
         map((data) => {
           return [
             {
-              label: data['ACTIONS.NAVIGATION.BACK'],
-              title: data['ACTIONS.NAVIGATION.BACK.TOOLTIP'],
-              actionCallback: () => this.onBack(),
-              icon: 'pi pi-arrow-left',
+              label: data['DIALOG.SEARCH.PRODUCTS.LABEL'],
+              title: data['DIALOG.SEARCH.PRODUCTS.TOOLTIP'],
+              actionCallback: () => this.router.navigate(['..'], { relativeTo: this.route }),
+              permission: 'PRODUCT#SEARCH',
+              icon: 'pi pi-cog',
+              show: 'always'
+            },
+            {
+              label: data['DIALOG.SEARCH.ENDPOINTS.LABEL'],
+              title: data['DIALOG.SEARCH.ENDPOINTS.TOOLTIP'],
+              actionCallback: () => this.router.navigate(['../endpoints'], { relativeTo: this.route }),
+              permission: 'ENDPOINT#SEARCH',
+              icon: 'pi pi-bars',
               show: 'always'
             },
             {

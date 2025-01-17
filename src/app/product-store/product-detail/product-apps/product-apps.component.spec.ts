@@ -1,7 +1,5 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { HttpClientTestingModule } from '@angular/common/http/testing'
-import { RouterTestingModule } from '@angular/router/testing'
 import { of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
@@ -60,8 +58,6 @@ describe('ProductAppsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ProductAppsComponent],
       imports: [
-        RouterTestingModule,
-        HttpClientTestingModule,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
@@ -127,14 +123,16 @@ describe('ProductAppsComponent', () => {
     })
 
     it('should catch error on searchProducts', (done) => {
-      const err = { status: 404 }
-      productServiceSpy.getProductDetailsByCriteria.and.returnValue(throwError(() => err))
+      const errorResponse = { status: 401, statusText: 'Not authorized' }
+      productServiceSpy.getProductDetailsByCriteria.and.returnValue(throwError(() => errorResponse))
+      spyOn(console, 'error')
 
       component.searchProducts()
 
       component.productDetails$.subscribe({
         next: (result) => {
-          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_404.APPS')
+          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.APPS')
+          expect(console.error).toHaveBeenCalledWith('getProductDetailsByCriteria', errorResponse)
           done()
         },
         error: done.fail

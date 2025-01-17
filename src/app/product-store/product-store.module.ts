@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from '@angular/core'
+import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { RouterModule, Routes } from '@angular/router'
@@ -16,6 +16,7 @@ import { AppSearchComponent } from './app-search/app-search.component'
 import { AppDeleteComponent } from './app-delete/app-delete.component'
 import { AppDetailComponent } from './app-detail/app-detail.component'
 import { AppInternComponent } from './app-detail/app-intern/app-intern.component'
+import { EndpointSearchComponent } from './endpoint-search/endpoint-search.component'
 import { ProductSearchComponent } from './product-search/product-search.component'
 import { ProductDetailComponent } from './product-detail/product-detail.component'
 import { ProductPropertyComponent } from './product-detail/product-props/product-props.component'
@@ -35,6 +36,12 @@ const routes: Routes = [
     path: 'apps',
     component: AppSearchComponent,
     data: { breadcrumb: 'BREADCRUMBS.APPS', breadcrumbFn: (data: any) => `${data.labeli18n}` },
+    resolve: { labeli18n: LabelResolver }
+  },
+  {
+    path: 'endpoints',
+    component: EndpointSearchComponent,
+    data: { breadcrumb: 'BREADCRUMBS.ENDPOINTS', breadcrumbFn: (data: any) => `${data.labeli18n}` },
     resolve: { labeli18n: LabelResolver }
   },
   {
@@ -62,6 +69,7 @@ const routes: Routes = [
     AppDeleteComponent,
     AppDetailComponent,
     AppInternComponent,
+    EndpointSearchComponent,
     ProductSearchComponent,
     ProductDetailComponent,
     ProductPropertyComponent,
@@ -80,8 +88,7 @@ const routes: Routes = [
     [RouterModule.forChild(addInitializeModuleGuard(routes))],
     SharedModule
   ],
-  providers: [ConfirmationService, InitializeModuleGuard],
-  schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA]
+  providers: [ConfirmationService, InitializeModuleGuard]
 })
 export class ProductStoreModule {
   constructor() {

@@ -99,7 +99,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.prepareDialogTranslations()
-    this.prepareActionButtons()
+    this.preparePageActions()
     this.searchApps()
   }
   public ngOnDestroy(): void {
@@ -122,7 +122,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
       .pipe(
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
-          console.error('searchMicrofrontends():', err)
+          console.error('searchMicrofrontends', err)
           return of({} as MicrofrontendPageResult)
         }),
         finalize(() => (this.searchInProgress = false))
@@ -140,7 +140,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
       .pipe(
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
-          console.error('searchMicroservice():', err)
+          console.error('searchMicroservice', err)
           return of({} as MicroservicePageResult)
         }),
         finalize(() => (this.searchInProgress = false))
@@ -203,25 +203,36 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   /**
    * DIALOG
    */
-  private prepareActionButtons(): void {
+  private preparePageActions(): void {
     this.actions$ = this.translate
       .get([
+        'DIALOG.SEARCH.PRODUCTS.LABEL',
+        'DIALOG.SEARCH.PRODUCTS.TOOLTIP',
+        'DIALOG.SEARCH.ENDPOINTS.LABEL',
+        'DIALOG.SEARCH.ENDPOINTS.TOOLTIP',
         'DIALOG.SEARCH.SLOTS.LABEL',
         'DIALOG.SEARCH.SLOTS.TOOLTIP',
         'ACTIONS.CREATE.MFE.LABEL',
         'ACTIONS.CREATE.MS.LABEL',
-        'ACTIONS.CREATE.APP.TOOLTIP',
-        'ACTIONS.NAVIGATION.BACK',
-        'ACTIONS.NAVIGATION.BACK.TOOLTIP'
+        'ACTIONS.CREATE.APP.TOOLTIP'
       ])
       .pipe(
         map((data) => {
           return [
             {
-              label: data['ACTIONS.NAVIGATION.BACK'],
-              title: data['ACTIONS.NAVIGATION.BACK.TOOLTIP'],
-              actionCallback: () => this.onBack(),
-              icon: 'pi pi-arrow-left',
+              label: data['DIALOG.SEARCH.PRODUCTS.LABEL'],
+              title: data['DIALOG.SEARCH.PRODUCTS.TOOLTIP'],
+              actionCallback: () => this.router.navigate(['..'], { relativeTo: this.route }),
+              permission: 'PRODUCT#SEARCH',
+              icon: 'pi pi-cog',
+              show: 'always'
+            },
+            {
+              label: data['DIALOG.SEARCH.ENDPOINTS.LABEL'],
+              title: data['DIALOG.SEARCH.ENDPOINTS.TOOLTIP'],
+              actionCallback: () => this.router.navigate(['../endpoints'], { relativeTo: this.route }),
+              permission: 'ENDPOINT#SEARCH',
+              icon: 'pi pi-bars',
               show: 'always'
             },
             {

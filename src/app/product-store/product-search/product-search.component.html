@@ -14,8 +14,8 @@
           pInputText
           type="text"
           class="w-11rem sm:w-18rem text-responsive"
-          [clear]="true"
           formControlName="displayName"
+          [attr.aria-label]="'PRODUCT.DISPLAY_NAME' | translate"
           [pTooltip]="('PRODUCT.TOOLTIPS.DISPLAY_NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
           tooltipPosition="top"
           tooltipEvent="hover"
@@ -28,8 +28,8 @@
           pInputText
           type="text"
           class="w-11rem sm:w-18rem text-responsive"
-          [clear]="true"
           formControlName="productName"
+          [attr.aria-label]="'PRODUCT.NAME' | translate"
           [pTooltip]="('PRODUCT.TOOLTIPS.NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
           tooltipPosition="top"
           tooltipEvent="hover"

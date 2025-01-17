@@ -54,7 +54,7 @@ export class ProductSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.prepareDialogTranslations()
-    this.prepareActionButtons()
+    this.preparePageActions()
     this.searchProducts()
   }
 
@@ -75,7 +75,7 @@ export class ProductSearchComponent implements OnInit {
         }),
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
-          console.error('searchProducts():', err)
+          console.error('searchProducts', err)
           return of([])
         }),
         finalize(() => (this.searchInProgress = false))
@@ -130,19 +130,29 @@ export class ProductSearchComponent implements OnInit {
       })
   }
 
-  private prepareActionButtons(): void {
+  private preparePageActions(): void {
     this.actions$ = this.translate
       .get([
         'ACTIONS.CREATE.PRODUCT.LABEL',
         'ACTIONS.CREATE.PRODUCT.TOOLTIP',
         'DIALOG.SEARCH.APPS.LABEL',
         'DIALOG.SEARCH.APPS.TOOLTIP',
+        'DIALOG.SEARCH.ENDPOINTS.LABEL',
+        'DIALOG.SEARCH.ENDPOINTS.TOOLTIP',
         'DIALOG.SEARCH.SLOTS.LABEL',
         'DIALOG.SEARCH.SLOTS.TOOLTIP'
       ])
       .pipe(
         map((data) => {
           return [
+            {
+              label: data['DIALOG.SEARCH.ENDPOINTS.LABEL'],
+              title: data['DIALOG.SEARCH.ENDPOINTS.TOOLTIP'],
+              actionCallback: () => this.onEndpointSearch(),
+              permission: 'ENDPOINT#SEARCH',
+              icon: 'pi pi-bars',
+              show: 'always'
+            },
             {
               label: data['DIALOG.SEARCH.APPS.LABEL'],
               title: data['DIALOG.SEARCH.APPS.TOOLTIP'],
@@ -197,6 +207,9 @@ export class ProductSearchComponent implements OnInit {
   }
   public onAppSearch() {
     this.router.navigate(['./apps'], { relativeTo: this.route })
+  }
+  public onEndpointSearch() {
+    this.router.navigate(['./endpoints'], { relativeTo: this.route })
   }
   public onSlotSearch() {
     this.router.navigate(['./slots'], { relativeTo: this.route })

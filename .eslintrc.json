@@ -18,9 +18,7 @@
     {
       "files": ["*.ts", "*.js"],
       "env": { "es6": true },
-      "globals": {
-        "__dirname": true
-      },
+      "globals": { "__dirname": true },
       "parserOptions": {
         "ecmaVersion": "latest",
         "project": "**/tsconfig.json",
@@ -32,44 +30,19 @@
         "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates",
         "plugin:prettier/recommended",
+        "plugin:deprecation/recommended",
         "plugin:@typescript-eslint/recommended"
       ],
       "rules": {
         "semi": ["error", "never"],
-        "@angular-eslint/directive-selector": [
-          "error",
-          {
-            "type": "attribute",
-            "prefix": "app",
-            "style": "camelCase"
-          }
-        ],
-        "@angular-eslint/component-selector": [
-          "warn",
-          {
-            "type": "element",
-            "prefix": "app",
-            "style": "kebab-case"
-          }
-        ],
-        "prettier/prettier": [
-          "error",
-          {
-            "singleQuote": true
-          }
-        ],
+        "@angular-eslint/directive-selector": ["error", { "type": "attribute", "prefix": "app", "style": "camelCase" }],
+        "@angular-eslint/component-selector": ["warn", { "type": "element", "prefix": "app", "style": "kebab-case" }],
+        "deprecation/deprecation": "warn",
+        "prettier/prettier": ["error", { "singleQuote": true }],
         "no-unused-vars": "off",
         "@typescript-eslint/no-unused-vars": ["error", { "vars": "all", "args": "none" }],
         "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/ban-types": [
-          "error",
-          {
-            "extendDefaults": true,
-            "types": {
-              "{}": false
-            }
-          }
-        ],
+        "@typescript-eslint/ban-types": ["error", { "extendDefaults": true, "types": { "{}": false } }],
         "@typescript-eslint/no-var-requires": 0
       }
     },
@@ -78,13 +51,7 @@
       "excludedFiles": ["*inline-template-*.component.html"],
       "extends": ["plugin:@angular-eslint/template/recommended", "plugin:prettier/recommended"],
       "rules": {
-        "prettier/prettier": [
-          "error",
-          {
-            "singleQuote": true,
-            "parser": "angular"
-          }
-        ]
+        "prettier/prettier": ["error", { "singleQuote": true, "parser": "angular" }]
       }
     }
   ]

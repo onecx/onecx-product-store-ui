@@ -134,11 +134,18 @@
         "QUICK_FILTER": {
           "TOOLTIP": "Quick Filter for App type",
           "ALL": "All",
-          "MS": "Microservices",
-          "MFE": "UI Components"
+          "MS": "Microservice",
+          "MFE": "UI Component"
         }
       },
+      "ENDPOINT": {
+        "LABEL": "Endpoint",
+        "PRODUCT_NAME": "Name of Application which provides UI Endpoints",
+        "LOAD_ERROR": "Failed to load Microfrontends and their UI Endpoints",
+        "NOT_FOUND": "Microfrontends and their UI Endpoints were not found"
+      },
       "PRODUCT": {
+        "LABEL": "Application",
         "NOT_EXISTS": "An Application with this name could not be found.",
         "LOAD_ERROR": "Failed to load the Application",
         "NOT_FOUND": "Application was not found"
@@ -169,7 +176,8 @@
     "SLOTS": "Slots",
     "CREATE": "New",
     "DETAIL": "Details",
-    "EDIT": "Edit"
+    "EDIT": "Edit",
+    "ENDPOINTS": "Endpoints"
   },
   "INTERNAL": {
     "CREATION_DATE": "Created on",
@@ -198,17 +206,27 @@
     }
   },
   "DIALOG": {
-    "SEARCH.HEADER": "Application Store",
-    "SEARCH.SUBHEADER": "Managing Applications and their Components (UI Components, Microservices, Slots)",
-    "DETAIL.SUBHEADER": "Application Details",
-    "SEARCH.APPS.LABEL": "Apps",
-    "SEARCH.APPS.TOOLTIP": "Search and Management of UI Components and Microservices",
-    "SEARCH.APPS.HEADER": "Apps",
-    "SEARCH.APPS.SUBHEADER": "Searching and Management of UI Components and Microservices",
-    "SEARCH.SLOTS.LABEL": "Slots",
-    "SEARCH.SLOTS.TOOLTIP": "Display Slots",
-    "SEARCH.SLOTS.HEADER": "Slots",
-    "SEARCH.SLOTS.SUBHEADER": "Search Slots",
+    "DETAIL": {
+      "SUBHEADER": "Application Details"
+    },
+    "SEARCH": {
+      "HEADER": "Application Store",
+      "SUBHEADER": "Managing Applications and their Components (UI Components, Microservices, Slots)",
+      "APPS.LABEL": "Apps",
+      "APPS.TOOLTIP": "List of UI Components and Microservices",
+      "APPS.HEADER": "Apps",
+      "APPS.SUBHEADER": "Searching and Management of UI Components and Microservices",
+      "ENDPOINTS.LABEL": "Endpoints",
+      "ENDPOINTS.TOOLTIP": "List of UI Endpoints",
+      "ENDPOINTS.HEADER": "UI Endpoints",
+      "ENDPOINTS.SUBHEADER": "Search and showing UI Endpoints which were provided by Microfrontends",
+      "PRODUCTS.LABEL": "Applications",
+      "PRODUCTS.TOOLTIP": "List of Applications",
+      "SLOTS.LABEL": "Slots",
+      "SLOTS.TOOLTIP": "Display Slots",
+      "SLOTS.HEADER": "Slots",
+      "SLOTS.SUBHEADER": "Search Slots"
+    },
     "LOGO": {
       "LABEL": "Logo",
       "PLACEHOLDER": "Logo Placeholder"
@@ -261,7 +279,7 @@
     "ICON_NAME": "Icon Name",
     "NOTE": "Note",
     "EXPOSED_MODULE": "Exposed Module",
-    "ENDPOINTS": {
+    "ENDPOINT": {
       "NAME": "Name",
       "PATH": "Path",
       "CELL_EDITING_MESSAGE": "Data entry and changes are made directly in the table."

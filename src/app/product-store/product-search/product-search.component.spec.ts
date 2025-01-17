@@ -63,6 +63,7 @@ describe('ProductSearchComponent', () => {
 
   it('should prepare action buttons on init', () => {
     spyOn(component, 'onAppSearch')
+    spyOn(component, 'onEndpointSearch')
     spyOn(component, 'onSlotSearch')
     spyOn(component, 'onNewProduct')
 
@@ -74,8 +75,10 @@ describe('ProductSearchComponent', () => {
     actions[0].actionCallback()
     actions[1].actionCallback()
     actions[2].actionCallback()
+    actions[3].actionCallback()
 
     expect(component.onAppSearch).toHaveBeenCalled()
+    expect(component.onEndpointSearch).toHaveBeenCalled()
     expect(component.onSlotSearch).toHaveBeenCalled()
     expect(component.onNewProduct).toHaveBeenCalled()
   })
@@ -114,66 +117,70 @@ describe('ProductSearchComponent', () => {
     expect(component.sortOrder).toEqual(1)
   })
 
-  it('should search products - successful found', (done) => {
-    apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product] } as ProductPageResult))
+  describe('searching', () => {
+    it('should search products - successful found', (done) => {
+      apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product] } as ProductPageResult))
 
-    component.onSearch()
+      component.onSearch()
 
-    component.products$.subscribe({
-      next: (result) => {
-        expect(result.length).toBe(1)
-        result.forEach((product) => {
-          expect(product.id).toEqual('id')
-        })
-        done()
-      },
-      error: done.fail
+      component.products$.subscribe({
+        next: (result) => {
+          expect(result.length).toBe(1)
+          result.forEach((product) => {
+            expect(product.id).toEqual('id')
+          })
+          done()
+        },
+        error: done.fail
+      })
     })
-  })
 
-  it('should search products - successful not found', (done) => {
-    apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [] } as ProductPageResult))
+    it('should search products - successful not found', (done) => {
+      apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [] } as ProductPageResult))
 
-    component.onSearch()
+      component.onSearch()
 
-    component.products$.subscribe({
-      next: (result) => {
-        expect(result.length).toBe(0)
-        done()
-      },
-      error: done.fail
-    })
-  })
-
-  it('should search products - no stream', (done) => {
-    apiProductServiceSpy.searchProducts.and.returnValue(of({} as ProductPageResult))
-
-    component.onSearch()
-
-    component.products$.subscribe({
-      next: (result) => {
-        expect(result.length).toBe(0)
-        done()
-      },
-      error: done.fail
-    })
-  })
-
-  it('should search products - failed', (done) => {
-    const err = { status: 403 }
-    apiProductServiceSpy.searchProducts.and.returnValue(throwError(() => err))
-
-    component.onSearch()
-
-    component.products$.subscribe({
-      next: (result) => {
-        if (result) {
+      component.products$.subscribe({
+        next: (result) => {
           expect(result.length).toBe(0)
-          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_403.PRODUCTS')
-        }
-        done()
-      },
-      error: done.fail
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should search products - no stream', (done) => {
+      apiProductServiceSpy.searchProducts.and.returnValue(of({} as ProductPageResult))
+
+      component.onSearch()
+
+      component.products$.subscribe({
+        next: (result) => {
+          expect(result.length).toBe(0)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should search products - failed', (done) => {
+      const errorResponse = { status: 401, statusText: 'Not authorized' }
+      apiProductServiceSpy.searchProducts.and.returnValue(throwError(() => errorResponse))
+      spyOn(console, 'error')
+
+      component.onSearch()
+
+      component.products$.subscribe({
+        next: (result) => {
+          if (result) {
+            expect(result.length).toBe(0)
+            expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PRODUCTS')
+            expect(console.error).toHaveBeenCalledWith('searchProducts', errorResponse)
+          }
+          done()
+        },
+        error: done.fail
+      })
     })
   })
 

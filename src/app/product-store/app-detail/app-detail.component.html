@@ -56,6 +56,7 @@
                 id="ps_app_detail_form_mfe_field_app_id"
                 class="w-full pt-3 pb-2 text-responsive"
                 formControlName="appId"
+                [attr.aria-label]="'APP.APP_ID' | translate"
                 [pTooltip]="'APP.TOOLTIPS.APP_ID' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -71,6 +72,7 @@
                 id="ps_app_detail_form_mfe_field_app_name"
                 class="w-full pt-3 pb-2 text-responsive"
                 formControlName="appName"
+                [attr.aria-label]="'APP.APP_NAME' | translate"
                 [pTooltip]="'APP.TOOLTIPS.APP_NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -90,6 +92,7 @@
                 id="ps_app_detail_form_mfe_field_app_version"
                 class="w-full pt-3 pb-2 text-responsive"
                 formControlName="appVersion"
+                [attr.aria-label]="'APP.APP_VERSION' | translate"
                 [pTooltip]="'APP.TOOLTIPS.APP_VERSION' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -105,6 +108,7 @@
                 id="ps_app_detail_form_mfe_field_product_name"
                 class="w-full pt-3 pb-2 text-responsive"
                 formControlName="productName"
+                [attr.aria-label]="'APP.PRODUCT_NAME' | translate"
                 [pTooltip]="'APP.TOOLTIPS.PRODUCT_NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -123,10 +127,11 @@
                 styleClass="w-full"
                 formControlName="iconName"
                 [options]="iconItems"
+                [showClear]="false"
+                [attr.aria-label]="'APP.ICON_NAME' | translate"
                 [pTooltip]="'APP.TOOLTIPS.ICON_NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
-                [showClear]="false"
               >
                 <ng-template let-ico pTemplate="selectedItem">
                   <div class="flex flex-row flex-nowrap align-items-center column-gap-2">
@@ -150,6 +155,7 @@
                 id="ps_app_detail_form_mfe_field_classifications"
                 class="w-full pt-3 pb-2 text-responsive"
                 formControlName="classifications"
+                [attr.aria-label]="'APP.CLASSIFICATIONS' | translate"
                 [pTooltip]="'APP.TOOLTIPS.CLASSIFICATIONS' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -168,6 +174,7 @@
               id="ps_app_detail_form_mfe_field_description"
               class="w-full pt-3 pb-2 text-responsive"
               formControlName="description"
+              [attr.aria-label]="'APP.DESCRIPTION' | translate"
               [pTooltip]="'APP.TOOLTIPS.DESCRIPTION' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -182,6 +189,7 @@
               id="ps_app_detail_form_mfe_field_contact"
               class="w-full pt-3 pb-2 text-responsive"
               formControlName="contact"
+              [attr.aria-label]="'APP.CONTACT' | translate"
               [pTooltip]="'APP.TOOLTIPS.CONTACT' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -205,6 +213,7 @@
                 id="ps_app_detail_form_ms_field_app_id"
                 class="w-full pt-3 pb-2 text-responsive"
                 formControlName="appId"
+                [attr.aria-label]="'APP.APP_ID' | translate"
                 [pTooltip]="'APP.TOOLTIPS.APP_ID' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -220,6 +229,7 @@
                 id="ps_app_detail_form_ms_field_app_name"
                 class="w-full pt-3 pb-2"
                 formControlName="appName"
+                [attr.aria-label]="'APP.APP_NAME' | translate"
                 [pTooltip]="'APP.TOOLTIPS.APP_NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -239,6 +249,7 @@
                 id="ps_app_detail_form_ms_field_app_version"
                 class="w-full pt-3 pb-2 text-responsive"
                 formControlName="appVersion"
+                [attr.aria-label]="'APP.APP_VERSION' | translate"
                 [pTooltip]="'APP.TOOLTIPS.APP_VERSION' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -254,6 +265,7 @@
                 id="ps_app_detail_form_ms_field_product_name"
                 class="w-full pt-3 pb-2 text-responsive"
                 formControlName="productName"
+                [attr.aria-label]="'APP.PRODUCT_NAME' | translate"
                 [pTooltip]="'APP.TOOLTIPS.PRODUCT_NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -272,6 +284,7 @@
               id="ps_app_detail_form_ms_field_description"
               class="w-full pt-3 pb-2 text-responsive"
               formControlName="description"
+              [attr.aria-label]="'APP.DESCRIPTION' | translate"
               [pTooltip]="'APP.TOOLTIPS.DESCRIPTION' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -301,6 +314,7 @@
                 id="ps_app_detail_form_mfe_field_exposed_module"
                 class="w-full pt-3 pb-2 text-responsive"
                 formControlName="exposedModule"
+                [attr.aria-label]="'APP.EXPOSED_MODULE' | translate"
                 [pTooltip]="'APP.TOOLTIPS.EXPOSED_MODULE' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -315,6 +329,7 @@
                 styleClass="w-full"
                 formControlName="type"
                 [options]="types"
+                [attr.aria-label]="'APP.TYPE' | translate"
                 [pTooltip]="'APP.TOOLTIPS.TYPE' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -330,6 +345,7 @@
                 styleClass="w-full"
                 formControlName="technology"
                 [options]="technologies"
+                [attr.aria-label]="'APP.TECHNOLOGY' | translate"
                 [pTooltip]="'APP.TOOLTIPS.TECHNOLOGY' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -349,6 +365,7 @@
               id="ps_app_detail_form_mfe_field_remote_entry"
               class="w-full pt-3 pb-2"
               formControlName="remoteEntry"
+              [attr.aria-label]="'APP.REMOTE_ENTRY' | translate"
               [pTooltip]="'APP.TOOLTIPS.REMOTE_ENTRY' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -366,6 +383,7 @@
               id="ps_app_detail_form_mfe_field_remote_base_url"
               class="w-full pt-3 pb-2"
               formControlName="remoteBaseUrl"
+              [attr.aria-label]="'APP.REMOTE_BASE_URL' | translate"
               [pTooltip]="'APP.TOOLTIPS.REMOTE_BASE_URL' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
@@ -384,6 +402,7 @@
                 id="ps_app_detail_form_mfe_field_remote_name"
                 class="w-full sm:w-18rem pt-3 pb-2 text-responsive"
                 formControlName="remoteName"
+                [attr.aria-label]="'APP.REMOTE_NAME' | translate"
                 [pTooltip]="'APP.TOOLTIPS.REMOTE_NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -397,6 +416,7 @@
                 id="ps_app_detail_form_mfe_field_tag_name"
                 class="w-full pt-3 pb-2 text-responsive"
                 formControlName="tagName"
+                [attr.aria-label]="'APP.TAG_NAME' | translate"
                 [pTooltip]="'APP.TOOLTIPS.TAG_NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -426,7 +446,7 @@
         <p-message
           id="ps_app_detail_endpoint_info_message"
           severity="info"
-          [text]="'APP.ENDPOINTS.CELL_EDITING_MESSAGE' | translate"
+          [text]="'APP.ENDPOINT.CELL_EDITING_MESSAGE' | translate"
         ></p-message>
 
         <p-table #endpointTable [value]="endpoints">
@@ -447,7 +467,7 @@
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
-                {{ 'APP.ENDPOINTS.NAME' | translate }}
+                {{ 'APP.ENDPOINT.NAME' | translate }}
               </th>
               <th
                 id="ps_app_detail_endpoint_table_header_endpoint_path"
@@ -455,7 +475,7 @@
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
-                {{ 'APP.ENDPOINTS.PATH' | translate }}
+                {{ 'APP.ENDPOINT.PATH' | translate }}
               </th>
             </tr>
           </ng-template>
@@ -468,7 +488,7 @@
                   [id]="'ps_app_detail_endpoint_table_row_' + i + '_add_action'"
                   (click)="onAddEndpointRow()"
                   [disabled]="i !== endpoints.length - 1"
-                  [aria-label]="'ACTIONS.TABLE.ADD_ROW.LABEL' | translate"
+                  [attr.aria-label]="'ACTIONS.TABLE.ADD_ROW.LABEL' | translate"
                   [pTooltip]="'ACTIONS.TABLE.ADD_ROW.LABEL' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
@@ -481,7 +501,7 @@
                   [id]="'ps_app_detail_endpoint_table_row_' + i + '_delete_action'"
                   (click)="onDeleteEndpointRow(i)"
                   [disabled]="i === 0 && endpoints.length === 1"
-                  [aria-label]="'ACTIONS.TABLE.DELETE_ROW.LABEL' | translate"
+                  [attr.aria-label]="'ACTIONS.TABLE.DELETE_ROW.LABEL' | translate"
                   [pTooltip]="'ACTIONS.TABLE.DELETE_ROW.LABEL' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
@@ -530,6 +550,7 @@
         icon="pi pi-times"
         (onClick)="onDialogHide()"
         [label]="'ACTIONS.NAVIGATION.CLOSE' | translate"
+        [ariaLabel]="'ACTIONS.NAVIGATION.CLOSE' | translate"
         [pTooltip]="'ACTIONS.NAVIGATION.CLOSE.TOOLTIP' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
@@ -540,6 +561,7 @@
         icon="pi pi-times"
         (onClick)="onDialogHide()"
         [label]="'ACTIONS.CANCEL' | translate"
+        [ariaLabel]="'ACTIONS.CANCEL' | translate"
         [pTooltip]="'ACTIONS.TOOLTIPS.CANCEL' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
@@ -554,6 +576,7 @@
           (appAbstract?.appType === 'MS' && !formGroupMs.valid)
         "
         [label]="'ACTIONS.SAVE' | translate"
+        [ariaLabel]="'ACTIONS.SAVE' | translate"
         [pTooltip]="'ACTIONS.TOOLTIPS.SAVE_AND_CLOSE' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
