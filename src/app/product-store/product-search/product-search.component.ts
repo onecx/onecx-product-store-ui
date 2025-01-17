@@ -75,7 +75,7 @@ export class ProductSearchComponent implements OnInit {
         }),
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
-          console.error('searchProducts():', err)
+          console.error('searchProducts', err)
           return of([])
         }),
         finalize(() => (this.searchInProgress = false))

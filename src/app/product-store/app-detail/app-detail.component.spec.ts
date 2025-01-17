@@ -141,8 +141,8 @@ describe('AppDetailComponent', () => {
         }).withDefaultLanguage('en')
       ],
       providers: [
-        provideHttpClientTesting(),
         provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: MicrofrontendsAPIService, useValue: mfeApiServiceSpy },
         { provide: MicroservicesAPIService, useValue: msApiServiceSpy },
         { provide: PortalMessageService, useValue: msgServiceSpy },

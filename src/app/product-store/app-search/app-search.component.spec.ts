@@ -94,8 +94,8 @@ describe('AppSearchComponent', () => {
         }).withDefaultLanguage('en')
       ],
       providers: [
-        provideHttpClientTesting(),
         provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: MicrofrontendsAPIService, useValue: apiMfeServiceSpy },
         { provide: MicroservicesAPIService, useValue: apiMsServiceSpy },
         { provide: UserService, useValue: mockUserService },
@@ -141,58 +141,70 @@ describe('AppSearchComponent', () => {
     })
   })
 
-  it('should call onBack when actionCallback is executed', () => {
-    spyOn(component, 'onBack')
+  describe('page actions', () => {
+    it('should navigate to Products when button clicked and actionCallback executed', () => {
+      component.ngOnInit()
 
-    component.ngOnInit()
+      if (component.actions$) {
+        component.actions$.subscribe((actions) => {
+          const action = actions[0]
+          action.actionCallback()
+          expect(routerSpy.navigate).toHaveBeenCalledWith(['..'], { relativeTo: routeMock })
+        })
+      }
+    })
 
-    if (component.actions$) {
-      component.actions$.subscribe((actions) => {
-        const firstAction = actions[0]
-        firstAction.actionCallback()
-        expect(component.onBack).toHaveBeenCalled()
-      })
-    }
-  })
+    it('should navigate to Endpoints when button clicked and actionCallback executed', () => {
+      component.ngOnInit()
 
-  it('should navigate to Slots when button clicked and actionCallback executed', () => {
-    component.ngOnInit()
+      if (component.actions$) {
+        component.actions$.subscribe((actions) => {
+          const action = actions[1]
+          action.actionCallback()
+          expect(routerSpy.navigate).toHaveBeenCalledWith(['../endpoints'], { relativeTo: routeMock })
+        })
+      }
+    })
 
-    if (component.actions$) {
-      component.actions$.subscribe((actions) => {
-        const firstAction = actions[1]
-        firstAction.actionCallback()
-        expect(routerSpy.navigate).toHaveBeenCalledWith(['../slots'], { relativeTo: routeMock })
-      })
-    }
-  })
+    it('should navigate to Slots when button clicked and actionCallback executed', () => {
+      component.ngOnInit()
 
-  it('should call onCreate when actionCallback is executed', () => {
-    spyOn(component, 'onCreate')
+      if (component.actions$) {
+        component.actions$.subscribe((actions) => {
+          const action = actions[2]
+          action.actionCallback()
+          expect(routerSpy.navigate).toHaveBeenCalledWith(['../slots'], { relativeTo: routeMock })
+        })
+      }
+    })
 
-    component.ngOnInit()
+    it('should call onCreate when actionCallback is executed', () => {
+      spyOn(component, 'onCreate')
 
-    if (component.actions$) {
-      component.actions$.subscribe((actions) => {
-        const firstAction = actions[2]
-        firstAction.actionCallback()
-        expect(component.onCreate).toHaveBeenCalledWith('MFE')
-      })
-    }
-  })
+      component.ngOnInit()
 
-  it('should call onCreate when actionCallback is executed', () => {
-    spyOn(component, 'onCreate')
+      if (component.actions$) {
+        component.actions$.subscribe((actions) => {
+          const action = actions[3]
+          action.actionCallback()
+          expect(component.onCreate).toHaveBeenCalledWith('MFE')
+        })
+      }
+    })
 
-    component.ngOnInit()
+    it('should call onCreate when actionCallback is executed', () => {
+      spyOn(component, 'onCreate')
 
-    if (component.actions$) {
-      component.actions$.subscribe((actions) => {
-        const firstAction = actions[3]
-        firstAction.actionCallback()
-        expect(component.onCreate).toHaveBeenCalledWith('MS')
-      })
-    }
+      component.ngOnInit()
+
+      if (component.actions$) {
+        component.actions$.subscribe((actions) => {
+          const action = actions[4]
+          action.actionCallback()
+          expect(component.onCreate).toHaveBeenCalledWith('MS')
+        })
+      }
+    })
   })
 
   it('should call searchApps onSearch', () => {
@@ -271,15 +283,17 @@ describe('AppSearchComponent', () => {
 
   it('should catch error on searchApps: mfes', (done) => {
     component.appSearchCriteriaGroup.controls['appType'].setValue('MFE')
-    const err = { status: 404 }
-    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(throwError(() => err))
+    const errorResponse = { status: 401, statusText: 'Not authorized' }
+    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(throwError(() => errorResponse))
+    spyOn(console, 'error')
 
     component.searchApps()
 
     component.apps$.subscribe({
       next: (result) => {
         expect(result.length).toBe(0)
-        expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_404.APPS')
+        expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.APPS')
+        expect(console.error).toHaveBeenCalledWith('searchMicrofrontends', errorResponse)
         done()
       },
       error: done.fail
@@ -288,15 +302,17 @@ describe('AppSearchComponent', () => {
 
   it('should catch error on searchApps: mss', (done) => {
     component.appSearchCriteriaGroup.controls['appType'].setValue('MS')
-    const err = { status: '404' }
-    apiMsServiceSpy.searchMicroservice.and.returnValue(throwError(() => err))
+    const errorResponse = { status: 401, statusText: 'Not authorized' }
+    apiMsServiceSpy.searchMicroservice.and.returnValue(throwError(() => errorResponse))
+    spyOn(console, 'error')
 
     component.searchApps()
 
     component.apps$.subscribe({
       next: (result) => {
         expect(result.length).toBe(0)
-        expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_404.APPS')
+        expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.APPS')
+        expect(console.error).toHaveBeenCalledWith('searchMicroservice', errorResponse)
         done()
       },
       error: done.fail
@@ -402,12 +418,6 @@ describe('AppSearchComponent', () => {
 
       expect(component.appSearchCriteriaGroup.reset).toHaveBeenCalled()
     })
-  })
-
-  it('should navigate back onBack', () => {
-    component.onBack()
-
-    expect(routerSpy.navigate).toHaveBeenCalledWith(['../'], { relativeTo: routeMock })
   })
 
   it('should stop event propagation and navigate to the product onGotoProduct', () => {

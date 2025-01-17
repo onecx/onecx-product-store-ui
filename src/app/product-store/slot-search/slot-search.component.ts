@@ -70,7 +70,7 @@ export class SlotSearchComponent implements OnInit {
       .pipe(
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.SLOTS'
-          console.error('searchSlots():', err)
+          console.error('searchSlots', err)
           return of({ stream: [] } as SlotPageResult)
         }),
         finalize(() => (this.searchInProgress = false))

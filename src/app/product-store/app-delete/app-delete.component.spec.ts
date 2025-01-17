@@ -45,8 +45,8 @@ describe('AppDeleteComponent', () => {
         }).withDefaultLanguage('en')
       ],
       providers: [
-        provideHttpClientTesting(),
         provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: MicrofrontendsAPIService, useValue: apiMfeServiceSpy },
         { provide: MicroservicesAPIService, useValue: apiMsServiceSpy },
         { provide: PortalMessageService, useValue: msgServiceSpy }

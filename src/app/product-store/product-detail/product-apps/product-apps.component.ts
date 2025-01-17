@@ -77,7 +77,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
         takeUntil(this.destroy$),
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
-          console.error('searchMicrofrontends():', err)
+          console.error('getProductDetailsByCriteria', err)
           return of({} as ProductDetails)
         }),
         finalize(() => (this.searchInProgress = false))

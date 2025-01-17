@@ -1,9 +1,7 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing'
-import { HttpClientTestingModule } from '@angular/common/http/testing'
-import { RouterTestingModule } from '@angular/router/testing'
-import { of, throwError } from 'rxjs'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
@@ -60,8 +58,6 @@ describe('ProductPropertyComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ProductPropertyComponent],
       imports: [
-        RouterTestingModule,
-        HttpClientTestingModule,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')

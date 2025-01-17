@@ -52,12 +52,19 @@
 // disable preset of opacity in form: not readable
 @mixin readable-disabled-form-controls {
   :host ::ng-deep {
-    .p-inputtext.p-component:disabled,
-    .p-dropdown.p-component.p-disabled,
-    .p-checkbox-box.p-disabled,
-    .p-checkbox-label.p-disabled {
-      opacity: unset;
-    }
+    --disabled-opacity: 0.7;
+  }
+}
+
+@mixin displaying-text-ellipsis($lines: 1) {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  @if ($lines > 1) {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+  } @else {
+    white-space: nowrap;
   }
 }
 

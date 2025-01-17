@@ -75,7 +75,7 @@ export class ProductDetailComponent implements OnInit {
       }),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCT'
-        console.error('getProductByName():', err)
+        console.error('getProductByName', err)
         return of({} as Product)
       }),
       finalize(() => (this.loading = false))

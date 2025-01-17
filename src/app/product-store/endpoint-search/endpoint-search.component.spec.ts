@@ -1,8 +1,9 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient, HttpClient } from '@angular/common/http'
-import { FormControl, FormGroup } from '@angular/forms'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
+import { FormControl, FormGroup } from '@angular/forms'
+import { Router, ActivatedRoute } from '@angular/router'
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
 import { of, throwError } from 'rxjs'
 
@@ -50,9 +51,11 @@ const itemData: MfeEndpoint[] = [
   }
 ]
 
-describe('ParameterSearchComponent', () => {
+fdescribe('EndpointSearchComponent', () => {
   let component: EndpointSearchComponent
   let fixture: ComponentFixture<EndpointSearchComponent>
+  const routerSpy = jasmine.createSpyObj('Router', ['navigate'])
+  const routeMock = { snapshot: { paramMap: new Map() } }
 
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
@@ -78,7 +81,9 @@ describe('ParameterSearchComponent', () => {
         { provide: UserService, useValue: mockUserService },
         { provide: TranslateService, useClass: TranslateServiceMock },
         { provide: PortalMessageService, useValue: msgServiceSpy },
-        { provide: MicrofrontendsAPIService, useValue: mfeApiServiceSpy }
+        { provide: MicrofrontendsAPIService, useValue: mfeApiServiceSpy },
+        { provide: Router, useValue: routerSpy },
+        { provide: ActivatedRoute, useValue: routeMock }
       ]
     }).compileComponents()
     msgServiceSpy.success.calls.reset()

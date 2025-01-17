@@ -138,6 +138,11 @@
           "MFE": "UI Component"
         }
       },
+      "ENDPOINT": {
+        "PRODUCT_NAME": "Name of Application which provides UI Endpoints",
+        "LOAD_ERROR": "Failed to load Microfrontends and their UI Endpoints",
+        "NOT_FOUND": "Microfrontends and their UI Endpoints were not found"
+      },
       "PRODUCT": {
         "NOT_EXISTS": "An Application with this name could not be found.",
         "LOAD_ERROR": "Failed to load the Application",
