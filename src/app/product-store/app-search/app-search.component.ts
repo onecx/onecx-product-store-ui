@@ -337,9 +337,6 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public onSearchReset() {
     this.appSearchCriteriaGroup.reset({ appType: 'ALL' })
   }
-  public onBack() {
-    this.router.navigate(['../'], { relativeTo: this.route })
-  }
   public onGotoProduct(ev: any, product: string) {
     ev.stopPropagation()
     this.router.navigate(['../', product], { relativeTo: this.route })

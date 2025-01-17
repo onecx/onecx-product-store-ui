@@ -2,11 +2,11 @@
   <!-- row 1 -->
   <div class="mx-3 flex flex-row flex-wrap column-gap-6 row-gap-3">
     <p-checkbox
-      inputId="ps_product_detail_intern_field_operator"
+      inputId="ps_product_detail_intern_operator"
       styleClass="cursor-auto"
-      [readonly]="true"
       [(ngModel)]="operator"
       [binary]="true"
+      [disabled]="true"
       [label]="'INTERNAL.OPERATOR' | translate"
       [ariaLabel]="'INTERNAL.OPERATOR' | translate"
       [pTooltip]="'PRODUCT.TOOLTIPS.OPERATOR' | translate"
@@ -14,11 +14,11 @@
       tooltipEvent="hover"
     ></p-checkbox>
     <p-checkbox
-      inputId="ps_product_detail_intern_field_undeployed"
+      inputId="ps_product_detail_intern_undeployed"
       styleClass="cursor-auto"
-      [readonly]="true"
       [(ngModel)]="undeployed"
       [binary]="true"
+      [disabled]="true"
       [label]="'PRODUCT.UNDEPLOYED' | translate"
       [ariaLabel]="'PRODUCT.UNDEPLOYED' | translate"
       [pTooltip]="'PRODUCT.TOOLTIPS.UNDEPLOYED' | translate"
@@ -33,31 +33,31 @@
       <input
         pInputText
         type="text"
-        readonly
-        id="ps_product_detail_intern_field_creationDate"
+        id="ps_product_detail_intern_creationDate"
         class="w-full sm:w-15rem pt-3 pb-2 text-responsive"
         [value]="product?.creationDate | date: dateFormat"
+        [disabled]="true"
         [attr.aria-label]="'INTERNAL.CREATION_DATE' | translate"
         [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
       />
-      <label for="ps_product_detail_intern_field_creationDate">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
+      <label for="ps_product_detail_intern_creationDate">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
     </span>
-    <span class="flex-grow-1 p-float-label">
+    <span class="flex-grow-1 max-w-30rem p-float-label">
       <input
         pInputText
         type="text"
-        readonly
-        id="ps_product_detail_intern_field_creation_user"
+        id="ps_product_detail_intern_creation_user"
         class="w-full pt-3 pb-2 text-responsive"
         [value]="product?.creationUser"
+        [disabled]="true"
         [attr.aria-label]="'INTERNAL.CREATION_USER' | translate"
         [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_USER' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
       />
-      <label for="ps_product_detail_intern_field_creation_user">{{ 'INTERNAL.CREATION_USER' | translate }}</label>
+      <label for="ps_product_detail_intern_creation_user">{{ 'INTERNAL.CREATION_USER' | translate }}</label>
     </span>
   </div>
 
@@ -67,35 +67,31 @@
       <input
         pInputText
         type="text"
-        readonly
-        id="ps_product_detail_intern_field_modification_date"
+        id="ps_product_detail_intern_modification_date"
         class="w-full sm:w-15rem pt-3 pb-2 text-responsive"
         [value]="product?.modificationDate | date: dateFormat"
+        [disabled]="true"
         [attr.aria-label]="'INTERNAL.MODIFICATION_DATE' | translate"
         [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
       />
-      <label for="ps_product_detail_intern_field_modification_date">
-        {{ 'INTERNAL.MODIFICATION_DATE' | translate }}</label
-      >
+      <label for="ps_product_detail_intern_modification_date">{{ 'INTERNAL.MODIFICATION_DATE' | translate }}</label>
     </span>
-    <span class="flex-grow-1 p-float-label">
+    <span class="flex-grow-1 max-w-30rem p-float-label">
       <input
         pInputText
         type="text"
-        readonly
-        id="ps_product_detail_intern_field_modification_user"
+        id="ps_product_detail_intern_modification_user"
         class="w-full pt-3 pb-2 text-responsive"
         [value]="product?.modificationUser"
+        [disabled]="true"
         [attr.aria-label]="'INTERNAL.MODIFICATION_USER' | translate"
         [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_USER' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
       />
-      <label for="ps_product_detail_intern_field_modification_user">
-        {{ 'INTERNAL.MODIFICATION_USER' | translate }}</label
-      >
+      <label for="ps_product_detail_intern_modification_user">{{ 'INTERNAL.MODIFICATION_USER' | translate }}</label>
     </span>
   </div>
 </div>

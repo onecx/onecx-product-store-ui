@@ -20,7 +20,7 @@ export interface MicrofrontendSearchCriteria {
   productName: FormControl<string | null>
 }
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
-export type MfeEndpoint = MicrofrontendAbstract & { unique_id: string; endpoint_name?: string; endpoint_path?: string }
+export type MfeEndpoint = MicrofrontendAbstract & { unique_id: string; endpoint_name: string; endpoint_path: string }
 type ExtendedColumn = Column & {
   hasFilter?: boolean
   isDate?: boolean
@@ -231,6 +231,7 @@ export class EndpointSearchComponent implements OnInit {
                 appId: mfe.appId,
                 appName: mfe.appName,
                 productName: mfe.productName,
+                exposedModule: mfe.exposedModule,
                 remoteBaseUrl: mfe.remoteBaseUrl,
                 type: mfe.type,
                 unique_id: mfe.id + '_' + i,
@@ -256,9 +257,7 @@ export class EndpointSearchComponent implements OnInit {
       (a.exposedModule ? a.exposedModule.toUpperCase() : '').localeCompare(
         b.exposedModule ? b.exposedModule.toUpperCase() : ''
       ) ||
-      (a.endpoint_name ? a.endpoint_name.toUpperCase() : '').localeCompare(
-        b.endpoint_name ? b.endpoint_name.toUpperCase() : ''
-      )
+      a.endpoint_name.toUpperCase().localeCompare(b.endpoint_name.toUpperCase())
     )
   }
 }

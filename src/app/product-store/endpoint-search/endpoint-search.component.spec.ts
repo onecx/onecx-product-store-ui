@@ -24,6 +24,7 @@ const responseData: MicrofrontendAbstract[] = [
     productName: 'product1',
     appName: 'MFE 1',
     appId: 'mfe1',
+    exposedModule: './expMod_p1_mfe1',
     remoteBaseUrl: '/mfe1/remoteEntry.js',
     type: MicrofrontendType.Module,
     endpoints: [
@@ -36,6 +37,7 @@ const responseData: MicrofrontendAbstract[] = [
     productName: 'product2',
     appName: 'MFE 1',
     appId: 'mfe1',
+    exposedModule: './expMod_p2_mfe1',
     remoteBaseUrl: '/mfe1/remoteEntry.js',
     type: MicrofrontendType.Module,
     endpoints: [{ name: 'endpoint_2_1_1', path: '/{name}' }]
@@ -45,6 +47,7 @@ const responseData: MicrofrontendAbstract[] = [
     productName: 'product3',
     appName: 'MFE 1',
     appId: 'mfe1',
+    exposedModule: './expMod_p3_mfe1',
     remoteBaseUrl: '/mfe1/remoteEntry.js',
     type: MicrofrontendType.Module
   }
@@ -57,6 +60,7 @@ const itemData: MfeEndpoint[] = [
     productName: 'product1',
     appName: 'MFE 1',
     appId: 'mfe1',
+    exposedModule: './expMod_p1_mfe1',
     remoteBaseUrl: '/mfe1/remoteEntry.js',
     type: MicrofrontendType.Module,
     endpoint_name: 'endpoint_1_1_1',
@@ -68,6 +72,7 @@ const itemData: MfeEndpoint[] = [
     productName: 'product1',
     appName: 'MFE 1',
     appId: 'mfe1',
+    exposedModule: './expMod_p1_mfe1',
     remoteBaseUrl: '/mfe1/remoteEntry.js',
     type: MicrofrontendType.Module,
     endpoint_name: 'endpoint_1_1_2',
@@ -79,6 +84,7 @@ const itemData: MfeEndpoint[] = [
     productName: 'product2',
     appName: 'MFE 1',
     appId: 'mfe1',
+    exposedModule: './expMod_p2_mfe1',
     remoteBaseUrl: '/mfe1/remoteEntry.js',
     type: MicrofrontendType.Module,
     endpoint_name: 'endpoint_2_1_1',
@@ -199,6 +205,44 @@ describe('EndpointSearchComponent', () => {
     })
   })
 
+  describe('page actions', () => {
+    it('should navigate to Products when button clicked and actionCallback executed', () => {
+      component.ngOnInit()
+
+      if (component.actions$) {
+        component.actions$.subscribe((actions) => {
+          const action = actions[0]
+          action.actionCallback()
+          expect(routerSpy.navigate).toHaveBeenCalledWith(['..'], { relativeTo: routeMock })
+        })
+      }
+    })
+
+    it('should navigate to Apps when button clicked and actionCallback executed', () => {
+      component.ngOnInit()
+
+      if (component.actions$) {
+        component.actions$.subscribe((actions) => {
+          const action = actions[1]
+          action.actionCallback()
+          expect(routerSpy.navigate).toHaveBeenCalledWith(['../apps'], { relativeTo: routeMock })
+        })
+      }
+    })
+
+    it('should navigate to Slots when button clicked and actionCallback executed', () => {
+      component.ngOnInit()
+
+      if (component.actions$) {
+        component.actions$.subscribe((actions) => {
+          const action = actions[2]
+          action.actionCallback()
+          expect(routerSpy.navigate).toHaveBeenCalledWith(['../slots'], { relativeTo: routeMock })
+        })
+      }
+    })
+  })
+
   /*
    * UI ACTIONS
    */
@@ -248,6 +292,32 @@ describe('EndpointSearchComponent', () => {
       component = fixture.componentInstance
       fixture.detectChanges()
       expect(component.dateFormat).toEqual('M/d/yy, hh:mm:ss a')
+    })
+  })
+
+  describe('sort endpoints', () => {
+    it('should correctly sort items by product', () => {
+      const items: MfeEndpoint[] = itemData
+      const sortedItems = items.sort(component.sortMfes)
+
+      expect(sortedItems[0]).toEqual(itemData[0])
+    })
+
+    it("should treat falsy values for SelectItem.label as ''", () => {
+      const items: MfeEndpoint[] = itemData
+      items.push({ ...itemData[1], exposedModule: undefined })
+      const sortedItems = items.sort(component.sortMfes)
+
+      expect(sortedItems[1]).toEqual(itemData[1])
+    })
+
+    it("should treat falsy values for SelectItem.label as ''", () => {
+      const items: MfeEndpoint[] = itemData
+      items.push({ ...itemData[1], exposedModule: undefined })
+      items.push({ ...itemData[2], exposedModule: undefined })
+      const sortedItems = items.sort(component.sortMfes)
+
+      expect(sortedItems[1]).toEqual(itemData[1])
     })
   })
 })

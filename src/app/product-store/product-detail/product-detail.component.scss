@@ -1,6 +1,7 @@
 @import '/src/app/_ps-mixins.scss';
 
 @include danger-action;
+@include readable-disabled-form-controls;
 @include dropdown-zebra-rows;
 @include compact-dropdown-list-items;
 @include dialog-modal-dialog-content;
