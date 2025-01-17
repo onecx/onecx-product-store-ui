@@ -2,14 +2,13 @@ import { Component, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { FormControl, FormGroup } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
-import { catchError, finalize, map, Observable, of } from 'rxjs'
+import { catchError, finalize, map, Observable, of, tap } from 'rxjs'
 import { Table } from 'primeng/table'
 
 import { UserService } from '@onecx/angular-integration-interface'
-import { Action, Column, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+import { Action, Column, DataViewControlTranslations, PortalMessageService } from '@onecx/portal-integration-angular'
 
 import {
-  UIEndpoint,
   MicrofrontendAbstract,
   MicrofrontendsAPIService,
   MicrofrontendPageResult,
@@ -21,7 +20,7 @@ export interface MicrofrontendSearchCriteria {
   productName: FormControl<string | null>
 }
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
-export type MfeEndpoint = MicrofrontendAbstract & { unique_id: string; endpoint: UIEndpoint }
+export type MfeEndpoint = MicrofrontendAbstract & { unique_id: string; endpoint_name?: string; endpoint_path?: string }
 type ExtendedColumn = Column & {
   hasFilter?: boolean
   isDate?: boolean
@@ -62,15 +61,22 @@ export class EndpointSearchComponent implements OnInit {
       limit: false
     },
     {
-      field: 'applicationId',
+      field: 'appId',
       header: 'APP_ID',
       active: true,
       translationPrefix: 'APP',
-      limit: true
+      limit: false
     },
     {
-      field: 'name',
+      field: 'endpoint_name',
       header: 'NAME',
+      active: true,
+      translationPrefix: 'APP.ENDPOINT',
+      limit: false
+    },
+    {
+      field: 'endpoint_path',
+      header: 'PATH',
       active: true,
       translationPrefix: 'APP.ENDPOINT',
       limit: false
@@ -78,12 +84,14 @@ export class EndpointSearchComponent implements OnInit {
   ]
   constructor(
     private readonly user: UserService,
+    private readonly msgService: PortalMessageService,
+    private readonly translate: TranslateService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
-    private readonly mfeApi: MicrofrontendsAPIService,
-    private readonly translate: TranslateService
+    private readonly mfeApi: MicrofrontendsAPIService
   ) {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
+    this.filteredColumns = this.columns.filter((a) => a.active === true)
     this.mfeSearchCriteriaGroup = new FormGroup<MicrofrontendSearchCriteria>({
       productName: new FormControl<string | null>(null)
     })
@@ -207,12 +215,28 @@ export class EndpointSearchComponent implements OnInit {
       })
       .pipe(
         // map from page result to mfe endpoint....
+        tap((data: any) => {
+          if (data.totalElements === 0) {
+            this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
+            return data.size
+          }
+        }),
         map((data: MicrofrontendPageResult) => {
           const mfeend: MfeEndpoint[] = []
-          if (!data.stream) return mfeend
+          if (!data.stream || data.stream.length === 0) return mfeend
           data.stream.forEach((mfe) => {
             mfe.endpoints?.forEach((ep, i) => {
-              mfeend.push({ ...mfe, unique_id: mfe.id + '_' + i, endpoint: ep })
+              mfeend.push({
+                id: mfe.id,
+                appId: mfe.appId,
+                appName: mfe.appName,
+                productName: mfe.productName,
+                remoteBaseUrl: mfe.remoteBaseUrl,
+                type: mfe.type,
+                unique_id: mfe.id + '_' + i,
+                endpoint_name: ep.name,
+                endpoint_path: ep.path
+              })
             })
           })
           mfeend.sort(this.sortMfes)
@@ -229,8 +253,12 @@ export class EndpointSearchComponent implements OnInit {
   public sortMfes(a: MfeEndpoint, b: MfeEndpoint): number {
     return (
       a.productName.toUpperCase().localeCompare(b.productName.toUpperCase()) ||
-      a.exposedModule!.toUpperCase().localeCompare(b.exposedModule!.toUpperCase()) ||
-      a.endpoint.name.toUpperCase().localeCompare(b.endpoint.name.toUpperCase())
+      (a.exposedModule ? a.exposedModule.toUpperCase() : '').localeCompare(
+        b.exposedModule ? b.exposedModule.toUpperCase() : ''
+      ) ||
+      (a.endpoint_name ? a.endpoint_name.toUpperCase() : '').localeCompare(
+        b.endpoint_name ? b.endpoint_name.toUpperCase() : ''
+      )
     )
   }
 }

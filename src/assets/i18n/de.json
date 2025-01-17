@@ -139,11 +139,13 @@
         }
       },
       "ENDPOINT": {
+        "LABEL": "Endpunkt",
         "PRODUCT_NAME": "Name der Applikation die UI Endpunkte anbietet",
         "LOAD_ERROR": "Microfrontends und deren UI Endpunkte konnten nicht geladen werden",
         "NOT_FOUND": "Microfrontends und deren UI Endpunkte nicht gefunden"
       },
       "PRODUCT": {
+        "LABEL": "Applikation",
         "NOT_EXISTS": "Eine Applikation mit diesem Namen konnte nicht gefunden werden.",
         "LOAD_ERROR": "Applikation konnte nicht geladen werden",
         "NOT_FOUND": "Applikation nicht gefunden"

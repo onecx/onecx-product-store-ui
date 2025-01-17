@@ -139,11 +139,13 @@
         }
       },
       "ENDPOINT": {
+        "LABEL": "Endpoint",
         "PRODUCT_NAME": "Name of Application which provides UI Endpoints",
         "LOAD_ERROR": "Failed to load Microfrontends and their UI Endpoints",
         "NOT_FOUND": "Microfrontends and their UI Endpoints were not found"
       },
       "PRODUCT": {
+        "LABEL": "Application",
         "NOT_EXISTS": "An Application with this name could not be found.",
         "LOAD_ERROR": "Failed to load the Application",
         "NOT_FOUND": "Application was not found"

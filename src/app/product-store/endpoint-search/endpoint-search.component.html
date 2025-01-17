@@ -54,11 +54,12 @@
       [reorderableColumns]="false"
       [scrollable]="true"
       scrollHeight="590px"
+      groupRowsBy="productName"
       [rows]="10"
       [rowsPerPageOptions]="[10, 30, 100]"
       [paginator]="true"
-      [alwaysShowPaginator]="true"
       paginatorPosition="bottom"
+      [alwaysShowPaginator]="true"
       [showCurrentPageReport]="true"
       currentPageReportTemplate="{first} - {last} {{ 'ACTIONS.SEARCH.OF' | translate }} {totalRecords}"
     >
@@ -82,17 +83,22 @@
 
       <ng-template pTemplate="header" let-columns>
         <tr>
-          <th
+          <th colspan="2" class="text-center border-right-1">{{ 'ACTIONS.SEARCH.PRODUCT.LABEL' | translate }}</th>
+          <th colspan="2" class="text-center">{{ 'ACTIONS.SEARCH.ENDPOINT.LABEL' | translate }}</th>
+        </tr>
+        <tr>
+          <!--th
             pFrozenColumn
             id="ps_endpoint_search_table_header_actions"
             class="border-right-1 text-center white-space-nowrap"
           >
             {{ 'ACTIONS.LABEL' | translate }}
-          </th>
+          </th-->
           <th
             *ngFor="let col of columns"
             [id]="'ps_endpoint_search_table_header_col_' + col.field"
             [class]="'white-space-nowrap'"
+            [ngClass]="{ 'border-right-1': col.field === 'appId' }"
             [pSortableColumn]="col.field"
             [attr.aria-label]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
             [pTooltip]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
@@ -112,6 +118,7 @@
             *ngFor="let col of columns"
             [id]="'ps_endpoint_search_table_row_' + i + '_' + col.field"
             [class]="col.css"
+            [ngClass]="{ 'border-right-1': col.field === 'appId' }"
           >
             <!-- needs a div due to manage ellipsis -->
             <div *ngIf="col.limit" class="text-ellipsis-2-lines">{{ rowData[col.field] }}</div>
