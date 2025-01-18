@@ -85,11 +85,14 @@
       <ng-template pTemplate="header" let-columns>
         <!-- HEADER 1 -->
         <tr>
-          <th id="ps_endpoint_search_table_header_product_info" colspan="2" class="text-center">
+          <th id="ps_endpoint_search_table_header_1_product_info" colspan="2" class="text-center">
             {{ 'ACTIONS.SEARCH.PRODUCT.LABEL' | translate }}
           </th>
-          <th class="w-3rem text-center border-left-1 border-right-1"></th>
-          <th id="ps_endpoint_search_table_header_endpoint_info" colspan="2" class="text-center">
+          <th
+            id="ps_endpoint_search_table_header_1_counter"
+            class="w-3rem text-center border-left-1 border-right-1"
+          ></th>
+          <th id="ps_endpoint_search_table_header_1_endpoint_info" colspan="2" class="text-center">
             {{ 'ACTIONS.SEARCH.ENDPOINT.LABEL' | translate }}
           </th>
         </tr>
@@ -101,7 +104,9 @@
           <th id="ps_endpoint_search_table_header_col_app_name" [class]="'white-space-nowrap'">
             {{ 'ENDPOINT.APP_NAME' | translate }}
           </th>
-          <th class="w-3rem text-center border-left-1 border-right-1">#</th>
+          <th id="ps_endpoint_search_table_header_2_counter" class="w-3rem text-center border-left-1 border-right-1">
+            #
+          </th>
           <th
             *ngFor="let col of columns"
             [id]="'ps_endpoint_search_table_header_col_' + col.field"
