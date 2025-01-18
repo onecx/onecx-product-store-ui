@@ -192,28 +192,38 @@ describe('ProductSearchComponent', () => {
     expect(component.productSearchCriteriaGroup.reset).toHaveBeenCalled()
   })
 
-  it('should navigate to new product onNewProduct', () => {
-    const routerSpy = spyOn(router, 'navigate')
+  describe('navigate', () => {
+    it('should navigate to new product onNewProduct', () => {
+      const routerSpy = spyOn(router, 'navigate')
 
-    component.onNewProduct()
+      component.onNewProduct()
 
-    expect(routerSpy).toHaveBeenCalledWith(['./new'], jasmine.any(Object))
-  })
+      expect(routerSpy).toHaveBeenCalledWith(['./new'], jasmine.any(Object))
+    })
 
-  it('should navigate to apps onAppSearch', () => {
-    const routerSpy = spyOn(router, 'navigate')
+    it('should navigate to apps onAppSearch', () => {
+      const routerSpy = spyOn(router, 'navigate')
 
-    component.onAppSearch()
+      component.onAppSearch()
 
-    expect(routerSpy).toHaveBeenCalledWith(['./apps'], jasmine.any(Object))
-  })
+      expect(routerSpy).toHaveBeenCalledWith(['./apps'], jasmine.any(Object))
+    })
 
-  it('should navigate to slots onSlotSearch', () => {
-    const routerSpy = spyOn(router, 'navigate')
+    it('should navigate to slots onSlotSearch', () => {
+      const routerSpy = spyOn(router, 'navigate')
 
-    component.onSlotSearch()
+      component.onEndpointSearch()
 
-    expect(routerSpy).toHaveBeenCalledWith(['./slots'], jasmine.any(Object))
+      expect(routerSpy).toHaveBeenCalledWith(['./endpoints'], jasmine.any(Object))
+    })
+
+    it('should navigate to slots onSlotSearch', () => {
+      const routerSpy = spyOn(router, 'navigate')
+
+      component.onSlotSearch()
+
+      expect(routerSpy).toHaveBeenCalledWith(['./slots'], jasmine.any(Object))
+    })
   })
 
   it('should sort products by display name', () => {

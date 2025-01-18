@@ -50,11 +50,12 @@
       [value]="endpoints"
       [columns]="filteredColumns"
       dataKey="id"
-      [globalFilterFields]="['productName', 'applicationId']"
+      [globalFilterFields]="['productName', 'appName', 'endpoint_name']"
       [reorderableColumns]="false"
       [scrollable]="true"
       scrollHeight="590px"
       groupRowsBy="productName"
+      rowGroupMode="rowspan"
       [rows]="10"
       [rowsPerPageOptions]="[10, 30, 100]"
       [paginator]="true"
@@ -82,23 +83,34 @@
       </ng-template>
 
       <ng-template pTemplate="header" let-columns>
+        <!-- HEADER 1 -->
         <tr>
-          <th colspan="2" class="text-center border-right-1">{{ 'ACTIONS.SEARCH.PRODUCT.LABEL' | translate }}</th>
-          <th colspan="2" class="text-center">{{ 'ACTIONS.SEARCH.ENDPOINT.LABEL' | translate }}</th>
+          <th id="ps_endpoint_search_table_header_1_product_info" colspan="2" class="text-center">
+            {{ 'ACTIONS.SEARCH.PRODUCT.LABEL' | translate }}
+          </th>
+          <th
+            id="ps_endpoint_search_table_header_1_counter"
+            class="w-3rem text-center border-left-1 border-right-1"
+          ></th>
+          <th id="ps_endpoint_search_table_header_1_endpoint_info" colspan="2" class="text-center">
+            {{ 'ACTIONS.SEARCH.ENDPOINT.LABEL' | translate }}
+          </th>
         </tr>
+        <!-- HEADER 2 -->
         <tr>
-          <!--th
-            pFrozenColumn
-            id="ps_endpoint_search_table_header_actions"
-            class="border-right-1 text-center white-space-nowrap"
-          >
-            {{ 'ACTIONS.LABEL' | translate }}
-          </th-->
+          <th id="ps_endpoint_search_table_header_col_product_name" [class]="'white-space-nowrap'" pFrozenColumn>
+            {{ 'ENDPOINT.PRODUCT_NAME' | translate }}
+          </th>
+          <th id="ps_endpoint_search_table_header_col_app_name" [class]="'white-space-nowrap'">
+            {{ 'ENDPOINT.APP_NAME' | translate }}
+          </th>
+          <th id="ps_endpoint_search_table_header_2_counter" class="w-3rem text-center border-left-1 border-right-1">
+            #
+          </th>
           <th
             *ngFor="let col of columns"
             [id]="'ps_endpoint_search_table_header_col_' + col.field"
             [class]="'white-space-nowrap'"
-            [ngClass]="{ 'border-right-1': col.field === 'appId' }"
             [pSortableColumn]="col.field"
             [attr.aria-label]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
             [pTooltip]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
@@ -112,15 +124,32 @@
         </tr>
       </ng-template>
 
-      <ng-template pTemplate="body" let-i="rowIndex" let-rowData let-columns="columns">
-        <tr [pSelectableRow]="endpoints">
+      <ng-template
+        pTemplate="body"
+        let-columns="columns"
+        let-i="rowIndex"
+        let-rowData
+        let-rowgroup="rowgroup"
+        let-rowspan="rowspan"
+      >
+        <tr>
+          <td
+            *ngIf="rowgroup"
+            [attr.rowspan]="rowspan"
+            [id]="'ps_endpoint_search_table_row_product_name'"
+            class="bg-inherit"
+            pFrozenColumn
+          >
+            {{ rowData['productName'] }}
+          </td>
+          <td [id]="'ps_endpoint_search_table_row_app_name'">{{ rowData['appName'] }}</td>
+          <td class="w-3rem text-center border-left-1 border-right-1">{{ i + 1 }}</td>
           <td
             *ngFor="let col of columns"
             [id]="'ps_endpoint_search_table_row_' + i + '_' + col.field"
             [class]="col.css"
-            [ngClass]="{ 'border-right-1': col.field === 'appId' }"
+            [ngClass]="{ 'border-right-1': col.field === 'appName' }"
           >
-            <!-- needs a div due to manage ellipsis -->
             <div *ngIf="col.limit" class="text-ellipsis-2-lines">{{ rowData[col.field] }}</div>
             <div *ngIf="!col.limit">{{ rowData[col.field] }}</div>
           </td>

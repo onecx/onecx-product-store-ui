@@ -13,8 +13,16 @@
     <div class="pi pi-question-circle text-3xl danger-action-text"></div>
     <div>
       <div id="ps_slot_delete_message" class="font-bold">{{ 'ACTIONS.DELETE.SLOT.MESSAGE' | translate }}</div>
-      <div id="ps_slot_delete_message" class="my-2 font-bold danger-action-text text-center">{{ slot?.name }}</div>
-      <div *ngIf="slot?.operator">{{ 'ACTIONS.DELETE.SLOT.OPERATOR_TEXT' | translate }}</div>
+      <div class="flex flex-column row-gap-2">
+        <div id="ps_slot_delete_slot_name" class="my-2 font-bold danger-action-text text-center">{{ slot?.name }}</div>
+        <div class="flex flex-row column-gap-2">
+          <div class="w-4 text-right font-bold">{{ 'SLOT.PRODUCT_NAME' | translate }}:</div>
+          <div class="w-8 text-left white-space-nowrap" id="ps_slot_delete_product_name">{{ slot?.productName }}</div>
+        </div>
+        <div *ngIf="slot?.operator" id="ps_slot_delete_operator">
+          {{ 'ACTIONS.DELETE.SLOT.OPERATOR_TEXT' | translate }}
+        </div>
+      </div>
       <div class="mt-2">{{ 'ACTIONS.DELETE.MESSAGE_INFO' | translate }}</div>
     </div>
   </div>

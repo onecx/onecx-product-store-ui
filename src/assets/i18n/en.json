@@ -118,6 +118,7 @@
       }
     },
     "SEARCH": {
+      "NO_DATA": "No data",
       "NOT_FOUND": "No data found",
       "WILDCARD_SUPPORT": " Wildcards: ?, *",
       "APP": {
@@ -279,11 +280,6 @@
     "ICON_NAME": "Icon Name",
     "NOTE": "Note",
     "EXPOSED_MODULE": "Exposed Module",
-    "ENDPOINT": {
-      "NAME": "Name",
-      "PATH": "Path",
-      "CELL_EDITING_MESSAGE": "Data entry and changes are made directly in the table."
-    },
     "DEPRECATED": "Outdated",
     "UNDEPLOYED": "Undeployed",
     "TOOLTIPS": {
@@ -305,8 +301,6 @@
       "ICON_NAME": "Name of the icons from the PrimeNG icon library. Used, for example, as a default icon for menu entries",
       "NOTE": "Note",
       "EXPOSED_MODULE": "Exposed Module",
-      "ENDPOINTS.NAME": "Unique name of the UI Endpoint",
-      "ENDPOINTS.PATH": "Path to the UI Endpoint",
       "GROUP.REMOTE_MODULE": "Details of the remote module to be used",
       "GROUP.LOCAL_MODULE": "Details of the module's local registration",
       "GROUP.INTERNALS": "More details of object management and usage",
@@ -319,6 +313,19 @@
     "WEBCOMPONENT": {
       "MODULE": "WebComponent (Module)",
       "SCRIPT": "WebComponent (Script)"
+    }
+  },
+  "ENDPOINT": {
+    "NAME": "Name",
+    "PATH": "Path",
+    "PRODUCT_NAME": "Application",
+    "APP_NAME": "Microfrontend",
+    "CELL_EDITING_MESSAGE": "Data entry and changes are made directly in the table.",
+    "TOOLTIPS": {
+      "NAME": "Unique name of the UI Endpoint",
+      "PATH": "Path to the UI Endpoint",
+      "PRODUCT_NAME": "Name of the application where UI endpoints are offered",
+      "APP_NAME": "Microfrontend that provides the UI endpoint"
     }
   },
   "PRODUCT": {

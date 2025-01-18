@@ -126,9 +126,10 @@
                 id="ps_app_detail_form_mfe_field_icon_name"
                 styleClass="w-full"
                 formControlName="iconName"
+                appendTo="body"
                 [options]="iconItems"
-                [showClear]="false"
-                [attr.aria-label]="'APP.ICON_NAME' | translate"
+                [showClear]="true"
+                [ariaLabel]="'APP.ICON_NAME' | translate"
                 [pTooltip]="'APP.TOOLTIPS.ICON_NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -307,23 +308,7 @@
         <div class="flex flex-column row-gap-4">
           <!-- row 1 -->
           <div class="flex flex-row flex-wrap gap-4">
-            <span class="flex-grow-1 p-float-label" controlErrorAnchor>
-              <input
-                pInputText
-                type="text"
-                id="ps_app_detail_form_mfe_field_exposed_module"
-                class="w-full pt-3 pb-2 text-responsive"
-                formControlName="exposedModule"
-                [attr.aria-label]="'APP.EXPOSED_MODULE' | translate"
-                [pTooltip]="'APP.TOOLTIPS.EXPOSED_MODULE' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              />
-              <label class="ocx-required-label" for="ps_app_detail_form_mfe_field_exposed_module">
-                {{ 'APP.EXPOSED_MODULE' | translate }}
-              </label>
-            </span>
-            <span class="p-float-label" controlErrorAnchor>
+            <span class="flex-grow-1 sm:flex-grow-0 p-float-label" controlErrorAnchor>
               <p-dropdown
                 id="ps_app_detail_form_mfe_field_type"
                 styleClass="w-full"
@@ -339,7 +324,7 @@
                 {{ 'APP.TYPE' | translate }}
               </label>
             </span>
-            <span class="p-float-label" controlErrorAnchor>
+            <span class="flex-grow-1 p-float-label" controlErrorAnchor>
               <p-dropdown
                 id="ps_app_detail_form_mfe_field_technology"
                 styleClass="w-full"
@@ -362,6 +347,24 @@
             <input
               pInputText
               type="text"
+              id="ps_app_detail_form_mfe_field_exposed_module"
+              class="w-full pt-3 pb-2 text-responsive"
+              formControlName="exposedModule"
+              [attr.aria-label]="'APP.EXPOSED_MODULE' | translate"
+              [pTooltip]="'APP.TOOLTIPS.EXPOSED_MODULE' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <label class="ocx-required-label" for="ps_app_detail_form_mfe_field_exposed_module">
+              {{ 'APP.EXPOSED_MODULE' | translate }}
+            </label>
+          </span>
+
+          <!-- row 3 -->
+          <span class="p-float-label" controlErrorAnchor>
+            <input
+              pInputText
+              type="text"
               id="ps_app_detail_form_mfe_field_remote_entry"
               class="w-full pt-3 pb-2"
               formControlName="remoteEntry"
@@ -375,7 +378,7 @@
             </label>
           </span>
 
-          <!-- row 3 -->
+          <!-- row 4 -->
           <span class="p-float-label" controlErrorAnchor>
             <input
               pInputText
@@ -393,14 +396,14 @@
             </label>
           </span>
 
-          <!-- row 4 -->
+          <!-- row 5 -->
           <div class="flex flex-row flex-wrap gap-4">
             <span class="flex-grow-1 sm:flex-grow-0 p-float-label" controlErrorAnchor>
               <input
                 pInputText
                 type="text"
                 id="ps_app_detail_form_mfe_field_remote_name"
-                class="w-full sm:w-18rem pt-3 pb-2 text-responsive"
+                class="w-full pt-3 pb-2 text-responsive"
                 formControlName="remoteName"
                 [attr.aria-label]="'APP.REMOTE_NAME' | translate"
                 [pTooltip]="'APP.TOOLTIPS.REMOTE_NAME' | translate"
@@ -438,7 +441,7 @@
     </p-tabPanel>
 
     <p-tabPanel
-      *ngIf="appAbstract?.appType === 'MFE'"
+      *ngIf="appAbstract?.appType === 'MFE' && appAbstract?.mfeType === MicrofrontendType.Module"
       [header]="'DIALOG.TABS.ENDPOINTS' | translate"
       [tooltip]="'DIALOG.TABS.TOOLTIPS.ENDPOINTS' | translate"
     >
@@ -446,7 +449,7 @@
         <p-message
           id="ps_app_detail_endpoint_info_message"
           severity="info"
-          [text]="'APP.ENDPOINT.CELL_EDITING_MESSAGE' | translate"
+          [text]="'ENDPOINT.CELL_EDITING_MESSAGE' | translate"
         ></p-message>
 
         <p-table #endpointTable [value]="endpoints">
@@ -463,19 +466,19 @@
               </th>
               <th
                 id="ps_app_detail_endpoint_table_header_endpoint_name"
-                [pTooltip]="'APP.TOOLTIPS.ENDPOINTS.NAME' | translate"
+                [pTooltip]="'ENDPOINT.TOOLTIPS.NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
-                {{ 'APP.ENDPOINT.NAME' | translate }}
+                {{ 'ENDPOINT.NAME' | translate }}
               </th>
               <th
                 id="ps_app_detail_endpoint_table_header_endpoint_path"
-                [pTooltip]="'APP.TOOLTIPS.ENDPOINTS.PATH' | translate"
+                [pTooltip]="'ENDPOINTS.TOOLTIPS.PATH' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
-                {{ 'APP.ENDPOINT.PATH' | translate }}
+                {{ 'ENDPOINT.PATH' | translate }}
               </th>
             </tr>
           </ng-template>

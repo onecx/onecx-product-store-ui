@@ -24,7 +24,7 @@ export interface AppSearchCriteria {
 export type AppType = 'MS' | 'MFE'
 export type AppName = 'Microservice' | 'Microfrontend'
 export type AppFilterType = 'ALL' | AppType
-export type AppAbstract = Microservice & { appType: AppType; appTypeKey?: string }
+export type AppAbstract = Microservice & { appType: AppType; appTypeKey?: string; mfeType?: string }
 export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
 
 @Component({
@@ -157,7 +157,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
         return a.stream
           ? a.stream
               ?.map((mfe) => {
-                return { ...mfe, appType: 'MFE', appTypeKey: 'APP.MFE.' + mfe.type } as AppAbstract
+                return { ...mfe, appType: 'MFE', appTypeKey: 'APP.MFE.' + mfe.type, mfeType: mfe.type } as AppAbstract
               })
               .sort(this.sortAppsByAppId)
           : []
@@ -336,9 +336,6 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   }
   public onSearchReset() {
     this.appSearchCriteriaGroup.reset({ appType: 'ALL' })
-  }
-  public onBack() {
-    this.router.navigate(['../'], { relativeTo: this.route })
   }
   public onGotoProduct(ev: any, product: string) {
     ev.stopPropagation()

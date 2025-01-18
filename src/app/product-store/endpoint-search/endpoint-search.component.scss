@@ -3,13 +3,22 @@
 @include danger-action;
 @include displaying-text-responsive;
 @include table-inline-buttons;
-@include table-zebra-rows;
 @include table-responsive-columns;
 @include dialog-footer-buttons;
 
 :host ::ng-deep {
+  /* special handling for zebra look on table rows */
+  .p-datatable .p-datatable-tbody {
+    tr:nth-child(even) td {
+      background-color: var(--table-body-row-even-bg);
+    }
+    tr td:nth-child(1).bg-inherit {
+      background-color: inherit !important;
+    }
+  }
+
   .p-datatable {
-    .p-datatable-thead > tr > th {
+    .p-datatable-thead > tr:nth-child(2) > th {
       border-bottom-width: 2px;
     }
     .p-datatable-thead > tr > th,
@@ -17,7 +26,7 @@
       padding: 0.5rem;
     }
   }
-  // hide unusable stuff
+  /* hide unusable stuff */
   ocx-column-group-selection,
   ocx-data-view-controls div div button {
     display: none;
