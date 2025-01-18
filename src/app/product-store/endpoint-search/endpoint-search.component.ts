@@ -20,7 +20,11 @@ export interface MicrofrontendSearchCriteria {
   productName: FormControl<string | null>
 }
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
-export type MfeEndpoint = MicrofrontendAbstract & { unique_id: string; endpoint_name: string; endpoint_path: string }
+export type MfeEndpoint = MicrofrontendAbstract & {
+  unique_id: string
+  endpoint_name: string
+  endpoint_path: string
+}
 type ExtendedColumn = Column & {
   hasFilter?: boolean
   isDate?: boolean
@@ -54,31 +58,17 @@ export class EndpointSearchComponent implements OnInit {
 
   public columns: ExtendedColumn[] = [
     {
-      field: 'productName',
-      header: 'PRODUCT_NAME',
-      active: true,
-      translationPrefix: 'APP',
-      limit: false
-    },
-    {
-      field: 'appId',
-      header: 'APP_ID',
-      active: true,
-      translationPrefix: 'APP',
-      limit: false
-    },
-    {
       field: 'endpoint_name',
       header: 'NAME',
       active: true,
-      translationPrefix: 'APP.ENDPOINT',
+      translationPrefix: 'ENDPOINT',
       limit: false
     },
     {
       field: 'endpoint_path',
       header: 'PATH',
       active: true,
-      translationPrefix: 'APP.ENDPOINT',
+      translationPrefix: 'ENDPOINT',
       limit: false
     }
   ]
@@ -109,9 +99,9 @@ export class EndpointSearchComponent implements OnInit {
   private prepareDialogTranslations(): void {
     this.translate
       .get([
-        'APP.APP_NAME',
-        'APP.PRODUCT_NAME',
-        'APP.ENDPOINT.NAME',
+        'ENDPOINT.APP_NAME',
+        'ENDPOINT.PRODUCT_NAME',
+        'ENDPOINT.NAME',
         'ACTIONS.DATAVIEW.VIEW_MODE_TABLE',
         'ACTIONS.DATAVIEW.FILTER',
         'ACTIONS.DATAVIEW.FILTER_OF',
@@ -125,11 +115,11 @@ export class EndpointSearchComponent implements OnInit {
           filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
           filterInputTooltip:
             data['ACTIONS.DATAVIEW.FILTER_OF'] +
-            data['PRODUCT.NAME'] +
+            data['ENDPOINT.PRODUCT_NAME'] +
             ', ' +
-            data['APP.APP_NAME'] +
+            data['ENDPOINT.APP_NAME'] +
             ', ' +
-            data['APP.ENDPOINT.NAME'],
+            data['ENDPOINT.NAME'],
           viewModeToggleTooltips: {
             table: data['ACTIONS.DATAVIEW.VIEW_MODE_TABLE']
           },

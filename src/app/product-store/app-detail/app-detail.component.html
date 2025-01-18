@@ -449,7 +449,7 @@
         <p-message
           id="ps_app_detail_endpoint_info_message"
           severity="info"
-          [text]="'APP.ENDPOINT.CELL_EDITING_MESSAGE' | translate"
+          [text]="'ENDPOINT.CELL_EDITING_MESSAGE' | translate"
         ></p-message>
 
         <p-table #endpointTable [value]="endpoints">
@@ -466,19 +466,19 @@
               </th>
               <th
                 id="ps_app_detail_endpoint_table_header_endpoint_name"
-                [pTooltip]="'APP.TOOLTIPS.ENDPOINTS.NAME' | translate"
+                [pTooltip]="'ENDPOINT.TOOLTIPS.NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
-                {{ 'APP.ENDPOINT.NAME' | translate }}
+                {{ 'ENDPOINT.NAME' | translate }}
               </th>
               <th
                 id="ps_app_detail_endpoint_table_header_endpoint_path"
-                [pTooltip]="'APP.TOOLTIPS.ENDPOINTS.PATH' | translate"
+                [pTooltip]="'ENDPOINTS.TOOLTIPS.PATH' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
-                {{ 'APP.ENDPOINT.PATH' | translate }}
+                {{ 'ENDPOINT.PATH' | translate }}
               </th>
             </tr>
           </ng-template>
