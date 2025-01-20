@@ -11,7 +11,7 @@ import { AppStateService, UserService } from '@onecx/angular-integration-interfa
 import { Column, createTranslateLoader, PortalMessageService } from '@onecx/portal-integration-angular'
 
 import { MicrofrontendAbstract, MicrofrontendsAPIService, MicrofrontendType } from 'src/app/shared/generated'
-import { TranslateServiceMock } from 'src/app/shared/TranslateServiceMock'
+import { TranslateServiceMock } from 'src/app/shared/mocks/TranslateServiceMock'
 import { EndpointSearchComponent, MfeEndpoint, MicrofrontendSearchCriteria } from './endpoint-search.component'
 
 const searchCriteriaForm = new FormGroup<MicrofrontendSearchCriteria>({

@@ -1,7 +1,8 @@
 import { Component, Input } from '@angular/core'
+import { Observable } from 'rxjs'
 
 import { SlotService } from '@onecx/angular-remote-components'
-import { Observable } from 'rxjs'
+
 import { Product } from 'src/app/shared/generated'
 
 @Component({
@@ -10,6 +11,7 @@ import { Product } from 'src/app/shared/generated'
 })
 export class ProductUseComponent {
   @Input() product: Product | undefined
+
   public isListWorkspacesUsingProductComponentDefined$: Observable<boolean> | undefined
   public listWorkspacesUsingProductSlotName = 'onecx-product-list-workspaces-using-product'
 

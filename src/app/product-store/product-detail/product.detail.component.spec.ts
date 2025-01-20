@@ -158,7 +158,7 @@ describe('ProductDetailComponent', () => {
     spyOn(component, 'onEdit')
     spyOn(component, 'onCancel')
     spyOn(component, 'onSave')
-    component.product = product
+    component.item4Delete = product
     component.changeMode = 'VIEW'
 
     component.ngOnInit()
@@ -184,7 +184,7 @@ describe('ProductDetailComponent', () => {
     spyOn(component, 'onEdit')
     component.changeMode = 'VIEW'
 
-    component.prepareActionButtons(product)
+    component.preparePageAction(product)
 
     let actions: any = []
     component.actions$!.subscribe((act) => (actions = act))
@@ -227,7 +227,7 @@ describe('ProductDetailComponent', () => {
     spyOn(component, 'getProduct')
     component.changeMode = 'EDIT'
 
-    component.onCancel()
+    component.onCancel(product)
 
     expect(component.changeMode).toEqual('VIEW')
     expect(component.getProduct).toHaveBeenCalled()
@@ -237,7 +237,7 @@ describe('ProductDetailComponent', () => {
     spyOn(component, 'close')
     component.changeMode = 'CREATE'
 
-    component.onCancel()
+    component.onCancel(product)
 
     expect(component.close).toHaveBeenCalled()
   })
@@ -246,7 +246,7 @@ describe('ProductDetailComponent', () => {
     spyOn(component, 'close')
     component.changeMode = 'COPY'
 
-    component.onCancel()
+    component.onCancel(product)
 
     expect(component.close).toHaveBeenCalled()
   })
@@ -278,22 +278,22 @@ describe('ProductDetailComponent', () => {
   it('should behave correctly onDelete', () => {
     component.onDelete(product)
 
-    expect(component.product).toEqual(product)
+    expect(component.item4Delete).toEqual(product)
   })
 
   it('should delete a product', () => {
     apiServiceSpy.deleteProduct
-    component.product = product
+    component.item4Delete = product
 
     component.onDeleteConfirmation()
 
-    expect(component.product).toBeUndefined()
+    expect(component.item4Delete).toBeUndefined()
     expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.PRODUCT.OK' })
   })
 
   it('should display error message when delete fails', () => {
     apiServiceSpy.deleteProduct.and.returnValue(throwError(() => new Error()))
-    component.product = product
+    component.item4Delete = product
 
     component.onDeleteConfirmation()
 

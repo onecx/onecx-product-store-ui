@@ -21,7 +21,7 @@ export class ProductDetailComponent implements OnInit {
   public actions$: Observable<Action[]> | undefined
   public productName: string | null = null
   public product$!: Observable<Product>
-  public product: Product | undefined
+  public item4Delete: Product | undefined
   public product_for_apps: Product | undefined
   public changeMode: ChangeMode = 'VIEW'
   public dateFormat = 'medium'
@@ -48,20 +48,20 @@ export class ProductDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.product = undefined
+    this.item4Delete = undefined
     if (this.productName) {
       this.changeMode = 'VIEW'
       this.getProduct()
     } else {
       this.changeMode = 'CREATE'
       this.product$ = of({} as Product)
-      this.prepareActionButtons()
+      this.preparePageAction()
     }
   }
 
   public onTabChange($event: any, product: Product) {
     this.selectedTabIndex = $event.index
-    this.prepareActionButtons(product)
+    this.preparePageAction(product)
     if (this.selectedTabIndex === 3) this.product_for_apps = product // lazy load
   }
 
@@ -69,7 +69,7 @@ export class ProductDetailComponent implements OnInit {
     this.loading = true
     this.product$ = this.productApi.getProductByName({ name: this.productName! }).pipe(
       map((data: Product) => {
-        this.prepareActionButtons(data)
+        this.preparePageAction(data)
         this.currentLogoUrl = this.getLogoUrl(data)
         return data
       }),
@@ -82,7 +82,7 @@ export class ProductDetailComponent implements OnInit {
     )
   }
 
-  public prepareActionButtons(product?: Product): void {
+  public preparePageAction(product?: Product): void {
     this.actions$ = this.translate
       .get([
         'ACTIONS.COPY.LABEL',
@@ -128,7 +128,7 @@ export class ProductDetailComponent implements OnInit {
             {
               label: data['ACTIONS.CANCEL'],
               title: data['ACTIONS.TOOLTIPS.CANCEL'],
-              actionCallback: () => this.onCancel(),
+              actionCallback: () => this.onCancel(product),
               icon: 'pi pi-times',
               show: 'always',
               conditional: true,
@@ -178,16 +178,17 @@ export class ProductDetailComponent implements OnInit {
 
   public onCopy(item: any): void {
     this.changeMode = 'COPY'
-    this.prepareActionButtons(item)
+    this.preparePageAction(item)
   }
   public onEdit() {
     this.changeMode = 'EDIT'
     this.getProduct()
   }
-  public onCancel() {
+  public onCancel(item: any) {
     if (this.changeMode === 'EDIT') {
       this.changeMode = 'VIEW'
-      this.getProduct()
+      this.productPropsComponent.ngOnChanges()
+      this.preparePageAction(item)
     }
     if (this.changeMode === 'COPY') this.close()
     if (this.changeMode === 'CREATE') this.close()
@@ -203,21 +204,21 @@ export class ProductDetailComponent implements OnInit {
 
   public onChange(product?: Product) {
     this.changeMode = 'VIEW'
-    // update observable with response data => null
-    // this.product$ = new Observable((sub) => sub.next(product as Product))
-    this.getProduct()
+    this.preparePageAction(product)
+    // update observable with response data
+    this.product$ = new Observable((sub) => sub.next(product as Product))
   }
 
   public onDelete(product?: Product): void {
-    this.product = product
+    this.item4Delete = product
     this.productDeleteVisible = true
   }
   public onDeleteConfirmation(): void {
-    if (this.product?.id) {
-      this.productApi.deleteProduct({ id: this.product?.id }).subscribe({
+    if (this.item4Delete?.id) {
+      this.productApi.deleteProduct({ id: this.item4Delete?.id }).subscribe({
         next: () => {
           this.productDeleteVisible = false
-          this.product = undefined
+          this.item4Delete = undefined
           this.msgService.success({ summaryKey: 'ACTIONS.DELETE.PRODUCT.OK' })
           this.close()
         },

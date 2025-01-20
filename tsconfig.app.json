@@ -9,5 +9,5 @@
   },
   "files": ["src/main.ts", "src/polyfills.ts", "src/app/onecx-product-store-remote.module.ts"],
   "include": ["src/**/*.ts"],
-  "exclude": ["src/test.ts", "src/**/*.spec.ts"]
+  "exclude": ["src/test.ts", "src/**/*.spec.ts", "src/**/*.harness.ts", "src/app/shared/mocks/**"]
 }
