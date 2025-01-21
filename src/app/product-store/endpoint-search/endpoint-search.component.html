@@ -15,6 +15,7 @@
           type="text"
           class="w-11rem sm:w-18rem text-responsive"
           formControlName="productName"
+          [attr.aria-label]="'ACTIONS.SEARCH.ENDPOINT.PRODUCT_NAME' | translate"
           [pTooltip]="
             ('ACTIONS.SEARCH.ENDPOINT.PRODUCT_NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)
           "
@@ -140,18 +141,16 @@
             class="bg-inherit"
             pFrozenColumn
           >
-            {{ rowData['productName'] }}
+            {{ rowData['productDisplayName'] ?? rowData['productName'] }}
           </td>
           <td [id]="'ps_endpoint_search_table_row_app_name'">{{ rowData['appName'] }}</td>
           <td class="w-3rem text-center border-left-1 border-right-1">{{ i + 1 }}</td>
           <td
             *ngFor="let col of columns"
             [id]="'ps_endpoint_search_table_row_' + i + '_' + col.field"
-            [class]="col.css"
             [ngClass]="{ 'border-right-1': col.field === 'appName' }"
           >
-            <div *ngIf="col.limit" class="text-ellipsis-2-lines">{{ rowData[col.field] }}</div>
-            <div *ngIf="!col.limit">{{ rowData[col.field] }}</div>
+            <div class="text-ellipsis-2-lines">{{ rowData[col.field] }}</div>
           </td>
         </tr>
       </ng-template>

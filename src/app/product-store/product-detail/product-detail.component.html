@@ -1,4 +1,4 @@
-<ocx-portal-page permission="PRODUCT#VIEW" helpArticleId="PAGE_PRODUCT_DETAIL">
+<ocx-portal-page *ngIf="product$ | async as product" permission="PRODUCT#VIEW" helpArticleId="PAGE_PRODUCT_DETAIL">
   <ocx-page-header
     [loading]="loading"
     [header]="product?.displayName"
@@ -9,7 +9,7 @@
   >
   </ocx-page-header>
 
-  <ocx-page-content *ngIf="product$ | async as product">
+  <ocx-page-content>
     <p-message
       *ngIf="loading"
       id="ps_product_detail_loading_message"
@@ -68,7 +68,7 @@
         tooltipPosition="top"
         tooltipEvent="hover"
       >
-        <app-product-use [product]="product"></app-product-use>
+        <app-product-use *ngIf="product && selectedTabIndex === 2" [product]="product"></app-product-use>
       </p-tabPanel>
 
       <p-tabPanel
@@ -80,7 +80,11 @@
         tooltipPosition="top"
         tooltipEvent="hover"
       >
-        <app-product-apps [product]="product_for_apps" [changeMode]="changeMode"></app-product-apps>
+        <app-product-apps
+          *ngIf="product && selectedTabIndex === 3"
+          [product]="product_for_apps"
+          [changeMode]="changeMode"
+        ></app-product-apps>
       </p-tabPanel>
     </p-tabView>
   </ocx-page-content>
@@ -101,9 +105,9 @@
     <div>
       <div id="ps_product_delete_message" class="font-bold">{{ 'ACTIONS.DELETE.PRODUCT.MESSAGE' | translate }}</div>
       <div id="ps_product_delete_product_name" class="my-2 font-bold danger-action-text text-center">
-        {{ product?.name }}
+        {{ item4Delete?.name }}
       </div>
-      <div *ngIf="product?.operator">{{ 'ACTIONS.DELETE.PRODUCT.OPERATOR_TEXT' | translate }}</div>
+      <div *ngIf="item4Delete?.operator">{{ 'ACTIONS.DELETE.PRODUCT.OPERATOR_TEXT' | translate }}</div>
       <div class="mt-2">{{ 'ACTIONS.DELETE.MESSAGE_INFO' | translate }}</div>
     </div>
   </div>

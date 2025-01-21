@@ -280,8 +280,12 @@ paths:
             schema:
               $ref: '#/components/schemas/UpdateProductRequest'
       responses:
-        '204':
+        '200':
           description: Product updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
         '400':
           description: Bad Request
           content:

@@ -394,30 +394,35 @@
       "PRODUCT": "Unbekanntes Problem beim Abrufen von Applikationsdetails - Bitte versuchen sie es noch einmal.",
       "PRODUCTS": "Unbekanntes Problem beim Abrufen von Applikationen - Bitte versuchen sie es noch einmal.",
       "APPS": "Unbekanntes Problem beim Abrufen von App-Daten - Bitte versuchen sie es noch einmal.",
+      "MFES": "Unbekanntes Problem beim Abrufen von Microfrontend-Daten - Bitte versuchen sie es noch einmal.",
       "SLOTS": "Unbekanntes Problem beim Abrufen von Slot-Daten - Bitte versuchen sie es noch einmal."
     },
     "HTTP_STATUS_401": {
       "PRODUCT": "Sie sind nicht autorisiert, um Applikationsdetails zu sehen.",
       "PRODUCTS": "Sie sind nicht autorisiert, um Applikationen zu sehen.",
       "APPS": "Sie sind nicht autorisiert, um Apps zu sehen.",
+      "MFES": "Sie sind nicht autorisiert, um Microfrontends zu sehen.",
       "SLOTS": "Sie sind nicht autorisiert, um Slots zu sehen."
     },
     "HTTP_STATUS_403": {
       "PRODUCT": "Sie haben keine Rechte, um Applikationsdetails zu sehen.",
       "PRODUCTS": "Sie haben keine Rechte, um Applikationen zu sehen.",
       "APPS": "Sie haben keine Rechte, um Apps zu sehen.",
+      "MFES": "Sie haben keine Rechte, um Microfrontends zu sehen.",
       "SLOTS": "Sie haben keine Rechte, um Slots zu sehen."
     },
     "HTTP_STATUS_404": {
       "PRODUCT": "Applikation konnte nicht gefunden werden.",
       "PRODUCTS": "Es konnten keine Applikationen gefunden werden.",
       "APPS": "Es konnten keine Apps gefunden werden.",
+      "MFES": "Es konnten keine Microfrontends gefunden werden.",
       "SLOTS": "Es konnten keine Slots gefunden werden."
     },
     "HTTP_STATUS_500": {
       "PRODUCT": "Unbekanntes Server-Problem beim Abrufen von Applikationsdetails - Bitte versuchen sie es noch einmal.",
       "PRODUCTS": "Unbekanntes Server-Problem beim Abrufen von Applikation-Daten - Bitte versuchen sie es noch einmal.",
       "APPS": "Unbekanntes Server-Problem beim Abrufen von App-Daten - Bitte versuchen sie es noch einmal.",
+      "MFES": "Unbekanntes Server-Problem beim Abrufen von Microfrontend-Daten - Bitte versuchen sie es noch einmal.",
       "SLOTS": "Unbekanntes Server-Problem beim Abrufen von Slot-Daten - Bitte versuchen sie es noch einmal."
     }
   }

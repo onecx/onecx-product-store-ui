@@ -15,10 +15,11 @@ import { prepareUrlPath } from 'src/app/shared/utils'
 @Component({
   selector: 'app-image-container',
   styleUrls: ['./image-container.component.scss'],
-  templateUrl: './image-container.component.html'
+  templateUrl: './image-container.component.html',
+  host: { hostId: 'this-avoids-component-id-collision' }
 })
 export class ImageContainerComponent implements OnChanges {
-  @Input() public id = 'image-container'
+  @Input() public id = 'ps_image_container_logo'
   @Input() public title: string | undefined
   @Input() public small = false
   @Input() public imageUrl: string | undefined

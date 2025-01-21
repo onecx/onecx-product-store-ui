@@ -10,15 +10,33 @@ import { of, throwError } from 'rxjs'
 import { AppStateService, UserService } from '@onecx/angular-integration-interface'
 import { Column, createTranslateLoader, PortalMessageService } from '@onecx/portal-integration-angular'
 
-import { MicrofrontendAbstract, MicrofrontendsAPIService, MicrofrontendType } from 'src/app/shared/generated'
-import { TranslateServiceMock } from 'src/app/shared/TranslateServiceMock'
+import {
+  MicrofrontendAbstract,
+  MicrofrontendsAPIService,
+  MicrofrontendType,
+  ProductAbstract,
+  ProductsAPIService
+} from 'src/app/shared/generated'
+import { TranslateServiceMock } from 'src/app/shared/mocks/TranslateServiceMock'
 import { EndpointSearchComponent, MfeEndpoint, MicrofrontendSearchCriteria } from './endpoint-search.component'
 
 const searchCriteriaForm = new FormGroup<MicrofrontendSearchCriteria>({
   productName: new FormControl<string | null>(null)
 })
 
-const responseData: MicrofrontendAbstract[] = [
+const productResponseData: ProductAbstract[] = [
+  {
+    id: 'id1',
+    name: 'product1',
+    displayName: 'Product 1'
+  },
+  {
+    id: 'id2',
+    name: 'product2',
+    displayName: 'Product 2'
+  }
+]
+const mfeResponseData: MicrofrontendAbstract[] = [
   {
     id: 'id1',
     productName: 'product1',
@@ -49,15 +67,26 @@ const responseData: MicrofrontendAbstract[] = [
     appId: 'mfe1',
     exposedModule: './expMod_p3_mfe1',
     remoteBaseUrl: '/mfe1/remoteEntry.js',
+    type: MicrofrontendType.Module,
+    endpoints: [{ name: 'endpoint_3_1_1', path: '/{name}' }]
+  },
+  {
+    id: 'id4',
+    productName: 'product4',
+    appName: 'MFE 1',
+    appId: 'mfe1',
+    exposedModule: './expMod_p4_mfe1',
+    remoteBaseUrl: '/mfe1/remoteEntry.js',
     type: MicrofrontendType.Module
   }
 ]
 // MFEs with/without endpoints
-const itemData: MfeEndpoint[] = [
+const mfeEndpoints: MfeEndpoint[] = [
   {
     id: 'id1',
     unique_id: 'id1_0',
     productName: 'product1',
+    productDisplayName: 'Product 1',
     appName: 'MFE 1',
     appId: 'mfe1',
     exposedModule: './expMod_p1_mfe1',
@@ -70,6 +99,7 @@ const itemData: MfeEndpoint[] = [
     id: 'id1',
     unique_id: 'id1_1',
     productName: 'product1',
+    productDisplayName: 'Product 1',
     appName: 'MFE 1',
     appId: 'mfe1',
     exposedModule: './expMod_p1_mfe1',
@@ -82,12 +112,26 @@ const itemData: MfeEndpoint[] = [
     id: 'id2',
     unique_id: 'id2_0',
     productName: 'product2',
+    productDisplayName: 'Product 2',
     appName: 'MFE 1',
     appId: 'mfe1',
     exposedModule: './expMod_p2_mfe1',
     remoteBaseUrl: '/mfe1/remoteEntry.js',
     type: MicrofrontendType.Module,
     endpoint_name: 'endpoint_2_1_1',
+    endpoint_path: '/{name}'
+  },
+  {
+    id: 'id3',
+    unique_id: 'id3_0',
+    productName: 'product3',
+    productDisplayName: '',
+    appName: 'MFE 1',
+    appId: 'mfe1',
+    exposedModule: './expMod_p3_mfe1',
+    remoteBaseUrl: '/mfe1/remoteEntry.js',
+    type: MicrofrontendType.Module,
+    endpoint_name: 'endpoint_3_1_1',
     endpoint_path: '/{name}'
   }
 ]
@@ -100,7 +144,8 @@ describe('EndpointSearchComponent', () => {
 
   const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
-  const mfeApiServiceSpy = { searchMicrofrontends: jasmine.createSpy('searchMicrofrontends').and.returnValue(of({})) }
+  const productApiServiceSpy = { searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of([])) }
+  const mfeApiServiceSpy = { searchMicrofrontends: jasmine.createSpy('searchMicrofrontends').and.returnValue(of([])) }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -122,6 +167,7 @@ describe('EndpointSearchComponent', () => {
         { provide: UserService, useValue: mockUserService },
         { provide: TranslateService, useClass: TranslateServiceMock },
         { provide: PortalMessageService, useValue: msgServiceSpy },
+        { provide: ProductsAPIService, useValue: productApiServiceSpy },
         { provide: MicrofrontendsAPIService, useValue: mfeApiServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: routeMock }
@@ -132,9 +178,11 @@ describe('EndpointSearchComponent', () => {
     msgServiceSpy.info.calls.reset()
     mockUserService.lang$.getValue.and.returnValue('de')
     // reset data services
+    productApiServiceSpy.searchProducts.calls.reset()
     mfeApiServiceSpy.searchMicrofrontends.calls.reset()
     // to spy data: refill with neutral data
-    mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of({}))
+    productApiServiceSpy.searchProducts.and.returnValue(of([]))
+    mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of([]))
   }))
 
   beforeEach(() => {
@@ -156,13 +204,15 @@ describe('EndpointSearchComponent', () => {
 
   describe('search', () => {
     it('should search enpoints without search criteria', (done) => {
-      mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: responseData }))
+      productApiServiceSpy.searchProducts.and.returnValue(of({ stream: productResponseData }))
+      mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: mfeResponseData }))
 
+      component.prepareSearching()
       component.onSearch()
 
       component.endpoints$?.subscribe({
         next: (data) => {
-          expect(data).toEqual(itemData)
+          expect(data).toEqual(mfeEndpoints)
           done()
         },
         error: done.fail
@@ -170,9 +220,10 @@ describe('EndpointSearchComponent', () => {
     })
 
     it('should display an info message if there is no result', (done) => {
+      productApiServiceSpy.searchProducts.and.returnValue(of({ stream: productResponseData }))
       mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of({ totalElements: 0, stream: [] }))
 
-      component.onSearch()
+      component.ngOnInit()
 
       component.endpoints$?.subscribe({
         next: (data) => {
@@ -184,12 +235,12 @@ describe('EndpointSearchComponent', () => {
       })
     })
 
-    it('should display an error message if the search fails', (done) => {
+    it('should display an error message if the search for Microfrontends fails', (done) => {
       const errorResponse = { status: '403', statusText: 'Not authorized' }
       mfeApiServiceSpy.searchMicrofrontends.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
 
-      component.onSearch()
+      component.ngOnInit()
 
       component.endpoints$?.subscribe({
         next: (data) => {
@@ -198,6 +249,27 @@ describe('EndpointSearchComponent', () => {
         },
         error: () => {
           expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.SEARCH_FAILED' })
+          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.MFES')
+          expect(console.error).toHaveBeenCalledWith('searchParametersByCriteria', errorResponse)
+          done.fail
+        }
+      })
+    })
+
+    it('should display an error message if the search for products fails', (done) => {
+      const errorResponse = { status: '403', statusText: 'Not authorized' }
+      productApiServiceSpy.searchProducts.and.returnValue(throwError(() => errorResponse))
+      spyOn(console, 'error')
+
+      component.ngOnInit()
+
+      component.products$?.subscribe({
+        next: (data) => {
+          expect(data).toEqual([])
+          done()
+        },
+        error: () => {
+          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PRODUCTS')
           expect(console.error).toHaveBeenCalledWith('searchParametersByCriteria', errorResponse)
           done.fail
         }
@@ -297,27 +369,27 @@ describe('EndpointSearchComponent', () => {
 
   describe('sort endpoints', () => {
     it('should correctly sort items by product', () => {
-      const items: MfeEndpoint[] = itemData
+      const items: MfeEndpoint[] = mfeEndpoints
       const sortedItems = items.sort(component.sortMfes)
 
-      expect(sortedItems[0]).toEqual(itemData[0])
+      expect(sortedItems[0]).toEqual(mfeEndpoints[0])
     })
 
     it("should treat falsy values for SelectItem.label as ''", () => {
-      const items: MfeEndpoint[] = itemData
-      items.push({ ...itemData[1], exposedModule: undefined })
+      const items: MfeEndpoint[] = mfeEndpoints
+      items.push({ ...mfeEndpoints[1], exposedModule: undefined })
       const sortedItems = items.sort(component.sortMfes)
 
-      expect(sortedItems[1]).toEqual(itemData[1])
+      expect(sortedItems[1]).toEqual(mfeEndpoints[1])
     })
 
     it("should treat falsy values for SelectItem.label as ''", () => {
-      const items: MfeEndpoint[] = itemData
-      items.push({ ...itemData[1], exposedModule: undefined })
-      items.push({ ...itemData[2], exposedModule: undefined })
+      const items: MfeEndpoint[] = mfeEndpoints
+      items.push({ ...mfeEndpoints[1], exposedModule: undefined })
+      items.push({ ...mfeEndpoints[2], exposedModule: undefined })
       const sortedItems = items.sort(component.sortMfes)
 
-      expect(sortedItems[1]).toEqual(itemData[1])
+      expect(sortedItems[1]).toEqual(mfeEndpoints[1])
     })
   })
 })

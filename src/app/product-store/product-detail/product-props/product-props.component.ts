@@ -152,6 +152,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
         id: this.productId!,
         updateProductRequest: {
           name: this.productName,
+          modificationCount: this.product?.modificationCount,
           version: this.formGroup.value['version'],
           description: this.formGroup.value['description'],
           provider: this.formGroup.value['provider'],

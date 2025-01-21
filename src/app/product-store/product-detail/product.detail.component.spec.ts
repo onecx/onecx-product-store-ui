@@ -22,13 +22,14 @@ const product = {
 
 class MockProductPropertyComponent {
   onSave = jasmine.createSpy('onSave')
+  ngOnChanges = jasmine.createSpy('ngOnChanges')
 }
 
 describe('ProductDetailComponent', () => {
   let component: ProductDetailComponent
   let fixture: ComponentFixture<ProductDetailComponent>
   let router: Router
-  const mockChildComponent = new MockProductPropertyComponent()
+  const mockPropsComponent = new MockProductPropertyComponent()
 
   const apiServiceSpy = {
     getProductByName: jasmine.createSpy('getProductByName').and.returnValue(of({})),
@@ -158,7 +159,7 @@ describe('ProductDetailComponent', () => {
     spyOn(component, 'onEdit')
     spyOn(component, 'onCancel')
     spyOn(component, 'onSave')
-    component.product = product
+    component.item4Delete = product
     component.changeMode = 'VIEW'
 
     component.ngOnInit()
@@ -184,7 +185,7 @@ describe('ProductDetailComponent', () => {
     spyOn(component, 'onEdit')
     component.changeMode = 'VIEW'
 
-    component.prepareActionButtons(product)
+    component.preparePageAction(product)
 
     let actions: any = []
     component.actions$!.subscribe((act) => (actions = act))
@@ -224,20 +225,21 @@ describe('ProductDetailComponent', () => {
   })
 
   it('should behave correctly onCancel in edit mode', () => {
+    component.productPropsComponent = mockPropsComponent as unknown as ProductPropertyComponent
     spyOn(component, 'getProduct')
     component.changeMode = 'EDIT'
 
-    component.onCancel()
+    component.onCancel(product)
 
     expect(component.changeMode).toEqual('VIEW')
-    expect(component.getProduct).toHaveBeenCalled()
+    expect(component.productPropsComponent.ngOnChanges).toHaveBeenCalled()
   })
 
   it('should behave correctly onCancel in new mode', () => {
     spyOn(component, 'close')
     component.changeMode = 'CREATE'
 
-    component.onCancel()
+    component.onCancel(product)
 
     expect(component.close).toHaveBeenCalled()
   })
@@ -246,13 +248,13 @@ describe('ProductDetailComponent', () => {
     spyOn(component, 'close')
     component.changeMode = 'COPY'
 
-    component.onCancel()
+    component.onCancel(product)
 
     expect(component.close).toHaveBeenCalled()
   })
 
   it('should behave correctly onSave', () => {
-    component.productPropsComponent = mockChildComponent as unknown as ProductPropertyComponent
+    component.productPropsComponent = mockPropsComponent as unknown as ProductPropertyComponent
 
     component.onSave()
 
@@ -267,33 +269,41 @@ describe('ProductDetailComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith(['../', product.name], jasmine.any(Object))
   })
 
-  it('should behave correctly onChange if change false', () => {
-    spyOn(component, 'getProduct')
+  it('should behave correctly onChange if change false', (done) => {
+    spyOn(component, 'preparePageAction')
 
-    component.onChange()
+    component.onChange(product)
 
-    expect(component.getProduct).toHaveBeenCalled()
+    component.product$.subscribe({
+      next: (result) => {
+        expect(result.id).toBe('id')
+        done()
+      },
+      error: done.fail
+    })
+
+    expect(component.preparePageAction).toHaveBeenCalled()
   })
 
   it('should behave correctly onDelete', () => {
     component.onDelete(product)
 
-    expect(component.product).toEqual(product)
+    expect(component.item4Delete).toEqual(product)
   })
 
   it('should delete a product', () => {
     apiServiceSpy.deleteProduct
-    component.product = product
+    component.item4Delete = product
 
     component.onDeleteConfirmation()
 
-    expect(component.product).toBeUndefined()
+    expect(component.item4Delete).toBeUndefined()
     expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.PRODUCT.OK' })
   })
 
   it('should display error message when delete fails', () => {
     apiServiceSpy.deleteProduct.and.returnValue(throwError(() => new Error()))
-    component.product = product
+    component.item4Delete = product
 
     component.onDeleteConfirmation()
 
