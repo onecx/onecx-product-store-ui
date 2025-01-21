@@ -15,6 +15,7 @@
           type="text"
           class="w-11rem sm:w-18rem text-responsive"
           formControlName="productName"
+          [attr.aria-label]="'ACTIONS.SEARCH.ENDPOINT.PRODUCT_NAME' | translate"
           [pTooltip]="
             ('ACTIONS.SEARCH.ENDPOINT.PRODUCT_NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)
           "

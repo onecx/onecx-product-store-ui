@@ -39,14 +39,13 @@ export class EndpointSearchComponent implements OnInit {
   public changeMode: ChangeMode = 'VIEW'
   public dateFormat: string
   public actions$: Observable<Action[]> | undefined
-  public mfeSearchCriteriaGroup!: FormGroup<MicrofrontendSearchCriteria>
-
   public filteredColumns: Column[] = []
 
   @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
   public dataViewControlsTranslations: DataViewControlTranslations = {}
 
   // data
+  public mfeSearchCriteriaGroup: FormGroup<MicrofrontendSearchCriteria>
   public endpoints$: Observable<MfeEndpoint[]> = of([])
   public mfes$: Observable<MicrofrontendAbstract[]> = of([])
   public products$: Observable<ProductAbstract[]> = of([])
@@ -179,6 +178,7 @@ export class EndpointSearchComponent implements OnInit {
     this.dataTable?.filterGlobal(event, 'contains')
   }
   public onSearch() {
+    this.prepareSearching()
     this.loadData()
   }
   public onCriteriaReset() {
@@ -192,7 +192,10 @@ export class EndpointSearchComponent implements OnInit {
     // Products => to get the product display name
     this.products$ = this.productApi
       .searchProducts({
-        productSearchCriteria: { pageSize: 1000 }
+        productSearchCriteria: {
+          name: this.mfeSearchCriteriaGroup.controls['productName'].value,
+          pageSize: 1000
+        }
       })
       .pipe(
         map((data) => (data.stream ? data.stream : [])),
