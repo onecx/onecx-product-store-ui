@@ -394,30 +394,35 @@
       "PRODUCT": "Unknown problem retrieving Application data - please try again.",
       "PRODUCTS": "Unknown problem retrieving Application data - please try again.",
       "APPS": "Unknown problem retrieving App data - please try again.",
+      "MFES": "Unknown problem retrieving Microfrontend data - please try again.",
       "SLOTS": "Unknown problem retrieving Slot data - please try again."
     },
     "HTTP_STATUS_401": {
       "PRODUCT": "You are not authorized to see Application details.",
       "PRODUCTS": "You are not authorized to see Applications.",
       "APPS": "You are not authorized to see Apps.",
+      "MFES": "You are not authorized to see Microfrontends.",
       "SLOTS": "You are not authorized to see Slots."
     },
     "HTTP_STATUS_403": {
       "PRODUCT": "You have no permission to see Application details.",
       "PRODUCTS": "You have no permissions to see Applications.",
       "APPS": "You have no permissions to see Apps.",
+      "MFES": "You have no permissions to see Microfrontends.",
       "SLOTS": "You have no permissions to see Slots."
     },
     "HTTP_STATUS_404": {
       "PRODUCT": "Application could not be found.",
       "PRODUCTS": "No Applications could be found.",
       "APPS": "No Apps could be found.",
+      "MFES": "No Microfrontends could be found.",
       "SLOTS": "No Slots could be found."
     },
     "HTTP_STATUS_500": {
       "PRODUCT": "Unknown server problem retrieving Application data - please try again.",
       "PRODUCTS": "Unknown server problem retrieving Application data - please try again.",
       "APPS": "Unknown server problem retrieving App data - please try again.",
+      "MFES": "Unknown server problem retrieving Microfrontend data - please try again.",
       "SLOTS": "Unknown server problem retrieving Slot data - please try again."
     }
   }

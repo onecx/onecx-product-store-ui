@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { FormControl, FormGroup } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
-import { catchError, finalize, map, Observable, of, tap } from 'rxjs'
+import { catchError, combineLatest, finalize, map, Observable, of, tap } from 'rxjs'
 import { Table } from 'primeng/table'
 
 import { UserService } from '@onecx/angular-integration-interface'
@@ -11,10 +11,10 @@ import { Action, Column, DataViewControlTranslations, PortalMessageService } fro
 import {
   MicrofrontendAbstract,
   MicrofrontendsAPIService,
-  MicrofrontendPageResult,
-  MicrofrontendType
+  MicrofrontendType,
+  ProductsAPIService,
+  ProductAbstract
 } from 'src/app/shared/generated'
-import { limitText } from 'src/app/shared/utils'
 
 export interface MicrofrontendSearchCriteria {
   productName: FormControl<string | null>
@@ -22,15 +22,9 @@ export interface MicrofrontendSearchCriteria {
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 export type MfeEndpoint = MicrofrontendAbstract & {
   unique_id: string
+  productDisplayName: string
   endpoint_name: string
   endpoint_path: string
-}
-type ExtendedColumn = Column & {
-  hasFilter?: boolean
-  isDate?: boolean
-  isDropdown?: boolean
-  limit?: boolean
-  css?: string
 }
 
 @Component({
@@ -48,28 +42,27 @@ export class EndpointSearchComponent implements OnInit {
   public mfeSearchCriteriaGroup!: FormGroup<MicrofrontendSearchCriteria>
 
   public filteredColumns: Column[] = []
-  public limitText = limitText
 
   @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
   public dataViewControlsTranslations: DataViewControlTranslations = {}
 
   // data
-  public endpoints$: Observable<MfeEndpoint[]> | undefined
+  public endpoints$: Observable<MfeEndpoint[]> = of([])
+  public mfes$: Observable<MicrofrontendAbstract[]> = of([])
+  public products$: Observable<ProductAbstract[]> = of([])
 
-  public columns: ExtendedColumn[] = [
+  public columns: Column[] = [
     {
       field: 'endpoint_name',
       header: 'NAME',
       active: true,
-      translationPrefix: 'ENDPOINT',
-      limit: false
+      translationPrefix: 'ENDPOINT'
     },
     {
       field: 'endpoint_path',
       header: 'PATH',
       active: true,
-      translationPrefix: 'ENDPOINT',
-      limit: false
+      translationPrefix: 'ENDPOINT'
     }
   ]
   constructor(
@@ -78,7 +71,8 @@ export class EndpointSearchComponent implements OnInit {
     private readonly translate: TranslateService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
-    private readonly mfeApi: MicrofrontendsAPIService
+    private readonly mfeApi: MicrofrontendsAPIService,
+    private readonly productApi: ProductsAPIService
   ) {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.filteredColumns = this.columns.filter((a) => a.active === true)
@@ -90,7 +84,8 @@ export class EndpointSearchComponent implements OnInit {
   ngOnInit(): void {
     this.prepareDialogTranslations()
     this.preparePageActions()
-    this.searchEndpoints()
+    this.prepareSearching()
+    this.loadData()
   }
 
   /**
@@ -184,7 +179,7 @@ export class EndpointSearchComponent implements OnInit {
     this.dataTable?.filterGlobal(event, 'contains')
   }
   public onSearch() {
-    this.searchEndpoints()
+    this.loadData()
   }
   public onCriteriaReset() {
     this.mfeSearchCriteriaGroup.reset()
@@ -193,9 +188,22 @@ export class EndpointSearchComponent implements OnInit {
   /****************************************************************************
    *  SEARCHING
    */
-  public searchEndpoints(): void {
-    this.loading = true
-    this.endpoints$ = this.mfeApi
+  public prepareSearching(): void {
+    // Products => to get the product display name
+    this.products$ = this.productApi
+      .searchProducts({
+        productSearchCriteria: { pageSize: 1000 }
+      })
+      .pipe(
+        map((data) => (data.stream ? data.stream : [])),
+        catchError((err) => {
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+          console.error('searchProducts', err)
+          return of([])
+        })
+      )
+    // Microfrontends
+    this.mfes$ = this.mfeApi
       .searchMicrofrontends({
         mfeAndMsSearchCriteria: {
           productName: this.mfeSearchCriteriaGroup.controls['productName'].value,
@@ -204,43 +212,22 @@ export class EndpointSearchComponent implements OnInit {
         }
       })
       .pipe(
-        // map from page result to mfe endpoint....
         tap((data: any) => {
           if (data.totalElements === 0) {
             this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
             return data.size
           }
         }),
-        map((data: MicrofrontendPageResult) => {
-          const mfeend: MfeEndpoint[] = []
-          if (!data.stream || data.stream.length === 0) return mfeend
-          data.stream.forEach((mfe) => {
-            mfe.endpoints?.forEach((ep, i) => {
-              mfeend.push({
-                id: mfe.id,
-                appId: mfe.appId,
-                appName: mfe.appName,
-                productName: mfe.productName,
-                exposedModule: mfe.exposedModule,
-                remoteBaseUrl: mfe.remoteBaseUrl,
-                type: mfe.type,
-                unique_id: mfe.id + '_' + i,
-                endpoint_name: ep.name,
-                endpoint_path: ep.path
-              })
-            })
-          })
-          mfeend.sort(this.sortMfes)
-          return mfeend
-        }),
+        map((data) => (data.stream ? data.stream : [])),
         catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.MFES'
           console.error('searchMicrofrontends', err)
-          return of([] as MfeEndpoint[])
+          return of([])
         }),
         finalize(() => (this.loading = false))
       )
   }
+
   public sortMfes(a: MfeEndpoint, b: MfeEndpoint): number {
     return (
       a.productName.toUpperCase().localeCompare(b.productName.toUpperCase()) ||
@@ -248,6 +235,44 @@ export class EndpointSearchComponent implements OnInit {
         b.exposedModule ? b.exposedModule.toUpperCase() : ''
       ) ||
       a.endpoint_name.toUpperCase().localeCompare(b.endpoint_name.toUpperCase())
+    )
+  }
+
+  private getProductDisplayName(name: string, pas: ProductAbstract[]): string {
+    const pf = pas.filter((p) => p.name === name)
+    return pf[0] ? pf[0].displayName! : ''
+  }
+
+  // complete refresh: getting meta data and trigger search
+  private loadData(): void {
+    this.loading = true
+    this.exceptionKey = undefined
+    this.endpoints$ = combineLatest([this.products$, this.mfes$]).pipe(
+      map(([ps, mfes]) => {
+        const eps: MfeEndpoint[] = []
+        if (mfes?.length > 0) {
+          mfes.forEach((mfe) => {
+            mfe.endpoints?.forEach((ep, i) => {
+              eps.push({
+                id: mfe.id,
+                unique_id: mfe.id + '_' + i,
+                appId: mfe.appId,
+                appName: mfe.appName,
+                productName: mfe.productName,
+                productDisplayName: this.getProductDisplayName(mfe.productName, ps),
+                exposedModule: mfe.exposedModule,
+                remoteBaseUrl: mfe.remoteBaseUrl,
+                type: mfe.type,
+                endpoint_name: ep.name,
+                endpoint_path: ep.path
+              })
+            })
+          })
+          eps.sort(this.sortMfes)
+        }
+        return eps
+      }),
+      finalize(() => (this.loading = false))
     )
   }
 }
