@@ -22,13 +22,14 @@ const product = {
 
 class MockProductPropertyComponent {
   onSave = jasmine.createSpy('onSave')
+  ngOnChanges = jasmine.createSpy('ngOnChanges')
 }
 
 describe('ProductDetailComponent', () => {
   let component: ProductDetailComponent
   let fixture: ComponentFixture<ProductDetailComponent>
   let router: Router
-  const mockChildComponent = new MockProductPropertyComponent()
+  const mockPropsComponent = new MockProductPropertyComponent()
 
   const apiServiceSpy = {
     getProductByName: jasmine.createSpy('getProductByName').and.returnValue(of({})),
@@ -224,13 +225,14 @@ describe('ProductDetailComponent', () => {
   })
 
   it('should behave correctly onCancel in edit mode', () => {
+    component.productPropsComponent = mockPropsComponent as unknown as ProductPropertyComponent
     spyOn(component, 'getProduct')
     component.changeMode = 'EDIT'
 
     component.onCancel(product)
 
     expect(component.changeMode).toEqual('VIEW')
-    expect(component.getProduct).toHaveBeenCalled()
+    expect(component.productPropsComponent.ngOnChanges).toHaveBeenCalled()
   })
 
   it('should behave correctly onCancel in new mode', () => {
@@ -252,7 +254,7 @@ describe('ProductDetailComponent', () => {
   })
 
   it('should behave correctly onSave', () => {
-    component.productPropsComponent = mockChildComponent as unknown as ProductPropertyComponent
+    component.productPropsComponent = mockPropsComponent as unknown as ProductPropertyComponent
 
     component.onSave()
 
@@ -267,12 +269,20 @@ describe('ProductDetailComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith(['../', product.name], jasmine.any(Object))
   })
 
-  it('should behave correctly onChange if change false', () => {
-    spyOn(component, 'getProduct')
+  it('should behave correctly onChange if change false', (done) => {
+    spyOn(component, 'preparePageAction')
 
-    component.onChange()
+    component.onChange(product)
 
-    expect(component.getProduct).toHaveBeenCalled()
+    component.product$.subscribe({
+      next: (result) => {
+        expect(result.id).toBe('id')
+        done()
+      },
+      error: done.fail
+    })
+
+    expect(component.preparePageAction).toHaveBeenCalled()
   })
 
   it('should behave correctly onDelete', () => {
