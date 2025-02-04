@@ -30,7 +30,8 @@ describe('ProductAppsComponent', () => {
     appType: 'MFE',
     appName: 'microfrontend',
     productName: 'prodName',
-    appTypeKey: 'APP.MFE'
+    appTypeKey: 'APP.MFE',
+    mfeType: MicrofrontendType.Module
   }
   const msApp: AppAbstract = {
     id: 'id',
@@ -38,7 +39,8 @@ describe('ProductAppsComponent', () => {
     appType: 'MS',
     appName: 'microservice',
     productName: 'prodName',
-    appTypeKey: 'APP.MS'
+    appTypeKey: 'APP.MS',
+    mfeType: undefined
   }
   const mfe: MicrofrontendAbstract = {
     id: 'id',
