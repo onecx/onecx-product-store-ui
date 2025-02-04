@@ -105,7 +105,9 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
    */
   public onDetail(ev: any, app: any, appType: AppType) {
     ev.stopPropagation()
-    this.app = { ...app, appType: appType } as AppAbstract
+    console.log(app)
+    this.app = { ...app, appType: appType, mfeType: app.mfeType ?? app.type } as AppAbstract
+    console.log(this.app)
     this.changeMode = 'EDIT'
     this.displayDetailDialog = true
   }
