@@ -10,6 +10,7 @@ import { Action, DataViewControlTranslations, UserService } from '@onecx/portal-
 import {
   MicrofrontendPageResult,
   MicrofrontendsAPIService,
+  MicrofrontendType,
   Microservice,
   MicroservicePageResult,
   MicroservicesAPIService
@@ -24,7 +25,7 @@ export interface AppSearchCriteria {
 export type AppType = 'MS' | 'MFE'
 export type AppName = 'Microservice' | 'Microfrontend'
 export type AppFilterType = 'ALL' | AppType
-export type AppAbstract = Microservice & { appType: AppType; appTypeKey?: string; mfeType?: string }
+export type AppAbstract = Microservice & { appType: AppType; appTypeKey?: string; mfeType?: MicrofrontendType }
 export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
 
 @Component({
