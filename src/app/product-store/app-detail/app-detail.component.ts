@@ -71,7 +71,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
   public formGroupMfe: FormGroup
   public formGroupMs: FormGroup
   public selectedTabIndex = 0
-  public dialogTitleKey = ''
+  public dialogTitleKey: string | undefined = undefined
   public loading = false
   public operator = false
   public undeployed = false
@@ -134,27 +134,30 @@ export class AppDetailComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-    this.enableForms()
-    this.selectedTabIndex = 0
-    if (this.changeMode === 'CREATE') {
-      this.ms = undefined
-      this.mfe = undefined
-      this.formGroupMs.reset()
-      this.formGroupMfe.reset()
-      this.formGroupMfe.controls['type'].setValue('MODULE')
-      this.formGroupMfe.controls['technology'].setValue('ANGULAR')
-      this.dialogTitleKey = 'ACTIONS.' + this.changeMode + '.' + this.appAbstract?.appType + '.HEADER'
-    }
-    if (this.appAbstract?.id) {
-      if (this.appAbstract.appType === 'MFE') this.getMfe()
-      if (this.appAbstract.appType === 'MS') this.getMs()
+    if (this.displayDialog) {
+      this.enableForms()
+      this.selectedTabIndex = 0
+      this.dialogTitleKey = undefined
+      if (this.changeMode === 'CREATE') {
+        this.ms = undefined
+        this.mfe = undefined
+        this.formGroupMs.reset()
+        this.formGroupMfe.reset()
+        this.formGroupMfe.controls['type'].setValue('MODULE')
+        this.formGroupMfe.controls['technology'].setValue('ANGULAR')
+        this.dialogTitleKey = 'ACTIONS.CREATE.' + this.appAbstract?.appType + '.HEADER'
+      }
+      if (this.appAbstract?.id) {
+        if (this.appAbstract.appType === 'MFE') this.getMfe()
+        if (this.appAbstract.appType === 'MS') this.getMs()
+      }
     }
   }
 
   public allowEditing(): boolean {
     return (
       (this.hasEditPermission && this.changeMode === 'EDIT') ||
-      (this.hasCreatePermission && this.changeMode === 'CREATE')
+      (this.hasCreatePermission && ['COPY', 'CREATE'].includes(this.changeMode))
     )
   }
   private enableForms(): void {
@@ -188,11 +191,12 @@ export class AppDetailComponent implements OnInit, OnChanges {
                 this.mfe.creationDate = undefined
                 this.mfe.modificationDate = undefined
               }
-              this.changeMode = 'CREATE'
+              this.dialogTitleKey = 'ACTIONS.CREATE.MFE.HEADER'
+            } else {
+              this.dialogTitleKey = 'ACTIONS.' + (this.hasEditPermission ? 'EDIT' : 'VIEW') + '.MFE.HEADER'
             }
             this.enableForms()
           }
-          this.dialogTitleKey = 'ACTIONS.' + this.changeMode + '.MFE.HEADER'
         }
       })
   }
@@ -214,11 +218,12 @@ export class AppDetailComponent implements OnInit, OnChanges {
                 this.ms.creationDate = undefined
                 this.ms.modificationDate = undefined
               }
-              this.changeMode = 'CREATE'
+              this.dialogTitleKey = 'ACTIONS.CREATE.MS.HEADER'
+            } else {
+              this.dialogTitleKey = 'ACTIONS.' + (this.hasEditPermission ? 'EDIT' : 'VIEW') + '.MS.HEADER'
             }
             this.enableForms()
           }
-          this.dialogTitleKey = 'ACTIONS.' + this.changeMode + '.MS.HEADER'
         }
       })
   }
@@ -254,7 +259,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
   }
 
   /**
-   * CLICK Actions
+   * UI Actions
    */
   public onDialogHide() {
     this.appChanged.emit(false)
@@ -301,7 +306,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
         this.appChanged.emit(true)
       },
       error: (err) => {
-        this.displaySaveError(err)
+        this.displaySaveError('createMicrofrontend', err)
       }
     })
   }
@@ -312,7 +317,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
         this.appChanged.emit(true)
       },
       error: (err) => {
-        this.displaySaveError(err)
+        this.displaySaveError('createMicroservice', err)
       }
     })
   }
@@ -329,7 +334,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
           this.appChanged.emit(true)
         },
         error: (err) => {
-          this.displaySaveError(err)
+          this.displaySaveError('updateMicrofrontend', err)
         }
       })
   }
@@ -345,12 +350,12 @@ export class AppDetailComponent implements OnInit, OnChanges {
           this.appChanged.emit(true)
         },
         error: (err) => {
-          this.displaySaveError(err)
+          this.displaySaveError('updateMicroservice', err)
         }
       })
   }
 
-  private displaySaveError(err: any): void {
+  private displaySaveError(funcName: string, err: any): void {
     let key = err?.error?.detail.indexOf('microfrontend_app_id') > 0 ? 'VALIDATION.APP.UNIQUE_CONSTRAINT.APP_ID' : ''
     key =
       err?.error?.detail.indexOf('microfrontend_remote_module') > 0
@@ -364,7 +369,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
           ? key
           : 'VALIDATION.ERRORS.INTERNAL_ERROR'
     })
-    console.error('err', err)
+    console.error(funcName, err)
   }
 
   private getDropdownTranslations() {

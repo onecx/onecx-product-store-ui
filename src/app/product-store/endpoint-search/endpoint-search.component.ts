@@ -15,6 +15,7 @@ import {
   ProductsAPIService,
   ProductAbstract
 } from 'src/app/shared/generated'
+import { AppAbstract } from '../app-search/app-search.component'
 
 export interface MicrofrontendSearchCriteria {
   productName: FormControl<string | null>
@@ -40,6 +41,7 @@ export class EndpointSearchComponent implements OnInit {
   public dateFormat: string
   public actions$: Observable<Action[]> | undefined
   public filteredColumns: Column[] = []
+  public displayAppDetailDialog = false
 
   @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
   public dataViewControlsTranslations: DataViewControlTranslations = {}
@@ -49,6 +51,7 @@ export class EndpointSearchComponent implements OnInit {
   public endpoints$: Observable<MfeEndpoint[]> = of([])
   public mfes$: Observable<MicrofrontendAbstract[]> = of([])
   public products$: Observable<ProductAbstract[]> = of([])
+  public mfeItem4Detail: AppAbstract | undefined = undefined
 
   public columns: Column[] = [
     {
@@ -65,7 +68,7 @@ export class EndpointSearchComponent implements OnInit {
     }
   ]
   constructor(
-    private readonly user: UserService,
+    public readonly user: UserService,
     private readonly msgService: PortalMessageService,
     private readonly translate: TranslateService,
     private readonly router: Router,
@@ -183,6 +186,15 @@ export class EndpointSearchComponent implements OnInit {
   }
   public onCriteriaReset() {
     this.mfeSearchCriteriaGroup.reset()
+  }
+  public onAppDetail(ev: any, data: MfeEndpoint) {
+    this.mfeItem4Detail = { id: data.id, appType: 'MFE', mfeType: MicrofrontendType.Module }
+    this.displayAppDetailDialog = true
+  }
+  public onMfeChanged(changed: any) {
+    this.displayAppDetailDialog = false
+    this.mfeItem4Detail = undefined
+    if (changed) this.loadData()
   }
 
   /****************************************************************************

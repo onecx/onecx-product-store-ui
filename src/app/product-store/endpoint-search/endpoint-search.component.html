@@ -143,7 +143,24 @@
           >
             {{ rowData['productDisplayName'] ?? rowData['productName'] }}
           </td>
-          <td [id]="'ps_endpoint_search_table_row_app_name'">{{ rowData['appName'] }}</td>
+
+          <td [id]="'ps_endpoint_search_table_row_app_name'">
+            <a
+              tabindex="0"
+              class="p-2 underline font-medium cursor-pointer border-circle"
+              [id]="'ps_endpoint_search_table_row_' + i + '_app_name'"
+              (click)="onAppDetail($event, rowData)"
+              (keydown.enter)="onAppDetail($event, rowData)"
+              (keydown.space)="onAppDetail($event, rowData)"
+              [attr.aria-label]="'ACTIONS.DELETE.LABEL' | translate"
+              [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            >
+              {{ rowData['appName'] }}
+            </a>
+          </td>
+
           <td class="w-3rem text-center border-left-1 border-right-1">{{ i + 1 }}</td>
           <td
             *ngFor="let col of columns"
@@ -157,3 +174,10 @@
     </p-table>
   </ocx-page-content>
 </ocx-portal-page>
+
+<app-app-detail
+  [displayDialog]="displayAppDetailDialog"
+  [appAbstract]="mfeItem4Detail"
+  [changeMode]="user.hasPermission('APP#EDIT') ? 'EDIT' : 'VIEW'"
+  (appChanged)="onMfeChanged($event)"
+></app-app-detail>
