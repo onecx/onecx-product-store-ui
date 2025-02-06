@@ -1,14 +1,13 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { provideHttpClient, HttpClient } from '@angular/common/http'
+import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
-import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
 import { of, throwError } from 'rxjs'
+import { TranslateTestingModule } from 'ngx-translate-testing'
 
-import { AppStateService } from '@onecx/angular-integration-interface'
-import { Column, createTranslateLoader, PortalMessageService } from '@onecx/portal-integration-angular'
+import { Column, PortalMessageService } from '@onecx/portal-integration-angular'
 
 import {
   MicrofrontendAbstract,
@@ -17,7 +16,6 @@ import {
   ProductAbstract,
   ProductsAPIService
 } from 'src/app/shared/generated'
-import { TranslateServiceMock } from 'src/app/shared/mocks/TranslateServiceMock'
 import { EndpointSearchComponent, MfeEndpoint, MicrofrontendSearchCriteria } from './endpoint-search.component'
 
 const searchCriteriaForm = new FormGroup<MicrofrontendSearchCriteria>({
@@ -150,20 +148,15 @@ describe('EndpointSearchComponent', () => {
     TestBed.configureTestingModule({
       declarations: [EndpointSearchComponent],
       imports: [
-        TranslateModule.forRoot({
-          isolate: true,
-          loader: {
-            provide: TranslateLoader,
-            useFactory: createTranslateLoader,
-            deps: [HttpClient, AppStateService]
-          }
-        })
+        TranslateTestingModule.withTranslations({
+          de: require('src/assets/i18n/de.json'),
+          en: require('src/assets/i18n/en.json')
+        }).withDefaultLanguage('en')
       ],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: TranslateService, useClass: TranslateServiceMock },
         { provide: PortalMessageService, useValue: msgServiceSpy },
         { provide: ProductsAPIService, useValue: productApiServiceSpy },
         { provide: MicrofrontendsAPIService, useValue: mfeApiServiceSpy },
