@@ -1,16 +1,18 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { Location } from '@angular/common'
+import { provideHttpClient } from '@angular/common/http'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { provideRouter, Router } from '@angular/router'
 import { of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
-import { PortalMessageService, ConfigurationService, UserService } from '@onecx/portal-integration-angular'
+import { ConfigurationService, UserService } from '@onecx/angular-integration-interface'
+import { PortalMessageService } from '@onecx/portal-integration-angular'
+
 import { ProductDetailComponent } from './product-detail.component'
 import { ProductPropertyComponent } from './product-props/product-props.component'
 import { Product, ProductsAPIService } from 'src/app/shared/generated'
-import { provideHttpClient } from '@angular/common/http'
-import { provideHttpClientTesting } from '@angular/common/http/testing'
 
 const product = {
   id: 'id',

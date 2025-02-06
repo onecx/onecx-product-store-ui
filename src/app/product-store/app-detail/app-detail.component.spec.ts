@@ -1,11 +1,14 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { of, throwError } from 'rxjs'
+import { provideHttpClient } from '@angular/common/http'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
-import { PortalMessageService, ConfigurationService, UserService } from '@onecx/portal-integration-angular'
-import { AppDetailComponent, MfeForm, MsForm } from './app-detail.component'
+import { ConfigurationService, UserService } from '@onecx/angular-integration-interface'
+import { PortalMessageService } from '@onecx/portal-integration-angular'
+
 import {
   MicrofrontendsAPIService,
   MicroservicesAPIService,
@@ -14,8 +17,7 @@ import {
   MicrofrontendType
 } from 'src/app/shared/generated'
 import { AppAbstract } from '../app-search/app-search.component'
-import { provideHttpClient } from '@angular/common/http'
-import { provideHttpClientTesting } from '@angular/common/http/testing'
+import { AppDetailComponent, MfeForm, MsForm } from './app-detail.component'
 
 const mfeForm = new FormGroup<MfeForm>({
   appId: new FormControl('id', Validators.minLength(2)),
@@ -121,8 +123,7 @@ describe('AppDetailComponent', () => {
       getValue: jasmine.createSpy('getValue').and.returnValue('en')
     },
     hasPermission: jasmine.createSpy('hasPermission').and.callFake((permission: string) => {
-      console.log('hasPermission', permission)
-      return ['APP#CREATE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
+      return ['APP#CREATE', 'APP#DELETE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
     })
   }
 

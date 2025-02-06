@@ -3,8 +3,9 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
+import { UserService } from '@onecx/angular-integration-interface'
 import { PortalMessageService } from '@onecx/portal-integration-angular'
-import { AppType, ProductAppsComponent } from './product-apps.component'
+
 import {
   MicrofrontendAbstract,
   MicrofrontendPageResult,
@@ -18,6 +19,7 @@ import {
 } from 'src/app/shared/generated'
 
 import { AppAbstract } from '../../app-search/app-search.component'
+import { AppType, ProductAppsComponent } from './product-apps.component'
 
 describe('ProductAppsComponent', () => {
   let component: ProductAppsComponent
@@ -55,6 +57,14 @@ describe('ProductAppsComponent', () => {
   const productServiceSpy = {
     getProductDetailsByCriteria: jasmine.createSpy('getProductDetailsByCriteria').and.returnValue(of({}))
   }
+  const mockUserService = {
+    lang$: {
+      getValue: jasmine.createSpy('getValue').and.returnValue('en')
+    },
+    hasPermission: jasmine.createSpy('hasPermission').and.callFake((permission) => {
+      return ['APP#CREATE', 'APP#DELETE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
+    })
+  }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -66,6 +76,7 @@ describe('ProductAppsComponent', () => {
         }).withDefaultLanguage('en')
       ],
       providers: [
+        { provide: UserService, useValue: mockUserService },
         { provide: ProductsAPIService, useValue: productServiceSpy },
         { provide: PortalMessageService, useValue: msgServiceSpy }
       ],
