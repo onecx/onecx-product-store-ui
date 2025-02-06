@@ -73,14 +73,8 @@ describe('AppSearchComponent', () => {
     lang$: {
       getValue: jasmine.createSpy('getValue').and.returnValue('en')
     },
-    hasPermission: jasmine.createSpy('hasPermission').and.callFake((permissionName) => {
-      if (permissionName === 'APP#CREATE') {
-        return true
-      } else if (permissionName === 'APP#EDIT') {
-        return true
-      } else {
-        return false
-      }
+    hasPermission: jasmine.createSpy('hasPermission').and.callFake((permission) => {
+      return ['APP#CREATE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
     })
   }
 

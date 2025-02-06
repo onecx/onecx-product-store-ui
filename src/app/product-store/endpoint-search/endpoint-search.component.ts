@@ -5,7 +5,6 @@ import { TranslateService } from '@ngx-translate/core'
 import { catchError, combineLatest, finalize, map, Observable, of, tap } from 'rxjs'
 import { Table } from 'primeng/table'
 
-import { UserService } from '@onecx/angular-integration-interface'
 import { Action, Column, DataViewControlTranslations, PortalMessageService } from '@onecx/portal-integration-angular'
 
 import {
@@ -38,7 +37,6 @@ export class EndpointSearchComponent implements OnInit {
   public loading = false
   public exceptionKey: string | undefined = undefined
   public changeMode: ChangeMode = 'VIEW'
-  public dateFormat: string
   public actions$: Observable<Action[]> | undefined
   public filteredColumns: Column[] = []
   public displayAppDetailDialog = false
@@ -68,7 +66,6 @@ export class EndpointSearchComponent implements OnInit {
     }
   ]
   constructor(
-    public readonly user: UserService,
     private readonly msgService: PortalMessageService,
     private readonly translate: TranslateService,
     private readonly router: Router,
@@ -76,7 +73,6 @@ export class EndpointSearchComponent implements OnInit {
     private readonly mfeApi: MicrofrontendsAPIService,
     private readonly productApi: ProductsAPIService
   ) {
-    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.filteredColumns = this.columns.filter((a) => a.active === true)
     this.mfeSearchCriteriaGroup = new FormGroup<MicrofrontendSearchCriteria>({
       productName: new FormControl<string | null>(null)
@@ -187,7 +183,8 @@ export class EndpointSearchComponent implements OnInit {
   public onCriteriaReset() {
     this.mfeSearchCriteriaGroup.reset()
   }
-  public onAppDetail(ev: any, data: MfeEndpoint) {
+  public onAppDetail(ev: Event, data: MfeEndpoint) {
+    ev.stopPropagation()
     this.mfeItem4Detail = { id: data.id, appType: 'MFE', mfeType: MicrofrontendType.Module }
     this.displayAppDetailDialog = true
   }

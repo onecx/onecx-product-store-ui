@@ -178,6 +178,5 @@
 <app-app-detail
   [displayDialog]="displayAppDetailDialog"
   [appAbstract]="mfeItem4Detail"
-  [changeMode]="user.hasPermission('APP#EDIT') ? 'EDIT' : 'VIEW'"
   (appChanged)="onMfeChanged($event)"
 ></app-app-detail>

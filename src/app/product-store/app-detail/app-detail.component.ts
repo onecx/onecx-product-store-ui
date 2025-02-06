@@ -135,6 +135,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     if (this.displayDialog) {
+      console.log('ngOnChanges')
       this.enableForms()
       this.selectedTabIndex = 0
       this.dialogTitleKey = undefined

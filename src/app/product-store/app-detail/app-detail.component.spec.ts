@@ -73,7 +73,7 @@ const ms: Microservice = {
   description: 'description'
 }
 
-fdescribe('AppDetailComponent', () => {
+describe('AppDetailComponent', () => {
   let component: AppDetailComponent
   let fixture: ComponentFixture<AppDetailComponent>
 
@@ -121,6 +121,7 @@ fdescribe('AppDetailComponent', () => {
       getValue: jasmine.createSpy('getValue').and.returnValue('en')
     },
     hasPermission: jasmine.createSpy('hasPermission').and.callFake((permission: string) => {
+      console.log('hasPermission', permission)
       return ['APP#CREATE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
     })
   }
@@ -176,6 +177,7 @@ fdescribe('AppDetailComponent', () => {
       })
 
       it('should successful in EDIT mode', () => {
+        mfeApiServiceSpy.getMicrofrontend.and.returnValue(of(mfe))
         component.appAbstract = {
           id: 'id',
           appId: 'appId',
@@ -183,7 +185,6 @@ fdescribe('AppDetailComponent', () => {
           appName: 'name',
           productName: 'productName'
         }
-        component.changeMode = 'EDIT'
         spyOn(component, 'getMfe')
 
         component.ngOnChanges()
@@ -191,7 +192,7 @@ fdescribe('AppDetailComponent', () => {
         expect(component.getMfe).toHaveBeenCalled()
       })
 
-      it('should successful with return data', () => {
+      it('should successful with return data - EDIT', () => {
         mfeApiServiceSpy.getMicrofrontend.and.returnValue(of(mfe))
         component.formGroupMfe = mfeForm
 
@@ -199,6 +200,17 @@ fdescribe('AppDetailComponent', () => {
 
         expect(component.mfe).toBe(mfe)
         expect(component.dialogTitleKey).toBe('ACTIONS.EDIT.MFE.HEADER')
+      })
+
+      it('should successful with return data - VIEW', () => {
+        mfeApiServiceSpy.getMicrofrontend.and.returnValue(of(mfe))
+        component.formGroupMfe = mfeForm
+        component.hasEditPermission = false
+
+        component.getMfe()
+
+        expect(component.mfe).toBe(mfe)
+        expect(component.dialogTitleKey).toBe('ACTIONS.VIEW.MFE.HEADER')
       })
 
       it('should getMfe and prepare copy', () => {
@@ -235,7 +247,7 @@ fdescribe('AppDetailComponent', () => {
         expect(component.mfe).toBeUndefined()
       })
 
-      it('should successful with return data', () => {
+      it('should successful with return data - EDIT', () => {
         msApiServiceSpy.getMicroservice.and.returnValue(of(ms))
         component.formGroupMs = msForm
 
@@ -243,6 +255,17 @@ fdescribe('AppDetailComponent', () => {
 
         expect(component.ms).toBe(ms)
         expect(component.dialogTitleKey).toBe('ACTIONS.EDIT.MS.HEADER')
+      })
+
+      it('should successful with return data - VIEW', () => {
+        msApiServiceSpy.getMicroservice.and.returnValue(of(ms))
+        component.formGroupMs = msForm
+        component.hasEditPermission = false
+
+        component.getMs()
+
+        expect(component.ms).toBe(ms)
+        expect(component.dialogTitleKey).toBe('ACTIONS.VIEW.MS.HEADER')
       })
 
       it('should getMs', () => {
