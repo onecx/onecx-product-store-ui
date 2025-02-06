@@ -1,12 +1,10 @@
 <p-dialog
   [(visible)]="displayDialog"
   (onHide)="onDialogHide()"
-  [baseZIndex]="10000"
-  [draggable]="true"
-  [resizable]="true"
-  [closable]="true"
   [modal]="true"
-  [showHeader]="true"
+  [closable]="true"
+  [resizable]="true"
+  [draggable]="true"
   [contentStyleClass]="'border-round'"
   [breakpoints]="{
     '992px': '80vw',
@@ -17,8 +15,8 @@
   <ng-template pTemplate="header">
     <div *ngIf="loading" class="pi pi-spinner"></div>
     <div *ngIf="!loading" class="w-full flex flex-row justify-content-between align-items-center">
-      <div class="p-dialog-title" [class.danger-action-text]="undeployed || deprecated">
-        {{ this.dialogTitleKey | translate }}
+      <div *ngIf="dialogTitleKey" class="p-dialog-title" [class.danger-action-text]="undeployed || deprecated">
+        {{ dialogTitleKey | translate }}
       </div>
       <div
         *ngIf="undeployed"
@@ -432,21 +430,13 @@
     </p-tabPanel>
 
     <p-tabPanel
-      [disabled]="changeMode === 'CREATE'"
-      [header]="'DIALOG.TABS.INTERN' | translate"
-      [tooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate"
-    >
-      <app-app-intern *ngIf="appAbstract?.appType === 'MFE'" [app]="mfe" appType="MFE"></app-app-intern>
-      <app-app-intern *ngIf="appAbstract?.appType === 'MS'" [app]="ms" appType="MS"></app-app-intern>
-    </p-tabPanel>
-
-    <p-tabPanel
       *ngIf="appAbstract?.appType === 'MFE' && appAbstract?.mfeType === MicrofrontendType.Module"
       [header]="'DIALOG.TABS.ENDPOINTS' | translate"
       [tooltip]="'DIALOG.TABS.TOOLTIPS.ENDPOINTS' | translate"
     >
       <div class="flex flex-column row-gap-2">
         <p-message
+          *ngIf="endpoints.length === 1 && allowEditing()"
           id="ps_app_detail_endpoint_info_message"
           severity="info"
           [text]="'ENDPOINT.CELL_EDITING_MESSAGE' | translate"
@@ -456,8 +446,9 @@
           <ng-template pTemplate="header">
             <tr>
               <th
+                *ngIf="allowEditing()"
                 id="ps_app_detail_endpoint_table_header_actions"
-                class="text-center"
+                class="p-2 text-center border-bottom-2"
                 [pTooltip]="'ACTIONS.TOOLTIP' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -466,6 +457,8 @@
               </th>
               <th
                 id="ps_app_detail_endpoint_table_header_endpoint_name"
+                class="p-2 text-center border-bottom-2"
+                [ngClass]="{ 'border-left-1': allowEditing() }"
                 [pTooltip]="'ENDPOINT.TOOLTIPS.NAME' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -474,6 +467,7 @@
               </th>
               <th
                 id="ps_app_detail_endpoint_table_header_endpoint_path"
+                class="p-2 text-center border-left-1 border-bottom-2"
                 [pTooltip]="'ENDPOINT.TOOLTIPS.PATH' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -484,7 +478,7 @@
           </ng-template>
           <ng-template pTemplate="body" let-endpoint let-i="rowIndex">
             <tr>
-              <td class="px-0 text-center white-space-nowrap">
+              <td *ngIf="allowEditing()" class="text-center white-space-nowrap">
                 <button
                   pbutton
                   class="p-button-rounded font-medium p-button-text p-button p-component p-button-icon-only"
@@ -512,36 +506,51 @@
                   <span class="text-primary font-medium p-button-icon danger-action-text pi pi-trash"></span>
                 </button>
               </td>
-              <td [pEditableColumn]="endpoint.name" pEditableColumnField="name">
-                <p-cellEditor>
-                  <ng-template pTemplate="input">
-                    <input
-                      [id]="'ps_app_detail_endpoint_table_row_' + i + '_endpoint_name'"
-                      pInputText
-                      type="text"
-                      [(ngModel)]="endpoint.name"
-                    />
-                  </ng-template>
-                  <ng-template pTemplate="output"> {{ endpoint.name }} </ng-template>
-                </p-cellEditor>
-              </td>
-              <td [pEditableColumn]="endpoint.path" pEditableColumnField="path">
-                <p-cellEditor>
-                  <ng-template pTemplate="input">
-                    <input
-                      pInputText
-                      [id]="'ps_app_detail_endpoint_table_row_' + i + '_endpoint_path'"
-                      type="text"
-                      [(ngModel)]="endpoint.path"
-                    />
-                  </ng-template>
-                  <ng-template pTemplate="output"> {{ endpoint.path }} </ng-template>
-                </p-cellEditor>
-              </td>
+              <ng-container *ngIf="allowEditing()">
+                <td [pEditableColumn]="endpoint.name" pEditableColumnField="name">
+                  <p-cellEditor>
+                    <ng-template pTemplate="input">
+                      <input
+                        [id]="'ps_app_detail_endpoint_table_row_' + i + '_endpoint_name'"
+                        pInputText
+                        type="text"
+                        [(ngModel)]="endpoint.name"
+                      />
+                    </ng-template>
+                    <ng-template pTemplate="output"> {{ endpoint.name }} </ng-template>
+                  </p-cellEditor>
+                </td>
+                <td [pEditableColumn]="endpoint.path" pEditableColumnField="path">
+                  <p-cellEditor>
+                    <ng-template pTemplate="input">
+                      <input
+                        pInputText
+                        [id]="'ps_app_detail_endpoint_table_row_' + i + '_endpoint_path'"
+                        type="text"
+                        [(ngModel)]="endpoint.path"
+                      />
+                    </ng-template>
+                    <ng-template pTemplate="output"> {{ endpoint.path }} </ng-template>
+                  </p-cellEditor>
+                </td>
+              </ng-container>
+              <ng-container *ngIf="!allowEditing()">
+                <td>{{ endpoint.name }}</td>
+                <td>{{ endpoint.path }}</td>
+              </ng-container>
             </tr>
           </ng-template>
         </p-table>
       </div>
+    </p-tabPanel>
+
+    <p-tabPanel
+      [disabled]="['CREATE', 'COPY'].includes(changeMode)"
+      [header]="'DIALOG.TABS.INTERN' | translate"
+      [tooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate"
+    >
+      <app-app-intern *ngIf="appAbstract?.appType === 'MFE'" [app]="mfe" appType="MFE"></app-app-intern>
+      <app-app-intern *ngIf="appAbstract?.appType === 'MS'" [app]="ms" appType="MS"></app-app-intern>
     </p-tabPanel>
   </p-tabView>
 

@@ -1,14 +1,15 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { provideHttpClient } from '@angular/common/http'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { provideRouter, Router } from '@angular/router'
 import { of, throwError } from 'rxjs'
 import { DataViewModule } from 'primeng/dataview'
 import { TranslateTestingModule } from 'ngx-translate-testing'
+
 import { Product, ProductAbstract, ProductPageResult, ProductsAPIService } from 'src/app/shared/generated'
 
 import { ProductSearchComponent } from './product-search.component'
-import { provideHttpClient } from '@angular/common/http'
-import { provideHttpClientTesting } from '@angular/common/http/testing'
 
 describe('ProductSearchComponent', () => {
   let component: ProductSearchComponent
@@ -21,7 +22,6 @@ describe('ProductSearchComponent', () => {
     basePath: 'basePath',
     displayName: 'displayName'
   }
-  const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
   const apiProductServiceSpy = {
     searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of({ stream: [] }))
   }
@@ -51,10 +51,6 @@ describe('ProductSearchComponent', () => {
     component = fixture.componentInstance
     router = TestBed.inject(Router)
     fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
-  })
-
-  afterEach(() => {
-    apiProductServiceSpy.searchProducts.calls.reset(), translateServiceSpy.get.calls.reset()
   })
 
   it('should create', () => {

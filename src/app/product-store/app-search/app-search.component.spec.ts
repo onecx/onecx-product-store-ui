@@ -1,13 +1,15 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { provideHttpClient } from '@angular/common/http'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
+import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { of, throwError } from 'rxjs'
-import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { TranslateService } from '@ngx-translate/core'
 
-import { UserService } from '@onecx/portal-integration-angular'
-import { AppAbstract, AppType, AppSearchComponent, AppSearchCriteria } from './app-search.component'
+import { UserService } from '@onecx/angular-integration-interface'
+
 import {
   MicrofrontendAbstract,
   MicrofrontendsAPIService,
@@ -16,8 +18,7 @@ import {
   MicroservicePageResult,
   MicroservicesAPIService
 } from 'src/app/shared/generated'
-import { provideHttpClient } from '@angular/common/http'
-import { provideHttpClientTesting } from '@angular/common/http/testing'
+import { AppAbstract, AppType, AppSearchComponent, AppSearchCriteria } from './app-search.component'
 
 const form = new FormGroup<AppSearchCriteria>({
   appId: new FormControl<string | null>(null, Validators.minLength(2)),
@@ -68,19 +69,12 @@ describe('AppSearchComponent', () => {
   const apiMsServiceSpy = {
     searchMicroservice: jasmine.createSpy('searchMicroservice').and.returnValue(of({}))
   }
-
   const mockUserService = {
     lang$: {
       getValue: jasmine.createSpy('getValue').and.returnValue('en')
     },
-    hasPermission: jasmine.createSpy('hasPermission').and.callFake((permissionName) => {
-      if (permissionName === 'APP#CREATE') {
-        return true
-      } else if (permissionName === 'APP#EDIT') {
-        return true
-      } else {
-        return false
-      }
+    hasPermission: jasmine.createSpy('hasPermission').and.callFake((permission) => {
+      return ['APP#CREATE', 'APP#DELETE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
     })
   }
 

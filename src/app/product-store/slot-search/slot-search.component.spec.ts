@@ -1,14 +1,16 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { Router, ActivatedRoute } from '@angular/router'
-import { of, throwError } from 'rxjs'
-import { DataViewModule } from 'primeng/dataview'
-import { TranslateTestingModule } from 'ngx-translate-testing'
-import { SlotsAPIService, SlotPageResult, Slot } from 'src/app/shared/generated'
-
-import { SlotSearchComponent } from './slot-search.component'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
+import { Router, ActivatedRoute } from '@angular/router'
+import { of, throwError } from 'rxjs'
+import { TranslateTestingModule } from 'ngx-translate-testing'
+import { DataViewModule } from 'primeng/dataview'
+
+import { UserService } from '@onecx/angular-integration-interface'
+
+import { SlotsAPIService, SlotPageResult, Slot } from 'src/app/shared/generated'
+import { SlotSearchComponent } from './slot-search.component'
 
 const slots: Slot[] = [
   {
@@ -35,6 +37,14 @@ describe('SlotSearchComponent', () => {
   const apiSlotsServiceSpy = {
     searchSlots: jasmine.createSpy('searchSlots').and.returnValue(of({ stream: [] }))
   }
+  const mockUserService = {
+    lang$: {
+      getValue: jasmine.createSpy('getValue').and.returnValue('en')
+    },
+    hasPermission: jasmine.createSpy('hasPermission').and.callFake((permission) => {
+      return ['APP#CREATE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
+    })
+  }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -49,6 +59,7 @@ describe('SlotSearchComponent', () => {
       providers: [
         provideHttpClientTesting(),
         provideHttpClient(),
+        { provide: UserService, useValue: mockUserService },
         { provide: SlotsAPIService, useValue: apiSlotsServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: routeMock }

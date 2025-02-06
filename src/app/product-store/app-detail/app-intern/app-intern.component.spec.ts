@@ -2,8 +2,8 @@ import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
-import { AppInternComponent } from './app-intern.component'
 import { Microfrontend, Microservice } from 'src/app/shared/generated'
+import { AppInternComponent } from './app-intern.component'
 
 const appMfe: Microfrontend = {
   operator: true,

@@ -1,14 +1,15 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { provideHttpClient } from '@angular/common/http'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
+
 import { MicrofrontendsAPIService, MicroservicesAPIService } from 'src/app/shared/generated'
 import { AppAbstract } from '../app-search/app-search.component'
 import { AppDeleteComponent } from './app-delete.component'
-import { provideHttpClient } from '@angular/common/http'
-import { provideHttpClientTesting } from '@angular/common/http/testing'
 
 describe('AppDeleteComponent', () => {
   let component: AppDeleteComponent

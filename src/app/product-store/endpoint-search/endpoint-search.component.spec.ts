@@ -1,14 +1,13 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { provideHttpClient, HttpClient } from '@angular/common/http'
+import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
-import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
 import { of, throwError } from 'rxjs'
+import { TranslateTestingModule } from 'ngx-translate-testing'
 
-import { AppStateService, UserService } from '@onecx/angular-integration-interface'
-import { Column, createTranslateLoader, PortalMessageService } from '@onecx/portal-integration-angular'
+import { Column, PortalMessageService } from '@onecx/portal-integration-angular'
 
 import {
   MicrofrontendAbstract,
@@ -17,7 +16,6 @@ import {
   ProductAbstract,
   ProductsAPIService
 } from 'src/app/shared/generated'
-import { TranslateServiceMock } from 'src/app/shared/mocks/TranslateServiceMock'
 import { EndpointSearchComponent, MfeEndpoint, MicrofrontendSearchCriteria } from './endpoint-search.component'
 
 const searchCriteriaForm = new FormGroup<MicrofrontendSearchCriteria>({
@@ -142,7 +140,6 @@ describe('EndpointSearchComponent', () => {
   const routerSpy = jasmine.createSpyObj('Router', ['navigate'])
   const routeMock = { snapshot: { paramMap: new Map() } }
 
-  const mockUserService = { lang$: { getValue: jasmine.createSpy('getValue') } }
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
   const productApiServiceSpy = { searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of([])) }
   const mfeApiServiceSpy = { searchMicrofrontends: jasmine.createSpy('searchMicrofrontends').and.returnValue(of([])) }
@@ -151,21 +148,15 @@ describe('EndpointSearchComponent', () => {
     TestBed.configureTestingModule({
       declarations: [EndpointSearchComponent],
       imports: [
-        TranslateModule.forRoot({
-          isolate: true,
-          loader: {
-            provide: TranslateLoader,
-            useFactory: createTranslateLoader,
-            deps: [HttpClient, AppStateService]
-          }
-        })
+        TranslateTestingModule.withTranslations({
+          de: require('src/assets/i18n/de.json'),
+          en: require('src/assets/i18n/en.json')
+        }).withDefaultLanguage('en')
       ],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: UserService, useValue: mockUserService },
-        { provide: TranslateService, useClass: TranslateServiceMock },
         { provide: PortalMessageService, useValue: msgServiceSpy },
         { provide: ProductsAPIService, useValue: productApiServiceSpy },
         { provide: MicrofrontendsAPIService, useValue: mfeApiServiceSpy },
@@ -176,7 +167,6 @@ describe('EndpointSearchComponent', () => {
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
     msgServiceSpy.info.calls.reset()
-    mockUserService.lang$.getValue.and.returnValue('de')
     // reset data services
     productApiServiceSpy.searchProducts.calls.reset()
     mfeApiServiceSpy.searchMicrofrontends.calls.reset()
@@ -339,8 +329,8 @@ describe('EndpointSearchComponent', () => {
     })
   })
 
-  describe('onCriteriaReset', () => {
-    it('should reset criteria, reset the form group, and disable the applicationId control', () => {
+  describe('search criteria reset', () => {
+    it('should reset the form group', () => {
       component.mfeSearchCriteriaGroup = searchCriteriaForm
       spyOn(searchCriteriaForm, 'reset').and.callThrough()
 
@@ -350,20 +340,26 @@ describe('EndpointSearchComponent', () => {
     })
   })
 
-  /**
-   * Language tests
-   */
-  describe('Language tests', () => {
-    it('should set a German date format', () => {
-      expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm:ss')
+  describe('app detail', () => {
+    it('should trigger the opening the dialog', () => {
+      component.onAppDetail(new Event('click'), mfeEndpoints[0])
+
+      expect(component.mfeItem4Detail?.id).toBe(mfeEndpoints[0].id)
+      expect(component.displayAppDetailDialog).toBeTrue()
     })
 
-    it('should set default date format', () => {
-      mockUserService.lang$.getValue.and.returnValue('en')
-      fixture = TestBed.createComponent(EndpointSearchComponent)
-      component = fixture.componentInstance
-      fixture.detectChanges()
-      expect(component.dateFormat).toEqual('M/d/yy, hh:mm:ss a')
+    it('should react on closing the dialog - false', () => {
+      component.onMfeChanged(false)
+
+      expect(component.mfeItem4Detail).toBeUndefined()
+      expect(component.displayAppDetailDialog).toBeFalse()
+    })
+
+    it('should react on closing the dialog - true', () => {
+      component.onMfeChanged(true)
+
+      expect(component.mfeItem4Detail).toBeUndefined()
+      expect(component.displayAppDetailDialog).toBeFalse()
     })
   })
 

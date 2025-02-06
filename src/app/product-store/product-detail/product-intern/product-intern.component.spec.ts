@@ -1,11 +1,11 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
-import { ProductInternComponent } from './product-intern.component'
 import { Product } from 'src/app/shared/generated'
-import { provideHttpClient } from '@angular/common/http'
+import { ProductInternComponent } from './product-intern.component'
 
 const prodAndWsUndeployed: Product = {
   id: 'id',

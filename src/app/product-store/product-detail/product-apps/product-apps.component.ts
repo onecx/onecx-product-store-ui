@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnDestroy } from '@angular/core'
-import { finalize, of, Observable, catchError, Subject, takeUntil } from 'rxjs'
+import { finalize, of, Observable, catchError, Subject, takeUntil, tap } from 'rxjs'
 import { SelectItem } from 'primeng/api'
 
 import { UserService } from '@onecx/portal-integration-angular'
@@ -46,6 +46,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   public displaySlotDeleteDialog = false
   public hasCreatePermission = false
   public hasDeletePermission = false
+  public hasComponents = false
 
   constructor(
     private readonly icon: IconService,
@@ -75,6 +76,16 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
       .getProductDetailsByCriteria({ productSearchCriteria: { name: this.product?.name } })
       .pipe(
         takeUntil(this.destroy$),
+        tap((details) => {
+          if (details) {
+            if (
+              (details.microfrontends && details.microfrontends?.length > 0) ||
+              (details.microservices && details.microservices?.length > 0) ||
+              (details.slots && details.slots?.length > 0)
+            )
+              this.hasComponents = true
+          }
+        }),
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
           console.error('getProductDetailsByCriteria', err)
@@ -105,9 +116,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
    */
   public onDetail(ev: any, app: any, appType: AppType) {
     ev.stopPropagation()
-    console.log(app)
     this.app = { ...app, appType: appType, mfeType: app.mfeType ?? app.type } as AppAbstract
-    console.log(this.app)
     this.changeMode = 'EDIT'
     this.displayDetailDialog = true
   }

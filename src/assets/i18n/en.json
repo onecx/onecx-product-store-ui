@@ -321,6 +321,7 @@
     "PRODUCT_NAME": "Application",
     "APP_NAME": "Microfrontend",
     "CELL_EDITING_MESSAGE": "Data entry and changes are made directly in the table.",
+    "LINK_APP": "Display App Details",
     "TOOLTIPS": {
       "NAME": "Unique name of the UI Endpoint",
       "PATH": "Path to the UI Endpoint",

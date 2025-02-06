@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { RouterModule, Routes } from '@angular/router'
+
 import { FieldsetModule } from 'primeng/fieldset'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { ConfirmationService } from 'primeng/api'
@@ -22,9 +23,9 @@ import { ProductDetailComponent } from './product-detail/product-detail.componen
 import { ProductPropertyComponent } from './product-detail/product-props/product-props.component'
 import { ProductInternComponent } from './product-detail/product-intern/product-intern.component'
 import { ProductAppsComponent } from './product-detail/product-apps/product-apps.component'
+import { ProductUseComponent } from './product-detail/product-use/product-use.component'
 import { SlotSearchComponent } from './slot-search/slot-search.component'
 import { SlotDeleteComponent } from './slot-delete/slot-delete.component'
-import { ProductUseComponent } from './product-detail/product-use/product-use.component'
 
 const routes: Routes = [
   {

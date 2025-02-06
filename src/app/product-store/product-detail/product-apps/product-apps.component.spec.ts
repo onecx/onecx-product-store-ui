@@ -3,8 +3,9 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
+import { UserService } from '@onecx/angular-integration-interface'
 import { PortalMessageService } from '@onecx/portal-integration-angular'
-import { AppType, ProductAppsComponent } from './product-apps.component'
+
 import {
   MicrofrontendAbstract,
   MicrofrontendPageResult,
@@ -18,6 +19,7 @@ import {
 } from 'src/app/shared/generated'
 
 import { AppAbstract } from '../../app-search/app-search.component'
+import { AppType, ProductAppsComponent } from './product-apps.component'
 
 describe('ProductAppsComponent', () => {
   let component: ProductAppsComponent
@@ -55,6 +57,14 @@ describe('ProductAppsComponent', () => {
   const productServiceSpy = {
     getProductDetailsByCriteria: jasmine.createSpy('getProductDetailsByCriteria').and.returnValue(of({}))
   }
+  const mockUserService = {
+    lang$: {
+      getValue: jasmine.createSpy('getValue').and.returnValue('en')
+    },
+    hasPermission: jasmine.createSpy('hasPermission').and.callFake((permission) => {
+      return ['APP#CREATE', 'APP#DELETE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
+    })
+  }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -66,6 +76,7 @@ describe('ProductAppsComponent', () => {
         }).withDefaultLanguage('en')
       ],
       providers: [
+        { provide: UserService, useValue: mockUserService },
         { provide: ProductsAPIService, useValue: productServiceSpy },
         { provide: PortalMessageService, useValue: msgServiceSpy }
       ],
@@ -106,10 +117,10 @@ describe('ProductAppsComponent', () => {
    * SEARCH
    */
   describe('searchProducts', () => {
-    it('should search microfrontends and microservices', (done) => {
+    it('should get microfrontends and microservices', (done) => {
       component.product = product
       productServiceSpy.getProductDetailsByCriteria.and.returnValue(
-        of({ microfrontends: [mfe], microservices: [ms] } as ProductDetails)
+        of({ microfrontends: [mfe], microservices: [ms], slots: [] } as ProductDetails)
       )
 
       component.searchProducts()
@@ -118,6 +129,28 @@ describe('ProductAppsComponent', () => {
         next: (result) => {
           expect(result.microfrontends?.length).toBe(1)
           expect(result.microservices?.length).toBe(1)
+          expect(result.slots?.length).toBe(0)
+          expect(component.hasComponents).toBeTrue()
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should handle if nothing exists', (done) => {
+      component.product = product
+      productServiceSpy.getProductDetailsByCriteria.and.returnValue(
+        of({ microfrontends: [], microservices: [], slots: [] } as ProductDetails)
+      )
+
+      component.searchProducts()
+
+      component.productDetails$.subscribe({
+        next: (details) => {
+          expect(details.microfrontends?.length).toBe(0)
+          expect(details.microservices?.length).toBe(0)
+          expect(details.slots?.length).toBe(0)
+          expect(component.hasComponents).toBeFalse()
           done()
         },
         error: done.fail
