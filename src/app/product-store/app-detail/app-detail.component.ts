@@ -189,8 +189,13 @@ export class AppDetailComponent implements OnInit, OnChanges {
             if (this.changeMode === 'COPY') {
               if (this.mfe?.id) {
                 this.mfe.id = undefined
+                this.mfe.operator = false
+                this.mfe.undeployed = false
+                this.mfe.deprecated = false
                 this.mfe.creationDate = undefined
+                this.mfe.creationUser = undefined
                 this.mfe.modificationDate = undefined
+                this.mfe.modificationUser = undefined
               }
               this.dialogTitleKey = 'ACTIONS.CREATE.MFE.HEADER'
             } else {
@@ -216,8 +221,12 @@ export class AppDetailComponent implements OnInit, OnChanges {
             if (this.changeMode === 'COPY') {
               if (this.ms?.id) {
                 this.ms.id = undefined
+                this.ms.operator = false
+                this.ms.undeployed = false
                 this.ms.creationDate = undefined
+                this.ms.creationUser = undefined
                 this.ms.modificationDate = undefined
+                this.ms.modificationUser = undefined
               }
               this.dialogTitleKey = 'ACTIONS.CREATE.MS.HEADER'
             } else {

@@ -9,13 +9,15 @@
 >
   <div class="flex column-gap-4 row-gap-1 justify-content-start align-items-center">
     <div class="pi pi-question-circle text-3xl danger-action-text"></div>
-    <div>
+    <div class="flex flex-column row-gap-2">
       <div id="ps_app_delete_message" class="font-bold">{{ 'ACTIONS.DELETE.APP.MESSAGE' | translate }}</div>
-      <div id="ps_app_delete_app_id" class="my-2 font-bold danger-action-text text-center">
-        {{ appAbstract?.appId }}
+      <div id="ps_app_delete_app_id" class="font-bold danger-action-text text-center">{{ appAbstract?.appId }}</div>
+      <div class="flex flex-row column-gap-2">
+        <div class="text-right font-bold">{{ 'APP.PRODUCT_NAME' | translate }}:</div>
+        <div class="text-left white-space-nowrap" id="ps_app_delete_product_name">{{ appAbstract?.productName }}</div>
       </div>
       <div *ngIf="appAbstract?.operator">{{ 'ACTIONS.DELETE.APP.OPERATOR_TEXT' | translate }}</div>
-      <div class="mt-1">{{ 'ACTIONS.DELETE.MESSAGE_INFO' | translate }}</div>
+      <div>{{ 'ACTIONS.DELETE.MESSAGE_INFO' | translate }}</div>
     </div>
   </div>
   <ng-template pTemplate="footer">
