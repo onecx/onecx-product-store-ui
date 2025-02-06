@@ -106,10 +106,10 @@ describe('ProductAppsComponent', () => {
    * SEARCH
    */
   describe('searchProducts', () => {
-    it('should search microfrontends and microservices', (done) => {
+    it('should get microfrontends and microservices', (done) => {
       component.product = product
       productServiceSpy.getProductDetailsByCriteria.and.returnValue(
-        of({ microfrontends: [mfe], microservices: [ms] } as ProductDetails)
+        of({ microfrontends: [mfe], microservices: [ms], slots: [] } as ProductDetails)
       )
 
       component.searchProducts()
@@ -118,6 +118,28 @@ describe('ProductAppsComponent', () => {
         next: (result) => {
           expect(result.microfrontends?.length).toBe(1)
           expect(result.microservices?.length).toBe(1)
+          expect(result.slots?.length).toBe(0)
+          expect(component.hasComponents).toBeTrue()
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should handle if nothing exists', (done) => {
+      component.product = product
+      productServiceSpy.getProductDetailsByCriteria.and.returnValue(
+        of({ microfrontends: [], microservices: [], slots: [] } as ProductDetails)
+      )
+
+      component.searchProducts()
+
+      component.productDetails$.subscribe({
+        next: (details) => {
+          expect(details.microfrontends?.length).toBe(0)
+          expect(details.microservices?.length).toBe(0)
+          expect(details.slots?.length).toBe(0)
+          expect(component.hasComponents).toBeFalse()
           done()
         },
         error: done.fail
