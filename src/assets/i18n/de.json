@@ -321,6 +321,7 @@
     "PRODUCT_NAME": "Applikation",
     "APP_NAME": "Microfrontend",
     "CELL_EDITING_MESSAGE": "Das Erfassen und Ändern erfolgt direkt in der Tabelle.",
+    "LINK_APP": "App Detail anzeigen",
     "TOOLTIPS": {
       "NAME": "Name des UI-Endpunkts",
       "PATH": "Pfad zum UI-Endpunkt",

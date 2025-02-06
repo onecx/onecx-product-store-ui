@@ -147,13 +147,13 @@
           <td [id]="'ps_endpoint_search_table_row_app_name'">
             <a
               tabindex="0"
-              class="p-2 underline font-medium cursor-pointer border-circle"
+              class="p-2 bookmark-link font-italic text-primary cursor-pointer"
               [id]="'ps_endpoint_search_table_row_' + i + '_app_name'"
               (click)="onAppDetail($event, rowData)"
               (keydown.enter)="onAppDetail($event, rowData)"
               (keydown.space)="onAppDetail($event, rowData)"
-              [attr.aria-label]="'ACTIONS.DELETE.LABEL' | translate"
-              [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
+              [attr.aria-label]="'ENDPOINT.LINK_APP' | translate"
+              [pTooltip]="'ENDPOINT.LINK_APP' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
             >

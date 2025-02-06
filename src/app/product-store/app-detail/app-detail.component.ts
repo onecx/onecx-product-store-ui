@@ -130,12 +130,12 @@ export class AppDetailComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    if (this.hasEditPermission && this.changeMode === 'VIEW') this.changeMode = 'EDIT'
     this.getDropdownTranslations()
   }
 
   ngOnChanges() {
     if (this.displayDialog) {
-      console.log('ngOnChanges')
       this.enableForms()
       this.selectedTabIndex = 0
       this.dialogTitleKey = undefined

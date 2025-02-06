@@ -41,4 +41,9 @@
   .text-ellipsis-2-lines {
     @include displaying-text-ellipsis(2);
   }
+  .bookmark-link:hover {
+    background: var(--tabview-header-hover-bg);
+    border-color: var(--tabview-header-hover-border-color);
+    color: var(--text-secondary-color);
+  }
 }
