@@ -7,8 +7,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
 
 import { KeycloakAuthModule } from '@onecx/keycloak-auth'
-import { createTranslateLoader } from '@onecx/angular-accelerator'
-import { APP_CONFIG, AppStateService, UserService } from '@onecx/angular-integration-interface'
+import { createTranslateLoader } from '@onecx/angular-utils'
+import { APP_CONFIG, UserService } from '@onecx/angular-integration-interface'
 import { translateServiceInitializer, PortalCoreModule } from '@onecx/portal-integration-angular'
 
 import { environment } from 'src/environments/environment'
@@ -36,11 +36,7 @@ const routes: Routes = [
     }),
     TranslateModule.forRoot({
       isolate: true,
-      loader: {
-        provide: TranslateLoader,
-        useFactory: createTranslateLoader,
-        deps: [HttpClient, AppStateService]
-      }
+      loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] }
     })
   ],
   providers: [
