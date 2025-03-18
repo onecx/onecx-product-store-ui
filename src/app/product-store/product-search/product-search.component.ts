@@ -22,29 +22,32 @@ export interface ProductSearchCriteria {
 }
 
 type ProductAbstractExtended = ProductAbstract & { classes?: string }
+
 @Component({
   templateUrl: './product-search.component.html',
   styleUrls: ['./product-search.component.scss']
 })
 export class ProductSearchComponent implements OnInit {
+  // dialog
+  public loading = false
   public exceptionKey: string | undefined
-  public searchInProgress = false
-  public products$!: Observable<ProductAbstractExtended[]>
-  public productSearchCriteriaGroup!: FormGroup<ProductSearchCriteria>
   public actions$: Observable<Action[]> | undefined
   public viewMode: 'grid' | 'list' = 'grid'
+  // data
+  public products$!: Observable<ProductAbstractExtended[]>
+  public productSearchCriteriaGroup!: FormGroup<ProductSearchCriteria>
   public filter: string | undefined
   public sortField = 'displayName'
   public sortOrder = 1
 
-  public dataViewControlsTranslations: DataViewControlTranslations = {}
   @ViewChild(DataView) dv: DataView | undefined
+  public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly productApi: ProductsAPIService,
     private readonly translate: TranslateService,
+    private readonly productApi: ProductsAPIService,
     private readonly imageApi: ImagesInternalAPIService
   ) {
     this.productSearchCriteriaGroup = new FormGroup<ProductSearchCriteria>({
@@ -60,7 +63,7 @@ export class ProductSearchComponent implements OnInit {
   }
 
   public searchProducts(): void {
-    this.searchInProgress = true
+    this.loading = true
     this.products$ = this.productApi
       .searchProducts({
         productSearchCriteria: {
@@ -73,9 +76,8 @@ export class ProductSearchComponent implements OnInit {
         map((data: ProductPageResult) => {
           const products: ProductAbstractExtended[] = []
           data.stream?.forEach((p) => {
-            products.push({ ...p, classes: p.classifications?.toString() })
+            products.push({ ...p, classes: p.classifications?.join(', ') })
           })
-          console.log(products)
           return products.sort(this.sortProductsByDisplayName)
         }),
         catchError((err) => {
@@ -83,7 +85,7 @@ export class ProductSearchComponent implements OnInit {
           console.error('searchProducts', err)
           return of([])
         }),
-        finalize(() => (this.searchInProgress = false))
+        finalize(() => (this.loading = false))
       )
   }
   public sortProductsByDisplayName(a: ProductAbstract, b: ProductAbstract): number {
@@ -94,7 +96,7 @@ export class ProductSearchComponent implements OnInit {
    * DIALOG
    */
   private prepareDialogTranslations(): void {
-    this.translate
+    this.dataViewControlsTranslations$ = this.translate
       .get([
         'PRODUCT.NAME',
         'PRODUCT.DISPLAY_NAME',
@@ -109,30 +111,32 @@ export class ProductSearchComponent implements OnInit {
         'ACTIONS.DATAVIEW.SORT_DIRECTION_ASC',
         'ACTIONS.DATAVIEW.SORT_DIRECTION_DESC'
       ])
-      .subscribe((data) => {
-        this.dataViewControlsTranslations = {
-          sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY'],
-          filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
-          filterInputTooltip:
-            data['ACTIONS.DATAVIEW.FILTER_OF'] +
-            data['PRODUCT.DISPLAY_NAME'] +
-            ', ' +
-            data['PRODUCT.NAME'] +
-            ', ' +
-            data['PRODUCT.CLASSIFICATIONS'] +
-            ', ' +
-            data['PRODUCT.VERSION'],
-          viewModeToggleTooltips: {
-            grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID'],
-            list: data['ACTIONS.DATAVIEW.VIEW_MODE_LIST']
-          },
-          sortOrderTooltips: {
-            ascending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_ASC'],
-            descending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_DESC']
-          },
-          sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY']
-        }
-      })
+      .pipe(
+        map((data) => {
+          return {
+            sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY'],
+            filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
+            filterInputTooltip:
+              data['ACTIONS.DATAVIEW.FILTER_OF'] +
+              data['PRODUCT.DISPLAY_NAME'] +
+              ', ' +
+              data['PRODUCT.NAME'] +
+              ', ' +
+              data['PRODUCT.CLASSIFICATIONS'] +
+              ', ' +
+              data['PRODUCT.VERSION'],
+            viewModeToggleTooltips: {
+              grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID'],
+              list: data['ACTIONS.DATAVIEW.VIEW_MODE_LIST']
+            },
+            sortOrderTooltips: {
+              ascending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_ASC'],
+              descending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_DESC']
+            },
+            sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY']
+          } as DataViewControlTranslations
+        })
+      )
   }
 
   private preparePageActions(): void {

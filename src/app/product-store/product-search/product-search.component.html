@@ -41,14 +41,14 @@
 
   <ocx-page-content *ngIf="products$ | async as products">
     <p-message
-      *ngIf="searchInProgress"
+      *ngIf="loading"
       id="ps_product_search_loading_message"
       severity="info"
       styleClass="m-3 p-2"
       [text]="'ACTIONS.LOADING' | translate"
     ></p-message>
     <p-message
-      *ngIf="!searchInProgress && exceptionKey"
+      *ngIf="!loading && exceptionKey"
       id="ps_product_search_error_message"
       severity="error"
       styleClass="m-3 p-2"
@@ -56,7 +56,7 @@
     ></p-message>
 
     <p-dataView
-      *ngIf="!searchInProgress && !exceptionKey"
+      *ngIf="!loading && !exceptionKey"
       id="ps_product_search_dataview"
       [value]="products"
       [paginator]="true"
@@ -89,7 +89,7 @@
           (filterChange)="onFilterChange($event)"
           (sortChange)="onSortChange($event)"
           (sortDirectionChange)="onSortDirChange($event)"
-          [translations]="dataViewControlsTranslations"
+          [translations]="(dataViewControlsTranslations$ | async) ?? {}"
         >
         </ocx-data-view-controls
       ></ng-template>

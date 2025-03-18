@@ -47,7 +47,7 @@ describe('ProductPropertyComponent', () => {
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
   const imgServiceSpy = {
     getImage: jasmine.createSpy('getImage').and.returnValue(of({})),
-    updateImage: jasmine.createSpy('updateImage').and.returnValue(of({})),
+    deleteImage: jasmine.createSpy('deleteImage').and.returnValue(of({})),
     uploadImage: jasmine.createSpy('uploadImage').and.returnValue(of({})),
     configuration: {
       basePath: 'basepath'
@@ -85,8 +85,8 @@ describe('ProductPropertyComponent', () => {
     apiServiceSpy.createProduct.calls.reset()
     apiServiceSpy.updateProduct.calls.reset()
     imgServiceSpy.getImage.calls.reset()
+    imgServiceSpy.deleteImage.calls.reset()
     imgServiceSpy.uploadImage.calls.reset()
-    imgServiceSpy.updateImage.calls.reset()
   })
 
   it('should create', () => {
@@ -379,11 +379,7 @@ describe('ProductPropertyComponent', () => {
   })
 
   it('should not upload a file if productName is empty', () => {
-    const event = {
-      target: {
-        files: ['file']
-      }
-    }
+    const event = { target: { files: ['file'] } }
     component.formGroup.controls['name'].setValue('')
 
     component.onFileUpload(event as any)
@@ -395,11 +391,7 @@ describe('ProductPropertyComponent', () => {
   })
 
   it('should not upload a file if productName is null', () => {
-    const event = {
-      target: {
-        files: ['file']
-      }
-    }
+    const event = { target: { files: ['file'] } }
     component.formGroup.controls['name'].setValue(null)
 
     component.onFileUpload(event as any)
@@ -413,11 +405,7 @@ describe('ProductPropertyComponent', () => {
   it('should not upload a file that is too large', () => {
     const largeBlob = new Blob(['a'.repeat(200001)], { type: 'image/png' })
     const largeFile = new File([largeBlob], 'test.png', { type: 'image/png' })
-    const event = {
-      target: {
-        files: [largeFile]
-      }
-    }
+    const event = { target: { files: [largeFile] } }
     component.formGroup.controls['name'].setValue('name')
 
     component.onFileUpload(event as any)
@@ -432,11 +420,7 @@ describe('ProductPropertyComponent', () => {
   it('should not upload a file of wrong file type', () => {
     const blob = new Blob(['a'.repeat(10)], { type: 'txt' })
     const file = new File([blob], 'test.txt', { type: 'txt' })
-    const event = {
-      target: {
-        files: [file]
-      }
-    }
+    const event = { target: { files: [file] } }
     component.formGroup.controls['name'].setValue('name')
 
     component.onFileUpload(event as any)
@@ -448,50 +432,21 @@ describe('ProductPropertyComponent', () => {
     })
   })
 
-  it('should upload a file', () => {
-    imgServiceSpy.updateImage.and.returnValue(of({}))
-    const blob = new Blob(['a'.repeat(10)], { type: 'image/png' })
-    const file = new File([blob], 'test.png', { type: 'image/png' })
-    const event = {
-      target: {
-        files: [file]
-      }
-    }
-    component.formGroup.controls['name'].setValue('name')
-
-    component.onFileUpload(event as any)
-
-    expect(msgServiceSpy.info).toHaveBeenCalledWith({
-      summaryKey: 'IMAGE.UPLOAD_SUCCESS'
-    })
-  })
-
   it('should display error if api call to upload a file fails', () => {
-    imgServiceSpy.getImage.and.returnValue(throwError(() => new Error()))
     imgServiceSpy.uploadImage.and.returnValue(of({}))
     const blob = new Blob(['a'.repeat(10)], { type: 'image/png' })
     const file = new File([blob], 'test.png', { type: 'image/png' })
-    const event = {
-      target: {
-        files: [file]
-      }
-    }
+    const event = { target: { files: [file] } }
     component.formGroup.controls['name'].setValue('name')
 
     component.onFileUpload(event as any)
 
-    expect(msgServiceSpy.info).toHaveBeenCalledWith({
-      summaryKey: 'IMAGE.UPLOAD_SUCCESS'
-    })
+    expect(msgServiceSpy.info).toHaveBeenCalledWith({ summaryKey: 'IMAGE.UPLOAD_SUCCESS' })
   })
 
   it('should display error if file choice fails', () => {
     imgServiceSpy.getImage.and.returnValue(throwError(() => new Error()))
-    const event = {
-      target: {
-        files: undefined
-      }
-    }
+    const event = { target: { files: undefined } }
     component.formGroup.controls['name'].setValue('name')
 
     component.onFileUpload(event as any)
@@ -499,6 +454,28 @@ describe('ProductPropertyComponent', () => {
     expect(msgServiceSpy.error).toHaveBeenCalledWith({
       summaryKey: 'IMAGE.CONSTRAINT_FAILED',
       detailKey: 'IMAGE.CONSTRAINT_FILE_MISSING'
+    })
+  })
+
+  describe('Remove logo', () => {
+    it('should remove the log - successful', () => {
+      imgServiceSpy.deleteImage.and.returnValue(of({}))
+      component.formGroup.controls['name'].setValue('name')
+
+      component.onRemoveLogo()
+
+      expect(component.fetchingLogoUrl).toBeUndefined()
+    })
+
+    it('should remove the log - failed', () => {
+      const errorResponse = { status: 400, statusText: 'Error on image deletion' }
+      imgServiceSpy.deleteImage.and.returnValue(throwError(() => errorResponse))
+      component.formGroup.controls['name'].setValue('name')
+      spyOn(console, 'error')
+
+      component.onRemoveLogo()
+
+      expect(console.error).toHaveBeenCalledWith('deleteImage', errorResponse)
     })
   })
 
