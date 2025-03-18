@@ -21,6 +21,7 @@ export interface ProductSearchCriteria {
   productName: FormControl<string | null>
 }
 
+type ProductAbstractExtended = ProductAbstract & { classes?: string }
 @Component({
   templateUrl: './product-search.component.html',
   styleUrls: ['./product-search.component.scss']
@@ -28,7 +29,7 @@ export interface ProductSearchCriteria {
 export class ProductSearchComponent implements OnInit {
   public exceptionKey: string | undefined
   public searchInProgress = false
-  public products$!: Observable<ProductAbstract[]>
+  public products$!: Observable<ProductAbstractExtended[]>
   public productSearchCriteriaGroup!: FormGroup<ProductSearchCriteria>
   public actions$: Observable<Action[]> | undefined
   public viewMode: 'grid' | 'list' = 'grid'
@@ -70,8 +71,12 @@ export class ProductSearchComponent implements OnInit {
       })
       .pipe(
         map((data: ProductPageResult) => {
-          if (data.stream) return data.stream.sort(this.sortProductsByDisplayName)
-          else return []
+          const products: ProductAbstractExtended[] = []
+          data.stream?.forEach((p) => {
+            products.push({ ...p, classes: p.classifications?.toString() })
+          })
+          console.log(products)
+          return products.sort(this.sortProductsByDisplayName)
         }),
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
