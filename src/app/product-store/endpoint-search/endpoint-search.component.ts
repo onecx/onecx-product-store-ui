@@ -42,7 +42,7 @@ export class EndpointSearchComponent implements OnInit {
   public displayAppDetailDialog = false
 
   @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
-  public dataViewControlsTranslations: DataViewControlTranslations = {}
+  public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
 
   // data
   public mfeSearchCriteriaGroup: FormGroup<MicrofrontendSearchCriteria>
@@ -90,7 +90,7 @@ export class EndpointSearchComponent implements OnInit {
    * DIALOG
    */
   private prepareDialogTranslations(): void {
-    this.translate
+    this.dataViewControlsTranslations$ = this.translate
       .get([
         'ENDPOINT.APP_NAME',
         'ENDPOINT.PRODUCT_NAME',
@@ -102,27 +102,29 @@ export class EndpointSearchComponent implements OnInit {
         'ACTIONS.DATAVIEW.SORT_DIRECTION_ASC',
         'ACTIONS.DATAVIEW.SORT_DIRECTION_DESC'
       ])
-      .subscribe((data) => {
-        this.dataViewControlsTranslations = {
-          sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY'],
-          filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
-          filterInputTooltip:
-            data['ACTIONS.DATAVIEW.FILTER_OF'] +
-            data['ENDPOINT.PRODUCT_NAME'] +
-            ', ' +
-            data['ENDPOINT.APP_NAME'] +
-            ', ' +
-            data['ENDPOINT.NAME'],
-          viewModeToggleTooltips: {
-            table: data['ACTIONS.DATAVIEW.VIEW_MODE_TABLE']
-          },
-          sortOrderTooltips: {
-            ascending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_ASC'],
-            descending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_DESC']
-          },
-          sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY']
-        }
-      })
+      .pipe(
+        map((data) => {
+          return {
+            sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY'],
+            filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
+            filterInputTooltip:
+              data['ACTIONS.DATAVIEW.FILTER_OF'] +
+              data['ENDPOINT.PRODUCT_NAME'] +
+              ', ' +
+              data['ENDPOINT.APP_NAME'] +
+              ', ' +
+              data['ENDPOINT.NAME'],
+            viewModeToggleTooltips: {
+              table: data['ACTIONS.DATAVIEW.VIEW_MODE_TABLE']
+            },
+            sortOrderTooltips: {
+              ascending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_ASC'],
+              descending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_DESC']
+            },
+            sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY']
+          } as DataViewControlTranslations
+        })
+      )
   }
 
   private preparePageActions(): void {
