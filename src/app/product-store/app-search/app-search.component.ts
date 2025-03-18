@@ -64,8 +64,8 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public hasDeletePermission = false
   public limitText = limitText
 
-  public dataViewControlsTranslations: DataViewControlTranslations = {}
   @ViewChild(DataView) dv: DataView | undefined
+  public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -266,18 +266,19 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   }
 
   public prepareDialogTranslations(): void {
-    this.translate
+    this.dataViewControlsTranslations$ = this.translate
       .get([
         'APP.APP_ID',
         'APP.APP_TYPE',
         'APP.APP_VERSION',
         'APP.CLASSIFICATIONS',
         'APP.PRODUCT_NAME',
-        'ACTIONS.DATAVIEW.FILTER_OF'
+        'ACTIONS.DATAVIEW.FILTER_OF',
+        'ACTIONS.DATAVIEW.SORT_BY'
       ])
       .pipe(
         map((data) => {
-          this.dataViewControlsTranslations = {
+          return {
             filterInputTooltip:
               data['ACTIONS.DATAVIEW.FILTER_OF'] +
               data['APP.APP_ID'] +
@@ -288,11 +289,11 @@ export class AppSearchComponent implements OnInit, OnDestroy {
               ', ' +
               data['APP.CLASSIFICATIONS'] +
               ', ' +
-              data['APP.PRODUCT_NAME']
-          }
+              data['APP.PRODUCT_NAME'],
+            sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY']
+          } as DataViewControlTranslations
         })
       )
-      .subscribe()
   }
 
   /**

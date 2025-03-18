@@ -87,7 +87,7 @@
           (sortDirectionChange)="onSortDirChange($event)"
           (filterChange)="onFilterChange($event)"
           [filterColumns]="['SLOT.NAME' | translate]"
-          [translations]="dataViewControlsTranslations"
+          [translations]="(dataViewControlsTranslations$ | async) ?? {}"
         >
         </ocx-data-view-controls>
       </ng-template>

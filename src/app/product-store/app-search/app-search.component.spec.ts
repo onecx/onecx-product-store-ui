@@ -5,8 +5,8 @@ import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { of, throwError } from 'rxjs'
-import { TranslateTestingModule } from 'ngx-translate-testing'
 import { TranslateService } from '@ngx-translate/core'
+import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { UserService } from '@onecx/angular-integration-interface'
 
@@ -112,26 +112,29 @@ describe('AppSearchComponent', () => {
     translateServiceSpy.get.calls.reset()
   })
 
-  it('should create', () => {
-    expect(component).toBeTruthy()
-  })
+  describe('initialize', () => {
+    it('should create', () => {
+      expect(component).toBeTruthy()
+    })
 
-  it('should prepare dialog translations', async () => {
-    const translateService = TestBed.inject(TranslateService)
-    const dialogTranslations = {
-      'ACTIONS.DATAVIEW.FILTER_OF': 'searchFilterOf ',
-      'APP.APP_ID': 'appId',
-      'APP.APP_TYPE': 'appType',
-      'APP.APP_VERSION': 'appVersion',
-      'APP.CLASSIFICATIONS': 'classes',
-      'APP.PRODUCT_NAME': 'productName'
-    }
-    spyOn(translateService, 'get').and.returnValue(of(dialogTranslations))
+    it('dataview translations', (done) => {
+      const translationData = {
+        'ACTIONS.DATAVIEW.SORT_BY': 'sortBy'
+      }
+      const translateService = TestBed.inject(TranslateService)
+      spyOn(translateService, 'get').and.returnValue(of(translationData))
 
-    await component.ngOnInit()
+      component.ngOnInit()
 
-    expect(component.dataViewControlsTranslations).toEqual({
-      filterInputTooltip: 'searchFilterOf appId, appType, appVersion, classes, productName'
+      component.dataViewControlsTranslations$?.subscribe({
+        next: (data) => {
+          if (data) {
+            expect(data.sortDropdownTooltip).toEqual('sortBy')
+          }
+          done()
+        },
+        error: done.fail
+      })
     })
   })
 

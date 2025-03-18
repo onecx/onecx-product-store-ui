@@ -154,7 +154,7 @@
             (dataViewChange)="onLayoutChange($event)"
             (sortChange)="onSortChange($event)"
             (sortDirectionChange)="onSortDirChange($event)"
-            [translations]="dataViewControlsTranslations"
+            [translations]="(dataViewControlsTranslations$ | async) ?? {}"
           >
           </ocx-data-view-controls>
         </div>
