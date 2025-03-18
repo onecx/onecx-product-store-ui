@@ -1,14 +1,13 @@
 @import '/src/app/_ps-mixins.scss';
 
+@include card-badges;
+@include danger-action;
 @include displaying-text-responsive;
 @include correct-data-view-control;
 @include correct-select-button;
 @include correct-search-criteria;
 @include search-criteria-select-button;
 @include search-criteria-select-button-slim;
-@include search-criteria-select-button-filter;
-@include card-badges;
-@include danger-action;
 
 :host ::ng-deep {
   .h-05rem {

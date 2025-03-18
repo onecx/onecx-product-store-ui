@@ -5,6 +5,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { provideRouter, Router } from '@angular/router'
 import { of, throwError } from 'rxjs'
 import { DataViewModule } from 'primeng/dataview'
+import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { Product, ProductAbstract, ProductPageResult, ProductsAPIService } from 'src/app/shared/generated'
@@ -53,8 +54,30 @@ describe('ProductSearchComponent', () => {
     fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
   })
 
-  it('should create', () => {
-    expect(component).toBeTruthy()
+  describe('initialize', () => {
+    it('should create', () => {
+      expect(component).toBeTruthy()
+    })
+
+    it('dataview translations', (done) => {
+      const translationData = {
+        'ACTIONS.DATAVIEW.SORT_BY': 'sortBy'
+      }
+      const translateService = TestBed.inject(TranslateService)
+      spyOn(translateService, 'get').and.returnValue(of(translationData))
+
+      component.ngOnInit()
+
+      component.dataViewControlsTranslations$?.subscribe({
+        next: (data) => {
+          if (data) {
+            expect(data.sortDropdownTooltip).toEqual('sortBy')
+          }
+          done()
+        },
+        error: done.fail
+      })
+    })
   })
 
   it('should prepare action buttons on init', () => {

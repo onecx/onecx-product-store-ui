@@ -5,6 +5,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { of, throwError } from 'rxjs'
+import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { Column, PortalMessageService } from '@onecx/portal-integration-angular'
@@ -189,6 +190,26 @@ describe('EndpointSearchComponent', () => {
     it('should call OnInit and populate filteredColumns/actions correctly', () => {
       component.ngOnInit()
       expect(component.filteredColumns[0]).toEqual(component.columns[0])
+    })
+
+    it('dataview translations', (done) => {
+      const translationData = {
+        'ACTIONS.DATAVIEW.SORT_BY': 'sortBy'
+      }
+      const translateService = TestBed.inject(TranslateService)
+      spyOn(translateService, 'get').and.returnValue(of(translationData))
+
+      component.ngOnInit()
+
+      component.dataViewControlsTranslations$?.subscribe({
+        next: (data) => {
+          if (data) {
+            expect(data.sortDropdownTooltip).toEqual('sortBy')
+          }
+          done()
+        },
+        error: done.fail
+      })
     })
   })
 

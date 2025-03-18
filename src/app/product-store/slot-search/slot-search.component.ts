@@ -34,8 +34,8 @@ export class SlotSearchComponent implements OnInit {
   public displayDeleteDialog = false
   public hasDeletePermission = false
 
-  public dataViewControlsTranslations: DataViewControlTranslations = {}
   @ViewChild(DataView) dv: DataView | undefined
+  public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -84,7 +84,7 @@ export class SlotSearchComponent implements OnInit {
    * DIALOG
    */
   private prepareDialogTranslations(): void {
-    this.translate
+    this.dataViewControlsTranslations$ = this.translate
       .get([
         'SLOT.NAME',
         'ACTIONS.DATAVIEW.VIEW_MODE_GRID',
@@ -94,21 +94,21 @@ export class SlotSearchComponent implements OnInit {
         'ACTIONS.DATAVIEW.SORT_DIRECTION_ASC',
         'ACTIONS.DATAVIEW.SORT_DIRECTION_DESC'
       ])
-      .subscribe((data) => {
-        this.dataViewControlsTranslations = {
-          sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY'],
-          filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
-          filterInputTooltip: data['ACTIONS.DATAVIEW.FILTER_OF'] + data['SLOT.NAME'],
-          viewModeToggleTooltips: {
-            grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID']
-          },
-          sortOrderTooltips: {
-            ascending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_ASC'],
-            descending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_DESC']
-          },
-          sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY']
-        }
-      })
+      .pipe(
+        map((data) => {
+          return {
+            sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY'],
+            filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
+            filterInputTooltip: data['ACTIONS.DATAVIEW.FILTER_OF'] + data['SLOT.NAME'],
+            viewModeToggleTooltips: { grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID'] },
+            sortOrderTooltips: {
+              ascending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_ASC'],
+              descending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_DESC']
+            },
+            sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY']
+          } as DataViewControlTranslations
+        })
+      )
   }
 
   private prepareActionButtons(): void {
@@ -137,7 +137,7 @@ export class SlotSearchComponent implements OnInit {
               title: data['DIALOG.SEARCH.ENDPOINTS.TOOLTIP'],
               actionCallback: () => this.router.navigate(['../endpoints'], { relativeTo: this.route }),
               permission: 'ENDPOINT#SEARCH',
-              icon: 'pi pi-bars',
+              icon: 'pi pi-th-large',
               show: 'always'
             },
             {
@@ -145,7 +145,7 @@ export class SlotSearchComponent implements OnInit {
               title: data['DIALOG.SEARCH.APPS.TOOLTIP'],
               actionCallback: () => this.router.navigate(['../apps'], { relativeTo: this.route }),
               permission: 'APP#SEARCH',
-              icon: 'pi pi-bars',
+              icon: 'pi pi-th-large',
               show: 'always'
             }
           ]

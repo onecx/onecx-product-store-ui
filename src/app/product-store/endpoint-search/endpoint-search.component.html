@@ -73,7 +73,7 @@
           [columnDefinitions]="columns"
           (columnsChange)="onColumnsChange($event)"
           (filterChange)="onFilterChange($event)"
-          [translations]="dataViewControlsTranslations"
+          [translations]="(dataViewControlsTranslations$ | async) ?? {}"
         ></ocx-data-view-controls>
       </ng-template>
 

@@ -96,10 +96,10 @@
     >
       <ng-template pTemplate="header">
         <div class="flex flex-wrap align-items-center mx-1">
-          <div class="slim-selectbutton filter-selectbutton">
+          <div class="slim-selectbutton search-criteria-selectbutton">
             <p-selectButton
               inputid="ps_app_search_quick_filter"
-              styleClass="data-view-control opacity-90a"
+              styleClass=""
               [options]="quickFilterItems"
               [(ngModel)]="quickFilterValue"
               (onChange)="onQuickFilterChange($event)"
@@ -154,7 +154,7 @@
             (dataViewChange)="onLayoutChange($event)"
             (sortChange)="onSortChange($event)"
             (sortDirectionChange)="onSortDirChange($event)"
-            [translations]="dataViewControlsTranslations"
+            [translations]="(dataViewControlsTranslations$ | async) ?? {}"
           >
           </ocx-data-view-controls>
         </div>
@@ -167,7 +167,6 @@
               tabindex="0"
               [id]="'ps_app_search_data_' + app.appId"
               class="card block relative p-1 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
-              [class.card-primary-color]="app.appType === 'MFE'"
               (click)="onDetail($event, app)"
             >
               <!-- BADGES -->
@@ -175,8 +174,7 @@
                 tabindex="0"
                 *ngIf="hasCreatePermission"
                 [id]="'ps_app_search_data_' + app.appId + '_copy_app'"
-                class="card-badge-left badge-1 p-2 pi pi-copy card-primary-color button-icon-only"
-                [class.card-primary-color]="app.appType === 'MFE'"
+                class="card-badge-left badge-1 p-2 pi pi-copy button-icon-only"
                 (click)="onCopy($event, app)"
                 [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
                 tooltipPosition="top"
@@ -197,7 +195,6 @@
                 *ngIf="!(app?.deprecated || app?.undeployed)"
                 [id]="'ps_app_search_data_' + app.appId + '_goto_product'"
                 class="card-badge-right badge-1 p-2 pi pi-external-link button-icon-only"
-                [class.card-primary-color]="app.appType === 'MFE'"
                 (click)="onGotoProduct($event, app.productName)"
                 [pTooltip]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
                 tooltipPosition="top"

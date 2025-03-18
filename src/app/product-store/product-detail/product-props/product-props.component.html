@@ -89,12 +89,23 @@
         [imageUrl]="fetchingLogoUrl"
       ></app-image-container>
       <button
+        *ocxIfPermission="'PRODUCT#EDIT'"
+        pButton
+        id="ws_detail_props_item_remove_logo"
+        icon="pi pi-times"
+        class="action-button p-button-icon-only cursor-pointer"
+        (click)="onRemoveLogo()"
+        [attr.aria-label]="'IMAGE.TOOLTIPS.REMOVE' | translate"
+        [pTooltip]="'IMAGE.TOOLTIPS.REMOVE' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      ></button>
+      <button
+        *ocxIfPermission="'PRODUCT#EDIT'"
         pButton
         id="ps_product_detail_form_field_logo_upload"
         icon="pi pi-upload"
-        class="action-button p-button-icon-only"
-        [class.cursor-pointer]="changeMode === 'EDIT'"
-        [disabled]="changeMode === 'VIEW'"
+        class="action-button p-button-icon-only cursor-pointer"
         (click)="selectedFileInputLogo.click()"
         [attr.aria-label]="'IMAGE.TOOLTIPS.UPLOAD' | translate"
         [pTooltip]="'IMAGE.TOOLTIPS.UPLOAD' | translate"
