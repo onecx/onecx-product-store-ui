@@ -9,6 +9,10 @@
 
 @media screen and (min-width: 768px) {
   :host ::ng-deep {
+    .sm\:h-3-5rem {
+      height: 3.5rem !important;
+    }
+
     .p-dataview-list .p-dataview-content .p-grid > div {
       &:nth-child(4n + 1),
       &:nth-child(4n + 2) {

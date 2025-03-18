@@ -137,7 +137,7 @@ export class SlotSearchComponent implements OnInit {
               title: data['DIALOG.SEARCH.ENDPOINTS.TOOLTIP'],
               actionCallback: () => this.router.navigate(['../endpoints'], { relativeTo: this.route }),
               permission: 'ENDPOINT#SEARCH',
-              icon: 'pi pi-bars',
+              icon: 'pi pi-th-large',
               show: 'always'
             },
             {
@@ -145,7 +145,7 @@ export class SlotSearchComponent implements OnInit {
               title: data['DIALOG.SEARCH.APPS.TOOLTIP'],
               actionCallback: () => this.router.navigate(['../apps'], { relativeTo: this.route }),
               permission: 'APP#SEARCH',
-              icon: 'pi pi-bars',
+              icon: 'pi pi-th-large',
               show: 'always'
             }
           ]

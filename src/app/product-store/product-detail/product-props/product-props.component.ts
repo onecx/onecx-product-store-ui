@@ -187,6 +187,19 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
 
   /** File Handling
    */
+  public onRemoveLogo() {
+    const workspaceName = this.formGroup.controls['name'].value
+    if (workspaceName)
+      this.imageApi.deleteImage({ refId: workspaceName, refType: RefType.Logo }).subscribe({
+        next: () => {
+          this.fetchingLogoUrl = undefined // reset - important to trigger the change in UI
+          this.currentLogoUrl.emit(this.fetchingLogoUrl)
+        },
+        error: (err) => {
+          console.error('deleteImage', err)
+        }
+      })
+  }
   public onFileUpload(ev: Event): void {
     const workspaceName = this.formGroup.controls['name'].value
     if (!workspaceName || workspaceName === '') {
@@ -231,17 +244,8 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
       refType: RefType.Logo,
       body: blob
     }
-    this.imageApi.getImage({ refId: name, refType: RefType.Logo }).subscribe({
-      next: () => {
-        this.imageApi.updateImage(saveRequestParameter).subscribe(() => {
-          this.prepareImageResponse(name)
-        })
-      },
-      error: (err) => {
-        this.imageApi.uploadImage(saveRequestParameter).subscribe(() => {
-          this.prepareImageResponse(name)
-        })
-      }
+    this.imageApi.uploadImage(saveRequestParameter).subscribe(() => {
+      this.prepareImageResponse(name)
     })
   }
   private prepareImageResponse(name: string): void {

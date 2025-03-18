@@ -155,7 +155,7 @@ export class ProductSearchComponent implements OnInit {
               title: data['DIALOG.SEARCH.ENDPOINTS.TOOLTIP'],
               actionCallback: () => this.onEndpointSearch(),
               permission: 'ENDPOINT#SEARCH',
-              icon: 'pi pi-bars',
+              icon: 'pi pi-list',
               show: 'always'
             },
             {
@@ -163,7 +163,7 @@ export class ProductSearchComponent implements OnInit {
               title: data['DIALOG.SEARCH.APPS.TOOLTIP'],
               actionCallback: () => this.onAppSearch(),
               permission: 'APP#SEARCH',
-              icon: 'pi pi-bars',
+              icon: 'pi pi-th-large',
               show: 'always'
             },
             {
@@ -171,7 +171,7 @@ export class ProductSearchComponent implements OnInit {
               title: data['DIALOG.SEARCH.SLOTS.TOOLTIP'],
               actionCallback: () => this.onSlotSearch(),
               permission: 'APP#SEARCH',
-              icon: 'pi pi-bars',
+              icon: 'pi pi-th-large',
               show: 'always'
             },
             {

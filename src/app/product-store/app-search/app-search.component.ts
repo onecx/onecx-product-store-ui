@@ -233,7 +233,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
               title: data['DIALOG.SEARCH.ENDPOINTS.TOOLTIP'],
               actionCallback: () => this.router.navigate(['../endpoints'], { relativeTo: this.route }),
               permission: 'ENDPOINT#SEARCH',
-              icon: 'pi pi-bars',
+              icon: 'pi pi-list',
               show: 'always'
             },
             {
@@ -241,7 +241,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
               title: data['DIALOG.SEARCH.SLOTS.TOOLTIP'],
               actionCallback: () => this.router.navigate(['../slots'], { relativeTo: this.route }),
               permission: 'APP#SEARCH',
-              icon: 'pi pi-bars',
+              icon: 'pi pi-th-large',
               show: 'always'
             },
             {

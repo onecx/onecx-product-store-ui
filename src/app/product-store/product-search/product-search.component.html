@@ -137,7 +137,7 @@
           <div *ngFor="let product of products; index as i" class="col-6 md:col-4 xl:col-3 p-2 md:px-3">
             <div
               [id]="'ps_product_search_data_grid_row_' + i"
-              class="card relative px-2 p-1 sm:p-2 flex flex-column sm:gap-1 justify-content-between text-center hover:bg-gray-200 cursor-pointer"
+              class="card relative p-2 flex flex-column sm:gap-1 justify-content-between text-center hover:bg-gray-200 cursor-pointer"
               [routerLink]="['./', product.name]"
             >
               <!-- BADGES -->
@@ -150,7 +150,7 @@
                 tooltipPosition="top"
                 tooltipEvent="hover"
               ></span>
-              <div class="h-2rem sm:h-3rem flex flex-column justify-content-center align-items-center text-center">
+              <div class="h-2rem sm:h-3rem flex flex-column justify-content-center align-items-center">
                 <app-image-container
                   [id]="'ps_product_search_data_grid_row_' + i + '_image'"
                   [small]="false"
@@ -159,10 +159,10 @@
                 ></app-image-container>
               </div>
               <!-- CONTENT -->
-              <div class="flex flex-column justify-content-between text-center">
+              <div class="h-3rem sm:h-3-5rem mt-1 sm:mt-2 flex flex-column justify-content-between text-center">
                 <div
                   [id]="'ps_product_search_data_grid_row_' + i + '_product_display_name'"
-                  class="mt-2 font-bold text-md text-responsive"
+                  class="font-bold text-base sm:text-md text-responsive"
                   [class.danger-action-text]="product.undeployed"
                   [attr.aria-label]="product.displayName"
                   [pTooltip]="product.displayName.length <= 20 ? '' : product.displayName"
@@ -171,25 +171,27 @@
                 >
                   {{ product.displayName }}
                 </div>
-                <div
-                  [id]="'ps_product_search_data_grid_row_' + i + '_product_name'"
-                  class="text-sm text-responsive"
-                  [attr.aria-label]="product.name"
-                  [pTooltip]="product.name.length <= 25 ? '' : product.name"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                >
-                  {{ product.name }}
-                </div>
-                <div
-                  class="text-sm text-responsive"
-                  [id]="'ps_product_search_data_list_row_' + i + '_version'"
-                  [attr.aria-label]="'PRODUCT.VERSION' | translate"
-                  [pTooltip]="'PRODUCT.VERSION' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                >
-                  {{ product.version ?? ('PRODUCT.VERSION.MISSING' | translate) }}
+                <div class="">
+                  <div
+                    [id]="'ps_product_search_data_grid_row_' + i + '_classification'"
+                    class="text-xs sm:text-sm text-responsive"
+                    [attr.aria-label]="product.classes"
+                    [pTooltip]="'PRODUCT.CLASSIFICATIONS' | translate"
+                    tooltipPosition="top"
+                    tooltipEvent="hover"
+                  >
+                    {{ product.classes }}
+                  </div>
+                  <div
+                    [id]="'ps_product_search_data_list_row_' + i + '_version'"
+                    class="text-xs sm:text-sm text-responsive"
+                    [attr.aria-label]="'PRODUCT.VERSION' | translate"
+                    [pTooltip]="'PRODUCT.VERSION' | translate"
+                    tooltipPosition="top"
+                    tooltipEvent="hover"
+                  >
+                    {{ product.version ?? ('PRODUCT.VERSION.MISSING' | translate) }}
+                  </div>
                 </div>
               </div>
             </div>
