@@ -139,7 +139,7 @@ describe('OneCXProductInfosComponent', () => {
       component.ngOnChanges()
 
       expect(component.products.emit).toHaveBeenCalledWith([])
-      expect(console.error).toHaveBeenCalledWith('iam.searchRolesByCriteria', errorResponse)
+      expect(console.error).toHaveBeenCalledWith('onecx-product-store.searchProducts', errorResponse)
     })
   })
 

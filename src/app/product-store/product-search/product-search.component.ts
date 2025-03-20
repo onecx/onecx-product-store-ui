@@ -82,7 +82,6 @@ export class ProductSearchComponent implements OnInit {
               if (!this.quickFilterItems.includes(c)) this.quickFilterItems.push(c)
             })
           })
-          console.log(this.quickFilterItems)
           return products.sort(this.sortProductsByDisplayName)
         }),
         catchError((err) => {

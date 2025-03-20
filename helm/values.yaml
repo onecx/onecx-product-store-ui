@@ -28,6 +28,14 @@ app:
               path: /endpoints
             - name: slots
               path: /slots
+        product-infos:
+          exposedModule: "./OneCXProductInfosComponent"
+          description: "Provide Product informations"
+          type: COMPONENT
+          technology: WEBCOMPONENTMODULE
+          remoteName: onecx-product-store
+          tagName: ocx-product-infos-component
+    # Slot
     slot:
       enabled: true
       specs:
@@ -56,5 +64,3 @@ app:
           SLOT:
             SEARCH: Search slots
             DELETE: Delete slot
-
-# PIPE Config
