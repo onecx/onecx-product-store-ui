@@ -39,6 +39,7 @@ export class ProductSearchComponent implements OnInit {
   public filter: string | undefined
   public sortField = 'displayName'
   public sortOrder = 1
+  public quickFilterItems: string[] = []
 
   @ViewChild(DataView) dv: DataView | undefined
   public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
@@ -77,7 +78,11 @@ export class ProductSearchComponent implements OnInit {
           const products: ProductAbstractExtended[] = []
           data.stream?.forEach((p) => {
             products.push({ ...p, classes: p.classifications?.join(', ') })
+            p.classifications?.forEach((c) => {
+              if (!this.quickFilterItems.includes(c)) this.quickFilterItems.push(c)
+            })
           })
+          console.log(this.quickFilterItems)
           return products.sort(this.sortProductsByDisplayName)
         }),
         catchError((err) => {
