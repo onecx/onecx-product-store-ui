@@ -12,6 +12,7 @@ configuration.ts
 encoder.ts
 git_push.sh
 index.ts
+model/applicationAbstract.ts
 model/createMicrofrontendRequest.ts
 model/createMicroserviceRequest.ts
 model/createProductRequest.ts

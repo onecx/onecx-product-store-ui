@@ -19,10 +19,9 @@
     </ng-template>
 
     <div class="flex flex-row flex-wrap column-gap-3 sm:column-gap-4 row-gap-2 sm:row-gap-3">
-      <ng-container *ngFor="let mfe of details.microfrontends.sort(sortMfesByTypeAndExposedModule)">
+      <ng-container *ngFor="let mfe of details.microfrontends.sort(sortMfesByTypeAndExposedModule); index as i">
         <a
-          class="card relative w-full sm:w-21rem m-0 py-2 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
-          [class.card-primary-color]="mfe.type === 'MODULE'"
+          class="card relative w-full sm:w-21rem m-0 pt-2 pb-1 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
           (click)="onDetail($event, mfe, AppType.MFE)"
         >
           <!-- BADGES -->
@@ -30,7 +29,6 @@
             *ngIf="hasCreatePermission"
             [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_copy_app'"
             class="card-badge-left badge-1 pi pi-copy button-icon-only"
-            [class.card-primary-color]="mfe.type === 'MODULE'"
             (click)="onCopy($event, mfe, AppType.MFE)"
             [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
             tooltipPosition="top"
@@ -79,7 +77,6 @@
             >
               {{ mfe.appId }}
             </div>
-            <div class="text-xs">{{ mfe.type }}</div>
             <div
               class="text-sm text-responsive"
               [pTooltip]="mfe.exposedModule && mfe.exposedModule.length <= 25 ? '' : (mfe.exposedModule ?? '')"
@@ -88,6 +85,13 @@
             >
               {{ mfe.exposedModule ?? '' }}
             </div>
+            <app-ocx-chip
+              [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_type'"
+              class="py-1"
+              [styleClass]="mfe.type === 'MODULE' ? 'bg-primary' : ''"
+              [label]="mfe.type"
+              [title]="'APP.TOOLTIPS.TYPE' | translate"
+            />
           </div>
         </a>
       </ng-container>

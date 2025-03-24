@@ -8,8 +8,36 @@ import { of, ReplaySubject, throwError } from 'rxjs'
 
 import { BASE_URL, RemoteComponentConfig } from '@onecx/angular-remote-components'
 
-import { ProductsAPIService, ProductPageResult } from 'src/app/shared/generated'
+import { ProductAbstract, ProductsAPIService, ProductPageResult } from 'src/app/shared/generated'
 import { OneCXProductInfosComponent } from './product-infos.component'
+
+const app1 = {
+  appName: 'App1',
+  appId: 'app1',
+  undeployed: false,
+  deprecated: false
+}
+const app2 = {
+  appName: 'App2',
+  appId: 'app2',
+  undeployed: true,
+  deprecated: true
+}
+const product1: ProductAbstract = {
+  id: 'p1',
+  name: 'product1',
+  displayName: 'Product 1',
+  applications: [app1],
+  undeployed: false
+}
+const product2: ProductAbstract = {
+  id: 'p2',
+  name: 'product2',
+  displayName: 'Product 2',
+  applications: [app2],
+  undeployed: true
+}
+const products: ProductAbstract[] = [product1, product2]
 
 describe('OneCXProductInfosComponent', () => {
   const productApiSpy = {
@@ -90,75 +118,104 @@ describe('OneCXProductInfosComponent', () => {
     })
   })
 
-  describe('getting all roles', () => {
-    it('should get roles - successful with data', () => {
+  describe('getting products', () => {
+    it('should get products - successful with data', (done) => {
       const { component } = setUp()
-      const mockResponse: ProductPageResult = {
-        stream: [
-          { id: 'a', name: 'name', displayName: 'p1' },
-          { id: 'b', name: 'name', displayName: 'p2' }
-        ]
-      }
+      const mockResponse: ProductPageResult = { stream: products }
       productApiSpy.searchProducts.and.returnValue(of(mockResponse))
-      spyOn(component.products, 'emit')
+      spyOn(component.productsAndApplications, 'emit')
 
       component.ngOnChanges()
 
-      expect(component.products.emit).toHaveBeenCalled()
+      component.productAndApplications$?.subscribe({
+        next: (data) => {
+          if (data) {
+            expect(data).toEqual(products)
+          }
+          done()
+        },
+        error: done.fail
+      })
+      expect(component.productsAndApplications.emit).toHaveBeenCalled()
     })
 
-    it('should get roles - successful without data', () => {
+    it('should get products - successful without data', (done) => {
       const { component } = setUp()
       const mockResponse: ProductPageResult = { stream: [] }
       productApiSpy.searchProducts.and.returnValue(of(mockResponse))
-      spyOn(component.products, 'emit')
+      spyOn(component.productsAndApplications, 'emit')
 
       component.ngOnChanges()
 
-      expect(component.products.emit).toHaveBeenCalledWith([])
+      component.productAndApplications$?.subscribe({
+        next: (data) => {
+          if (data) {
+            expect(data).toEqual([])
+          }
+          done()
+        },
+        error: done.fail
+      })
+      expect(component.productsAndApplications.emit).toHaveBeenCalled()
     })
 
-    it('should get roles - successful without stream', () => {
+    it('should get products - successful without stream', (done) => {
       const { component } = setUp()
       const mockResponse: ProductPageResult = { stream: undefined }
       productApiSpy.searchProducts.and.returnValue(of(mockResponse))
-      spyOn(component.products, 'emit')
+      spyOn(component.productsAndApplications, 'emit')
 
       component.ngOnChanges()
 
-      expect(component.products.emit).toHaveBeenCalledWith([])
+      component.productAndApplications$?.subscribe({
+        next: (data) => {
+          if (data) {
+            expect(data).toEqual([])
+          }
+          done()
+        },
+        error: done.fail
+      })
+      expect(component.productsAndApplications.emit).toHaveBeenCalled()
     })
 
-    it('should get roles- failed', () => {
+    it('should get products - failed', (done) => {
       const { component } = setUp()
-      const errorResponse = { status: 400, statusText: 'Error on getting roles' }
+      const errorResponse = { status: 400, statusText: 'Error on getting products' }
       productApiSpy.searchProducts.and.returnValue(throwError(() => errorResponse))
-      spyOn(component.products, 'emit')
+      spyOn(component.productsAndApplications, 'emit')
       spyOn(console, 'error')
 
       component.ngOnChanges()
-
-      expect(component.products.emit).toHaveBeenCalledWith([])
-      expect(console.error).toHaveBeenCalledWith('onecx-product-store.searchProducts', errorResponse)
+      component.productAndApplications$?.subscribe({
+        next: (data) => {
+          if (data) {
+            expect(console.error).toHaveBeenCalledWith('onecx-product-store.searchProducts', errorResponse)
+          }
+          done()
+        },
+        error: done.fail
+      })
+      expect(component.productsAndApplications.emit).toHaveBeenCalled()
     })
   })
 
   describe('sorting', () => {
-    it('should return negative value when first role name comes before second alphabetically', () => {
+    it('should return negative value when first product name comes before second alphabetically', () => {
       const { component } = setUp()
       const productA = { id: 'a', name: 'name', displayName: 'Admin' }
       const productB = { id: 'b', name: 'name', displayName: 'User' }
       expect(component.sortByDisplayName(productA, productB)).toBeLessThan(0)
     })
 
-    it('should return positive value when first role name comes after second alphabetically', () => {
+    it('should return positive value when first product name comes after second alphabetically', () => {
       const { component } = setUp()
       const productA = { id: 'a', name: 'name', displayName: 'User' }
       const productB = { id: 'b', name: 'name', displayName: 'Admin' }
       expect(component.sortByDisplayName(productA, productB)).toBeGreaterThan(0)
     })
 
-    it('should return zero when role names are the same', () => {
+    it('should return zero when product names are the same', () => {
       const { component } = setUp()
       const productA = { id: 'a', name: 'name', displayName: 'Admin' }
       const productB = { id: 'b', name: 'name', displayName: 'Admin' }

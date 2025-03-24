@@ -26,10 +26,11 @@ import { ToastModule } from 'primeng/toast'
 import { PortalDialogService, PortalCoreModule } from '@onecx/portal-integration-angular'
 
 import { LabelResolver } from './label.resolver'
+import { OcxChipComponent } from './ocx-chip/ocx-chip.component'
 import { ImageContainerComponent } from './image-container/image-container.component'
 
 @NgModule({
-  declarations: [ImageContainerComponent],
+  declarations: [ImageContainerComponent, OcxChipComponent],
   imports: [
     PortalCoreModule.forMicroFrontend(),
     AngularRemoteComponentsModule,
@@ -74,7 +75,8 @@ import { ImageContainerComponent } from './image-container/image-container.compo
     TableModule,
     TabViewModule,
     ToastModule,
-    TranslateModule
+    TranslateModule,
+    OcxChipComponent
   ],
   //this is not elegant, for some reason the injection token from primeng does not work across federated module
   providers: [

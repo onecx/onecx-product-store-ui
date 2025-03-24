@@ -2,8 +2,8 @@ import { Component, EventEmitter, Inject, Input, OnChanges } from '@angular/core
 import { CommonModule, Location } from '@angular/common'
 import { HttpClient } from '@angular/common/http'
 import { UntilDestroy } from '@ngneat/until-destroy'
-import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
-import { catchError, finalize, map, Observable, of, ReplaySubject } from 'rxjs'
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
+import { catchError, map, Observable, of, ReplaySubject } from 'rxjs'
 
 import {
   AngularRemoteComponentsModule,
@@ -13,7 +13,7 @@ import {
   ocxRemoteWebcomponent,
   provideTranslateServiceForRoot
 } from '@onecx/angular-remote-components'
-import { PortalCoreModule, UserService, createRemoteComponentTranslateLoader } from '@onecx/portal-integration-angular'
+import { PortalCoreModule, createRemoteComponentTranslateLoader } from '@onecx/portal-integration-angular'
 
 import {
   Configuration,
@@ -47,19 +47,19 @@ import { environment } from 'src/environments/environment'
 })
 @UntilDestroy()
 export class OneCXProductInfosComponent implements ocxRemoteComponent, ocxRemoteWebcomponent, OnChanges {
+  // input
   @Input() refresh: boolean | undefined = false // on any change here a reload is triggered
-  @Input() products = new EventEmitter<ProductAbstract[]>() // provided in slot (output)
+  @Input() productName: string | undefined = undefined // search parameter
+  @Input() displayName: string | undefined = undefined // search parameter
+  // output
+  @Input() productsAndApplications = new EventEmitter<Observable<ProductAbstract[]>>()
 
-  public products$: Observable<ProductAbstract[]> | undefined
+  public productAndApplications$: Observable<ProductAbstract[]> | undefined
 
   constructor(
     @Inject(BASE_URL) private readonly baseUrl: ReplaySubject<string>,
-    private readonly userService: UserService,
-    private readonly translateService: TranslateService,
     private readonly productApi: ProductsAPIService
-  ) {
-    this.userService.lang$.subscribe((lang) => this.translateService.use(lang))
-  }
+  ) {}
 
   @Input() set ocxRemoteComponentConfig(config: RemoteComponentConfig) {
     this.ocxInitRemoteComponent(config)
@@ -72,22 +72,25 @@ export class OneCXProductInfosComponent implements ocxRemoteComponent, ocxRemote
     })
   }
 
+  /**
+   * Prepare searches on each parameter change
+   */
   public ngOnChanges(): void {
-    let products: ProductAbstract[] = []
-    this.productApi
-      .searchProducts({ productSearchCriteria: { pageSize: 1000 } as ProductSearchCriteria })
-      .pipe(
-        map((response: ProductPageResult) => {
-          products = response.stream?.sort(this.sortByDisplayName) ?? []
-          return products
-        }),
-        catchError((err) => {
-          console.error('onecx-product-store.searchProducts', err)
-          return of([])
-        }),
-        finalize(() => this.products.emit(products))
-      )
-      .subscribe()
+    const criteria: ProductSearchCriteria = {
+      name: this.productName,
+      displayName: this.displayName,
+      pageSize: 1000
+    }
+    this.productAndApplications$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
+      map((response: ProductPageResult) => {
+        return response.stream?.sort(this.sortByDisplayName) ?? []
+      }),
+      catchError((err) => {
+        console.error('onecx-product-store.searchProducts', err)
+        return of([])
+      })
+    )
+    this.productsAndApplications.emit(this.productAndApplications$)
   }
 
   public sortByDisplayName(a: ProductAbstract, b: ProductAbstract): number {

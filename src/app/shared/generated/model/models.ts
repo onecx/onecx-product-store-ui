@@ -1,3 +1,4 @@
+export * from './applicationAbstract';
 export * from './createMicrofrontendRequest';
 export * from './createMicroserviceRequest';
 export * from './createProductRequest';
