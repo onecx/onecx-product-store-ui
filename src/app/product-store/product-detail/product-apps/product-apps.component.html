@@ -19,82 +19,98 @@
     </ng-template>
 
     <div class="flex flex-row flex-wrap column-gap-3 sm:column-gap-4 row-gap-2 sm:row-gap-3">
-      <ng-container *ngFor="let mfe of details.microfrontends.sort(sortMfesByTypeAndExposedModule); index as i">
+      <a
+        *ngFor="let mfe of details.microfrontends.sort(sortMfesByTypeAndExposedModule); index as i"
+        tabindex="0"
+        [id]="'ps_product_apps_components_mfe_' + mfe.appId"
+        class="card relative w-full sm:w-21rem m-0 pt-2 pb-1 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
+        (click)="onDetail($event, mfe, AppType.MFE)"
+        (keydown.enter)="onDetail($event, mfe, AppType.MFE)"
+        (keydown.space)="onDetail($event, mfe, AppType.MFE)"
+      >
+        <!-- BADGES -->
         <a
-          class="card relative w-full sm:w-21rem m-0 pt-2 pb-1 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
-          (click)="onDetail($event, mfe, AppType.MFE)"
-        >
-          <!-- BADGES -->
-          <a
-            *ngIf="hasCreatePermission"
-            [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_copy_app'"
-            class="card-badge-left badge-1 pi pi-copy button-icon-only"
-            (click)="onCopy($event, mfe, AppType.MFE)"
-            [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
+          *ngIf="hasCreatePermission"
+          tabindex="0"
+          [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_copy_app'"
+          class="card-badge-left badge-1 pi pi-copy button-icon-only"
+          (click)="onCopy($event, mfe, AppType.MFE)"
+          (keydown.enter)="onCopy($event, mfe, AppType.MFE)"
+          (keydown.space)="onCopy($event, mfe, AppType.MFE)"
+          [attr.aria-label]="'APP.COPY.LABEL' | translate"
+          [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        ></a>
+        <a
+          *ngIf="hasDeletePermission"
+          tabindex="0"
+          [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_delete'"
+          class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text button-icon-only"
+          (click)="onDelete($event, mfe, AppType.MFE)"
+          (keydown.enter)="onDelete($event, mfe, AppType.MFE)"
+          (keydown.space)="onDelete($event, mfe, AppType.MFE)"
+          [attr.aria-label]="'APP.DELETE.LABEL' | translate"
+          [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        ></a>
+        <span
+          *ngIf="mfe?.undeployed"
+          [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_undeployed'"
+          class="card-badge-right badge-1 pi pi-ban danger-action-text font-bold cursor-auto"
+          [attr.aria-label]="'APP.UNDEPLOYED' | translate"
+          [pTooltip]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        ></span>
+        <span
+          *ngIf="mfe?.deprecated && !mfe?.undeployed"
+          [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_deprecated'"
+          class="card-badge-right badge-1 pi pi-exclamation-circle danger-action-text font-bold cursor-auto"
+          [attr.aria-label]="'APP.DEPRECATED' | translate"
+          [pTooltip]="'APP.TOOLTIPS.DEPRECATED_SEARCH' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        ></span>
+        <span
+          [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_icon'"
+          class="card-badge-right badge-2 p-2 pi cursor-auto"
+          [ngClass]="'pi-' + mfe.iconName"
+          [attr.aria-label]="'Icon'"
+          [pTooltip]="'Icon'"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        ></span>
+        <!-- CONTENT -->
+        <div class="flex flex-column justify-content-between gap-1 text-center">
+          <div
+            class="font-bold text-responsive"
+            [attr.aria-label]="'APP.APP_ID' | translate"
+            [pTooltip]="mfe.appId.length <= 25 ? '' : mfe.appId"
             tooltipPosition="top"
             tooltipEvent="hover"
-          ></a>
-          <a
-            *ngIf="hasDeletePermission"
-            [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_delete'"
-            class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text button-icon-only"
-            (click)="onDelete($event, mfe, AppType.MFE)"
-            [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          ></a>
-          <span
-            *ngIf="mfe?.undeployed"
-            [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_undeployed'"
-            class="card-badge-right badge-1 pi pi-ban danger-action-text font-bold cursor-auto"
-            [pTooltip]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          ></span>
-          <span
-            *ngIf="mfe?.deprecated && !mfe?.undeployed"
-            [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_deprecated'"
-            class="card-badge-right badge-1 pi pi-exclamation-circle danger-action-text font-bold cursor-auto"
-            [pTooltip]="'APP.TOOLTIPS.DEPRECATED_SEARCH' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          ></span>
-          <span
-            [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_icon'"
-            class="card-badge-right badge-2 p-2 pi cursor-auto"
-            [ngClass]="'pi-' + mfe.iconName"
-            [pTooltip]="'Icon'"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          ></span>
-          <!-- CONTENT -->
-          <div class="flex flex-column justify-content-between gap-1 text-center">
-            <div
-              class="font-bold text-responsive"
-              [pTooltip]="mfe.appId.length <= 25 ? '' : mfe.appId"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            >
-              {{ mfe.appId }}
-            </div>
-            <div
-              class="text-sm text-responsive"
-              [pTooltip]="mfe.exposedModule && mfe.exposedModule.length <= 25 ? '' : (mfe.exposedModule ?? '')"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            >
-              {{ mfe.exposedModule ?? '' }}
-            </div>
-            <app-ocx-chip
-              [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_type'"
-              class="py-1"
-              [styleClass]="mfe.type === 'MODULE' ? 'bg-primary' : ''"
-              [label]="mfe.type"
-              [title]="'APP.TOOLTIPS.TYPE' | translate"
-            />
+          >
+            {{ mfe.appId }}
           </div>
-        </a>
-      </ng-container>
+          <div
+            class="text-sm text-responsive"
+            [attr.aria-label]="'APP.EXPOSED_MODULE' | translate"
+            [pTooltip]="mfe.exposedModule && mfe.exposedModule.length <= 25 ? '' : (mfe.exposedModule ?? '')"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
+            {{ mfe.exposedModule ?? '' }}
+          </div>
+          <app-ocx-chip
+            [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_type'"
+            class="py-1"
+            [styleClass]="mfe.type === 'MODULE' ? 'bg-primary' : ''"
+            [label]="mfe.type"
+            [title]="'APP.TOOLTIPS.TYPE' | translate"
+          />
+        </div>
+      </a>
     </div>
   </p-fieldset>
 
