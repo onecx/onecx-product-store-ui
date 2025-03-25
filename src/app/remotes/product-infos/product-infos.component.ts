@@ -52,9 +52,9 @@ export class OneCXProductInfosComponent implements ocxRemoteComponent, ocxRemote
   @Input() productName: string | undefined = undefined // search parameter
   @Input() displayName: string | undefined = undefined // search parameter
   // output
-  @Input() productsAndApplications = new EventEmitter<Observable<ProductAbstract[]>>()
+  @Input() productsAndApplications = new EventEmitter<ProductAbstract[]>()
 
-  public productAndApplications$: Observable<ProductAbstract[]> | undefined
+  public productsAndApplications$: Observable<ProductAbstract[]> | undefined
 
   constructor(
     @Inject(BASE_URL) private readonly baseUrl: ReplaySubject<string>,
@@ -81,19 +81,19 @@ export class OneCXProductInfosComponent implements ocxRemoteComponent, ocxRemote
       displayName: this.displayName,
       pageSize: 1000
     }
-    this.productAndApplications$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
+    this.productsAndApplications$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
       map((response: ProductPageResult) => {
         return response.stream?.sort(this.sortByDisplayName) ?? []
       }),
       catchError((err) => {
-        console.error('onecx-product-store.searchProducts', err)
+        console.error('onecx-product-infos.searchProducts', err)
         return of([])
       })
     )
-    this.productsAndApplications.emit(this.productAndApplications$)
+    this.productsAndApplications$.subscribe(this.productsAndApplications)
   }
 
-  public sortByDisplayName(a: ProductAbstract, b: ProductAbstract): number {
+  private sortByDisplayName(a: ProductAbstract, b: ProductAbstract): number {
     return (a.displayName ? a.displayName.toUpperCase() : '').localeCompare(
       b.displayName ? b.displayName.toUpperCase() : ''
     )

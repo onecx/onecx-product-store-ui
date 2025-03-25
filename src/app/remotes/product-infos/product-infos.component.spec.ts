@@ -123,11 +123,10 @@ describe('OneCXProductInfosComponent', () => {
       const { component } = setUp()
       const mockResponse: ProductPageResult = { stream: products }
       productApiSpy.searchProducts.and.returnValue(of(mockResponse))
-      spyOn(component.productsAndApplications, 'emit')
 
       component.ngOnChanges()
 
-      component.productAndApplications$?.subscribe({
+      component.productsAndApplications$?.subscribe({
         next: (data) => {
           if (data) {
             expect(data).toEqual(products)
@@ -136,18 +135,16 @@ describe('OneCXProductInfosComponent', () => {
         },
         error: done.fail
       })
-      expect(component.productsAndApplications.emit).toHaveBeenCalled()
     })
 
     it('should get products - successful without data', (done) => {
       const { component } = setUp()
       const mockResponse: ProductPageResult = { stream: [] }
       productApiSpy.searchProducts.and.returnValue(of(mockResponse))
-      spyOn(component.productsAndApplications, 'emit')
 
       component.ngOnChanges()
 
-      component.productAndApplications$?.subscribe({
+      component.productsAndApplications$?.subscribe({
         next: (data) => {
           if (data) {
             expect(data).toEqual([])
@@ -156,18 +153,16 @@ describe('OneCXProductInfosComponent', () => {
         },
         error: done.fail
       })
-      expect(component.productsAndApplications.emit).toHaveBeenCalled()
     })
 
     it('should get products - successful without stream', (done) => {
       const { component } = setUp()
       const mockResponse: ProductPageResult = { stream: undefined }
       productApiSpy.searchProducts.and.returnValue(of(mockResponse))
-      spyOn(component.productsAndApplications, 'emit')
 
       component.ngOnChanges()
 
-      component.productAndApplications$?.subscribe({
+      component.productsAndApplications$?.subscribe({
         next: (data) => {
           if (data) {
             expect(data).toEqual([])
@@ -176,27 +171,24 @@ describe('OneCXProductInfosComponent', () => {
         },
         error: done.fail
       })
-      expect(component.productsAndApplications.emit).toHaveBeenCalled()
     })
 
     it('should get products - failed', (done) => {
       const { component } = setUp()
       const errorResponse = { status: 400, statusText: 'Error on getting products' }
       productApiSpy.searchProducts.and.returnValue(throwError(() => errorResponse))
-      spyOn(component.productsAndApplications, 'emit')
       spyOn(console, 'error')
 
       component.ngOnChanges()
-      component.productAndApplications$?.subscribe({
+      component.productsAndApplications$?.subscribe({
         next: (data) => {
           if (data) {
-            expect(console.error).toHaveBeenCalledWith('onecx-product-store.searchProducts', errorResponse)
+            expect(console.error).toHaveBeenCalledWith('onecx-product-infos.searchProducts', errorResponse)
           }
           done()
         },
         error: done.fail
       })
-      expect(component.productsAndApplications.emit).toHaveBeenCalled()
     })
   })
 
@@ -205,49 +197,49 @@ describe('OneCXProductInfosComponent', () => {
       const { component } = setUp()
       const productA = { id: 'a', name: 'name', displayName: 'Admin' }
       const productB = { id: 'b', name: 'name', displayName: 'User' }
-      expect(component.sortByDisplayName(productA, productB)).toBeLessThan(0)
+      expect(component['sortByDisplayName'](productA, productB)).toBeLessThan(0)
     })
 
     it('should return positive value when first product name comes after second alphabetically', () => {
       const { component } = setUp()
       const productA = { id: 'a', name: 'name', displayName: 'User' }
       const productB = { id: 'b', name: 'name', displayName: 'Admin' }
-      expect(component.sortByDisplayName(productA, productB)).toBeGreaterThan(0)
+      expect(component['sortByDisplayName'](productA, productB)).toBeGreaterThan(0)
     })
 
     it('should return zero when product names are the same', () => {
       const { component } = setUp()
       const productA = { id: 'a', name: 'name', displayName: 'Admin' }
       const productB = { id: 'b', name: 'name', displayName: 'Admin' }
-      expect(component.sortByDisplayName(productA, productB)).toBe(0)
+      expect(component['sortByDisplayName'](productA, productB)).toBe(0)
     })
 
     it('should be case-insensitive', () => {
       const { component } = setUp()
       const productA = { id: 'a', name: 'name', displayName: 'admin' }
       const productB = { id: 'b', name: 'name', displayName: 'Admin' }
-      expect(component.sortByDisplayName(productA, productB)).toBe(0)
+      expect(component['sortByDisplayName'](productA, productB)).toBe(0)
     })
 
     it('should handle undefined names', () => {
       const { component } = setUp()
       const productA = { id: 'a', name: 'name', displayName: undefined }
       const productB = { id: 'b', name: 'name', displayName: 'Admin' }
-      expect(component.sortByDisplayName(productA, productB)).toBeLessThan(0)
+      expect(component['sortByDisplayName'](productA, productB)).toBeLessThan(0)
     })
 
     it('should handle empty string names', () => {
       const { component } = setUp()
       const productA = { id: 'a', name: 'name', displayName: '' }
       const productB = { id: 'b', name: 'name', displayName: 'Admin' }
-      expect(component.sortByDisplayName(productA, productB)).toBeLessThan(0)
+      expect(component['sortByDisplayName'](productA, productB)).toBeLessThan(0)
     })
 
     it('should handle both names being undefined', () => {
       const { component } = setUp()
       const productA = { id: 'a', name: 'name', displayName: undefined }
       const productB = { id: 'b', name: 'name', displayName: undefined }
-      expect(component.sortByDisplayName(productA, productB)).toBe(0)
+      expect(component['sortByDisplayName'](productA, productB)).toBe(0)
     })
   })
 })
