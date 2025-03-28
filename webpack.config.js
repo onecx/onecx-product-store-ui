@@ -4,7 +4,10 @@ const { share, withModuleFederationPlugin } = require('@angular-architects/modul
 const config = withModuleFederationPlugin({
   name: 'onecx-product-store-ui',
   filename: 'remoteEntry.js',
-  exposes: { './OneCXProductStoreModule': 'src/main.ts' },
+  exposes: {
+    './OneCXProductStoreModule': 'src/main.ts',
+    './OneCXProductInfosComponent': 'src/app/remotes/product-infos/product-infos.component.main.ts'
+  },
   shared: share({
     '@angular/core': { requiredVersion: 'auto', includeSecondaries: true },
     '@angular/common': { requiredVersion: 'auto', includeSecondaries: { skip: ['@angular/common/http/testing'] } },

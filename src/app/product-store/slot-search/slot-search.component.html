@@ -120,6 +120,8 @@
                 [id]="'ps_slot_search_data_' + slot.name + '_delete_slot'"
                 class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text button-icon-only"
                 (click)="onDelete($event, slot)"
+                (keydown.enter)="onDelete($event, slot)"
+                (keydown.space)="onDelete($event, slot)"
                 [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"

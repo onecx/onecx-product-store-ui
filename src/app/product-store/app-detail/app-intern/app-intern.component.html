@@ -34,6 +34,7 @@
         tooltipEvent="hover"
       ></p-checkbox>
       <p-checkbox
+        *ngIf="appType === 'MFE'"
         type="text"
         inputId="ps_app_detail_form_field_deprecated"
         [(ngModel)]="deprecated"

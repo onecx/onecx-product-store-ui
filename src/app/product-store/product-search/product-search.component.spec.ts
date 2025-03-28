@@ -21,7 +21,8 @@ describe('ProductSearchComponent', () => {
     id: 'id',
     name: 'name',
     basePath: 'basePath',
-    displayName: 'displayName'
+    displayName: 'displayName',
+    classifications: ['test']
   }
   const apiProductServiceSpy = {
     searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of({ stream: [] }))

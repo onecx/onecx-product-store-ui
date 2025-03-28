@@ -1,11 +1,6 @@
 <div class="sm:pt-2 pb-2 sm:pb-3 px-3">
-  <ocx-slot
-    *ngIf="isListWorkspacesUsingProductComponentDefined$ | async"
-    [name]="listWorkspacesUsingProductSlotName"
-    [inputs]="{ productName: product?.name }"
-  >
-  </ocx-slot>
-  <div *ngIf="(isListWorkspacesUsingProductComponentDefined$ | async) === false" id="ps_product_use_error">
+  <ocx-slot *ngIf="isComponentDefined$ | async" [name]="slotName" [inputs]="{ productName: product?.name }"> </ocx-slot>
+  <div *ngIf="(isComponentDefined$ | async) === false" id="ps_product_use_error">
     <p-message
       id="ps_product_use_error_message"
       severity="info"

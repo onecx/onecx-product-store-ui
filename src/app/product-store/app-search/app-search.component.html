@@ -168,6 +168,8 @@
               [id]="'ps_app_search_data_' + app.appId"
               class="card block relative p-1 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
               (click)="onDetail($event, app)"
+              (keydown.enter)="onDetail($event, app)"
+              (keydown.space)="onDetail($event, app)"
             >
               <!-- BADGES -->
               <a
@@ -176,6 +178,8 @@
                 [id]="'ps_app_search_data_' + app.appId + '_copy_app'"
                 class="card-badge-left badge-1 p-2 pi pi-copy button-icon-only"
                 (click)="onCopy($event, app)"
+                (keydown.enter)="onCopy($event, app)"
+                (keydown.space)="onCopy($event, app)"
                 [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -186,6 +190,8 @@
                 [id]="'ps_app_search_data_' + app.appId + '_delete_app'"
                 class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text button-icon-only"
                 (click)="onDelete($event, app)"
+                (keydown.enter)="onDelete($event, app)"
+                (keydown.space)="onDelete($event, app)"
                 [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
@@ -196,6 +202,8 @@
                 [id]="'ps_app_search_data_' + app.appId + '_goto_product'"
                 class="card-badge-right badge-1 p-2 pi pi-external-link button-icon-only"
                 (click)="onGotoProduct($event, app.productName)"
+                (keydown.enter)="onGotoProduct($event, app.productName)"
+                (keydown.space)="onGotoProduct($event, app.productName)"
                 [pTooltip]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
