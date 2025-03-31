@@ -102,9 +102,10 @@ export class ProductSearchComponent implements OnInit {
   private prepareDialogTranslations(): void {
     this.dataViewControlsTranslations$ = this.translate
       .get([
-        'PRODUCT.NAME',
         'PRODUCT.DISPLAY_NAME',
         'PRODUCT.CLASSIFICATIONS',
+        'PRODUCT.PROVIDER',
+        'PRODUCT.DESCRIPTION',
         'PRODUCT.VERSION',
         'ACTIONS.DATAVIEW.VIEW_MODE_GRID',
         'ACTIONS.DATAVIEW.VIEW_MODE_LIST',
@@ -124,9 +125,11 @@ export class ProductSearchComponent implements OnInit {
               data['ACTIONS.DATAVIEW.FILTER_OF'] +
               data['PRODUCT.DISPLAY_NAME'] +
               ', ' +
-              data['PRODUCT.NAME'] +
+              data['PRODUCT.PROVIDER'] +
               ', ' +
               data['PRODUCT.CLASSIFICATIONS'] +
+              ', ' +
+              data['PRODUCT.DESCRIPTION'] +
               ', ' +
               data['PRODUCT.VERSION'],
             viewModeToggleTooltips: {
