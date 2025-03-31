@@ -61,8 +61,8 @@
       [value]="products"
       [paginator]="true"
       [alwaysShowPaginator]="true"
-      [rowsPerPageOptions]="viewMode === 'grid' ? [16, 32, 80] : [20, 50, 100]"
-      [rows]="viewMode === 'grid' ? 16 : 20"
+      [rowsPerPageOptions]="viewMode === 'grid' ? [100, 1000] : [20, 50, 100]"
+      [rows]="viewMode === 'grid' ? 100 : 20"
       [layout]="viewMode"
       [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
       filterBy="name,displayName,classes,version"
@@ -100,30 +100,51 @@
           <div *ngFor="let product of products; index as i" class="col-12 md:col-6">
             <div
               [id]="'ps_product_search_data_list_row_' + i"
-              class="flex flex-row flex-nowrap justify-content-start align-items-center column-gap-3 py-1 sm:px-3 hover:bg-gray-200 cursor-pointer"
+              class="flex flex-row flex-nowrap justify-content-start align-items-center column-gap-3 py-1 px-1 sm:px-2 hover:bg-gray-200 cursor-pointer"
               [routerLink]="['./' + product.name]"
             >
               <div class="p-0 col-3 text-center">
                 <app-image-container
                   [id]="'ps_product_search_data_list_row_' + i + '_image'"
                   [small]="true"
-                  styleClass="h-2rem sm:h-3rem max-h-2rem sm:max-h-3rem max-w-5rem"
+                  styleClass="h-4rem sm:h-5rem max-h-4rem sm:max-h-5rem max-w-6rem"
                   [imageUrl]="getLogoUrl(product)"
                 ></app-image-container>
               </div>
-              <div class="p-0 col-9 flex flex-column justify-content-center gap-1">
+              <div
+                class="p-0 col-9 h-4rem sm:h-5rem max-h-4rem sm:max-h-5rem flex flex-column justify-content-center gap-1"
+              >
                 <div
                   [id]="'ps_product_search_data_list_row_' + i + '_product_display_name'"
-                  class="font-bold text-md text-responsive"
+                  class="font-bold text-sm md:text-base md:text-lg text-responsive"
                   [class.danger-action-text]="product.undeployed"
                 >
                   {{ product.displayName }}
                 </div>
-                <div class="text-sm text-responsive" [id]="'ps_product_search_data_list_row_' + i + '_product_name'">
-                  {{ product.name }}
+                <div
+                  class="text-xs sm:text-sm text-responsive"
+                  [id]="'ps_product_search_data_list_row_' + i + '_classification'"
+                >
+                  {{ product.classifications }}
                 </div>
-                <div class="text-sm text-responsive" [id]="'ps_product_search_data_list_row_' + i + '_version'">
-                  {{ product.version }}
+                <div class="flex flex-row column-gap-2 align-items-center">
+                  <span *ngIf="product.provider" class="pi pi-users"></span>
+                  <span
+                    [id]="'ps_product_search_data_list_row_' + i + '_provider'"
+                    class="text-xs sm:text-sm md:text-base text-responsive"
+                    [attr.aria-label]="product.provider"
+                    [pTooltip]="'PRODUCT.PROVIDER' | translate"
+                    tooltipPosition="top"
+                    tooltipEvent="hover"
+                  >
+                    {{ product.provider }}
+                  </span>
+                </div>
+                <div
+                  class="text-xs sm:text-sm text-responsive"
+                  [id]="'ps_product_search_data_list_row_' + i + '_version'"
+                >
+                  Version: {{ product.version }}
                 </div>
               </div>
             </div>
@@ -151,48 +172,59 @@
                 tooltipPosition="top"
                 tooltipEvent="hover"
               ></span>
-              <div class="h-2rem sm:h-3rem flex flex-column justify-content-center align-items-center">
+              <!-- CONTENT -->
+              <div
+                [id]="'ps_product_search_data_grid_row_' + i + '_product_display_name'"
+                class="font-bold text-base sm:text-lg md:text-xl lg:text-2xl text-responsive"
+                [class.danger-action-text]="product.undeployed"
+                [attr.aria-label]="product.displayName"
+                [pTooltip]="product.displayName.length <= 20 ? '' : product.displayName"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+                {{ product.displayName }}
+              </div>
+              <div class="h-7rem sm:h-11rem flex flex-column justify-content-center align-items-center">
                 <app-image-container
                   [id]="'ps_product_search_data_grid_row_' + i + '_image'"
                   [small]="false"
-                  styleClass="h-2rem sm:h-3rem max-h-2rem sm:max-h-3rem max-w-10rem"
+                  styleClass="h-6rem sm:h-10rem max-h-6rem sm:max-h-10rem max-w-18rem"
                   [imageUrl]="getLogoUrl(product)"
                 ></app-image-container>
               </div>
-              <!-- CONTENT -->
-              <div class="h-3rem sm:h-3-5rem mt-1 sm:mt-2 flex flex-column justify-content-between text-center">
+              <div class="h-3rem sm:h-4rem flex flex-column justify-content-between text-center">
                 <div
-                  [id]="'ps_product_search_data_grid_row_' + i + '_product_display_name'"
-                  class="font-bold text-base sm:text-md text-responsive"
-                  [class.danger-action-text]="product.undeployed"
-                  [attr.aria-label]="product.displayName"
-                  [pTooltip]="product.displayName.length <= 20 ? '' : product.displayName"
+                  [id]="'ps_product_search_data_grid_row_' + i + '_classification'"
+                  class="text-xs sm:text-sm md:text-base text-responsive"
+                  [attr.aria-label]="product.classes"
+                  [pTooltip]="'PRODUCT.CLASSIFICATIONS' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
-                  {{ product.displayName }}
+                  {{ product.classes }}
                 </div>
-                <div class="">
-                  <div
-                    [id]="'ps_product_search_data_grid_row_' + i + '_classification'"
-                    class="text-xs sm:text-sm text-responsive"
-                    [attr.aria-label]="product.classes"
-                    [pTooltip]="'PRODUCT.CLASSIFICATIONS' | translate"
+                <div class="flex flex-row column-gap-3 justify-content-center align-items-center">
+                  <span *ngIf="product.provider" class="pi pi-users"></span>
+                  <span
+                    [id]="'ps_product_search_data_grid_row_' + i + '_provider'"
+                    class="text-xs sm:text-sm md:text-base text-responsive"
+                    [attr.aria-label]="product.provider"
+                    [pTooltip]="'PRODUCT.PROVIDER' | translate"
                     tooltipPosition="top"
                     tooltipEvent="hover"
                   >
-                    {{ product.classes }}
-                  </div>
-                  <div
-                    [id]="'ps_product_search_data_list_row_' + i + '_version'"
-                    class="text-xs sm:text-sm text-responsive"
-                    [attr.aria-label]="'PRODUCT.VERSION' | translate"
-                    [pTooltip]="'PRODUCT.VERSION' | translate"
-                    tooltipPosition="top"
-                    tooltipEvent="hover"
-                  >
-                    {{ product.version ?? ('PRODUCT.VERSION.MISSING' | translate) }}
-                  </div>
+                    {{ product.provider }}
+                  </span>
+                </div>
+                <div
+                  [id]="'ps_product_search_data_list_row_' + i + '_version'"
+                  class="text-xs sm:text-sm md:text-base text-responsive"
+                  [attr.aria-label]="'PRODUCT.VERSION' | translate"
+                  [pTooltip]="'PRODUCT.VERSION' | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  Version: {{ product.version ?? ('PRODUCT.VERSION.MISSING' | translate) }}
                 </div>
               </div>
             </a>
