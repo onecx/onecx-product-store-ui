@@ -65,7 +65,7 @@
       [rows]="viewMode === 'grid' ? 100 : 20"
       [layout]="viewMode"
       [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
-      filterBy="name,displayName,classes,version"
+      filterBy="name,displayName,classes,version,provider,description"
       [sortField]="sortField"
       [sortOrder]="sortOrder"
       [showCurrentPageReport]="true"
@@ -80,7 +80,8 @@
           [initialViewMode]="viewMode"
           [sortingOptions]="[
             { label: 'PRODUCT.DISPLAY_NAME' | translate, value: 'displayName' },
-            { label: 'PRODUCT.NAME' | translate, value: 'name' },
+            { label: 'PRODUCT.PROVIDER' | translate, value: 'provider' },
+            { label: 'PRODUCT.CLASSIFICATIONS' | translate, value: 'classifications' },
             { label: 'PRODUCT.UNDEPLOYED' | translate, value: 'undeployed' }
           ]"
           [defaultSortOption]="sortField"
@@ -123,7 +124,7 @@
                 </div>
                 <div
                   class="text-xs sm:text-sm text-responsive"
-                  [id]="'ps_product_search_data_list_row_' + i + '_classification'"
+                  [id]="'ps_product_search_data_list_row_' + i + '_classifications'"
                 >
                   {{ product.classifications }}
                 </div>
