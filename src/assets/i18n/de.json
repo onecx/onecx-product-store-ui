@@ -213,7 +213,7 @@
     },
     "SEARCH": {
       "HEADER": "Application Store",
-      "SUBHEADER": "Applikationen und deren Komponenten (UI Komponenten, Microservices, Slots) verwalten",
+      "SUBHEADER": "Produkte und deren Komponenten (UI Komponenten, Microservices, Slots) verwalten",
       "APPS.LABEL": "Apps",
       "APPS.TOOLTIP": "Liste der UI Komponenten und Microservices",
       "APPS.HEADER": "Apps",
