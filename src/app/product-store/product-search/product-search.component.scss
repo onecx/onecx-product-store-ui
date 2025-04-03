@@ -7,12 +7,26 @@
 @include card-badges;
 @include danger-action;
 
+:host ::ng-deep {
+  .card-badge-right {
+    right: 3px;
+  }
+  .card-badge-left {
+    left: 3px;
+  }
+}
+
 @media screen and (min-width: 768px) {
   :host ::ng-deep {
-    .sm\:h-3-5rem {
-      height: 3.5rem !important;
+    .card-badge-left,
+    .card-badge-right {
+      &.badge-1 {
+        top: 40px;
+      }
+      &.badge-2 {
+        top: 70px;
+      }
     }
-
     .p-dataview-list .p-dataview-content .p-grid > div {
       &:nth-child(4n + 1),
       &:nth-child(4n + 2) {
@@ -27,6 +41,15 @@
 }
 @media screen and (max-width: 768px) {
   :host ::ng-deep {
+    .card-badge-left,
+    .card-badge-right {
+      &.badge-1 {
+        top: 25px;
+      }
+      &.badge-2 {
+        top: 55px;
+      }
+    }
     .p-dataview-list .p-dataview-content .p-grid > div {
       &:nth-child(odd) {
         background-color: #f8f9fa;
