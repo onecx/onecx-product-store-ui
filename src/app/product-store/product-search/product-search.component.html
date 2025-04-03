@@ -159,7 +159,7 @@
           <div *ngFor="let product of products; index as i" class="col-6 md:col-4 xl:col-3 p-2 md:px-3">
             <a
               [id]="'ps_product_search_data_grid_row_' + i"
-              class="card relative p-2 flex flex-column sm:gap-1 justify-content-between text-center hover:bg-gray-200 cursor-pointer"
+              class="card relative p-2 sm:px-3 flex flex-column gap-1 sm:gap-3 justify-content-between text-center hover:bg-gray-200 cursor-pointer"
               routerLinkActive="active"
               [routerLink]="['./', product.name]"
             >
@@ -167,7 +167,7 @@
               <span
                 *ngIf="product?.undeployed"
                 [id]="'ps_product_search_data_grid_row_' + i + '_undeployed'"
-                class="card-badge-right badge-1 p-2 pi pi-ban danger-action-text font-bold"
+                class="card-badge-right badge-1 p-2 pi pi-ban danger-action-text font-bold text-xl"
                 [attr.aria-label]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
                 [pTooltip]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
                 tooltipPosition="top"
@@ -185,11 +185,11 @@
               >
                 {{ product.displayName }}
               </div>
-              <div class="h-7rem sm:h-11rem flex flex-column justify-content-center align-items-center">
+              <div class="h-6rem sm:h-10rem flex justify-content-center align-items-center">
                 <app-image-container
                   [id]="'ps_product_search_data_grid_row_' + i + '_image'"
                   [small]="false"
-                  styleClass="h-6rem sm:h-10rem max-h-6rem sm:max-h-10rem sm:max-w-18rem border-round-sm"
+                  styleClass="max-h-6rem sm:max-h-10rem max-w-9rem sm:max-w-10rem md:max-w-11rem lg:max-w-13rem xl:max-w-14rem border-round-sm"
                   [imageUrl]="getLogoUrl(product)"
                 ></app-image-container>
               </div>
