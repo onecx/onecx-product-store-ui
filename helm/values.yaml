@@ -35,6 +35,11 @@ app:
           technology: WEBCOMPONENTMODULE
           remoteName: onecx-product-store
           tagName: ocx-product-infos-component
+    # Microservice
+    microservice:
+      spec:
+        name: OneCX Product Store UI
+        description: OneCX Product Store Frontend
     # Slot
     slot:
       enabled: true
