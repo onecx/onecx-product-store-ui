@@ -42,6 +42,7 @@ app:
           technology: WEBCOMPONENTMODULE
           remoteName: onecx-product-store
           tagName: ocx-product-infos-component
+          deprecated: true
     # Microservice
     microservice:
       spec:
