@@ -12,12 +12,12 @@ import { ProductPageResult, Product, ProductAbstract, ProductsAPIService } from 
 import { OneCXProductDataComponent } from './product-data.component'
 
 const product1: ProductAbstract = {
-  id: 'w1',
+  id: 'p1',
   name: 'product1',
   displayName: 'Product 1'
 }
 const product2: ProductAbstract = {
-  id: 'w2',
+  id: 'p2',
   name: 'product2',
   displayName: 'Product 2'
 }
@@ -195,7 +195,7 @@ describe('OneCXProductDataComponent', () => {
 
     it('should get product - successful with data', (done) => {
       const { component } = setUp()
-      productAPISpy.getProductByName.and.returnValue(of({ resource: product1 }))
+      productAPISpy.getProductByName.and.returnValue(of(product1))
       component.dataType = 'product'
       component.productName = product1.name
 

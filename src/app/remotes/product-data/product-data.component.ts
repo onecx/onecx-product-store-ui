@@ -132,6 +132,7 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
     if (!this.productName) return
 
     this.product$ = this.productApi.getProductByName({ name: this.productName }).pipe(
+      map((data) => data),
       catchError((err) => {
         console.error('onecx-product-data.getProductByName', err)
         return of({} as Product)
