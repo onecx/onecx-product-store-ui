@@ -220,7 +220,7 @@
           <span
             *ngIf="slot?.deprecated && !slot?.undeployed"
             [id]="'ps_product_apps_components_slot_' + slot.appId + '_deprecated'"
-            class="card-badge-right badge-1 pi pi-exclamation-circle danger-action-text cursor-auto"
+            class="card-badge-right badge-1 pi pi-exclamation-circle danger-action-text font-bold cursor-auto"
             [pTooltip]="'APP.TOOLTIPS.DEPRECATED_SEARCH' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
