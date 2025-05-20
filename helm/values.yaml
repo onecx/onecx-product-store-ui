@@ -28,6 +28,13 @@ app:
               path: /endpoints
             - name: slots
               path: /slots
+        product-data:
+          exposedModule: "./OneCXProductDataComponent"
+          description: "Provide Product Data"
+          type: COMPONENT
+          technology: WEBCOMPONENTMODULE
+          remoteName: onecx-product-store
+          tagName: ocx-product-data-component
         product-infos:
           exposedModule: "./OneCXProductInfosComponent"
           description: "Provide Product informations"

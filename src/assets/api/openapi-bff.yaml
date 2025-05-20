@@ -223,6 +223,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+  /products/load:
+    post:
+      x-onecx:
+        permissions:
+          product:
+            - read
+      tags:
+        - Products
+      description: load products by criteria
+      operationId: loadProductsByCriteria
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductLoadSearchCriteria'
+      responses:
+        '200':
+          description: Page result matching given criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductsLoadResult'
+        '404':
+          description: Product not found
   /products/{id}:
     get:
       x-onecx:
@@ -388,6 +412,29 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         '404':
           description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+  /products/criteria:
+    get:
+      x-onecx:
+        permissions:
+          product:
+            - read
+      tags:
+        - Products
+      description: return products search criteria
+      operationId: getProductSearchCriteria
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductCriteria'
+        '400':
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -778,6 +825,104 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
 components:
   schemas:
+    ProductsLoadResult:
+      type: object
+      properties:
+        totalElements:
+          format: int64
+          description: The total elements in the resource.
+          type: integer
+        number:
+          format: int32
+          type: integer
+        size:
+          format: int32
+          type: integer
+        totalPages:
+          format: int64
+          type: integer
+        stream:
+          type: array
+          items:
+            $ref: '#/components/schemas/LoadProduct'
+    LoadProduct:
+      type: object
+      properties:
+        name:
+          type: string
+        displayName:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        basePath:
+          type: string
+        version:
+          type: string
+        undeployed:
+          type: boolean
+        microfrontends:
+          type: array
+          items:
+            $ref: '#/components/schemas/MfeAbstract'
+        microservices:
+          type: array
+          items:
+            $ref: '#/components/schemas/MicroserviceAbstract'
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/SlotAbstract'
+    MfeAbstract:
+      type: object
+      properties:
+        appId:
+          type: string
+        appName:
+          type: string
+        undeployed:
+          type: boolean
+        version:
+          type: string
+        deprecated:
+          type: boolean
+        type:
+          $ref: '#/components/schemas/MicrofrontendType'
+        exposedModule:
+          type: string
+    MicroserviceAbstract:
+      type: object
+      properties:
+        appId:
+          type: string
+        appName:
+          type: string
+        undeployed:
+          type: boolean
+    SlotAbstract:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        deprecated:
+          type: boolean
+          default: false
+        undeployed:
+          type: boolean
+    ProductCriteria:
+      type: object
+      properties:
+        providers:
+          type: array
+          items:
+            type: string
+        classifications:
+          type: array
+          items:
+            type: string
     RefType:
       type: string
       enum: [logo, favicon]
@@ -810,6 +955,24 @@ components:
           description: result set of the given search criteria.
           items:
             $ref: '#/components/schemas/ProductAbstract'
+    ProductLoadSearchCriteria:
+      type: object
+      properties:
+        productNames:
+          type: array
+          items:
+            type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 100
+          maximum: 1000
+          type: integer
     ProductSearchCriteria:
       type: object
       properties:
@@ -819,6 +982,14 @@ components:
         displayName:
           type: string
           nullable: true
+        providers:
+          type: array
+          items:
+            type: string
+        classifications:
+          type: array
+          items:
+            type: string
         pageNumber:
           format: int32
           description: The number of page.

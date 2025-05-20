@@ -6,6 +6,7 @@ const config = withModuleFederationPlugin({
   filename: 'remoteEntry.js',
   exposes: {
     './OneCXProductStoreModule': 'src/main.ts',
+    './OneCXProductDataComponent': 'src/app/remotes/product-data/product-data.component.main.ts',
     './OneCXProductInfosComponent': 'src/app/remotes/product-infos/product-infos.component.main.ts'
   },
   shared: share({

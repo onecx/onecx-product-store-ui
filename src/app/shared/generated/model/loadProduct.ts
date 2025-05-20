@@ -9,20 +9,21 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { MicroserviceAbstract } from './microserviceAbstract';
+import { SlotAbstract } from './slotAbstract';
+import { MfeAbstract } from './mfeAbstract';
 
 
-export interface ProductSearchCriteria { 
-    name?: string | null;
-    displayName?: string | null;
-    providers?: Array<string>;
-    classifications?: Array<string>;
-    /**
-     * The number of page.
-     */
-    pageNumber?: number;
-    /**
-     * The size of page
-     */
-    pageSize?: number;
+export interface LoadProduct { 
+    name?: string;
+    displayName?: string;
+    description?: string;
+    imageUrl?: string;
+    basePath?: string;
+    version?: string;
+    undeployed?: boolean;
+    microfrontends?: Array<MfeAbstract>;
+    microservices?: Array<MicroserviceAbstract>;
+    slots?: Array<SlotAbstract>;
 }
 

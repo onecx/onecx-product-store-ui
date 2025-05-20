@@ -11,18 +11,8 @@
  */
 
 
-export interface ProductSearchCriteria { 
-    name?: string | null;
-    displayName?: string | null;
+export interface ProductCriteria { 
     providers?: Array<string>;
     classifications?: Array<string>;
-    /**
-     * The number of page.
-     */
-    pageNumber?: number;
-    /**
-     * The size of page
-     */
-    pageSize?: number;
 }
 

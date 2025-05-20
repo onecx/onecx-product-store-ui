@@ -11,11 +11,8 @@
  */
 
 
-export interface ProductSearchCriteria { 
-    name?: string | null;
-    displayName?: string | null;
-    providers?: Array<string>;
-    classifications?: Array<string>;
+export interface ProductLoadSearchCriteria { 
+    productNames?: Array<string>;
     /**
      * The number of page.
      */

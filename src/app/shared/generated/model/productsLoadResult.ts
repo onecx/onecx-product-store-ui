@@ -9,20 +9,17 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { LoadProduct } from './loadProduct';
 
 
-export interface ProductSearchCriteria { 
-    name?: string | null;
-    displayName?: string | null;
-    providers?: Array<string>;
-    classifications?: Array<string>;
+export interface ProductsLoadResult { 
     /**
-     * The number of page.
+     * The total elements in the resource.
      */
-    pageNumber?: number;
-    /**
-     * The size of page
-     */
-    pageSize?: number;
+    totalElements?: number;
+    number?: number;
+    size?: number;
+    totalPages?: number;
+    stream?: Array<LoadProduct>;
 }
 
