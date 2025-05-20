@@ -87,22 +87,6 @@
               <input
                 pInputText
                 type="text"
-                id="ps_app_detail_form_mfe_field_app_version"
-                class="w-full pt-3 pb-2 text-responsive"
-                formControlName="appVersion"
-                [attr.aria-label]="'APP.APP_VERSION' | translate"
-                [pTooltip]="'APP.TOOLTIPS.APP_VERSION' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              />
-              <label class="ocx-required-label" for="ps_app_detail_form_mfe_field_app_version">
-                {{ 'APP.APP_VERSION' | translate }}
-              </label>
-            </span>
-            <span class="flex-grow-1 p-float-label" controlErrorAnchor>
-              <input
-                pInputText
-                type="text"
                 id="ps_app_detail_form_mfe_field_product_name"
                 class="w-full pt-3 pb-2 text-responsive"
                 formControlName="productName"
@@ -115,16 +99,12 @@
                 {{ 'APP.PRODUCT_NAME' | translate }}
               </label>
             </span>
-          </div>
-
-          <!-- row 3 -->
-          <div class="flex flex-row flex-wrap gap-4">
             <span class="flex-grow-1 p-float-label" controlErrorAnchor>
               <p-dropdown
                 id="ps_app_detail_form_mfe_field_icon_name"
                 styleClass="w-full"
                 formControlName="iconName"
-                appendTo="body"
+                scrollHeight="180px"
                 [options]="iconItems"
                 [showClear]="true"
                 [ariaLabel]="'APP.ICON_NAME' | translate"
@@ -146,6 +126,26 @@
                 </ng-template>
               </p-dropdown>
               <label for="ps_app_detail_form_mfe_field_icon_name"> {{ 'APP.ICON_NAME' | translate }} </label>
+            </span>
+          </div>
+
+          <!-- row 3 -->
+          <div class="flex flex-row flex-wrap gap-4">
+            <span class="flex-grow-1 p-float-label" controlErrorAnchor>
+              <input
+                pInputText
+                type="text"
+                id="ps_app_detail_form_mfe_field_app_version"
+                class="w-full pt-3 pb-2 text-responsive"
+                formControlName="appVersion"
+                [attr.aria-label]="'APP.APP_VERSION' | translate"
+                [pTooltip]="'APP.TOOLTIPS.APP_VERSION' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              />
+              <label class="ocx-required-label" for="ps_app_detail_form_mfe_field_app_version">
+                {{ 'APP.APP_VERSION' | translate }}
+              </label>
             </span>
             <span class="flex-grow-1 p-float-label" controlErrorAnchor>
               <input

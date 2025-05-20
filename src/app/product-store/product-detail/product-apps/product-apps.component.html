@@ -85,7 +85,7 @@
         <!-- CONTENT -->
         <div class="flex flex-column justify-content-between gap-1 text-center">
           <div
-            class="font-bold text-responsive"
+            class="text-responsive"
             [attr.aria-label]="'APP.APP_ID' | translate"
             [pTooltip]="mfe.appId.length <= 25 ? '' : mfe.appId"
             tooltipPosition="top"
@@ -94,7 +94,7 @@
             {{ mfe.appId }}
           </div>
           <div
-            class="text-sm text-responsive"
+            class="font-bold text-sm text-responsive"
             [attr.aria-label]="'APP.EXPOSED_MODULE' | translate"
             [pTooltip]="mfe.exposedModule && mfe.exposedModule.length <= 25 ? '' : (mfe.exposedModule ?? '')"
             tooltipPosition="top"

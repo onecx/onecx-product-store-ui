@@ -11,18 +11,10 @@
  */
 
 
-export interface ProductSearchCriteria { 
-    name?: string | null;
-    displayName?: string | null;
-    providers?: Array<string>;
-    classifications?: Array<string>;
-    /**
-     * The number of page.
-     */
-    pageNumber?: number;
-    /**
-     * The size of page
-     */
-    pageSize?: number;
+export interface SlotAbstract { 
+    name?: string;
+    description?: string;
+    deprecated?: boolean;
+    undeployed?: boolean;
 }
 

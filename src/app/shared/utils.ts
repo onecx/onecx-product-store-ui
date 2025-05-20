@@ -27,6 +27,12 @@ export function sortByLocale(a: any, b: any): number {
   return a.toUpperCase().localeCompare(b.toUpperCase())
 }
 
+export function sortByDisplayName(a: any, b: any): number {
+  return (a.displayName ? a.displayName.toUpperCase() : '').localeCompare(
+    b.displayName ? b.displayName.toUpperCase() : ''
+  )
+}
+
 export function convertToUniqueStringArray(unsorted: string | undefined | null): string[] | undefined {
   if (!unsorted || unsorted?.length === 0) return undefined
   const ar: Array<string> = []

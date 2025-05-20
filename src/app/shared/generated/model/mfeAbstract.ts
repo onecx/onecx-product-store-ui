@@ -9,20 +9,18 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { MicrofrontendType } from './microfrontendType';
 
 
-export interface ProductSearchCriteria { 
-    name?: string | null;
-    displayName?: string | null;
-    providers?: Array<string>;
-    classifications?: Array<string>;
-    /**
-     * The number of page.
-     */
-    pageNumber?: number;
-    /**
-     * The size of page
-     */
-    pageSize?: number;
+export interface MfeAbstract { 
+    appId?: string;
+    appName?: string;
+    undeployed?: boolean;
+    version?: string;
+    deprecated?: boolean;
+    type?: MicrofrontendType;
+    exposedModule?: string;
 }
+
+
 

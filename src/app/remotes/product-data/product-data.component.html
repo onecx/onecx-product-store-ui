@@ -1,0 +1,10 @@
+<img
+  *ngIf="imageUrl$ | async as url"
+  [id]="imageId ?? 'ps_logo_' + productName"
+  [class]="'border-round-sm ' + (imageStyleClass ?? '')"
+  alt="Product Logo"
+  [ocxSrc]="url"
+  aria-label="Product Logo"
+  (error)="onImageLoadError(url)"
+  (load)="onImageLoad()"
+/>
