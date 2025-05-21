@@ -68,7 +68,7 @@
         tooltipPosition="top"
         tooltipEvent="hover"
       >
-        <app-product-use *ngIf="product && selectedTabIndex === 2" [product]="product"></app-product-use>
+        <app-product-use *ngIf="product && selectedTabIndex === 2" [productName]="product.name"></app-product-use>
       </p-tabPanel>
 
       <p-tabPanel

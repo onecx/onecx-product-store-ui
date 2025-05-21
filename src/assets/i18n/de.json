@@ -357,6 +357,11 @@
       "UNDEPLOYED": "Wenn gesetzt, dann ist diese Applikation nicht länger benutzbar. Eine weitere Benutzung von dessen Apps führt zu Fehlermeldungen.",
       "UNDEPLOYED_SEARCH": "Diese Applikation ist nicht länger benutzbar. Eine weitere Benutzung von dessen Apps führt zu Fehlermeldungen.",
       "WORKSPACES": "Workspaces, die diese Applikation benutzen"
+    },
+    "WORKSPACES_USING_PRODUCT": {
+      "MISSING_COMPONENT": "Informationen zur Verwendung des Produkts in einem Workspace konnten nicht abgerufen werden.",
+      "USED": "Das Produkt ist in folgenden Workspaces registriert: ",
+      "UNUSED": "Das Produkt wird von keinem Workspace verwendet."
     }
   },
   "SLOT": {
