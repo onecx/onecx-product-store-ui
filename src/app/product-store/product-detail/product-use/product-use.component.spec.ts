@@ -4,7 +4,7 @@ import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
-import { ProductUseComponent } from './product-use.component'
+import { ProductUseComponent, Workspace } from './product-use.component'
 
 describe('ProductUseComponent', () => {
   let component: ProductUseComponent
@@ -28,6 +28,7 @@ describe('ProductUseComponent', () => {
     fixture = TestBed.createComponent(ProductUseComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
+    component.slotEmitter.emit([{ name: 'name' } as Workspace])
   })
 
   it('should create', () => {

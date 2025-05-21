@@ -1,11 +1,23 @@
-<div class="sm:pt-2 pb-2 sm:pb-3 px-3">
-  <ocx-slot *ngIf="isComponentDefined$ | async" [name]="slotName" [inputs]="{ productName: product?.name }"> </ocx-slot>
-  <div *ngIf="(isComponentDefined$ | async) === false" id="ps_product_use_error">
-    <p-message
-      id="ps_product_use_error_message"
-      severity="info"
-      styleClass="p-2"
-      [text]="'SLOT.NOT_DEFINED' | translate"
-    ></p-message>
+<ng-container *ngIf="productName">
+  <ocx-slot
+    *ngIf="isComponentDefined$ | async; else SlotNotConfigured"
+    [name]="slotName"
+    [inputs]="{ dataType: 'workspaces', productName: productName, logEnabled: true, logPrefix: 'product-use' }"
+    [outputs]="{ workspaces: slotEmitter }"
+  >
+  </ocx-slot>
+  <div *ngIf="workspaceData$ | async as workspaces" class="sm:pt-2 pb-2 sm:pb-3 px-3">
+    <div *ngIf="workspaces.length === 0; else productUsed">
+      {{ 'PRODUCT.WORKSPACES_USING_PRODUCT.UNUSED' | translate }}
+    </div>
+    <ng-template #productUsed>
+      {{ 'PRODUCT.WORKSPACES_USING_PRODUCT.USED' | translate }}
+      <ul class="ml-0 mt-2">
+        <li *ngFor="let w of workspaces" class="mb-1">{{ w.displayName }}</li>
+      </ul>
+    </ng-template>
   </div>
-</div>
+  <ng-template #SlotNotConfigured>
+    <div class="sm:pt-2 pb-2 sm:pb-3 px-3">{{ 'PRODUCT.WORKSPACES_USING_PRODUCT.MISSING_COMPONENT' | translate }}</div>
+  </ng-template>
+</ng-container>
