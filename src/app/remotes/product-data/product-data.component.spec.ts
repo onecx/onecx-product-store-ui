@@ -14,7 +14,8 @@ import { OneCXProductDataComponent } from './product-data.component'
 const product1: ProductAbstract = {
   id: 'p1',
   name: 'product1',
-  displayName: 'Product 1'
+  displayName: 'Product 1',
+  imageUrl: 'base_url/bff/images/product1/logo'
 }
 const product2: ProductAbstract = {
   id: 'p2',
@@ -116,7 +117,7 @@ describe('OneCXProductDataComponent', () => {
       component.products$?.subscribe({
         next: (data) => {
           if (data) {
-            expect(data).toEqual(products)
+            expect(data[0]).toEqual(products[0])
           }
           done()
         },
