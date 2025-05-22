@@ -211,6 +211,23 @@ describe('OneCXProductDataComponent', () => {
       })
     })
 
+    it('should get product - successful with data and extra image URL', (done) => {
+      const { component } = setUp()
+      productAPISpy.getProductByName.and.returnValue(of(product2))
+      component.dataType = 'product'
+      component.productName = product1.name
+
+      component.ngOnChanges()
+
+      component.product$?.subscribe({
+        next: (data) => {
+          expect(data).toEqual({ ...product2, imageUrl: 'base_url/bff/images/product2/logo' } as Product)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
     it('should get product - failed', (done) => {
       const { component } = setUp()
       const errorResponse = { status: 400, statusText: 'Error on getting products' }
