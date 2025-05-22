@@ -115,7 +115,14 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
     this.log(criteria)
     this.products$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
       map((response) => {
-        return response.stream?.sort(sortByDisplayName) ?? []
+        const products: ProductAbstract[] = []
+        response.stream?.forEach((p) => {
+          products.push({
+            ...p,
+            imageUrl: p.imageUrl ?? bffImageUrl(this.productApi.configuration.basePath, p.name, RefType.Logo)
+          })
+        })
+        return products.sort(sortByDisplayName)
       }),
       catchError((err) => {
         console.error('onecx-product-data.searchProducts', err)
@@ -130,9 +137,11 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
    */
   private getProduct() {
     if (!this.productName) return
-
     this.product$ = this.productApi.getProductByName({ name: this.productName }).pipe(
-      map((data) => data),
+      map((product) => ({
+        ...product,
+        imageUrl: product.imageUrl ?? bffImageUrl(this.productApi.configuration.basePath, product.name, RefType.Logo)
+      })),
       catchError((err) => {
         console.error('onecx-product-data.getProductByName', err)
         return of({} as Product)

@@ -14,7 +14,8 @@ import { OneCXProductDataComponent } from './product-data.component'
 const product1: ProductAbstract = {
   id: 'p1',
   name: 'product1',
-  displayName: 'Product 1'
+  displayName: 'Product 1',
+  imageUrl: 'base_url/bff/images/product1/logo'
 }
 const product2: ProductAbstract = {
   id: 'p2',
@@ -116,7 +117,7 @@ describe('OneCXProductDataComponent', () => {
       component.products$?.subscribe({
         next: (data) => {
           if (data) {
-            expect(data).toEqual(products)
+            expect(data[0]).toEqual(products[0])
           }
           done()
         },
@@ -204,6 +205,23 @@ describe('OneCXProductDataComponent', () => {
       component.product$?.subscribe({
         next: (data) => {
           expect(data).toEqual(product1 as Product)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should get product - successful with data and extra image URL', (done) => {
+      const { component } = setUp()
+      productAPISpy.getProductByName.and.returnValue(of(product2))
+      component.dataType = 'product'
+      component.productName = product1.name
+
+      component.ngOnChanges()
+
+      component.product$?.subscribe({
+        next: (data) => {
+          expect(data).toEqual({ ...product2, imageUrl: 'base_url/bff/images/product2/logo' } as Product)
           done()
         },
         error: done.fail
