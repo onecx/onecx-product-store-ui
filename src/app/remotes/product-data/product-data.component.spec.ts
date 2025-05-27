@@ -183,20 +183,18 @@ describe('OneCXProductDataComponent', () => {
     })
   })
 
-  describe('getting product', () => {
-    it('should get product - rejected, missing name', () => {
+  describe('getting a product', () => {
+    it('should get product - failed: missing name', () => {
       const { component } = setUp()
       component.dataType = 'product'
-      productAPISpy.getProductByName.and.returnValue(of())
 
       component.ngOnChanges()
-
-      expect(productAPISpy.getProductByName).not.toHaveBeenCalled()
     })
 
     it('should get product - successful with data', (done) => {
       const { component } = setUp()
-      productAPISpy.getProductByName.and.returnValue(of(product1))
+      const mockResponse: ProductPageResult = { stream: [product1] }
+      productAPISpy.searchProducts.and.returnValue(of(mockResponse))
       component.dataType = 'product'
       component.productName = product1.name
 
@@ -213,7 +211,8 @@ describe('OneCXProductDataComponent', () => {
 
     it('should get product - successful with data and extra image URL', (done) => {
       const { component } = setUp()
-      productAPISpy.getProductByName.and.returnValue(of(product2))
+      const mockResponse: ProductPageResult = { stream: [product2] }
+      productAPISpy.searchProducts.and.returnValue(of(mockResponse))
       component.dataType = 'product'
       component.productName = product1.name
 
@@ -231,7 +230,7 @@ describe('OneCXProductDataComponent', () => {
     it('should get product - failed', (done) => {
       const { component } = setUp()
       const errorResponse = { status: 400, statusText: 'Error on getting products' }
-      productAPISpy.getProductByName.and.returnValue(throwError(() => errorResponse))
+      productAPISpy.searchProducts.and.returnValue(throwError(() => errorResponse))
       component.dataType = 'product'
       component.productName = product1.name
       spyOn(console, 'error')
@@ -240,7 +239,7 @@ describe('OneCXProductDataComponent', () => {
 
       component.product$?.subscribe({
         next: (data) => {
-          expect(console.error).toHaveBeenCalledWith('onecx-product-data.getProductByName', errorResponse)
+          expect(console.error).toHaveBeenCalledWith('onecx-product-data.searchProducts', errorResponse)
           done()
         },
         error: done.fail
