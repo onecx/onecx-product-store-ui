@@ -18,7 +18,6 @@ import { PortalCoreModule, createRemoteComponentTranslateLoader } from '@onecx/p
 import {
   Configuration,
   RefType,
-  Product,
   ProductAbstract,
   ProductsAPIService,
   ProductSearchCriteria
@@ -69,11 +68,11 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
   }
   // output
   @Input() products = new EventEmitter<ProductAbstract[]>()
-  @Input() product = new EventEmitter<Product>()
+  @Input() product = new EventEmitter<ProductAbstract>()
   @Input() imageLoadingFailed = new EventEmitter<boolean>()
 
   public products$: Observable<ProductAbstract[]> | undefined
-  public product$: Observable<Product> | undefined
+  public product$: Observable<ProductAbstract> | undefined
   public imageUrl$ = new BehaviorSubject<string | undefined>(undefined)
   public defaultImageUrl: string | undefined = undefined
 
@@ -137,14 +136,25 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
    */
   private getProduct() {
     if (!this.productName) return
-    this.product$ = this.productApi.getProductByName({ name: this.productName }).pipe(
-      map((product) => ({
-        ...product,
-        imageUrl: product.imageUrl ?? bffImageUrl(this.productApi.configuration.basePath, product.name, RefType.Logo)
-      })),
+    const criteria: ProductSearchCriteria = {
+      name: this.productName,
+      pageSize: 1
+    }
+    this.log(criteria)
+    this.product$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
+      map((response) => {
+        const products: ProductAbstract[] = []
+        response.stream?.forEach((p) => {
+          products.push({
+            ...p,
+            imageUrl: p.imageUrl ?? bffImageUrl(this.productApi.configuration.basePath, p.name, RefType.Logo)
+          })
+        })
+        return products[0]
+      }),
       catchError((err) => {
-        console.error('onecx-product-data.getProductByName', err)
-        return of({} as Product)
+        console.error('onecx-product-data.searchProducts', err)
+        return of({} as ProductAbstract)
       })
     )
     this.product$.subscribe(this.product)
