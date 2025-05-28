@@ -250,7 +250,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
 
   private saveImage(name: string, files: FileList) {
     const blob = new Blob([files[0]], { type: files[0].type })
-    this.fetchingLogoUrl = undefined // reset - important to trigger the change in UI
+    this.prepareImageUrl() // reset - important to trigger the change in UI
     this.currentLogoUrl.emit(this.fetchingLogoUrl)
     const saveRequestParameter = {
       contentLength: files.length,
