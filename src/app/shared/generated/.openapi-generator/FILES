@@ -37,6 +37,7 @@ model/product.ts
 model/productAbstract.ts
 model/productCriteria.ts
 model/productDetails.ts
+model/productDetailsCriteria.ts
 model/productLoadSearchCriteria.ts
 model/productPageResult.ts
 model/productSearchCriteria.ts

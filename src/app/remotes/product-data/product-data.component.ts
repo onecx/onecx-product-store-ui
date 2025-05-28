@@ -68,12 +68,12 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
     this.ocxInitRemoteComponent(config)
   }
   // output
-  @Input() products = new EventEmitter<ProductAbstract[]>()
-  @Input() product = new EventEmitter<ProductAbstract>()
+  @Input() products = new EventEmitter<ProductAbstract[]>() // [] = not found
+  @Input() product = new EventEmitter<ProductAbstract | undefined>() // undefined == not found
   @Input() imageLoadingFailed = new EventEmitter<boolean>()
 
   public products$: Observable<ProductAbstract[]> | undefined
-  public product$: Observable<ProductAbstract> | undefined
+  public product$: Observable<ProductAbstract | undefined> | undefined
   public imageUrl$ = new BehaviorSubject<string | undefined>(undefined)
   public defaultImageUrl: string | undefined = undefined
 
@@ -112,7 +112,6 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
       names: this.productNames ? this.productNames : this.productName ? [this.productName] : undefined,
       pageSize: 1000
     }
-    this.log(criteria)
     this.products$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
       map((response) => {
         const products: ProductAbstract[] = []
@@ -138,21 +137,21 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
   private getProduct() {
     if (!this.productName) return
     const criteria: ProductSearchCriteria = {
-      names: this.productName ? [this.productName] : undefined,
+      names: [this.productName],
       pageSize: 1
     }
     this.log(criteria)
     this.product$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
       map((response) => {
         const p = response.stream?.[0]
-        this.log(p)
+        let px: ProductAbstract | undefined = undefined
         if (p !== undefined) {
-          return {
+          px = {
             ...p,
             imageUrl: p.imageUrl ?? bffImageUrl(this.productApi.configuration.basePath, p.name, RefType.Logo)
           }
         }
-        return {} as ProductAbstract
+        return px
       }),
       catchError((err) => {
         console.error('onecx-product-data.searchProducts', err)

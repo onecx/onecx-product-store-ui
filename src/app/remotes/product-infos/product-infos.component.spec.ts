@@ -119,10 +119,29 @@ describe('OneCXProductInfosComponent', () => {
   })
 
   describe('getting products', () => {
-    it('should get products - successful with data', (done) => {
+    it('should get products - successful without search criteria => get all data', (done) => {
       const { component } = setUp()
       const mockResponse: ProductPageResult = { stream: products }
       productApiSpy.searchProducts.and.returnValue(of(mockResponse))
+
+      component.ngOnChanges()
+
+      component.productsAndApplications$?.subscribe({
+        next: (data) => {
+          if (data) {
+            expect(data).toEqual(products)
+          }
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should get products - successful with search criteria: a name => get data', (done) => {
+      const { component } = setUp()
+      const mockResponse: ProductPageResult = { stream: products }
+      productApiSpy.searchProducts.and.returnValue(of(mockResponse))
+      component.productName = 'product1'
 
       component.ngOnChanges()
 

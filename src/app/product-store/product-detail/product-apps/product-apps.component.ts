@@ -8,8 +8,8 @@ import {
   Microservice,
   Product,
   ProductDetails,
+  ProductDetailsCriteria,
   ProductsAPIService,
-  ProductSearchCriteria,
   Slot,
   SlotPageItem
 } from 'src/app/shared/generated'
@@ -61,7 +61,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   }
 
   public ngOnChanges(): void {
-    if (this.product) this.searchProducts()
+    if (this.product) this.getProductDetails()
   }
 
   public ngOnDestroy(): void {
@@ -70,14 +70,15 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   }
 
   /**
-   * SEARCH
+   * GET product
    */
-  public searchProducts(): void {
-    const criteria: ProductSearchCriteria = {
-      names: [this.product?.name ?? ''],
-      pageSize: 1000
+  private getProductDetails(): void {
+    const criteria: ProductDetailsCriteria = {
+      name: this.product?.name,
+      pageNumber: 0,
+      pageSize: 0
     }
-    this.productDetails$ = this.productApi.getProductDetailsByCriteria({ productSearchCriteria: criteria }).pipe(
+    this.productDetails$ = this.productApi.getProductDetailsByCriteria({ productDetailsCriteria: criteria }).pipe(
       takeUntil(this.destroy$),
       tap((details) => {
         if (details) {
@@ -142,11 +143,11 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
 
   public appChanged(changed: any) {
     this.displayDetailDialog = false
-    if (changed) this.searchProducts()
+    if (changed) this.getProductDetails()
   }
   public appDeleted(deleted: any) {
     this.displayDeleteDialog = false
-    if (deleted) this.searchProducts()
+    if (deleted) this.getProductDetails()
   }
 
   public onSlotDelete(ev: any, slot: Slot) {
@@ -156,6 +157,6 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   }
   public slotDeleted(deleted: boolean) {
     this.displaySlotDeleteDialog = false
-    if (deleted) this.searchProducts()
+    if (deleted) this.getProductDetails()
   }
 }

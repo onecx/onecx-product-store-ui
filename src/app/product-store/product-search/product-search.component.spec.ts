@@ -8,7 +8,13 @@ import { DataViewModule } from 'primeng/dataview'
 import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
-import { Product, ProductAbstract, ProductPageResult, ProductsAPIService } from 'src/app/shared/generated'
+import {
+  Product,
+  ProductAbstract,
+  ProductCriteria,
+  ProductPageResult,
+  ProductsAPIService
+} from 'src/app/shared/generated'
 
 import { ProductSearchComponent } from './product-search.component'
 
@@ -22,10 +28,16 @@ describe('ProductSearchComponent', () => {
     name: 'name',
     basePath: 'basePath',
     displayName: 'displayName',
+    provider: 'team',
+    classifications: ['test']
+  }
+  const criteria: ProductCriteria = {
+    providers: ['team'],
     classifications: ['test']
   }
   const apiProductServiceSpy = {
-    searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of({ stream: [] }))
+    searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of({ stream: [] })),
+    getProductSearchCriteria: jasmine.createSpy('getProductSearchCriteria').and.returnValue(of({}))
   }
 
   beforeEach(waitForAsync(() => {
@@ -81,65 +93,97 @@ describe('ProductSearchComponent', () => {
     })
   })
 
-  it('should prepare action buttons on init', () => {
-    spyOn(component, 'onAppSearch')
-    spyOn(component, 'onEndpointSearch')
-    spyOn(component, 'onSlotSearch')
-    spyOn(component, 'onNewProduct')
+  describe('UI page actions', () => {
+    it('should prepare action buttons on init', () => {
+      spyOn(component, 'onAppSearch')
+      spyOn(component, 'onEndpointSearch')
+      spyOn(component, 'onSlotSearch')
+      spyOn(component, 'onNewProduct')
 
-    component.ngOnInit()
+      component.ngOnInit()
 
-    let actions: any = []
-    component.actions$!.subscribe((act) => (actions = act))
+      let actions: any = []
+      component.actions$!.subscribe((act) => (actions = act))
 
-    actions[0].actionCallback()
-    actions[1].actionCallback()
-    actions[2].actionCallback()
-    actions[3].actionCallback()
+      actions[0].actionCallback()
+      actions[1].actionCallback()
+      actions[2].actionCallback()
+      actions[3].actionCallback()
 
-    expect(component.onAppSearch).toHaveBeenCalled()
-    expect(component.onEndpointSearch).toHaveBeenCalled()
-    expect(component.onSlotSearch).toHaveBeenCalled()
-    expect(component.onNewProduct).toHaveBeenCalled()
-  })
+      expect(component.onAppSearch).toHaveBeenCalled()
+      expect(component.onEndpointSearch).toHaveBeenCalled()
+      expect(component.onSlotSearch).toHaveBeenCalled()
+      expect(component.onNewProduct).toHaveBeenCalled()
+    })
 
-  it('should set correct value onLayoutChange', () => {
-    const viewMode = 'list'
+    it('should set correct value onLayoutChange', () => {
+      const viewMode = 'list'
 
-    component.onLayoutChange(viewMode)
+      component.onLayoutChange(viewMode)
 
-    expect(component.viewMode).toEqual('list')
-  })
+      expect(component.viewMode).toEqual('list')
+    })
 
-  it('should set correct values onFilterChange', () => {
-    const filter = 'filter'
+    it('should set correct values onFilterChange', () => {
+      const filter = 'filter'
 
-    component.onFilterChange(filter)
+      component.onFilterChange(filter)
 
-    expect(component.filter).toEqual(filter)
-  })
+      expect(component.filter).toEqual(filter)
+    })
 
-  it('should set correct value onSortChange', () => {
-    const sortField = 'field'
+    it('should set correct value onSortChange', () => {
+      const sortField = 'field'
 
-    component.onSortChange(sortField)
+      component.onSortChange(sortField)
 
-    expect(component.sortField).toEqual(sortField)
-  })
+      expect(component.sortField).toEqual(sortField)
+    })
 
-  it('should set correct value onSortDirChange', () => {
-    let asc = true
-    component.onSortDirChange(asc)
-    expect(component.sortOrder).toEqual(-1)
+    it('should set correct value onSortDirChange', () => {
+      let asc = true
+      component.onSortDirChange(asc)
+      expect(component.sortOrder).toEqual(-1)
 
-    asc = false
-    component.onSortDirChange(asc)
-    expect(component.sortOrder).toEqual(1)
+      asc = false
+      component.onSortDirChange(asc)
+      expect(component.sortOrder).toEqual(1)
+    })
   })
 
   describe('searching', () => {
+    it('should search products - on init with success', () => {
+      apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product] } as ProductPageResult))
+      apiProductServiceSpy.getProductSearchCriteria.and.returnValue(of(criteria))
+      spyOn<any>(component, 'searchProducts')
+      spyOn<any>(component, 'getCriteria')
+
+      component.ngOnInit()
+
+      expect(component['searchProducts']).toHaveBeenCalled()
+      expect(component['getCriteria']).toHaveBeenCalled()
+    })
+
+    it('should search products - on init failed', (done) => {
+      apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product] } as ProductPageResult))
+      const errorResponse = { status: 401, statusText: 'Not authorized' }
+      apiProductServiceSpy.getProductSearchCriteria.and.returnValue(throwError(() => errorResponse))
+
+      component.ngOnInit()
+
+      component.criteria$.subscribe({
+        next: (result) => {
+          expect(result.providers).toEqual([])
+          expect(result.classifications).toEqual([])
+          done()
+        },
+        error: done.fail
+      })
+    })
+
     it('should search products - successful found', (done) => {
       apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product] } as ProductPageResult))
+      component.searchCriteria.controls['name'].setValue(product.name)
 
       component.onSearch()
 
@@ -205,11 +249,11 @@ describe('ProductSearchComponent', () => {
   })
 
   it('should reset productSearchCriteriaGroup onSearchReset', () => {
-    spyOn(component.productSearchCriteriaGroup, 'reset')
+    spyOn(component.searchCriteria, 'reset')
 
     component.onSearchReset()
 
-    expect(component.productSearchCriteriaGroup.reset).toHaveBeenCalled()
+    expect(component.searchCriteria.reset).toHaveBeenCalled()
   })
 
   describe('navigate', () => {

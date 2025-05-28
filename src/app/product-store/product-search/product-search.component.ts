@@ -69,9 +69,8 @@ export class ProductSearchComponent implements OnInit {
     this.getCriteria()
   }
 
-  public searchProducts(): void {
+  private searchProducts(): void {
     this.loading = true
-    console.log(this.searchCriteria.controls['classifications'].value)
     const criteria: ProductSearchCriteria = {
       names: this.searchCriteria.controls['name'].value ? [this.searchCriteria.controls['name'].value] : undefined,
       providers: this.searchCriteria.controls['providers'].value ?? undefined,
@@ -101,7 +100,7 @@ export class ProductSearchComponent implements OnInit {
     return (a.displayName as string).toUpperCase().localeCompare((b.displayName as string).toUpperCase())
   }
 
-  public getCriteria(): void {
+  private getCriteria(): void {
     this.criteria$ = this.productApi.getProductSearchCriteria().pipe(
       catchError((err) => {
         console.error('getProductSearchCriteria', err)

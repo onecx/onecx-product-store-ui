@@ -17,10 +17,10 @@ import {
   ProductAbstract,
   ProductsAPIService
 } from 'src/app/shared/generated'
-import { EndpointSearchComponent, MfeEndpoint, MicrofrontendSearchCriteria } from './endpoint-search.component'
+import { EndpointSearchComponent, MfeEndpoint, ProductSearchCriteriaControls } from './endpoint-search.component'
 
-const searchCriteriaForm = new FormGroup<MicrofrontendSearchCriteria>({
-  productName: new FormControl<string | null>(null)
+const searchCriteriaForm = new FormGroup<ProductSearchCriteriaControls>({
+  name: new FormControl<string | null>(null)
 })
 
 const productResponseData: ProductAbstract[] = [
@@ -218,7 +218,22 @@ describe('EndpointSearchComponent', () => {
       productApiServiceSpy.searchProducts.and.returnValue(of({ stream: productResponseData }))
       mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: mfeResponseData }))
 
-      component.prepareSearching()
+      component.ngOnInit()
+
+      component.endpoints$?.subscribe({
+        next: (data) => {
+          expect(data).toEqual(mfeEndpoints)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should search enpoints with search criteria', (done) => {
+      productApiServiceSpy.searchProducts.and.returnValue(of({ stream: productResponseData }))
+      mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: mfeResponseData }))
+      component.searchCriteria.controls['name'].setValue(productResponseData[0].name)
+
       component.onSearch()
 
       component.endpoints$?.subscribe({
@@ -286,8 +301,19 @@ describe('EndpointSearchComponent', () => {
         }
       })
     })
+    it('should reset the form group', () => {
+      component.searchCriteria = searchCriteriaForm
+      spyOn(searchCriteriaForm, 'reset').and.callThrough()
+
+      component.onCriteriaReset()
+
+      expect(component.searchCriteria.reset).toHaveBeenCalled()
+    })
   })
 
+  /*
+   * UI ACTIONS
+   */
   describe('page actions', () => {
     it('should navigate to Products when button clicked and actionCallback executed', () => {
       component.ngOnInit()
@@ -326,9 +352,6 @@ describe('EndpointSearchComponent', () => {
     })
   })
 
-  /*
-   * UI ACTIONS
-   */
   describe('filter columns', () => {
     it('should update the columns that are seen in data', () => {
       const columns: Column[] = [{ field: 'productName', header: 'PRODUCT_NAME' }]
@@ -347,17 +370,6 @@ describe('EndpointSearchComponent', () => {
       component.onFilterChange('test')
 
       expect(component.dataTable?.filterGlobal).toHaveBeenCalledWith('test', 'contains')
-    })
-  })
-
-  describe('search criteria reset', () => {
-    it('should reset the form group', () => {
-      component.mfeSearchCriteriaGroup = searchCriteriaForm
-      spyOn(searchCriteriaForm, 'reset').and.callThrough()
-
-      component.onCriteriaReset()
-
-      expect(component.mfeSearchCriteriaGroup.reset).toHaveBeenCalled()
     })
   })
 

@@ -29,6 +29,8 @@ import { ProductCriteria } from '../model/productCriteria';
 // @ts-ignore
 import { ProductDetails } from '../model/productDetails';
 // @ts-ignore
+import { ProductDetailsCriteria } from '../model/productDetailsCriteria';
+// @ts-ignore
 import { ProductLoadSearchCriteria } from '../model/productLoadSearchCriteria';
 // @ts-ignore
 import { ProductPageResult } from '../model/productPageResult';
@@ -61,7 +63,7 @@ export interface GetProductByNameRequestParams {
 }
 
 export interface GetProductDetailsByCriteriaRequestParams {
-    productSearchCriteria: ProductSearchCriteria;
+    productDetailsCriteria: ProductDetailsCriteria;
 }
 
 export interface LoadProductsByCriteriaRequestParams {
@@ -398,9 +400,9 @@ export class ProductsAPIService {
     public getProductDetailsByCriteria(requestParameters: GetProductDetailsByCriteriaRequestParams, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ProductDetails>>;
     public getProductDetailsByCriteria(requestParameters: GetProductDetailsByCriteriaRequestParams, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ProductDetails>>;
     public getProductDetailsByCriteria(requestParameters: GetProductDetailsByCriteriaRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
-        const productSearchCriteria = requestParameters.productSearchCriteria;
-        if (productSearchCriteria === null || productSearchCriteria === undefined) {
-            throw new Error('Required parameter productSearchCriteria was null or undefined when calling getProductDetailsByCriteria.');
+        const productDetailsCriteria = requestParameters.productDetailsCriteria;
+        if (productDetailsCriteria === null || productDetailsCriteria === undefined) {
+            throw new Error('Required parameter productDetailsCriteria was null or undefined when calling getProductDetailsByCriteria.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -447,7 +449,7 @@ export class ProductsAPIService {
         return this.httpClient.request<ProductDetails>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: productSearchCriteria,
+                body: productDetailsCriteria,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
