@@ -7,7 +7,7 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <div id="ps_endpoint_search_criteria" [formGroup]="mfeSearchCriteriaGroup" class="flex flex-row flex-wrap gap-3">
+    <div id="ps_endpoint_search_criteria" [formGroup]="searchCriteria" class="flex flex-row flex-wrap gap-3">
       <span class="p-float-label">
         <input
           id="ps_endpoint_search_criteria_product_name"

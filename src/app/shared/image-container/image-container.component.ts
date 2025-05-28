@@ -21,7 +21,6 @@ import { prepareUrlPath } from 'src/app/shared/utils'
 export class ImageContainerComponent implements OnChanges {
   @Input() public id = 'ps_image_container_logo'
   @Input() public title: string | undefined
-  @Input() public small = false
   @Input() public imageUrl: string | undefined
   @Input() public styleClass: string | undefined
 

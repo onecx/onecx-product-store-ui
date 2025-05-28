@@ -196,6 +196,7 @@
   "IMAGE": {
     "UPLOAD_FAIL": " The file was not uploaded successfully",
     "UPLOAD_SUCCESS": "The file was uploaded successfully",
+    "REMOVE_SUCCESS": "The file was removed successfully.",
     "CONSTRAINT_FILE_MISSING": "No file selected.",
     "CONSTRAINT_FILE_TYPE": "The following image formats are accepted: jpg, jpeg, png",
     "CONSTRAINT_FAILED": "File upload condition check failed:",

@@ -75,8 +75,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   private getProductDetails(): void {
     const criteria: ProductDetailsCriteria = {
       name: this.product?.name,
-      pageNumber: 0,
-      pageSize: 0
+      pageSize: 1000 // page size of the children
     }
     this.productDetails$ = this.productApi.getProductDetailsByCriteria({ productDetailsCriteria: criteria }).pipe(
       takeUntil(this.destroy$),

@@ -54,6 +54,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
   public productId: string | undefined
   public productName: string | null | undefined
   public fetchingLogoUrl: string | undefined
+  public onImageLoadError = false
   public iconItems: SelectItem[] = []
   public externUrlPattern = 'http(s)://path-to-image'
   public convertToUniqueStringArray = convertToUniqueStringArray
@@ -188,18 +189,31 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
   /** File Handling
    */
   public onRemoveLogo() {
-    const workspaceName = this.formGroup.controls['name'].value
-    if (workspaceName)
-      this.imageApi.deleteImage({ refId: workspaceName, refType: RefType.Logo }).subscribe({
-        next: () => {
-          this.fetchingLogoUrl = undefined // reset - important to trigger the change in UI
-          this.currentLogoUrl.emit(this.fetchingLogoUrl)
-        },
-        error: (err) => {
-          console.error('deleteImage', err)
-        }
-      })
+    const productName = this.formGroup.controls['name'].value
+    if (productName) {
+      if (this.formGroup.get('imageUrl')?.value) {
+        this.formGroup.get('imageUrl')?.setValue(null)
+        this.fetchingLogoUrl = bffImageUrl(this.imageApi.configuration.basePath, productName, RefType.Logo)
+        this.prepareImageUrl(productName)
+      } else {
+        this.imageApi.deleteImage({ refId: productName, refType: RefType.Logo }).subscribe({
+          next: () => {
+            this.fetchingLogoUrl = undefined // reset - important to trigger the change in UI
+            this.currentLogoUrl.emit(this.fetchingLogoUrl)
+            this.msgService.info({ summaryKey: 'IMAGE.REMOVE_SUCCESS' })
+            if (!this.formGroup.get('imageUrl')?.value) this.onImageLoadError = true
+          },
+          error: (err) => {
+            console.error('deleteImage', err)
+          }
+        })
+      }
+    }
   }
+  private prepareImageUrl(name?: string): void {
+    this.fetchingLogoUrl = name ? bffImageUrl(this.imageApi.configuration.basePath, name, RefType.Logo) : undefined
+  }
+
   public onFileUpload(ev: Event): void {
     const workspaceName = this.formGroup.controls['name'].value
     if (!workspaceName || workspaceName === '') {
@@ -245,14 +259,11 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
       body: blob
     }
     this.imageApi.uploadImage(saveRequestParameter).subscribe(() => {
-      this.prepareImageResponse(name)
+      this.onImageLoadError = false
+      this.prepareImageUrl(name)
+      this.msgService.info({ summaryKey: 'IMAGE.UPLOAD_SUCCESS' })
+      this.currentLogoUrl.emit(this.fetchingLogoUrl)
     })
-  }
-  private prepareImageResponse(name: string): void {
-    this.fetchingLogoUrl = bffImageUrl(this.imageApi.configuration.basePath, name, RefType.Logo)
-    this.currentLogoUrl.emit(this.fetchingLogoUrl)
-    this.msgService.info({ summaryKey: 'IMAGE.UPLOAD_SUCCESS' })
-    this.formGroup.controls['imageUrl'].setValue('')
   }
 
   public getLogoUrl(product: Product | undefined): string | undefined {
