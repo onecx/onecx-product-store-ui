@@ -12,12 +12,13 @@ import {
   MicrofrontendsAPIService,
   MicrofrontendType,
   ProductsAPIService,
-  ProductAbstract
+  ProductAbstract,
+  ProductSearchCriteria
 } from 'src/app/shared/generated'
 import { AppAbstract } from '../app-search/app-search.component'
 
-export interface MicrofrontendSearchCriteria {
-  productName: FormControl<string | null>
+export interface ProductSearchCriteriaControls {
+  name: FormControl<string | null>
 }
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 export type MfeEndpoint = MicrofrontendAbstract & {
@@ -45,7 +46,7 @@ export class EndpointSearchComponent implements OnInit {
   public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
 
   // data
-  public mfeSearchCriteriaGroup: FormGroup<MicrofrontendSearchCriteria>
+  public searchCriteria!: FormGroup<ProductSearchCriteriaControls>
   public endpoints$: Observable<MfeEndpoint[]> = of([])
   public mfes$: Observable<MicrofrontendAbstract[]> = of([])
   public products$: Observable<ProductAbstract[]> = of([])
@@ -74,16 +75,107 @@ export class EndpointSearchComponent implements OnInit {
     private readonly productApi: ProductsAPIService
   ) {
     this.filteredColumns = this.columns.filter((a) => a.active === true)
-    this.mfeSearchCriteriaGroup = new FormGroup<MicrofrontendSearchCriteria>({
-      productName: new FormControl<string | null>(null)
+    this.searchCriteria = new FormGroup<ProductSearchCriteriaControls>({
+      name: new FormControl<string | null>(null)
     })
   }
 
   ngOnInit(): void {
     this.prepareDialogTranslations()
     this.preparePageActions()
-    this.prepareSearching()
+    this.searchProducts()
     this.loadData()
+  }
+
+  /****************************************************************************
+   *  SEARCHING
+   */
+  public searchProducts(): void {
+    // Products => to get the product display name
+    const criteria: ProductSearchCriteria = {
+      names: this.searchCriteria.controls['name'].value ? [this.searchCriteria.controls['name'].value] : undefined,
+      pageSize: 1000
+    }
+    this.products$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
+      map((data) => data.stream ?? []),
+      catchError((err) => {
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+        console.error('searchProducts', err)
+        return of([])
+      })
+    )
+    // Microfrontends
+    this.mfes$ = this.mfeApi
+      .searchMicrofrontends({
+        mfeAndMsSearchCriteria: {
+          productName: this.searchCriteria.controls['name'].value,
+          type: MicrofrontendType.Module,
+          pageSize: 1000
+        }
+      })
+      .pipe(
+        tap((data: any) => {
+          if (data.totalElements === 0) {
+            this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
+            return data.size
+          }
+        }),
+        map((data) => (data.stream ? data.stream : [])),
+        catchError((err) => {
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.MFES'
+          console.error('searchMicrofrontends', err)
+          return of([])
+        }),
+        finalize(() => (this.loading = false))
+      )
+  }
+
+  public sortMfes(a: MfeEndpoint, b: MfeEndpoint): number {
+    return (
+      a.productName.toUpperCase().localeCompare(b.productName.toUpperCase()) ||
+      (a.exposedModule ? a.exposedModule.toUpperCase() : '').localeCompare(
+        b.exposedModule ? b.exposedModule.toUpperCase() : ''
+      ) ||
+      a.endpoint_name.toUpperCase().localeCompare(b.endpoint_name.toUpperCase())
+    )
+  }
+
+  private getProductDisplayName(name: string, pas: ProductAbstract[]): string {
+    const pf = pas.filter((p) => p.name === name)
+    return pf[0] ? pf[0].displayName! : ''
+  }
+
+  // complete refresh: getting meta data and trigger search
+  private loadData(): void {
+    this.loading = true
+    this.exceptionKey = undefined
+    this.endpoints$ = combineLatest([this.products$, this.mfes$]).pipe(
+      map(([ps, mfes]) => {
+        const eps: MfeEndpoint[] = []
+        if (mfes?.length > 0) {
+          mfes.forEach((mfe) => {
+            mfe.endpoints?.forEach((ep, i) => {
+              eps.push({
+                id: mfe.id,
+                unique_id: mfe.id + '_' + i,
+                appId: mfe.appId,
+                appName: mfe.appName,
+                productName: mfe.productName,
+                productDisplayName: this.getProductDisplayName(mfe.productName, ps),
+                exposedModule: mfe.exposedModule,
+                remoteBaseUrl: mfe.remoteBaseUrl,
+                type: mfe.type,
+                endpoint_name: ep.name,
+                endpoint_path: ep.path
+              })
+            })
+          })
+          eps.sort(this.sortMfes)
+        }
+        return eps
+      }),
+      finalize(() => (this.loading = false))
+    )
   }
 
   /**
@@ -179,11 +271,11 @@ export class EndpointSearchComponent implements OnInit {
     this.dataTable?.filterGlobal(event, 'contains')
   }
   public onSearch() {
-    this.prepareSearching()
+    this.searchProducts()
     this.loadData()
   }
   public onCriteriaReset() {
-    this.mfeSearchCriteriaGroup.reset()
+    this.searchCriteria.reset()
   }
   public onAppDetail(ev: Event, data: MfeEndpoint) {
     ev.stopPropagation()
@@ -194,99 +286,5 @@ export class EndpointSearchComponent implements OnInit {
     this.displayAppDetailDialog = false
     this.mfeItem4Detail = undefined
     if (changed) this.loadData()
-  }
-
-  /****************************************************************************
-   *  SEARCHING
-   */
-  public prepareSearching(): void {
-    // Products => to get the product display name
-    this.products$ = this.productApi
-      .searchProducts({
-        productSearchCriteria: {
-          name: this.mfeSearchCriteriaGroup.controls['productName'].value,
-          pageSize: 1000
-        }
-      })
-      .pipe(
-        map((data) => (data.stream ? data.stream : [])),
-        catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
-          console.error('searchProducts', err)
-          return of([])
-        })
-      )
-    // Microfrontends
-    this.mfes$ = this.mfeApi
-      .searchMicrofrontends({
-        mfeAndMsSearchCriteria: {
-          productName: this.mfeSearchCriteriaGroup.controls['productName'].value,
-          type: MicrofrontendType.Module,
-          pageSize: 1000
-        }
-      })
-      .pipe(
-        tap((data: any) => {
-          if (data.totalElements === 0) {
-            this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
-            return data.size
-          }
-        }),
-        map((data) => (data.stream ? data.stream : [])),
-        catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.MFES'
-          console.error('searchMicrofrontends', err)
-          return of([])
-        }),
-        finalize(() => (this.loading = false))
-      )
-  }
-
-  public sortMfes(a: MfeEndpoint, b: MfeEndpoint): number {
-    return (
-      a.productName.toUpperCase().localeCompare(b.productName.toUpperCase()) ||
-      (a.exposedModule ? a.exposedModule.toUpperCase() : '').localeCompare(
-        b.exposedModule ? b.exposedModule.toUpperCase() : ''
-      ) ||
-      a.endpoint_name.toUpperCase().localeCompare(b.endpoint_name.toUpperCase())
-    )
-  }
-
-  private getProductDisplayName(name: string, pas: ProductAbstract[]): string {
-    const pf = pas.filter((p) => p.name === name)
-    return pf[0] ? pf[0].displayName! : ''
-  }
-
-  // complete refresh: getting meta data and trigger search
-  private loadData(): void {
-    this.loading = true
-    this.exceptionKey = undefined
-    this.endpoints$ = combineLatest([this.products$, this.mfes$]).pipe(
-      map(([ps, mfes]) => {
-        const eps: MfeEndpoint[] = []
-        if (mfes?.length > 0) {
-          mfes.forEach((mfe) => {
-            mfe.endpoints?.forEach((ep, i) => {
-              eps.push({
-                id: mfe.id,
-                unique_id: mfe.id + '_' + i,
-                appId: mfe.appId,
-                appName: mfe.appName,
-                productName: mfe.productName,
-                productDisplayName: this.getProductDisplayName(mfe.productName, ps),
-                exposedModule: mfe.exposedModule,
-                remoteBaseUrl: mfe.remoteBaseUrl,
-                type: mfe.type,
-                endpoint_name: ep.name,
-                endpoint_path: ep.path
-              })
-            })
-          })
-          eps.sort(this.sortMfes)
-        }
-        return eps
-      }),
-      finalize(() => (this.loading = false))
-    )
   }
 }

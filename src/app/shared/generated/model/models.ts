@@ -22,6 +22,7 @@ export * from './product';
 export * from './productAbstract';
 export * from './productCriteria';
 export * from './productDetails';
+export * from './productDetailsCriteria';
 export * from './productLoadSearchCriteria';
 export * from './productPageResult';
 export * from './productSearchCriteria';

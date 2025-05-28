@@ -196,6 +196,7 @@
   "IMAGE": {
     "UPLOAD_FAIL": "Die Datei wurde nicht erfolgreich hochgeladen",
     "UPLOAD_SUCCESS": "Die Datei wurde erfolgreich hochgeladen",
+    "REMOVE_SUCCESS": "Die Datei wurde erfolgreich gelöscht.",
     "CONSTRAINT_FILE_MISSING": "Keine Datei ausgewählt.",
     "CONSTRAINT_FILE_TYPE": "Die folgenden Bildformate werden akzeptiert: jpg, jpeg, png",
     "CONSTRAINT_FAILED": "Bedingung zum Hochladen nicht erfüllt:",
@@ -403,6 +404,13 @@
       "APPS": "Unbekanntes Problem beim Abrufen von App-Daten - Bitte versuchen sie es noch einmal.",
       "MFES": "Unbekanntes Problem beim Abrufen von Microfrontend-Daten - Bitte versuchen sie es noch einmal.",
       "SLOTS": "Unbekanntes Problem beim Abrufen von Slot-Daten - Bitte versuchen sie es noch einmal."
+    },
+    "HTTP_STATUS_400": {
+      "PRODUCT": "Ihre Anfrage konnte nicht bearbeitet werden.",
+      "PRODUCTS": "Ihre Anfrage konnte nicht bearbeitet werden.",
+      "APPS": "Ihre Anfrage konnte nicht bearbeitet werden.",
+      "MFES": "Ihre Anfrage konnte nicht bearbeitet werden.",
+      "SLOTS": "Ihre Anfrage konnte nicht bearbeitet werden."
     },
     "HTTP_STATUS_401": {
       "PRODUCT": "Sie sind nicht autorisiert, um Applikationsdetails zu sehen.",

@@ -26,8 +26,7 @@ const products: ProductAbstract[] = [product1, product2]
 
 describe('OneCXProductDataComponent', () => {
   const productAPISpy = {
-    searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of({})),
-    getProductByName: jasmine.createSpy('getProductByName').and.returnValue(of({}))
+    searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of({}))
   }
 
   function setUp() {
@@ -68,7 +67,6 @@ describe('OneCXProductDataComponent', () => {
 
     baseUrlSubject.next('base_url_mock')
     productAPISpy.searchProducts.calls.reset()
-    productAPISpy.getProductByName.calls.reset()
   })
 
   describe('initialize', () => {
@@ -106,11 +104,52 @@ describe('OneCXProductDataComponent', () => {
   })
 
   describe('getting products', () => {
-    it('should get products - successful with data', (done) => {
+    it('should get products - successful without search criteria => get all data', (done) => {
       const { component } = setUp()
       const mockResponse: ProductPageResult = { stream: products }
       productAPISpy.searchProducts.and.returnValue(of(mockResponse))
       component.dataType = 'products'
+
+      component.ngOnChanges()
+
+      component.products$?.subscribe({
+        next: (data) => {
+          if (data) {
+            expect(data.length).toBe(2)
+            expect(data[0]).toEqual(products[0])
+          }
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should get products - successful with search criteria: names => get data', (done) => {
+      const { component } = setUp()
+      const mockResponse: ProductPageResult = { stream: [product1] }
+      productAPISpy.searchProducts.and.returnValue(of(mockResponse))
+      component.dataType = 'products'
+      component.productNames = [product1.name]
+
+      component.ngOnChanges()
+
+      component.products$?.subscribe({
+        next: (data) => {
+          if (data) {
+            expect(data[0]).toEqual(product1)
+          }
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should get products - successful with search criteria: a name => get data', (done) => {
+      const { component } = setUp()
+      const mockResponse: ProductPageResult = { stream: products }
+      productAPISpy.searchProducts.and.returnValue(of(mockResponse))
+      component.dataType = 'products'
+      component.productName = 'product1'
 
       component.ngOnChanges()
 

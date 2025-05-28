@@ -55,6 +55,7 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
   @Input() dataType: DataType | undefined = undefined // which response data is expected
   // search parameter
   @Input() productName: string | undefined = undefined // search parameter
+  @Input() productNames: string[] | undefined = undefined // search parameter
   // logo
   @Input() imageId: string | undefined = undefined
   @Input() imageUrl: string | undefined = undefined
@@ -67,12 +68,12 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
     this.ocxInitRemoteComponent(config)
   }
   // output
-  @Input() products = new EventEmitter<ProductAbstract[]>()
-  @Input() product = new EventEmitter<ProductAbstract>()
+  @Input() products = new EventEmitter<ProductAbstract[]>() // [] = not found
+  @Input() product = new EventEmitter<ProductAbstract | undefined>() // undefined == not found
   @Input() imageLoadingFailed = new EventEmitter<boolean>()
 
   public products$: Observable<ProductAbstract[]> | undefined
-  public product$: Observable<ProductAbstract> | undefined
+  public product$: Observable<ProductAbstract | undefined> | undefined
   public imageUrl$ = new BehaviorSubject<string | undefined>(undefined)
   public defaultImageUrl: string | undefined = undefined
 
@@ -108,10 +109,9 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
    */
   private getProducts(): void {
     const criteria: ProductSearchCriteria = {
-      name: this.productName,
+      names: this.getNameCriteria(this.productNames, this.productName),
       pageSize: 1000
     }
-    this.log(criteria)
     this.products$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
       map((response) => {
         const products: ProductAbstract[] = []
@@ -130,6 +130,12 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
     )
     this.products$.subscribe(this.products)
   }
+  // cascading search criteria
+  private getNameCriteria(names?: string[], name?: string): string[] | undefined {
+    if (names) return names
+    if (name) return [name]
+    return undefined
+  }
 
   /**
    * PRODUCT
@@ -137,20 +143,21 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
   private getProduct() {
     if (!this.productName) return
     const criteria: ProductSearchCriteria = {
-      name: this.productName,
+      names: [this.productName],
       pageSize: 1
     }
     this.log(criteria)
     this.product$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
       map((response) => {
-        const products: ProductAbstract[] = []
-        response.stream?.forEach((p) => {
-          products.push({
+        const p = response.stream?.[0]
+        let px: ProductAbstract | undefined = undefined
+        if (p !== undefined) {
+          px = {
             ...p,
             imageUrl: p.imageUrl ?? bffImageUrl(this.productApi.configuration.basePath, p.name, RefType.Logo)
-          })
-        })
-        return products[0]
+          }
+        }
+        return px
       }),
       catchError((err) => {
         console.error('onecx-product-data.searchProducts', err)

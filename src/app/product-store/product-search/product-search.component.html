@@ -7,35 +7,54 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <div id="ps_product_search_criteria" [formGroup]="productSearchCriteriaGroup" class="flex flex-row flex-wrap gap-3">
+    <div id="ps_product_search_criteria" [formGroup]="searchCriteria" class="flex flex-row flex-wrap gap-3">
       <span class="p-float-label">
         <input
-          id="ps_product_search_criteria_display_name"
+          id="ps_product_search_criteria_name"
           pInputText
           type="text"
-          class="w-11rem sm:w-18rem text-responsive"
-          formControlName="displayName"
-          [attr.aria-label]="'PRODUCT.DISPLAY_NAME' | translate"
-          [pTooltip]="('PRODUCT.TOOLTIPS.DISPLAY_NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        />
-        <label for="ps_product_search_criteria_display_name">{{ 'PRODUCT.DISPLAY_NAME' | translate }}</label>
-      </span>
-      <span class="p-float-label">
-        <input
-          id="ps_product_search_criteria_product_name"
-          pInputText
-          type="text"
-          class="w-11rem sm:w-18rem text-responsive"
-          formControlName="productName"
+          class="w-11rem sm:w-15rem text-responsive"
+          formControlName="name"
           [attr.aria-label]="'PRODUCT.NAME' | translate"
           [pTooltip]="('PRODUCT.TOOLTIPS.NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="ps_product_search_criteria_product_name">{{ 'PRODUCT.NAME' | translate }}</label>
+        <label for="ps_product_search_criteria_name">{{ 'PRODUCT.NAME' | translate }}</label>
       </span>
+      <ng-container *ngIf="criteria$ | async as criteria">
+        <span class="p-float-label">
+          <p-multiSelect
+            id="ps_product_search_criteria_providers"
+            formControlName="providers"
+            styleClass="text-responsive"
+            [options]="criteria.providers"
+            appendTo="body"
+            display="chip"
+            [emptyMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
+            ariaLabelledBy="ps_product_search_criteria_providers"
+            [pTooltip]="'PRODUCT.TOOLTIPS.PROVIDER' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          />
+          <label for="ps_product_search_criteria_providers">{{ 'PRODUCT.PROVIDER' | translate }}</label>
+        </span>
+        <span class="p-float-label">
+          <p-multiSelect
+            id="ps_product_search_criteria_classifications"
+            formControlName="classifications"
+            styleClass="correct-min-size text-responsive"
+            [options]="criteria.classifications"
+            appendTo="body"
+            display="chip"
+            ariaLabelledBy="ps_product_search_criteria_classifications"
+            [pTooltip]="'PRODUCT.TOOLTIPS.CLASSIFICATIONS' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          />
+          <label for="ps_product_search_criteria_classifications">{{ 'PRODUCT.CLASSIFICATIONS' | translate }}</label>
+        </span>
+      </ng-container>
     </div>
   </ocx-search-header>
 
@@ -107,8 +126,7 @@
               <div class="p-0 col-3 text-center">
                 <app-image-container
                   [id]="'ps_product_search_data_list_row_' + i + '_image'"
-                  [small]="true"
-                  styleClass="h-4rem sm:h-5rem max-h-4rem sm:max-h-5rem max-w-4rem sm:max-w-6rem border-round-sm"
+                  styleClass="h-4rem sm:h-5rem max-h-4rem sm:max-h-5rem max-w-4rem sm:max-w-6rem"
                   [imageUrl]="getLogoUrl(product)"
                 ></app-image-container>
               </div>
@@ -159,7 +177,7 @@
           <div *ngFor="let product of products; index as i" class="col-6 md:col-4 xl:col-3 p-2 md:px-3">
             <a
               [id]="'ps_product_search_data_grid_row_' + i"
-              class="card relative p-2 sm:px-3 flex flex-column gap-1 sm:gap-3 justify-content-between text-center hover:bg-gray-200 cursor-pointer"
+              class="card relative p-1 sm:p-2 sm:px-3 flex flex-column gap-1 lg:gap-2 justify-content-between text-center hover:bg-gray-200 cursor-pointer"
               routerLinkActive="active"
               [routerLink]="['./', product.name]"
             >
@@ -176,7 +194,7 @@
               <!-- CONTENT -->
               <div
                 [id]="'ps_product_search_data_grid_row_' + i + '_product_display_name'"
-                class="font-bold text-base sm:text-lg md:text-xl lg:text-2xl text-responsive"
+                class="font-bold text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-responsive"
                 [class.danger-action-text]="product.undeployed"
                 [attr.aria-label]="product.displayName"
                 [pTooltip]="product.displayName.length <= 20 ? '' : product.displayName"
@@ -185,11 +203,10 @@
               >
                 {{ product.displayName }}
               </div>
-              <div class="h-6rem sm:h-10rem flex justify-content-center align-items-center">
+              <div class="h-4rem sm:h-6rem md:h-7rem lg:h-9rem flex justify-content-center align-items-center">
                 <app-image-container
                   [id]="'ps_product_search_data_grid_row_' + i + '_image'"
-                  [small]="false"
-                  styleClass="max-h-6rem sm:max-h-10rem max-w-9rem sm:max-w-10rem md:max-w-11rem lg:max-w-13rem xl:max-w-14rem border-round-sm"
+                  styleClass="max-h-4rem sm:max-h-6rem md:max-h-7rem lg:max-h-9rem max-w-6rem sm:max-w-10rem md:max-w-11rem lg:max-w-13rem xl:max-w-14rem"
                   [imageUrl]="getLogoUrl(product)"
                 ></app-image-container>
               </div>

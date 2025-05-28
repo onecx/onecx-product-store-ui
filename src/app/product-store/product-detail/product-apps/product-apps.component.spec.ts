@@ -88,6 +88,7 @@ describe('ProductAppsComponent', () => {
     fixture = TestBed.createComponent(ProductAppsComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
+    // reset
     productServiceSpy.getProductDetailsByCriteria.and.returnValue(of({} as MicrofrontendPageResult))
     component.product = product
     component.exceptionKey = ''
@@ -106,24 +107,24 @@ describe('ProductAppsComponent', () => {
 
   it('should call searchApps onChanges if product exists', () => {
     component.product = product
-    spyOn(component, 'searchProducts')
+    spyOn<any>(component, 'getProductDetails')
 
     component.ngOnChanges()
 
-    expect(component.searchProducts).toHaveBeenCalled()
+    expect(component['getProductDetails']).toHaveBeenCalled()
   })
 
   /**
    * SEARCH
    */
-  describe('searchProducts', () => {
+  describe('get product details', () => {
     it('should get microfrontends and microservices', (done) => {
       component.product = product
       productServiceSpy.getProductDetailsByCriteria.and.returnValue(
         of({ microfrontends: [mfe], microservices: [ms], slots: [] } as ProductDetails)
       )
 
-      component.searchProducts()
+      component.ngOnChanges()
 
       component.productDetails$.subscribe({
         next: (result) => {
@@ -143,7 +144,7 @@ describe('ProductAppsComponent', () => {
         of({ microfrontends: [], microservices: [], slots: [] } as ProductDetails)
       )
 
-      component.searchProducts()
+      component['getProductDetails']()
 
       component.productDetails$.subscribe({
         next: (details) => {
@@ -157,12 +158,12 @@ describe('ProductAppsComponent', () => {
       })
     })
 
-    it('should catch error on searchProducts', (done) => {
+    it('should catch error on getProductDetails', (done) => {
       const errorResponse = { status: 401, statusText: 'Not authorized' }
       productServiceSpy.getProductDetailsByCriteria.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
 
-      component.searchProducts()
+      component['getProductDetails']()
 
       component.productDetails$.subscribe({
         next: (result) => {
@@ -305,21 +306,21 @@ describe('ProductAppsComponent', () => {
     expect(component.displayDeleteDialog).toBeTrue()
   })
 
-  it('should call searchProducts if app changed', () => {
-    spyOn(component, 'searchProducts')
+  it('should call getProductDetails if app changed', () => {
+    spyOn<any>(component, 'getProductDetails')
 
     component.appChanged(true)
 
-    expect(component.searchProducts).toHaveBeenCalled()
+    expect(component['getProductDetails']).toHaveBeenCalled()
     expect(component.displayDetailDialog).toBeFalse()
   })
 
-  it('should call searchProducts if app deleted', () => {
-    spyOn(component, 'searchProducts')
+  it('should call getProductDetails if app deleted', () => {
+    spyOn<any>(component, 'getProductDetails')
 
     component.appDeleted(true)
 
-    expect(component.searchProducts).toHaveBeenCalled()
+    expect(component['getProductDetails']).toHaveBeenCalled()
     expect(component.displayDetailDialog).toBeFalse()
   })
 
@@ -345,24 +346,24 @@ describe('ProductAppsComponent', () => {
       expect(component.displaySlotDeleteDialog).toBe(false)
     })
 
-    it('should call searchProducts when slot has been deleted', () => {
-      spyOn(component, 'searchProducts')
+    it('should call getProductDetails when slot has been deleted', () => {
+      spyOn<any>(component, 'getProductDetails')
       component.displaySlotDeleteDialog = true
 
       component.slotDeleted(true)
 
       expect(component.displaySlotDeleteDialog).toBe(false)
-      expect(component.searchProducts).toHaveBeenCalled()
+      expect(component['getProductDetails']).toHaveBeenCalled()
     })
 
-    it('should not call searchProducts when slot has not been deleted', () => {
-      spyOn(component, 'searchProducts')
+    it('should not call getProductDetails when slot has not been deleted', () => {
+      spyOn<any>(component, 'getProductDetails')
       component.displaySlotDeleteDialog = true
 
       component.slotDeleted(false)
 
       expect(component.displaySlotDeleteDialog).toBe(false)
-      expect(component.searchProducts).not.toHaveBeenCalled()
+      expect(component['getProductDetails']).not.toHaveBeenCalled()
     })
   })
 })

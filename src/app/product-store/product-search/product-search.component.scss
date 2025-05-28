@@ -8,6 +8,9 @@
 @include danger-action;
 
 :host ::ng-deep {
+  .correct-min-size .p-multiselect-label-container {
+    min-width: 9rem;
+  }
   .card-badge-right {
     right: 3px;
   }

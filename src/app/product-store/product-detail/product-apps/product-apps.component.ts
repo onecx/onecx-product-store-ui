@@ -8,6 +8,7 @@ import {
   Microservice,
   Product,
   ProductDetails,
+  ProductDetailsCriteria,
   ProductsAPIService,
   Slot,
   SlotPageItem
@@ -60,7 +61,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   }
 
   public ngOnChanges(): void {
-    if (this.product) this.searchProducts()
+    if (this.product) this.getProductDetails()
   }
 
   public ngOnDestroy(): void {
@@ -69,30 +70,32 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   }
 
   /**
-   * SEARCH
+   * GET product
    */
-  public searchProducts(): void {
-    this.productDetails$ = this.productApi
-      .getProductDetailsByCriteria({ productSearchCriteria: { name: this.product?.name } })
-      .pipe(
-        takeUntil(this.destroy$),
-        tap((details) => {
-          if (details) {
-            if (
-              (details.microfrontends && details.microfrontends?.length > 0) ||
-              (details.microservices && details.microservices?.length > 0) ||
-              (details.slots && details.slots?.length > 0)
-            )
-              this.hasComponents = true
-          }
-        }),
-        catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
-          console.error('getProductDetailsByCriteria', err)
-          return of({} as ProductDetails)
-        }),
-        finalize(() => (this.searchInProgress = false))
-      )
+  private getProductDetails(): void {
+    const criteria: ProductDetailsCriteria = {
+      name: this.product?.name,
+      pageSize: 1000 // page size of the children
+    }
+    this.productDetails$ = this.productApi.getProductDetailsByCriteria({ productDetailsCriteria: criteria }).pipe(
+      takeUntil(this.destroy$),
+      tap((details) => {
+        if (details) {
+          if (
+            (details.microfrontends && details.microfrontends?.length > 0) ||
+            (details.microservices && details.microservices?.length > 0) ||
+            (details.slots && details.slots?.length > 0)
+          )
+            this.hasComponents = true
+        }
+      }),
+      catchError((err) => {
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
+        console.error('getProductDetailsByCriteria', err)
+        return of({} as ProductDetails)
+      }),
+      finalize(() => (this.searchInProgress = false))
+    )
     this.searchInProgress = true
   }
 
@@ -139,11 +142,11 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
 
   public appChanged(changed: any) {
     this.displayDetailDialog = false
-    if (changed) this.searchProducts()
+    if (changed) this.getProductDetails()
   }
   public appDeleted(deleted: any) {
     this.displayDeleteDialog = false
-    if (deleted) this.searchProducts()
+    if (deleted) this.getProductDetails()
   }
 
   public onSlotDelete(ev: any, slot: Slot) {
@@ -153,6 +156,6 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   }
   public slotDeleted(deleted: boolean) {
     this.displaySlotDeleteDialog = false
-    if (deleted) this.searchProducts()
+    if (deleted) this.getProductDetails()
   }
 }

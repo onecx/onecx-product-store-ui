@@ -10,15 +10,18 @@ import { Action, DataViewControlTranslations } from '@onecx/portal-integration-a
 import {
   ImagesInternalAPIService,
   ProductAbstract,
+  ProductCriteria,
   ProductPageResult,
   ProductsAPIService,
+  ProductSearchCriteria,
   RefType
 } from 'src/app/shared/generated'
 import { bffImageUrl } from 'src/app/shared/utils'
 
-export interface ProductSearchCriteria {
-  displayName: FormControl<string | null>
-  productName: FormControl<string | null>
+export interface ProductSearchCriteriaControls {
+  name: FormControl<string | null>
+  providers: FormControl<string[] | null>
+  classifications: FormControl<string[] | null>
 }
 
 type ProductAbstractExtended = ProductAbstract & { classes?: string }
@@ -35,7 +38,8 @@ export class ProductSearchComponent implements OnInit {
   public viewMode: 'grid' | 'list' = 'grid'
   // data
   public products$!: Observable<ProductAbstractExtended[]>
-  public productSearchCriteriaGroup!: FormGroup<ProductSearchCriteria>
+  public criteria$!: Observable<ProductCriteria>
+  public searchCriteria!: FormGroup<ProductSearchCriteriaControls>
   public filter: string | undefined
   public sortField = 'displayName'
   public sortOrder = 1
@@ -51,9 +55,10 @@ export class ProductSearchComponent implements OnInit {
     private readonly productApi: ProductsAPIService,
     private readonly imageApi: ImagesInternalAPIService
   ) {
-    this.productSearchCriteriaGroup = new FormGroup<ProductSearchCriteria>({
-      displayName: new FormControl<string | null>(null),
-      productName: new FormControl<string | null>(null)
+    this.searchCriteria = new FormGroup<ProductSearchCriteriaControls>({
+      name: new FormControl<string | null>(null),
+      providers: new FormControl<string[] | null>(null),
+      classifications: new FormControl<string[] | null>(null)
     })
   }
 
@@ -61,39 +66,47 @@ export class ProductSearchComponent implements OnInit {
     this.prepareDialogTranslations()
     this.preparePageActions()
     this.searchProducts()
+    this.getCriteria()
   }
 
-  public searchProducts(): void {
+  private searchProducts(): void {
     this.loading = true
-    this.products$ = this.productApi
-      .searchProducts({
-        productSearchCriteria: {
-          name: this.productSearchCriteriaGroup.controls['productName'].value,
-          displayName: this.productSearchCriteriaGroup.controls['displayName'].value,
-          pageSize: 1000
-        }
-      })
-      .pipe(
-        map((data: ProductPageResult) => {
-          const products: ProductAbstractExtended[] = []
-          data.stream?.forEach((p) => {
-            products.push({ ...p, classes: p.classifications?.join(', ') })
-            p.classifications?.forEach((c) => {
-              if (!this.quickFilterItems.includes(c)) this.quickFilterItems.push(c)
-            })
+    const criteria: ProductSearchCriteria = {
+      names: this.searchCriteria.controls['name'].value ? [this.searchCriteria.controls['name'].value] : undefined,
+      providers: this.searchCriteria.controls['providers'].value ?? undefined,
+      classifications: this.searchCriteria.controls['classifications'].value ?? undefined,
+      pageSize: 1000
+    }
+    this.products$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
+      map((data: ProductPageResult) => {
+        const products: ProductAbstractExtended[] = []
+        data.stream?.forEach((p) => {
+          products.push({ ...p, classes: p.classifications?.join(', ') })
+          p.classifications?.forEach((c) => {
+            if (!this.quickFilterItems.includes(c)) this.quickFilterItems.push(c)
           })
-          return products.sort(this.sortProductsByDisplayName)
-        }),
-        catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
-          console.error('searchProducts', err)
-          return of([])
-        }),
-        finalize(() => (this.loading = false))
-      )
+        })
+        return products.sort(this.sortProductsByDisplayName)
+      }),
+      catchError((err) => {
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+        console.error('searchProducts', err)
+        return of([])
+      }),
+      finalize(() => (this.loading = false))
+    )
   }
   public sortProductsByDisplayName(a: ProductAbstract, b: ProductAbstract): number {
     return (a.displayName as string).toUpperCase().localeCompare((b.displayName as string).toUpperCase())
+  }
+
+  private getCriteria(): void {
+    this.criteria$ = this.productApi.getProductSearchCriteria().pipe(
+      catchError((err) => {
+        console.error('getProductSearchCriteria', err)
+        return of({ providers: [], classifications: [] })
+      })
+    )
   }
 
   /**
@@ -219,7 +232,7 @@ export class ProductSearchComponent implements OnInit {
     this.searchProducts()
   }
   public onSearchReset() {
-    this.productSearchCriteriaGroup.reset()
+    this.searchCriteria.reset()
   }
   public onAppSearch() {
     this.router.navigate(['./apps'], { relativeTo: this.route })

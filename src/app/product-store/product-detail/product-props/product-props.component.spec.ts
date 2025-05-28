@@ -458,7 +458,17 @@ describe('ProductPropertyComponent', () => {
   })
 
   describe('Remove logo', () => {
-    it('should remove the log - successful', () => {
+    it('should remove the logo URL - successful', () => {
+      component.formGroup.controls['name'].setValue('name')
+      component.formGroup.controls['imageUrl'].setValue('image URL')
+
+      component.onRemoveLogo()
+
+      expect(component.fetchingLogoUrl).toEqual('basepath/images/name/logo')
+      expect(component.formGroup.get('imageUrl')?.value).toBeNull()
+    })
+
+    it('should remove the uploaded logo - successful', () => {
       imgServiceSpy.deleteImage.and.returnValue(of({}))
       component.formGroup.controls['name'].setValue('name')
 

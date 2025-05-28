@@ -83,12 +83,13 @@
     <!-- row 3 -->
     <div class="flex flex-row flex-wrap sm:flex-nowrap align-items-center row-gap-2 column-gap-4">
       <input hidden type="file" accept="image/*" #selectedFileInputLogo (change)="onFileUpload($event)" />
-      <app-image-container
-        id="ps_product_detail_form_field_logo"
-        [small]="true"
-        styleClass="border-round-sm"
-        [imageUrl]="fetchingLogoUrl"
-      ></app-image-container>
+      <img
+        *ngIf="product && fetchingLogoUrl && !onImageLoadError"
+        [alt]="'logo'"
+        [ocxSrc]="fetchingLogoUrl"
+        class="max-w-3rem max-h-3rem border-round-sm image-object"
+        (error)="onImageLoadError = true"
+      />
       <button
         *ocxIfPermission="'PRODUCT#EDIT'"
         pButton
@@ -96,6 +97,7 @@
         icon="pi pi-times"
         class="action-button p-button-icon-only cursor-pointer"
         (click)="onRemoveLogo()"
+        [disabled]="onImageLoadError || (changeMode === 'VIEW' && product?.imageUrl)"
         [attr.aria-label]="'IMAGE.TOOLTIPS.REMOVE' | translate"
         [pTooltip]="'IMAGE.TOOLTIPS.REMOVE' | translate"
         tooltipPosition="top"
@@ -108,6 +110,7 @@
         icon="pi pi-upload"
         class="action-button p-button-icon-only cursor-pointer"
         (click)="selectedFileInputLogo.click()"
+        [disabled]="formGroup.get('imageUrl')?.value"
         [attr.aria-label]="'IMAGE.TOOLTIPS.UPLOAD' | translate"
         [pTooltip]="'IMAGE.TOOLTIPS.UPLOAD' | translate"
         tooltipPosition="top"

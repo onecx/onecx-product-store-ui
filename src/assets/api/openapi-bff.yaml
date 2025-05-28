@@ -396,7 +396,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProductSearchCriteria'
+              $ref: '#/components/schemas/ProductDetailsCriteria'
       responses:
         '200':
           description: OK
@@ -923,6 +923,24 @@ components:
           type: array
           items:
             type: string
+    ProductDetailsCriteria:
+      type: object
+      properties:
+        name:
+          type: string
+        pageNumber:
+          format: int32
+          description: The number of page.
+          default: 0
+          type: integer
+        pageSize:
+          format: int32
+          description: The size of page
+          default: 100
+          maximum: 1000
+          minimum: 1
+          exclusiveMinimum: false
+          type: integer
     RefType:
       type: string
       enum: [logo, favicon]
@@ -976,12 +994,10 @@ components:
     ProductSearchCriteria:
       type: object
       properties:
-        name:
-          type: string
-          nullable: true
-        displayName:
-          type: string
-          nullable: true
+        names:
+          type: array
+          items:
+            type: string
         providers:
           type: array
           items:

@@ -11,10 +11,8 @@
  */
 
 
-export interface ProductSearchCriteria { 
-    names?: Array<string>;
-    providers?: Array<string>;
-    classifications?: Array<string>;
+export interface ProductDetailsCriteria { 
+    name?: string;
     /**
      * The number of page.
      */
