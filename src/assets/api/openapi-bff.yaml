@@ -976,12 +976,10 @@ components:
     ProductSearchCriteria:
       type: object
       properties:
-        name:
-          type: string
-          nullable: true
-        displayName:
-          type: string
-          nullable: true
+        names:
+          type: array
+          items:
+            type: string
         providers:
           type: array
           items:

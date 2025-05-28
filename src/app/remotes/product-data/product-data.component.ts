@@ -55,6 +55,7 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
   @Input() dataType: DataType | undefined = undefined // which response data is expected
   // search parameter
   @Input() productName: string | undefined = undefined // search parameter
+  @Input() productNames: string[] | undefined = undefined // search parameter
   // logo
   @Input() imageId: string | undefined = undefined
   @Input() imageUrl: string | undefined = undefined
@@ -108,7 +109,7 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
    */
   private getProducts(): void {
     const criteria: ProductSearchCriteria = {
-      name: this.productName,
+      names: this.productNames ? this.productNames : this.productName ? [this.productName] : undefined,
       pageSize: 1000
     }
     this.log(criteria)
@@ -137,20 +138,21 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
   private getProduct() {
     if (!this.productName) return
     const criteria: ProductSearchCriteria = {
-      name: this.productName,
+      names: this.productName ? [this.productName] : undefined,
       pageSize: 1
     }
     this.log(criteria)
     this.product$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
       map((response) => {
-        const products: ProductAbstract[] = []
-        response.stream?.forEach((p) => {
-          products.push({
+        const p = response.stream?.[0]
+        this.log(p)
+        if (p !== undefined) {
+          return {
             ...p,
             imageUrl: p.imageUrl ?? bffImageUrl(this.productApi.configuration.basePath, p.name, RefType.Logo)
-          })
-        })
-        return products[0]
+          }
+        }
+        return {} as ProductAbstract
       }),
       catchError((err) => {
         console.error('onecx-product-data.searchProducts', err)

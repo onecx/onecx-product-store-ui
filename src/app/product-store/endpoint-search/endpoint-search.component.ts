@@ -12,7 +12,8 @@ import {
   MicrofrontendsAPIService,
   MicrofrontendType,
   ProductsAPIService,
-  ProductAbstract
+  ProductAbstract,
+  ProductSearchCriteria
 } from 'src/app/shared/generated'
 import { AppAbstract } from '../app-search/app-search.component'
 
@@ -201,21 +202,19 @@ export class EndpointSearchComponent implements OnInit {
    */
   public prepareSearching(): void {
     // Products => to get the product display name
-    this.products$ = this.productApi
-      .searchProducts({
-        productSearchCriteria: {
-          name: this.mfeSearchCriteriaGroup.controls['productName'].value,
-          pageSize: 1000
-        }
+    const productName = this.mfeSearchCriteriaGroup.controls['productName'].value
+    const criteria: ProductSearchCriteria = {
+      names: productName ? [productName] : undefined,
+      pageSize: 1000
+    }
+    this.products$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
+      map((data) => (data.stream ? data.stream : [])),
+      catchError((err) => {
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+        console.error('searchProducts', err)
+        return of([])
       })
-      .pipe(
-        map((data) => (data.stream ? data.stream : [])),
-        catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
-          console.error('searchProducts', err)
-          return of([])
-        })
-      )
+    )
     // Microfrontends
     this.mfes$ = this.mfeApi
       .searchMicrofrontends({

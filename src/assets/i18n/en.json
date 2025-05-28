@@ -404,6 +404,13 @@
       "MFES": "Unknown problem retrieving Microfrontend data - please try again.",
       "SLOTS": "Unknown problem retrieving Slot data - please try again."
     },
+    "HTTP_STATUS_400": {
+      "PRODUCT": "Your request could not be processed.",
+      "PRODUCTS": "Your request could not be processed.",
+      "APPS": "Your request could not be processed.",
+      "MFES": "Your request could not be processed.",
+      "SLOTS": "Your request could not be processed."
+    },
     "HTTP_STATUS_401": {
       "PRODUCT": "You are not authorized to see Application details.",
       "PRODUCTS": "You are not authorized to see Applications.",

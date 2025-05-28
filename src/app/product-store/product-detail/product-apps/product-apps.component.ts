@@ -9,6 +9,7 @@ import {
   Product,
   ProductDetails,
   ProductsAPIService,
+  ProductSearchCriteria,
   Slot,
   SlotPageItem
 } from 'src/app/shared/generated'
@@ -72,27 +73,29 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
    * SEARCH
    */
   public searchProducts(): void {
-    this.productDetails$ = this.productApi
-      .getProductDetailsByCriteria({ productSearchCriteria: { name: this.product?.name } })
-      .pipe(
-        takeUntil(this.destroy$),
-        tap((details) => {
-          if (details) {
-            if (
-              (details.microfrontends && details.microfrontends?.length > 0) ||
-              (details.microservices && details.microservices?.length > 0) ||
-              (details.slots && details.slots?.length > 0)
-            )
-              this.hasComponents = true
-          }
-        }),
-        catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
-          console.error('getProductDetailsByCriteria', err)
-          return of({} as ProductDetails)
-        }),
-        finalize(() => (this.searchInProgress = false))
-      )
+    const criteria: ProductSearchCriteria = {
+      names: [this.product?.name ?? ''],
+      pageSize: 1000
+    }
+    this.productDetails$ = this.productApi.getProductDetailsByCriteria({ productSearchCriteria: criteria }).pipe(
+      takeUntil(this.destroy$),
+      tap((details) => {
+        if (details) {
+          if (
+            (details.microfrontends && details.microfrontends?.length > 0) ||
+            (details.microservices && details.microservices?.length > 0) ||
+            (details.slots && details.slots?.length > 0)
+          )
+            this.hasComponents = true
+        }
+      }),
+      catchError((err) => {
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
+        console.error('getProductDetailsByCriteria', err)
+        return of({} as ProductDetails)
+      }),
+      finalize(() => (this.searchInProgress = false))
+    )
     this.searchInProgress = true
   }
 

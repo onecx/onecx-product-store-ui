@@ -77,8 +77,7 @@ export class OneCXProductInfosComponent implements ocxRemoteComponent, ocxRemote
    */
   public ngOnChanges(): void {
     const criteria: ProductSearchCriteria = {
-      name: this.productName,
-      displayName: this.displayName,
+      names: this.productName ? [this.productName] : undefined,
       pageSize: 1000
     }
     this.productsAndApplications$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(

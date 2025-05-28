@@ -12,8 +12,7 @@
 
 
 export interface ProductSearchCriteria { 
-    name?: string | null;
-    displayName?: string | null;
+    names?: Array<string>;
     providers?: Array<string>;
     classifications?: Array<string>;
     /**
