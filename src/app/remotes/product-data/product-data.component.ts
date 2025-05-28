@@ -109,7 +109,7 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
    */
   private getProducts(): void {
     const criteria: ProductSearchCriteria = {
-      names: this.productNames ? this.productNames : this.productName ? [this.productName] : undefined,
+      names: this.getNameCriteria(this.productNames, this.productName),
       pageSize: 1000
     }
     this.products$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
@@ -129,6 +129,12 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
       })
     )
     this.products$.subscribe(this.products)
+  }
+  // cascading search criteria
+  private getNameCriteria(names?: string[], name?: string): string[] | undefined {
+    if (names) return names
+    if (name) return [name]
+    return undefined
   }
 
   /**
