@@ -138,6 +138,7 @@ describe('ProductPropertyComponent', () => {
     it('should search criteria - on init failed', (done) => {
       const errorResponse = { status: 401, statusText: 'Not authorized' }
       apiServiceSpy.getProductSearchCriteria.and.returnValue(throwError(() => errorResponse))
+      spyOn(console, 'error')
 
       component.ngOnChanges()
 
@@ -149,6 +150,7 @@ describe('ProductPropertyComponent', () => {
         },
         error: done.fail
       })
+      expect(console.error).toHaveBeenCalledWith('getProductSearchCriteria', errorResponse)
     })
 
     it('should patchValue in formGroup onChanges if product', () => {

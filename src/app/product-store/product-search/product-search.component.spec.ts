@@ -168,6 +168,7 @@ describe('ProductSearchComponent', () => {
       apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product] } as ProductPageResult))
       const errorResponse = { status: 401, statusText: 'Not authorized' }
       apiProductServiceSpy.getProductSearchCriteria.and.returnValue(throwError(() => errorResponse))
+      spyOn(console, 'error')
 
       component.ngOnInit()
 
@@ -179,6 +180,7 @@ describe('ProductSearchComponent', () => {
         },
         error: done.fail
       })
+      expect(console.error).toHaveBeenCalledWith('getProductSearchCriteria', errorResponse)
     })
 
     it('should search products - successful found', (done) => {
