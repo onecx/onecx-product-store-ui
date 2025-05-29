@@ -146,7 +146,7 @@
                   class="text-xs sm:text-sm text-responsive"
                   [id]="'ps_product_search_data_list_row_' + i + '_classifications'"
                 >
-                  {{ product.classifications }}
+                  {{ product.classes }}
                 </div>
                 <div class="flex flex-row column-gap-2 align-items-center">
                   <span *ngIf="product.provider" class="pi pi-users"></span>
@@ -216,7 +216,7 @@
                 <div
                   [id]="'ps_product_search_data_grid_row_' + i + '_classification'"
                   class="text-xs sm:text-sm md:text-base text-responsive"
-                  [attr.aria-label]="product.classes"
+                  [attr.aria-label]="'PRODUCT.CLASSIFICATIONS' | translate"
                   [pTooltip]="'PRODUCT.CLASSIFICATIONS' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"

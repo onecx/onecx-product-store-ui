@@ -175,28 +175,6 @@
         tooltipPosition="top"
         tooltipEvent="hover"
       ></button>
-      <!--div class="flex-grow-1 flex flex-column row-gap-1">
-        <span class="p-float-label">
-          <input
-            pInputText
-            type="text"
-            class="w-full text-responsive"
-            id="ps_product_detail_form_field_image_url"
-            formControlName="imageUrl"
-            (paste)="onInputChange(product, $event)"
-            (change)="onInputChange(product, $event)"
-            [attr.aria-label]="'IMAGE.TOOLTIPS.URL' | translate"
-            [pTooltip]="'IMAGE.TOOLTIPS.URL' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          />
-          <label for="ps_product_detail_form_field_image_url">{{ 'PRODUCT.IMAGE_URL' | translate }}</label>
-        </span>
-        <label *ngIf="changeMode === 'EDIT'" class="ocx-control-hint block" for="workspace_detail_form_logo_url">
-          {{ ('VALIDATION.HINTS.FORMAT_URL' | translate) + externUrlPattern }}
-        </label>
-      </div-->
-
       <div class="flex-grow-1">
         <span class="relative p-float-label">
           <input
