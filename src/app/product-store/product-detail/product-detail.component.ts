@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core'
 
 import { Action, PortalMessageService, UserService } from '@onecx/portal-integration-angular'
 import { ImagesInternalAPIService, Product, ProductsAPIService, RefType } from 'src/app/shared/generated'
-import { bffImageUrl } from 'src/app/shared/utils'
+import { bffImageUrl, sortByLocale } from 'src/app/shared/utils'
 import { ProductPropertyComponent } from './product-props/product-props.component'
 
 export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
@@ -71,7 +71,7 @@ export class ProductDetailComponent implements OnInit {
       map((data: Product) => {
         this.preparePageAction(data)
         this.currentLogoUrl = this.getLogoUrl(data)
-        return data
+        return { ...data, classifications: data.classifications?.sort(sortByLocale) }
       }),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCT'

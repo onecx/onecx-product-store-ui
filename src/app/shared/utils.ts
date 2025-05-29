@@ -33,8 +33,8 @@ export function sortByDisplayName(a: any, b: any): number {
   )
 }
 
-export function convertToUniqueStringArray(unsorted: string | undefined | null): string[] | undefined {
-  if (!unsorted || unsorted?.length === 0) return undefined
+export function convertToUniqueStringArray(unsorted?: string[] | null): string[] | undefined {
+  if (!unsorted || unsorted === null || unsorted?.length === 0) return undefined
   const ar: Array<string> = []
   unsorted
     .toString()

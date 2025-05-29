@@ -81,6 +81,65 @@
     </div>
 
     <!-- row 3 -->
+    <div class="flex flex-row flex-wrap gap-4">
+      <span class="flex-grow-1 p-float-label" *ngIf="criteria$ | async as criteria">
+        <p-dropdown
+          id="ps_product_detail_form_field_provider"
+          styleClass="w-full text-responsive"
+          formControlName="provider"
+          [options]="criteria.providers"
+          [appendTo]="'body'"
+          [attr.aria-label]="'PRODUCT.PROVIDER' | translate"
+          [pTooltip]="'PRODUCT.TOOLTIPS.PROVIDER' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        />
+        <label for="ps_product_detail_form_field_provider">{{ 'PRODUCT.PROVIDER' | translate }}</label>
+      </span>
+      <span class="flex-grow-1 p-float-label">
+        <input
+          pInputText
+          type="text"
+          class="w-full text-responsive"
+          id="ps_product_detail_form_field_classifications"
+          formControlName="classifications"
+          [attr.aria-label]="'PRODUCT.CLASSIFICATIONS' | translate"
+          [pTooltip]="'PRODUCT.TOOLTIPS.CLASSIFICATIONS' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        />
+        <label for="ps_product_detail_form_field_classifications">{{ 'PRODUCT.CLASSIFICATIONS' | translate }}</label>
+      </span>
+      <span class="flex-grow-1 p-float-label" controlErrorAnchor>
+        <p-dropdown
+          id="ps_product_detail_form_field_icon_name"
+          styleClass="w-full min-w-min input-field-correction"
+          formControlName="iconName"
+          [options]="iconItems"
+          [ariaLabel]="'PRODUCT.ICON_NAME' | translate"
+          [pTooltip]="'PRODUCT.TOOLTIPS.ICON_NAME' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+          [showClear]="true"
+        >
+          <ng-template let-ico pTemplate="selectedItem">
+            <div class="flex">
+              <span class="font-bold pi pi-{{ ico.value }} mr-3"> </span>
+              <span>{{ ico.label }}</span>
+            </div>
+          </ng-template>
+          <ng-template let-ico pTemplate="item">
+            <div class="flex">
+              <span class="pi pi-{{ ico.value }} mr-3"> </span>
+              <span>{{ ico.label }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <label for="ps_product_detail_form_field_icon_name">{{ 'PRODUCT.ICON_NAME' | translate }}</label>
+      </span>
+    </div>
+
+    <!-- row 4 -->
     <div class="flex flex-row flex-wrap sm:flex-nowrap align-items-center row-gap-2 column-gap-4">
       <input hidden type="file" accept="image/*" #selectedFileInputLogo (change)="onFileUpload($event)" />
       <img
@@ -116,7 +175,7 @@
         tooltipPosition="top"
         tooltipEvent="hover"
       ></button>
-      <div class="flex-grow-1 flex flex-column row-gap-1">
+      <!--div class="flex-grow-1 flex flex-column row-gap-1">
         <span class="p-float-label">
           <input
             pInputText
@@ -136,74 +195,32 @@
         <label *ngIf="changeMode === 'EDIT'" class="ocx-control-hint block" for="workspace_detail_form_logo_url">
           {{ ('VALIDATION.HINTS.FORMAT_URL' | translate) + externUrlPattern }}
         </label>
+      </div-->
+
+      <div class="flex-grow-1">
+        <span class="relative p-float-label">
+          <input
+            pInputText
+            type="text"
+            class="w-full text-responsive"
+            id="ps_product_detail_form_field_image_url"
+            formControlName="imageUrl"
+            (paste)="onInputChange(product, $event)"
+            (change)="onInputChange(product, $event)"
+            [attr.aria-label]="'IMAGE.TOOLTIPS.URL' | translate"
+            [pTooltip]="'IMAGE.TOOLTIPS.URL' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          />
+          <label for="ps_product_detail_form_field_image_url">{{ 'PRODUCT.IMAGE_URL' | translate }}</label>
+        </span>
+        <label *ngIf="changeMode === 'EDIT'" class="absolute mt-1 text-xs block" for="workspace_detail_form_logo_url">
+          {{ ('VALIDATION.HINTS.FORMAT_URL' | translate) + externUrlPattern }}
+        </label>
       </div>
     </div>
 
-    <!-- row 4 -->
-    <div class="flex flex-row flex-wrap gap-4">
-      <span class="flex-grow-1 p-float-label" controlErrorAnchor>
-        <p-dropdown
-          id="ps_product_detail_form_field_icon_name"
-          styleClass="w-full min-w-min input-field-correction"
-          formControlName="iconName"
-          [options]="iconItems"
-          [ariaLabel]="'PRODUCT.ICON_NAME' | translate"
-          [pTooltip]="'PRODUCT.TOOLTIPS.ICON_NAME' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-          [showClear]="true"
-        >
-          >
-          <ng-template let-ico pTemplate="selectedItem">
-            <div class="flex">
-              <span class="font-bold pi pi-{{ ico.value }} mr-3"> </span>
-              <span>{{ ico.label }}</span>
-            </div>
-          </ng-template>
-          <ng-template let-ico pTemplate="item">
-            <div class="flex">
-              <span class="pi pi-{{ ico.value }} mr-3"> </span>
-              <span>{{ ico.label }}</span>
-            </div>
-          </ng-template>
-        </p-dropdown>
-        <label for="ps_product_detail_form_field_icon_name">{{ 'PRODUCT.ICON_NAME' | translate }}</label>
-      </span>
-      <span class="flex-grow-1 p-float-label">
-        <input
-          pInputText
-          type="text"
-          class="w-full text-responsive"
-          id="ps_product_detail_form_field_classifications"
-          formControlName="classifications"
-          [attr.aria-label]="'PRODUCT.CLASSIFICATIONS' | translate"
-          [pTooltip]="'PRODUCT.TOOLTIPS.CLASSIFICATIONS' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        />
-        <label for="ps_product_detail_form_field_classifications">{{ 'PRODUCT.CLASSIFICATIONS' | translate }}</label>
-      </span>
-    </div>
-
     <!-- row 5 -->
-    <span class="flex-grow-1 p-float-label">
-      <textarea
-        pInputTextarea
-        class="w-full"
-        autoresize="true"
-        rows="1"
-        id="ps_product_detail_form_field_provider"
-        [pTooltip]="'PRODUCT.PROVIDER' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-        formControlName="provider"
-        [attr.aria-label]="'PRODUCT.PROVIDER' | translate"
-        [pTooltip]="'PRODUCT.TOOLTIPS.PROVIDER' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-      ></textarea>
-      <label for="ps_product_detail_form_field_provider">{{ 'PRODUCT.PROVIDER' | translate }}</label>
-    </span>
 
     <!-- row 6 -->
     <span class="flex-grow-1 p-float-label">
