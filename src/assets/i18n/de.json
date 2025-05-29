@@ -345,7 +345,7 @@
     "UNDEPLOYED": "Unverfügbar",
     "WORKSPACES": "Verwendet in Workspaces",
     "CRITERIA": {
-      "NAME": "Name oder Anzeigename der Applikation.",
+      "NAME": "Name oder Anzeigename der Applikation",
       "PROVIDER": "Anbieter / Hersteller",
       "CLASSIFICATIONS": "Begriffe zur Klassifizierung der Applikation"
     },
