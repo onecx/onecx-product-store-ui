@@ -6,7 +6,7 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
 import { ProductPropertyComponent, ProductDetailForm, productNameValidator } from './product-props.component'
-import { Product, ProductsAPIService, ImagesInternalAPIService } from 'src/app/shared/generated'
+import { Product, ProductCriteria, ProductsAPIService, ImagesInternalAPIService } from 'src/app/shared/generated'
 
 const mockForm = new FormGroup<ProductDetailForm>({
   id: new FormControl<string | null>(null), // Assuming ID might not be needed or can be null for new entries
@@ -39,10 +39,14 @@ describe('ProductPropertyComponent', () => {
     basePath: 'basePath',
     displayName: 'displayName'
   }
-
+  const criteria: ProductCriteria = {
+    providers: ['team'],
+    classifications: ['test']
+  }
   const apiServiceSpy = {
     createProduct: jasmine.createSpy('createProduct').and.returnValue(of({})),
-    updateProduct: jasmine.createSpy('updateProduct').and.returnValue(of({}))
+    updateProduct: jasmine.createSpy('updateProduct').and.returnValue(of({})),
+    getProductSearchCriteria: jasmine.createSpy('getProductSearchCriteria').and.returnValue(of({}))
   }
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
   const imgServiceSpy = {
@@ -89,70 +93,103 @@ describe('ProductPropertyComponent', () => {
     imgServiceSpy.uploadImage.calls.reset()
   })
 
-  it('should create', () => {
-    expect(component).toBeTruthy()
+  describe('initialize', () => {
+    it('should create', () => {
+      expect(component).toBeTruthy()
+    })
+
+    it('should validate a product name', () => {
+      const control = new FormControl('', [productNameValidator()])
+
+      control.setValue('new')
+      expect(control.errors).toEqual({ invalidProductName: true })
+
+      control.setValue('apps')
+      expect(control.errors).toEqual({ invalidProductName: true })
+
+      control.setValue('validName')
+      expect(control.errors).toBeNull()
+    })
   })
 
-  it('should validate a product name', () => {
-    const control = new FormControl('', [productNameValidator()])
+  describe('on init', () => {
+    it('should disable name form control in edit mode ', () => {
+      imgServiceSpy.getImage.and.returnValue(of({}))
+      component.formGroup = mockForm
+      component.formGroup.controls['name'].setValue('name')
+      component.changeMode = 'EDIT'
 
-    control.setValue('new')
-    expect(control.errors).toEqual({ invalidProductName: true })
+      component.ngOnInit()
 
-    control.setValue('apps')
-    expect(control.errors).toEqual({ invalidProductName: true })
-
-    control.setValue('validName')
-    expect(control.errors).toBeNull()
+      expect(component.formGroup.controls['name'].disabled).toBeTrue()
+    })
   })
 
-  it('should disable name form control in edit mode ', () => {
-    imgServiceSpy.getImage.and.returnValue(of({}))
-    component.formGroup = mockForm
-    component.formGroup.controls['name'].setValue('name')
-    component.changeMode = 'EDIT'
+  describe('on changes', () => {
+    it('should search criteria - on init with success', () => {
+      apiServiceSpy.getProductSearchCriteria.and.returnValue(of(criteria))
+      spyOn<any>(component, 'getCriteria')
 
-    component.ngOnInit()
+      component.ngOnChanges()
 
-    expect(component.formGroup.controls['name'].disabled).toBeTrue()
-  })
+      expect(component['getCriteria']).toHaveBeenCalled()
+    })
 
-  it('should patchValue in formGroup onChanges if product', () => {
-    const product = {
-      id: 'id',
-      name: 'name',
-      basePath: 'path'
-    }
-    component.product = product
-    spyOn(component.formGroup, 'patchValue')
+    it('should search criteria - on init failed', (done) => {
+      const errorResponse = { status: 401, statusText: 'Not authorized' }
+      apiServiceSpy.getProductSearchCriteria.and.returnValue(throwError(() => errorResponse))
+      spyOn(console, 'error')
 
-    component.ngOnChanges()
+      component.ngOnChanges()
 
-    expect(component.formGroup.patchValue).toHaveBeenCalledWith({ ...product })
-    expect(component.product.name).toEqual(product.name)
-  })
+      component.criteria$.subscribe({
+        next: (result) => {
+          expect(result.providers).toEqual([])
+          expect(result.classifications).toEqual([])
+          done()
+        },
+        error: done.fail
+      })
+      expect(console.error).toHaveBeenCalledWith('getProductSearchCriteria', errorResponse)
+    })
 
-  it('should set product.id to undefined onChanges if product and changeMode is COPY', () => {
-    const product = {
-      id: 'id',
-      name: 'name',
-      basePath: 'path'
-    }
-    component.product = product
-    spyOn(component.formGroup, 'patchValue')
-    component.changeMode = 'COPY'
+    it('should patchValue in formGroup onChanges if product', () => {
+      const product = {
+        id: 'id',
+        name: 'name',
+        basePath: 'path'
+      }
+      component.product = product
+      spyOn(component.formGroup, 'patchValue')
 
-    component.ngOnChanges()
+      component.ngOnChanges()
 
-    expect(component.productId).toBeUndefined()
-  })
+      expect(component.formGroup.patchValue).toHaveBeenCalledWith({ ...product })
+      expect(component.product.name).toEqual(product.name)
+    })
 
-  it('should reset formGroup onChanges if no product', () => {
-    spyOn(component.formGroup, 'reset')
+    it('should set product.id to undefined onChanges if product and changeMode is COPY', () => {
+      const product = {
+        id: 'id',
+        name: 'name',
+        basePath: 'path'
+      }
+      component.product = product
+      spyOn(component.formGroup, 'patchValue')
+      component.changeMode = 'COPY'
 
-    component.ngOnChanges()
+      component.ngOnChanges()
 
-    expect(component.formGroup.reset).toHaveBeenCalled()
+      expect(component.productId).toBeUndefined()
+    })
+
+    it('should reset formGroup onChanges if no product', () => {
+      spyOn(component.formGroup, 'reset')
+
+      component.ngOnChanges()
+
+      expect(component.formGroup.reset).toHaveBeenCalled()
+    })
   })
 
   it('should call createProduct onSave in new mode', () => {

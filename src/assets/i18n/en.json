@@ -344,6 +344,11 @@
     "CLASSIFICATIONS": "Classifications",
     "UNDEPLOYED": "Unavailable",
     "WORKSPACES": "Used in Workspaces",
+    "CRITERIA": {
+      "NAME": "Name or display name of the Application",
+      "PROVIDER": "Provider / Manufacturer",
+      "CLASSIFICATIONS": "Terms to classify the Application"
+    },
     "TOOLTIPS": {
       "NAME": "Unique name of the Application. Cannot be changed as it is used as a reference.",
       "VERSION": "Version of the Application",
@@ -354,7 +359,7 @@
       "IMAGE_URL": "URL for an image outside the Application Store",
       "BASE_PATH": "The basic path through which the Application can be accessed. It must be unique across all Applications",
       "ICON_NAME": "Name of the icons from the PrimeNG icon library. Used, for example, as a default icon for menu entries",
-      "CLASSIFICATIONS": "Comma-separated list of terms to classify the Application, e.g. Game, Tool etc. Can be used for filtering.",
+      "CLASSIFICATIONS": "Comma-separated list of terms to classify the Application, e.g. Game, Tool etc. Can be used for filtering",
       "UNDEPLOYED": "If set, then this Application can no longer be used. Further use of its apps leads to error messages.",
       "UNDEPLOYED_SEARCH": "This Application can no longer be used. Further use of its apps leads to error messages.",
       "WORKSPACES": "Workspaces using the Application"

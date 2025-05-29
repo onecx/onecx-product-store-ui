@@ -16,7 +16,7 @@
           class="w-11rem sm:w-15rem text-responsive"
           formControlName="name"
           [attr.aria-label]="'PRODUCT.NAME' | translate"
-          [pTooltip]="('PRODUCT.TOOLTIPS.NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
+          [pTooltip]="('PRODUCT.CRITERIA.NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
@@ -31,9 +31,10 @@
             [options]="criteria.providers"
             appendTo="body"
             display="chip"
+            [maxSelectedLabels]="2"
             [emptyMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
-            ariaLabelledBy="ps_product_search_criteria_providers"
-            [pTooltip]="'PRODUCT.TOOLTIPS.PROVIDER' | translate"
+            [ariaLabel]="'PRODUCT.PROVIDER' | translate"
+            [pTooltip]="'PRODUCT.CRITERIA.PROVIDER' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           />
@@ -47,8 +48,9 @@
             [options]="criteria.classifications"
             appendTo="body"
             display="chip"
-            ariaLabelledBy="ps_product_search_criteria_classifications"
-            [pTooltip]="'PRODUCT.TOOLTIPS.CLASSIFICATIONS' | translate"
+            [maxSelectedLabels]="2"
+            [ariaLabel]="'PRODUCT.CLASSIFICATIONS' | translate"
+            [pTooltip]="'PRODUCT.CRITERIA.CLASSIFICATIONS' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           />
@@ -144,7 +146,7 @@
                   class="text-xs sm:text-sm text-responsive"
                   [id]="'ps_product_search_data_list_row_' + i + '_classifications'"
                 >
-                  {{ product.classifications }}
+                  {{ product.classes }}
                 </div>
                 <div class="flex flex-row column-gap-2 align-items-center">
                   <span *ngIf="product.provider" class="pi pi-users"></span>
@@ -214,7 +216,7 @@
                 <div
                   [id]="'ps_product_search_data_grid_row_' + i + '_classification'"
                   class="text-xs sm:text-sm md:text-base text-responsive"
-                  [attr.aria-label]="product.classes"
+                  [attr.aria-label]="'PRODUCT.CLASSIFICATIONS' | translate"
                   [pTooltip]="'PRODUCT.CLASSIFICATIONS' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"

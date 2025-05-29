@@ -32,7 +32,7 @@ const mfeForm = new FormGroup<MfeForm>({
   remoteName: new FormControl(''),
   tagName: new FormControl(''),
   exposedModule: new FormControl(''),
-  classifications: new FormControl(''),
+  classifications: new FormControl([]),
   contact: new FormControl(''),
   iconName: new FormControl(''),
   note: new FormControl('')
@@ -299,7 +299,7 @@ describe('AppDetailComponent', () => {
         remoteName: new FormControl(''),
         tagName: new FormControl(''),
         exposedModule: new FormControl(''),
-        classifications: new FormControl(''),
+        classifications: new FormControl([]),
         contact: new FormControl(''),
         iconName: new FormControl(''),
         note: new FormControl('')

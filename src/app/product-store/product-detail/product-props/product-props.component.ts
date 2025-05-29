@@ -1,18 +1,20 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core'
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms'
 import { SelectItem } from 'primeng/api'
+import { of, Observable, catchError } from 'rxjs'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
 import {
   CreateProductRequest,
   ImagesInternalAPIService,
   Product,
+  ProductCriteria,
   ProductsAPIService,
   RefType,
   UpdateProductRequest
 } from 'src/app/shared/generated'
 import { IconService } from 'src/app/shared/iconservice'
-import { bffImageUrl, dropDownSortItemsByLabel, convertToUniqueStringArray } from 'src/app/shared/utils'
+import { bffImageUrl, dropDownSortItemsByLabel, convertToUniqueStringArray, sortByLocale } from 'src/app/shared/utils'
 import { ChangeMode } from '../product-detail.component'
 
 export interface ProductDetailForm {
@@ -50,6 +52,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
   @Output() changeModeChange = new EventEmitter<ChangeMode>()
   @Output() currentLogoUrl = new EventEmitter<string>()
 
+  public criteria$!: Observable<ProductCriteria>
   public formGroup: FormGroup<ProductDetailForm>
   public productId: string | undefined
   public productName: string | null | undefined
@@ -57,7 +60,6 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
   public onImageLoadError = false
   public iconItems: SelectItem[] = []
   public externUrlPattern = 'http(s)://path-to-image'
-  public convertToUniqueStringArray = convertToUniqueStringArray
 
   constructor(
     private readonly icon: IconService,
@@ -94,6 +96,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
   }
 
   ngOnChanges(): void {
+    this.getCriteria()
     if (this.product) {
       this.formGroup.patchValue({ ...this.product })
       this.productId = this.changeMode !== 'COPY' ? this.product.id : undefined
@@ -135,13 +138,13 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
           basePath: this.formGroup.value['basePath'],
           iconName: this.formGroup.value['iconName'],
           imageUrl: this.formGroup.controls['imageUrl'].value,
-          classifications: this.convertToUniqueStringArray(this.formGroup.value['classifications']?.toString())
+          classifications: convertToUniqueStringArray(this.formGroup.value['classifications'])
         } as CreateProductRequest
       })
       .subscribe({
         next: (data) => {
           this.msgService.success({ summaryKey: 'ACTIONS.CREATE.PRODUCT.OK' })
-          this.productCreated.emit(data)
+          this.productCreated.emit({ ...data, classifications: data.classifications?.sort(sortByLocale) })
         },
         error: (err) => this.displaySaveError(err)
       })
@@ -161,13 +164,13 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
           basePath: this.formGroup.value['basePath'],
           displayName: this.formGroup.value['displayName'],
           iconName: this.formGroup.value['iconName'],
-          classifications: this.convertToUniqueStringArray(this.formGroup.value['classifications']?.toString())
+          classifications: convertToUniqueStringArray(this.formGroup.value['classifications'])
         } as UpdateProductRequest
       })
       .subscribe({
         next: (data) => {
           this.msgService.success({ summaryKey: 'ACTIONS.EDIT.PRODUCT.OK' })
-          this.productChanged.emit(data)
+          this.productChanged.emit({ ...data, classifications: data.classifications?.sort(sortByLocale) })
         },
         error: (err) => this.displaySaveError(err)
       })
@@ -248,6 +251,9 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
     }
   }
 
+  /**
+   * IMAGE
+   */
   private saveImage(name: string, files: FileList) {
     const blob = new Blob([files[0]], { type: files[0].type })
     this.prepareImageUrl() // reset - important to trigger the change in UI
@@ -283,5 +289,17 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
       this.fetchingLogoUrl = bffImageUrl(this.imageApi.configuration.basePath, product?.name, RefType.Logo)
     }
     this.currentLogoUrl.emit(this.fetchingLogoUrl)
+  }
+
+  /**
+   * CRITERIA
+   */
+  private getCriteria(): void {
+    this.criteria$ = this.productApi.getProductSearchCriteria().pipe(
+      catchError((err) => {
+        console.error('getProductSearchCriteria', err)
+        return of({ providers: [], classifications: [] })
+      })
+    )
   }
 }

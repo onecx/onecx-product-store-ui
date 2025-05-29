@@ -2,3 +2,9 @@
 
 @include readable-disabled-form-controls;
 @include prepare-inputgroup;
+
+:host ::ng-deep {
+  .correct-min-size .p-dropdown {
+    min-width: 20rem;
+  }
+}
