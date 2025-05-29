@@ -344,6 +344,11 @@
     "CLASSIFICATIONS": "Klassifizierungen",
     "UNDEPLOYED": "Unverfügbar",
     "WORKSPACES": "Verwendet in Workspaces",
+    "CRITERIA": {
+      "NAME": "Name oder Anzeigename der Applikation.",
+      "PROVIDER": "Anbieter / Hersteller",
+      "CLASSIFICATIONS": "Begriffe zur Klassifizierung der Applikation"
+    },
     "TOOLTIPS": {
       "NAME": "Eindeutiger Name der Applikation. Kann nicht geändert werden da als Referenz benutzt.",
       "VERSION": "Version der Applikation",

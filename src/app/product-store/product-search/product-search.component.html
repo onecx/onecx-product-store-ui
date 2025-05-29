@@ -16,7 +16,7 @@
           class="w-11rem sm:w-15rem text-responsive"
           formControlName="name"
           [attr.aria-label]="'PRODUCT.NAME' | translate"
-          [pTooltip]="('PRODUCT.TOOLTIPS.NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
+          [pTooltip]="('PRODUCT.CRITERIA.NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
@@ -34,7 +34,7 @@
             [maxSelectedLabels]="2"
             [emptyMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
             [ariaLabel]="'PRODUCT.PROVIDER' | translate"
-            [pTooltip]="'PRODUCT.TOOLTIPS.PROVIDER' | translate"
+            [pTooltip]="'PRODUCT.CRITERIA.PROVIDER' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           />
@@ -50,7 +50,7 @@
             display="chip"
             [maxSelectedLabels]="2"
             [ariaLabel]="'PRODUCT.CLASSIFICATIONS' | translate"
-            [pTooltip]="'PRODUCT.TOOLTIPS.CLASSIFICATIONS' | translate"
+            [pTooltip]="'PRODUCT.CRITERIA.CLASSIFICATIONS' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           />
