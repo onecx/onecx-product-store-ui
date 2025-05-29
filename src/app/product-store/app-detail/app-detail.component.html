@@ -5,7 +5,7 @@
   [closable]="true"
   [resizable]="true"
   [draggable]="true"
-  [style]="{ width: '550px' }"
+  [style]="{ width: '560px' }"
   [breakpoints]="{
     '992px': '80vw',
     '750px': '90vw',
@@ -170,21 +170,6 @@
             <input
               pInputText
               type="text"
-              id="ps_app_detail_form_mfe_field_description"
-              class="w-full pt-3 pb-2 text-responsive"
-              formControlName="description"
-              [attr.aria-label]="'APP.DESCRIPTION' | translate"
-              [pTooltip]="'APP.TOOLTIPS.DESCRIPTION' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label for="ps_app_detail_form_mfe_field_description"> {{ 'APP.DESCRIPTION' | translate }} </label>
-          </span>
-          <!-- row 5 -->
-          <span class="p-float-label" controlErrorAnchor>
-            <input
-              pInputText
-              type="text"
               id="ps_app_detail_form_mfe_field_contact"
               class="w-full pt-3 pb-2 text-responsive"
               formControlName="contact"
@@ -194,6 +179,21 @@
               tooltipEvent="hover"
             />
             <label for="ps_app_detail_form_mfe_field_contact"> {{ 'APP.CONTACT' | translate }} </label>
+          </span>
+          <!-- row 5 -->
+          <span class="p-float-label" controlErrorAnchor>
+            <input
+              pInputText
+              type="text"
+              id="ps_app_detail_form_mfe_field_description"
+              class="w-full pt-3 pb-2 text-responsive"
+              formControlName="description"
+              [attr.aria-label]="'APP.DESCRIPTION' | translate"
+              [pTooltip]="'APP.TOOLTIPS.DESCRIPTION' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <label for="ps_app_detail_form_mfe_field_description"> {{ 'APP.DESCRIPTION' | translate }} </label>
           </span>
         </div>
       </form>

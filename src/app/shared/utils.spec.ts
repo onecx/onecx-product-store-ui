@@ -122,7 +122,7 @@ describe('utils', () => {
 
   describe('convertToUniqueStringArray', () => {
     it('should convert a comma-separated string to array with unique items', () => {
-      const s = 'c, b, a'
+      const s = ['c', 'b', 'a']
 
       const sortedArray = convertToUniqueStringArray(s) ?? []
 

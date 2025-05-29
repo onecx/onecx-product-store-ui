@@ -38,7 +38,7 @@ export interface MfeForm {
   remoteName: FormControl<string | null>
   remoteEntry: FormControl<string | null>
   tagName: FormControl<string | null>
-  classifications: FormControl<string | null>
+  classifications: FormControl<string[] | null>
   contact?: FormControl<string | null>
   iconName?: FormControl<string | null>
   note?: FormControl<string | null>
@@ -85,7 +85,6 @@ export class AppDetailComponent implements OnInit, OnChanges {
   ]
   public iconItems: SelectItem[] = []
   public endpoints: UIEndpoint[] = []
-  public convertToUniqueStringArray = convertToUniqueStringArray
   public MicrofrontendType = MicrofrontendType
 
   constructor(
@@ -291,7 +290,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
       }
       this.mfe = { ...this.formGroupMfe.value, id: this.mfe?.id }
       if (this.mfe) {
-        this.mfe.classifications = this.convertToUniqueStringArray(this.formGroupMfe.controls['classifications'].value)
+        this.mfe.classifications = convertToUniqueStringArray(this.formGroupMfe.controls['classifications'].value)
         this.mfe.endpoints = this.endpoints.filter((endpoint) => !(endpoint.name === '' && endpoint.path === ''))
       }
       this.changeMode === 'CREATE' ? this.createMfe() : this.updateMfe()
