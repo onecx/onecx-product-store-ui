@@ -118,7 +118,7 @@
       }
     },
     "SEARCH": {
-      "NO_DATA": "Keine Ergebnisse",
+      "NO_DATA": "Keine Daten",
       "NOT_FOUND": "Keine Daten gefunden",
       "WILDCARD_SUPPORT": " (Wildcards: ?, *)",
       "APP": {

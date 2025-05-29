@@ -83,17 +83,35 @@
     <!-- row 3 -->
     <div class="flex flex-row flex-wrap gap-4">
       <span class="flex-grow-1 p-float-label" *ngIf="criteria$ | async as criteria">
-        <p-dropdown
+        <p-autoComplete
+          id="ps_product_detail_form_field_provider"
+          styleClass="w-full"
+          inputStyleClass="pt-3 pb-2 text-responsive"
+          appendTo="body"
+          [dropdown]="true"
+          [showClear]="true"
+          formControlName="provider"
+          [suggestions]="providerFiltered"
+          (completeMethod)="filterProviders($event, criteria.providers)"
+          [ariaLabel]="'PRODUCT.PROVIDER' | translate"
+          [pTooltip]="'PRODUCT.TOOLTIPS.PROVIDER' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        ></p-autoComplete>
+
+        <!--p-dropdown
           id="ps_product_detail_form_field_provider"
           styleClass="w-full text-responsive"
           formControlName="provider"
           [options]="criteria.providers"
           [appendTo]="'body'"
+          [showClear]="true"
+          [editable]="true"
           [attr.aria-label]="'PRODUCT.PROVIDER' | translate"
           [pTooltip]="'PRODUCT.TOOLTIPS.PROVIDER' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
-        />
+        /-->
         <label for="ps_product_detail_form_field_provider">{{ 'PRODUCT.PROVIDER' | translate }}</label>
       </span>
       <span class="flex-grow-1 p-float-label">
@@ -199,9 +217,7 @@
     </div>
 
     <!-- row 5 -->
-
-    <!-- row 6 -->
-    <span class="flex-grow-1 p-float-label">
+    <span class="mt-2 sm:mt-0 flex-grow-1 p-float-label" [ngClass]="changeMode !== 'VIEW' ? 'sm:mt-1' : 'sm:mt-0'">
       <textarea
         pInputTextarea
         class="w-full"

@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core'
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms'
 import { SelectItem } from 'primeng/api'
-import { of, Observable, catchError } from 'rxjs'
+import { map, of, Observable, catchError } from 'rxjs'
 
 import { PortalMessageService } from '@onecx/portal-integration-angular'
 import {
@@ -60,6 +60,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
   public onImageLoadError = false
   public iconItems: SelectItem[] = []
   public externUrlPattern = 'http(s)://path-to-image'
+  public providerFiltered: string[] = []
 
   constructor(
     private readonly icon: IconService,
@@ -296,10 +297,16 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
    */
   private getCriteria(): void {
     this.criteria$ = this.productApi.getProductSearchCriteria().pipe(
+      map((data: ProductCriteria) => ({ providers: data.providers?.sort(sortByLocale), classifications: [] })),
       catchError((err) => {
         console.error('getProductSearchCriteria', err)
         return of({ providers: [], classifications: [] })
       })
     )
+  }
+  public filterProviders(event: { query: string }, providers?: string[]) {
+    const query = event.query.toLowerCase()
+    this.providerFiltered = providers?.filter((p) => p.toLowerCase().includes(query)) ?? []
+    this.providerFiltered.sort(sortByLocale)
   }
 }
