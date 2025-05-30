@@ -319,7 +319,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
     const query = event.query.toLowerCase()
     const filtered = classifications.filter((p) => p.toLowerCase().includes(query))
     // in case not found then add this to the list (to be a new item)
-    this.classesFiltered = filtered.length > 0 ? filtered : [query]
+    this.classesFiltered = filtered.length > 0 ? filtered : [event.query]
     this.classesFiltered.sort(sortByLocale)
   }
 }
