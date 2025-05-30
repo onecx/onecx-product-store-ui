@@ -2,10 +2,30 @@
 
 @include danger-action;
 @include readable-disabled-form-controls;
+@include displaying-text-responsive;
+@include prepare-inputgroup;
+@include correct-autocomplete;
 @include dropdown-zebra-rows;
 @include compact-dropdown-list-items;
 @include dialog-modal-dialog-content;
 @include dialog-footer-buttons;
 @include dialog-non-full-size-modal;
-@include displaying-text-responsive;
 @include tabview-fix-color-selected-tab;
+
+:host ::ng-deep {
+  .p-autocomplete.p-autocomplete-multiple {
+    min-width: 11rem;
+    .p-autocomplete-multiple-container {
+      /* correct horizontal size of component */
+      width: 100%;
+    }
+  }
+  .p-autocomplete.hide-item-decoration .p-autocomplete-multiple-container {
+    /* correct vertical size of component */
+    padding: 0.6rem 0.75rem 0.4rem 0.75rem;
+
+    .p-autocomplete-token-icon {
+      display: none;
+    }
+  }
+}

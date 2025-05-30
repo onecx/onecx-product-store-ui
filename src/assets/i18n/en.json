@@ -203,7 +203,7 @@
     "CONSTRAINT_NAME": "Please add a Workspace name before uploading a file.",
     "CONSTRAINT_SIZE": "The image file size exceeds the maximum length of 100,000 bytes.",
     "TOOLTIPS": {
-      "REMOVE": "Remove Image",
+      "REMOVE": "Remove URL or Image (if exist in this order)",
       "URL": "As an alternative to uploading, you can enter a URL to an image here.",
       "UPLOAD": "Select and upload image"
     }

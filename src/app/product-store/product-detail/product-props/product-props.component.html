@@ -81,33 +81,42 @@
     </div>
 
     <!-- row 3 -->
-    <div class="flex flex-row flex-wrap gap-4">
-      <span class="flex-grow-1 p-float-label" *ngIf="criteria$ | async as criteria">
-        <p-dropdown
+    <div class="flex flex-row flex-wrap gap-4 align-items-center" *ngIf="criteria$ | async as criteria">
+      <span class="flex-grow-1 p-float-label">
+        <p-autoComplete
           id="ps_product_detail_form_field_provider"
-          styleClass="w-full text-responsive"
+          styleClass="w-full"
+          inputStyleClass="pt-3 pb-2 text-responsive"
+          appendTo="body"
+          [dropdown]="true"
+          [showClear]="true"
           formControlName="provider"
-          [options]="criteria.providers"
-          [appendTo]="'body'"
-          [attr.aria-label]="'PRODUCT.PROVIDER' | translate"
+          [suggestions]="providerFiltered"
+          (completeMethod)="filterProviders($event, criteria.providers)"
+          [ariaLabel]="'PRODUCT.PROVIDER' | translate"
           [pTooltip]="'PRODUCT.TOOLTIPS.PROVIDER' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
-        />
+        ></p-autoComplete>
         <label for="ps_product_detail_form_field_provider">{{ 'PRODUCT.PROVIDER' | translate }}</label>
       </span>
-      <span class="flex-grow-1 p-float-label">
-        <input
-          pInputText
-          type="text"
-          class="w-full text-responsive"
+      <span class="flex-grow-1 min-w-full sm:min-w-0 p-float-label">
+        <p-autoComplete
           id="ps_product_detail_form_field_classifications"
+          [styleClass]="'w-full' + (changeMode === 'VIEW' ? ' hide-item-decoration' : '')"
+          [inputStyleClass]="changeMode === 'VIEW' ? 'hidden' : ''"
+          [panelStyleClass]="'w-full'"
+          appendTo="body"
+          [dropdown]="true"
+          [multiple]="true"
           formControlName="classifications"
-          [attr.aria-label]="'PRODUCT.CLASSIFICATIONS' | translate"
+          [suggestions]="classesFiltered"
+          (completeMethod)="filterClasses($event, criteria.classifications)"
+          [ariaLabel]="'PRODUCT.CLASSIFICATIONS' | translate"
           [pTooltip]="'PRODUCT.TOOLTIPS.CLASSIFICATIONS' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
-        />
+        ></p-autoComplete>
         <label for="ps_product_detail_form_field_classifications">{{ 'PRODUCT.CLASSIFICATIONS' | translate }}</label>
       </span>
       <span class="flex-grow-1 p-float-label" controlErrorAnchor>
@@ -143,9 +152,9 @@
     <div class="flex flex-row flex-wrap sm:flex-nowrap align-items-center row-gap-2 column-gap-4">
       <input hidden type="file" accept="image/*" #selectedFileInputLogo (change)="onFileUpload($event)" />
       <img
-        *ngIf="product && fetchingLogoUrl && !onImageLoadError"
+        *ngIf="product && fetchingImageUrl && !onImageLoadError"
         [alt]="'logo'"
-        [ocxSrc]="fetchingLogoUrl"
+        [ocxSrc]="fetchingImageUrl"
         class="max-w-3rem max-h-3rem border-round-sm image-object"
         (error)="onImageLoadError = true"
       />
@@ -199,9 +208,7 @@
     </div>
 
     <!-- row 5 -->
-
-    <!-- row 6 -->
-    <span class="flex-grow-1 p-float-label">
+    <span class="mt-2 sm:mt-0 flex-grow-1 p-float-label" [ngClass]="changeMode !== 'VIEW' ? 'sm:mt-1' : 'sm:mt-0'">
       <textarea
         pInputTextarea
         class="w-full"

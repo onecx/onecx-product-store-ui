@@ -228,6 +228,8 @@ describe('OneCXProductDataComponent', () => {
       component.dataType = 'product'
 
       component.ngOnChanges()
+
+      expect().nothing()
     })
 
     it('should get product - successful with data', (done) => {
@@ -317,6 +319,8 @@ describe('OneCXProductDataComponent', () => {
         component.dataType = 'logo'
 
         component.onImageLoadError(component.imageUrl)
+
+        expect().nothing()
       })
 
       it('should use image - failed - use default', () => {
@@ -327,6 +331,8 @@ describe('OneCXProductDataComponent', () => {
         component.dataType = 'logo'
 
         component.onImageLoadError('base_url/bff/images/product1/logo')
+
+        expect().nothing()
       })
     })
 

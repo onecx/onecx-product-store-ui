@@ -43,20 +43,18 @@ describe('ProductPropertyComponent', () => {
     providers: ['team'],
     classifications: ['test']
   }
-  const apiServiceSpy = {
+  const productApiSpy = {
     createProduct: jasmine.createSpy('createProduct').and.returnValue(of({})),
     updateProduct: jasmine.createSpy('updateProduct').and.returnValue(of({})),
     getProductSearchCriteria: jasmine.createSpy('getProductSearchCriteria').and.returnValue(of({}))
   }
-  const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
-  const imgServiceSpy = {
+  const imageApiSpy = {
     getImage: jasmine.createSpy('getImage').and.returnValue(of({})),
     deleteImage: jasmine.createSpy('deleteImage').and.returnValue(of({})),
     uploadImage: jasmine.createSpy('uploadImage').and.returnValue(of({})),
-    configuration: {
-      basePath: 'basepath'
-    }
+    configuration: { basePath: 'basepath' }
   }
+  const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error'])
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -68,9 +66,9 @@ describe('ProductPropertyComponent', () => {
         }).withDefaultLanguage('en')
       ],
       providers: [
-        { provide: ProductsAPIService, useValue: apiServiceSpy },
+        { provide: ProductsAPIService, useValue: productApiSpy },
         { provide: PortalMessageService, useValue: msgServiceSpy },
-        { provide: ImagesInternalAPIService, useValue: imgServiceSpy }
+        { provide: ImagesInternalAPIService, useValue: imageApiSpy }
       ],
       schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents()
@@ -85,12 +83,11 @@ describe('ProductPropertyComponent', () => {
   afterEach(() => {
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
-    msgServiceSpy.info.calls.reset()
-    apiServiceSpy.createProduct.calls.reset()
-    apiServiceSpy.updateProduct.calls.reset()
-    imgServiceSpy.getImage.calls.reset()
-    imgServiceSpy.deleteImage.calls.reset()
-    imgServiceSpy.uploadImage.calls.reset()
+    productApiSpy.createProduct.calls.reset()
+    productApiSpy.updateProduct.calls.reset()
+    imageApiSpy.getImage.calls.reset()
+    imageApiSpy.deleteImage.calls.reset()
+    imageApiSpy.uploadImage.calls.reset()
   })
 
   describe('initialize', () => {
@@ -114,7 +111,7 @@ describe('ProductPropertyComponent', () => {
 
   describe('on init', () => {
     it('should disable name form control in edit mode ', () => {
-      imgServiceSpy.getImage.and.returnValue(of({}))
+      imageApiSpy.getImage.and.returnValue(of({}))
       component.formGroup = mockForm
       component.formGroup.controls['name'].setValue('name')
       component.changeMode = 'EDIT'
@@ -126,46 +123,75 @@ describe('ProductPropertyComponent', () => {
   })
 
   describe('on changes', () => {
-    it('should search criteria - on init with success', () => {
-      apiServiceSpy.getProductSearchCriteria.and.returnValue(of(criteria))
-      spyOn<any>(component, 'getCriteria')
+    describe('search criteria', () => {
+      it('should init successfully', (done) => {
+        productApiSpy.getProductSearchCriteria.and.returnValue(of(criteria))
 
-      component.ngOnChanges()
+        component.ngOnChanges()
 
-      expect(component['getCriteria']).toHaveBeenCalled()
-    })
-
-    it('should search criteria - on init failed', (done) => {
-      const errorResponse = { status: 401, statusText: 'Not authorized' }
-      apiServiceSpy.getProductSearchCriteria.and.returnValue(throwError(() => errorResponse))
-      spyOn(console, 'error')
-
-      component.ngOnChanges()
-
-      component.criteria$.subscribe({
-        next: (result) => {
-          expect(result.providers).toEqual([])
-          expect(result.classifications).toEqual([])
-          done()
-        },
-        error: done.fail
+        component.criteria$.subscribe({
+          next: (result) => {
+            expect(result.providers).toEqual(criteria.providers)
+            expect(result.classifications).toEqual(criteria.classifications)
+            done()
+          },
+          error: done.fail
+        })
       })
-      expect(console.error).toHaveBeenCalledWith('getProductSearchCriteria', errorResponse)
+
+      it('should init failed', (done) => {
+        const errorResponse = { status: 401, statusText: 'Not authorized' }
+        productApiSpy.getProductSearchCriteria.and.returnValue(throwError(() => errorResponse))
+        spyOn(console, 'error')
+
+        component.ngOnChanges()
+
+        component.criteria$.subscribe({
+          next: (result) => {
+            expect(result.providers).toEqual([])
+            expect(result.classifications).toEqual([])
+            done()
+          },
+          error: done.fail
+        })
+        expect(console.error).toHaveBeenCalledWith('getProductSearchCriteria', errorResponse)
+      })
     })
 
-    it('should patchValue in formGroup onChanges if product', () => {
-      const product = {
-        id: 'id',
-        name: 'name',
-        basePath: 'path'
-      }
-      component.product = product
-      spyOn(component.formGroup, 'patchValue')
+    describe('init image URL', () => {
+      it('should patchValue in formGroup with product - no image URL', () => {
+        const p = { ...product, imageUrl: undefined }
+        component.product = p
+        component.changeMode = 'VIEW'
+        spyOn(component.formGroup, 'patchValue')
 
-      component.ngOnChanges()
+        component.ngOnChanges()
 
-      expect(component.formGroup.patchValue).toHaveBeenCalledWith({ ...product })
-      expect(component.product.name).toEqual(product.name)
+        expect(component.formGroup.patchValue).toHaveBeenCalledWith(p)
+        expect(component.formGroup.disabled).toBeTrue()
+        expect(component.product.name).toEqual(p.name)
+        expect(component.fetchingImageUrl).toEqual('basepath/images/name/logo')
+      })
+
+      it('should patchValue in formGroup with product - empty image URL', () => {
+        const p = { ...product, imageUrl: '' }
+        component.product = p
+        component.changeMode = 'VIEW'
+
+        component.ngOnChanges()
+
+        expect(component.fetchingImageUrl).toEqual('basepath/images/name/logo')
+      })
+
+      it('should patchValue in formGroup with product - with image URL', () => {
+        const p = { ...product, imageUrl: 'https://host/assets/images/logo.svg' }
+        component.product = p
+        component.changeMode = 'VIEW'
+
+        component.ngOnChanges()
+
+        expect(component.fetchingImageUrl).toEqual(p.imageUrl)
+      })
     })
 
     it('should set product.id to undefined onChanges if product and changeMode is COPY', () => {
@@ -193,7 +219,7 @@ describe('ProductPropertyComponent', () => {
   })
 
   it('should call createProduct onSave in new mode', () => {
-    apiServiceSpy.createProduct.and.returnValue(of({}))
+    productApiSpy.createProduct.and.returnValue(of({}))
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
@@ -211,12 +237,12 @@ describe('ProductPropertyComponent', () => {
 
     component.onSave()
 
-    expect(apiServiceSpy.createProduct).toHaveBeenCalled()
+    expect(productApiSpy.createProduct).toHaveBeenCalled()
     expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.PRODUCT.OK' })
   })
 
   it('should call updateProduct onSave in edit mode', () => {
-    apiServiceSpy.updateProduct.and.returnValue(of({}))
+    productApiSpy.updateProduct.and.returnValue(of({}))
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
@@ -235,12 +261,12 @@ describe('ProductPropertyComponent', () => {
 
     component.onSave()
 
-    expect(apiServiceSpy.updateProduct).toHaveBeenCalled()
+    expect(productApiSpy.updateProduct).toHaveBeenCalled()
     expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.EDIT.PRODUCT.OK' })
   })
 
   it('should display error if updateProduct fails', () => {
-    apiServiceSpy.updateProduct.and.returnValue(throwError(() => new Error()))
+    productApiSpy.updateProduct.and.returnValue(throwError(() => new Error()))
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
@@ -282,7 +308,7 @@ describe('ProductPropertyComponent', () => {
         ]
       }
     }
-    apiServiceSpy.updateProduct.and.returnValue(throwError(() => error))
+    productApiSpy.updateProduct.and.returnValue(throwError(() => error))
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
@@ -325,7 +351,7 @@ describe('ProductPropertyComponent', () => {
         ]
       }
     }
-    apiServiceSpy.updateProduct.and.returnValue(throwError(() => error))
+    productApiSpy.updateProduct.and.returnValue(throwError(() => error))
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
@@ -366,7 +392,7 @@ describe('ProductPropertyComponent', () => {
   })
 
   it('should display error if createProduct fails', () => {
-    apiServiceSpy.createProduct.and.returnValue(throwError(() => new Error()))
+    productApiSpy.createProduct.and.returnValue(throwError(() => new Error()))
     const formGroup = new FormGroup<ProductDetailForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
@@ -470,7 +496,7 @@ describe('ProductPropertyComponent', () => {
   })
 
   it('should display error if api call to upload a file fails', () => {
-    imgServiceSpy.uploadImage.and.returnValue(of({}))
+    imageApiSpy.uploadImage.and.returnValue(of({}))
     const blob = new Blob(['a'.repeat(10)], { type: 'image/png' })
     const file = new File([blob], 'test.png', { type: 'image/png' })
     const event = { target: { files: [file] } }
@@ -478,11 +504,11 @@ describe('ProductPropertyComponent', () => {
 
     component.onFileUpload(event as any)
 
-    expect(msgServiceSpy.info).toHaveBeenCalledWith({ summaryKey: 'IMAGE.UPLOAD_SUCCESS' })
+    expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'IMAGE.UPLOAD_SUCCESS' })
   })
 
   it('should display error if file choice fails', () => {
-    imgServiceSpy.getImage.and.returnValue(throwError(() => new Error()))
+    imageApiSpy.getImage.and.returnValue(throwError(() => new Error()))
     const event = { target: { files: undefined } }
     component.formGroup.controls['name'].setValue('name')
 
@@ -501,22 +527,23 @@ describe('ProductPropertyComponent', () => {
 
       component.onRemoveLogo()
 
-      expect(component.fetchingLogoUrl).toEqual('basepath/images/name/logo')
+      expect(component.fetchingImageUrl).toEqual('basepath/images/name/logo')
       expect(component.formGroup.get('imageUrl')?.value).toBeNull()
     })
 
     it('should remove the uploaded logo - successful', () => {
-      imgServiceSpy.deleteImage.and.returnValue(of({}))
+      imageApiSpy.deleteImage.and.returnValue(of({}))
       component.formGroup.controls['name'].setValue('name')
 
       component.onRemoveLogo()
 
-      expect(component.fetchingLogoUrl).toBeUndefined()
+      expect(component.fetchingImageUrl).toBeUndefined()
+      expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'IMAGE.REMOVE_SUCCESS' })
     })
 
     it('should remove the log - failed', () => {
       const errorResponse = { status: 400, statusText: 'Error on image deletion' }
-      imgServiceSpy.deleteImage.and.returnValue(throwError(() => errorResponse))
+      imageApiSpy.deleteImage.and.returnValue(throwError(() => errorResponse))
       component.formGroup.controls['name'].setValue('name')
       spyOn(console, 'error')
 
@@ -526,39 +553,68 @@ describe('ProductPropertyComponent', () => {
     })
   })
 
-  it('should test getLogoUrl()', () => {
-    let result = component.getLogoUrl(undefined)
-    expect(result).toBeUndefined()
+  describe('change image URL manually', () => {
+    it('should change to valid value', fakeAsync(() => {
+      const event = { target: { value: 'newLogoValue' } } as unknown as Event
 
-    result = component.getLogoUrl({ ...product, imageUrl: 'url' })
-    expect(result).toEqual('url')
+      component.onInputChange(product, event)
 
-    result = component.getLogoUrl({ ...product, imageUrl: undefined })
-    expect(result).toEqual('basepath/images/name/logo')
+      tick(500)
+      expect(component.fetchingImageUrl).toBe('newLogoValue')
+    }))
+
+    it('should change to empty value', fakeAsync(() => {
+      const event = { target: { value: '' } } as unknown as Event
+      component.formGroup.controls['name'].setValue('name')
+
+      component.onInputChange(product, event)
+
+      tick(1000)
+      expect(component.fetchingImageUrl).toBe('basepath/images/name/logo')
+    }))
   })
 
-  it('should change fetchingLogoUrl on onInputChange: valid value', fakeAsync(() => {
-    const event = {
-      target: { value: 'newLogoValue' }
-    } as unknown as Event
+  describe('filter provider', () => {
+    it('should filter on providers', () => {
+      const event = { query: 'team' }
 
-    component.onInputChange(product, event)
+      component.filterProviders(event, criteria.providers)
 
-    tick(1000)
+      expect(component.providerFiltered).toEqual(criteria.providers ?? [])
+    })
 
-    expect(component.fetchingLogoUrl).toBe('newLogoValue')
-  }))
+    it('should filter on providers but no providers exist', () => {
+      const event = { query: 'team' }
 
-  it('should change fetchingLogoUrl on onInputChange: empty value', fakeAsync(() => {
-    const event = {
-      target: { value: '' }
-    } as unknown as Event
-    component.formGroup.controls['name'].setValue('name')
+      component.filterProviders(event)
 
-    component.onInputChange(product, event)
+      expect(component.providerFiltered).toEqual([])
+    })
+  })
 
-    tick(1000)
+  describe('filter classifications', () => {
+    it('should filter on classifications', () => {
+      const event = { query: 'test' }
 
-    expect(component.fetchingLogoUrl).toBe('basepath/images/name/logo')
-  }))
+      component.filterClasses(event, criteria.classifications)
+
+      expect(component.classesFiltered).toEqual(criteria.classifications ?? [])
+    })
+
+    it('should filter on classifications but no classification exist', () => {
+      const event = { query: 'team' }
+
+      component.filterClasses(event)
+
+      expect(component.classesFiltered).toEqual([])
+    })
+
+    it('should add a new class if no class found', () => {
+      const event = { query: 'new' }
+
+      component.filterClasses(event, criteria.classifications)
+
+      expect(component.classesFiltered).toEqual([event.query])
+    })
+  })
 })
