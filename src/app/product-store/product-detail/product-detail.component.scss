@@ -13,13 +13,19 @@
 @include tabview-fix-color-selected-tab;
 
 :host ::ng-deep {
-  .p-autocomplete .p-autocomplete-multiple-container {
+  .p-autocomplete.p-autocomplete-multiple {
+    min-width: 11rem;
+    .p-autocomplete-multiple-container {
+      /* correct horizontal size of component */
+      width: 100%;
+    }
+  }
+  .p-autocomplete.hide-item-decoration .p-autocomplete-multiple-container {
     /* correct vertical size of component */
     padding: 0.6rem 0.75rem 0.4rem 0.75rem;
-    /* correct horizontal size of component */
-    width: 100%;
-  }
-  .p-autocomplete.hide-item-decoration .p-autocomplete-multiple-container .p-autocomplete-token-icon {
-    display: none;
+
+    .p-autocomplete-token-icon {
+      display: none;
+    }
   }
 }
