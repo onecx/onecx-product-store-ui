@@ -241,7 +241,6 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
       body: blob
     }
     this.imageApi.uploadImage(saveRequestParameter).subscribe(() => {
-      this.onImageLoadError = false
       this.prepareImageUrl(name)
       this.msgService.success({ summaryKey: 'IMAGE.UPLOAD_SUCCESS' })
       this.currentLogoUrl.emit(this.fetchingImageUrl)
@@ -270,11 +269,13 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
     }
   }
   private prepareImageUrl(name?: string): void {
+    this.onImageLoadError = false // reset!
     this.fetchingImageUrl = name ? bffImageUrl(this.imageApi.configuration.basePath, name, RefType.Logo) : undefined
   }
 
   // changes on external log URL field: user enters text (change) or paste something
   public onInputChange(product: Product | undefined, event: Event): void {
+    this.onImageLoadError = false // reset!
     this.fetchingImageUrl = (event.target as HTMLInputElement).value
     if (!this.fetchingImageUrl || this.fetchingImageUrl === '') {
       this.prepareImageUrl(product?.name)
@@ -298,6 +299,9 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
     )
   }
 
+  /**
+   * FILTER for Autocomplete fields: providers, classifications
+   */
   public filterProviders(event: { query: string }, providers?: string[]) {
     if (!providers) {
       this.providerFiltered = []
