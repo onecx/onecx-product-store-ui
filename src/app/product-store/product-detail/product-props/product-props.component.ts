@@ -60,6 +60,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
   public iconItems: SelectItem[] = []
   public externUrlPattern = 'http(s)://path-to-image'
   public providerFiltered: string[] = []
+  public classesFiltered: string[] = []
 
   constructor(
     private readonly icon: IconService,
@@ -305,5 +306,16 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
     const query = event.query.toLowerCase()
     this.providerFiltered = providers.filter((p) => p.toLowerCase().includes(query))
     this.providerFiltered.sort(sortByLocale)
+  }
+  public filterClasses(event: { query: string }, classifications?: string[]) {
+    if (!classifications) {
+      this.classesFiltered = []
+      return
+    }
+    const query = event.query.toLowerCase()
+    const filtered = classifications.filter((p) => p.toLowerCase().includes(query))
+    // in case not found then add this to the list (to be a new item)
+    this.classesFiltered = filtered.length > 0 ? filtered : [query]
+    this.classesFiltered.sort(sortByLocale)
   }
 }

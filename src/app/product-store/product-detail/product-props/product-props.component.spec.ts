@@ -591,4 +591,30 @@ describe('ProductPropertyComponent', () => {
       expect(component.providerFiltered).toEqual([])
     })
   })
+
+  describe('filter classifications', () => {
+    it('should filter on classifications', () => {
+      const event = { query: 'test' }
+
+      component.filterClasses(event, criteria.classifications)
+
+      expect(component.classesFiltered).toEqual(criteria.classifications ?? [])
+    })
+
+    it('should filter on classifications but no classification exist', () => {
+      const event = { query: 'team' }
+
+      component.filterClasses(event)
+
+      expect(component.classesFiltered).toEqual([])
+    })
+
+    it('should add a new class if no class found', () => {
+      const event = { query: 'new' }
+
+      component.filterClasses(event, criteria.classifications)
+
+      expect(component.classesFiltered).toEqual([event.query])
+    })
+  })
 })

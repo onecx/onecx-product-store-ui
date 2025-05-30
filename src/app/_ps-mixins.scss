@@ -199,7 +199,8 @@
       /* fix for bug in PrimeNG */
       display: none;
     }
-    .p-autocomplete-input.p-inputtext.p-autocomplete-dd-input {
+    .p-autocomplete-input.p-inputtext.p-autocomplete-dd-input,
+    .p-autocomplete .p-autocomplete-multiple-container {
       border-bottom-right-radius: unset;
       border-top-right-radius: unset;
     }

@@ -81,8 +81,8 @@
     </div>
 
     <!-- row 3 -->
-    <div class="flex flex-row flex-wrap gap-4">
-      <span class="flex-grow-1 p-float-label" *ngIf="criteria$ | async as criteria">
+    <div class="flex flex-row flex-wrap gap-4 align-items-center" *ngIf="criteria$ | async as criteria">
+      <span class="flex-grow-1 p-float-label">
         <p-autoComplete
           id="ps_product_detail_form_field_provider"
           styleClass="w-full"
@@ -101,17 +101,22 @@
         <label for="ps_product_detail_form_field_provider">{{ 'PRODUCT.PROVIDER' | translate }}</label>
       </span>
       <span class="flex-grow-1 p-float-label">
-        <input
-          pInputText
-          type="text"
-          class="w-full text-responsive"
+        <p-autoComplete
           id="ps_product_detail_form_field_classifications"
+          [styleClass]="'w-full' + (changeMode === 'VIEW' ? ' hide-item-decoration' : '')"
+          [inputStyleClass]="changeMode === 'VIEW' ? 'hidden' : ''"
+          [panelStyleClass]="'w-full'"
+          appendTo="body"
+          [dropdown]="true"
+          [multiple]="true"
           formControlName="classifications"
-          [attr.aria-label]="'PRODUCT.CLASSIFICATIONS' | translate"
+          [suggestions]="classesFiltered"
+          (completeMethod)="filterClasses($event, criteria.classifications)"
+          [ariaLabel]="'PRODUCT.CLASSIFICATIONS' | translate"
           [pTooltip]="'PRODUCT.TOOLTIPS.CLASSIFICATIONS' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
-        />
+        ></p-autoComplete>
         <label for="ps_product_detail_form_field_classifications">{{ 'PRODUCT.CLASSIFICATIONS' | translate }}</label>
       </span>
       <span class="flex-grow-1 p-float-label" controlErrorAnchor>
