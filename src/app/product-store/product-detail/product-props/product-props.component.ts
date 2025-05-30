@@ -40,8 +40,7 @@ export function productNameValidator(): ValidatorFn {
 
 @Component({
   selector: 'app-product-props',
-  templateUrl: './product-props.component.html',
-  styleUrls: ['./product-props.component.scss']
+  templateUrl: './product-props.component.html'
 })
 export class ProductPropertyComponent implements OnChanges, OnInit {
   @Input() product: Product | undefined
@@ -56,7 +55,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
   public formGroup: FormGroup<ProductDetailForm>
   public productId: string | undefined
   public productName: string | null | undefined
-  public fetchingLogoUrl: string | undefined
+  public fetchingImageUrl: string | undefined
   public onImageLoadError = false
   public iconItems: SelectItem[] = []
   public externUrlPattern = 'http(s)://path-to-image'
@@ -90,24 +89,25 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
     this.iconItems.sort(dropDownSortItemsByLabel)
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     if (this.changeMode === 'EDIT') {
       this.formGroup.controls['name'].disable()
     }
   }
 
-  ngOnChanges(): void {
+  public ngOnChanges(): void {
     this.getCriteria()
     if (this.product) {
       this.formGroup.patchValue({ ...this.product })
       this.productId = this.changeMode !== 'COPY' ? this.product.id : undefined
       this.productName = this.product.name // business key => manage the change!
-      this.fetchingLogoUrl = this.getLogoUrl(this.product)
+      this.fetchingImageUrl = this.product.imageUrl
+      if (!this.fetchingImageUrl || this.fetchingImageUrl === '') this.prepareImageUrl(this.product.name)
     } else {
       this.formGroup.reset()
-      this.fetchingLogoUrl = undefined
+      this.fetchingImageUrl = undefined
     }
-    this.currentLogoUrl.emit(this.fetchingLogoUrl)
+    this.currentLogoUrl.emit(this.fetchingImageUrl)
     // mode
     this.changeMode !== 'VIEW' ? this.formGroup.enable() : this.formGroup.disable()
     this.changeMode = this.changeMode === 'COPY' ? 'CREATE' : this.changeMode
@@ -192,32 +192,6 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
 
   /** File Handling
    */
-  public onRemoveLogo() {
-    const productName = this.formGroup.controls['name'].value
-    if (productName) {
-      if (this.formGroup.get('imageUrl')?.value) {
-        this.formGroup.get('imageUrl')?.setValue(null)
-        this.fetchingLogoUrl = bffImageUrl(this.imageApi.configuration.basePath, productName, RefType.Logo)
-        this.prepareImageUrl(productName)
-      } else {
-        this.imageApi.deleteImage({ refId: productName, refType: RefType.Logo }).subscribe({
-          next: () => {
-            this.fetchingLogoUrl = undefined // reset - important to trigger the change in UI
-            this.currentLogoUrl.emit(this.fetchingLogoUrl)
-            this.msgService.info({ summaryKey: 'IMAGE.REMOVE_SUCCESS' })
-            if (!this.formGroup.get('imageUrl')?.value) this.onImageLoadError = true
-          },
-          error: (err) => {
-            console.error('deleteImage', err)
-          }
-        })
-      }
-    }
-  }
-  private prepareImageUrl(name?: string): void {
-    this.fetchingLogoUrl = name ? bffImageUrl(this.imageApi.configuration.basePath, name, RefType.Logo) : undefined
-  }
-
   public onFileUpload(ev: Event): void {
     const workspaceName = this.formGroup.controls['name'].value
     if (!workspaceName || workspaceName === '') {
@@ -258,7 +232,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
   private saveImage(name: string, files: FileList) {
     const blob = new Blob([files[0]], { type: files[0].type })
     this.prepareImageUrl() // reset - important to trigger the change in UI
-    this.currentLogoUrl.emit(this.fetchingLogoUrl)
+    this.currentLogoUrl.emit(this.fetchingImageUrl)
     const saveRequestParameter = {
       contentLength: files.length,
       refId: name,
@@ -268,28 +242,43 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
     this.imageApi.uploadImage(saveRequestParameter).subscribe(() => {
       this.onImageLoadError = false
       this.prepareImageUrl(name)
-      this.msgService.info({ summaryKey: 'IMAGE.UPLOAD_SUCCESS' })
-      this.currentLogoUrl.emit(this.fetchingLogoUrl)
+      this.msgService.success({ summaryKey: 'IMAGE.UPLOAD_SUCCESS' })
+      this.currentLogoUrl.emit(this.fetchingImageUrl)
     })
   }
 
-  public getLogoUrl(product: Product | undefined): string | undefined {
-    if (!product) {
-      return undefined
+  public onRemoveLogo() {
+    const productName = this.formGroup.controls['name'].value
+    if (productName) {
+      if (this.formGroup.get('imageUrl')?.value) {
+        this.formGroup.get('imageUrl')?.setValue(null)
+        this.prepareImageUrl(productName)
+      } else {
+        this.imageApi.deleteImage({ refId: productName, refType: RefType.Logo }).subscribe({
+          next: () => {
+            this.prepareImageUrl() // reset - important to trigger the change in UI
+            this.currentLogoUrl.emit(this.fetchingImageUrl)
+            this.msgService.success({ summaryKey: 'IMAGE.REMOVE_SUCCESS' })
+            if (!this.formGroup.get('imageUrl')?.value) this.onImageLoadError = true
+          },
+          error: (err) => {
+            console.error('deleteImage', err)
+          }
+        })
+      }
     }
-    if (product.imageUrl && product.imageUrl != '') {
-      return product.imageUrl
-    }
-    return bffImageUrl(this.imageApi.configuration.basePath, product.name, RefType.Logo)
+  }
+  private prepareImageUrl(name?: string): void {
+    this.fetchingImageUrl = name ? bffImageUrl(this.imageApi.configuration.basePath, name, RefType.Logo) : undefined
   }
 
   // changes on external log URL field: user enters text (change) or paste something
   public onInputChange(product: Product | undefined, event: Event): void {
-    this.fetchingLogoUrl = (event.target as HTMLInputElement).value
-    if (!this.fetchingLogoUrl || this.fetchingLogoUrl === '') {
-      this.fetchingLogoUrl = bffImageUrl(this.imageApi.configuration.basePath, product?.name, RefType.Logo)
+    this.fetchingImageUrl = (event.target as HTMLInputElement).value
+    if (!this.fetchingImageUrl || this.fetchingImageUrl === '') {
+      this.prepareImageUrl(product?.name)
     }
-    this.currentLogoUrl.emit(this.fetchingLogoUrl)
+    this.currentLogoUrl.emit(this.fetchingImageUrl)
   }
 
   /**
@@ -297,16 +286,24 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
    */
   private getCriteria(): void {
     this.criteria$ = this.productApi.getProductSearchCriteria().pipe(
-      map((data: ProductCriteria) => ({ providers: data.providers?.sort(sortByLocale), classifications: [] })),
+      map((data: ProductCriteria) => ({
+        providers: data.providers?.sort(sortByLocale),
+        classifications: data.classifications?.sort(sortByLocale)
+      })),
       catchError((err) => {
         console.error('getProductSearchCriteria', err)
         return of({ providers: [], classifications: [] })
       })
     )
   }
+
   public filterProviders(event: { query: string }, providers?: string[]) {
+    if (!providers) {
+      this.providerFiltered = []
+      return
+    }
     const query = event.query.toLowerCase()
-    this.providerFiltered = providers?.filter((p) => p.toLowerCase().includes(query)) ?? []
+    this.providerFiltered = providers.filter((p) => p.toLowerCase().includes(query))
     this.providerFiltered.sort(sortByLocale)
   }
 }

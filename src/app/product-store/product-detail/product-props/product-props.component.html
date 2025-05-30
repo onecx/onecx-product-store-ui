@@ -98,20 +98,6 @@
           tooltipPosition="top"
           tooltipEvent="hover"
         ></p-autoComplete>
-
-        <!--p-dropdown
-          id="ps_product_detail_form_field_provider"
-          styleClass="w-full text-responsive"
-          formControlName="provider"
-          [options]="criteria.providers"
-          [appendTo]="'body'"
-          [showClear]="true"
-          [editable]="true"
-          [attr.aria-label]="'PRODUCT.PROVIDER' | translate"
-          [pTooltip]="'PRODUCT.TOOLTIPS.PROVIDER' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        /-->
         <label for="ps_product_detail_form_field_provider">{{ 'PRODUCT.PROVIDER' | translate }}</label>
       </span>
       <span class="flex-grow-1 p-float-label">
@@ -161,9 +147,9 @@
     <div class="flex flex-row flex-wrap sm:flex-nowrap align-items-center row-gap-2 column-gap-4">
       <input hidden type="file" accept="image/*" #selectedFileInputLogo (change)="onFileUpload($event)" />
       <img
-        *ngIf="product && fetchingLogoUrl && !onImageLoadError"
+        *ngIf="product && fetchingImageUrl && !onImageLoadError"
         [alt]="'logo'"
-        [ocxSrc]="fetchingLogoUrl"
+        [ocxSrc]="fetchingImageUrl"
         class="max-w-3rem max-h-3rem border-round-sm image-object"
         (error)="onImageLoadError = true"
       />
