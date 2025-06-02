@@ -13,6 +13,9 @@
 @include tabview-fix-color-selected-tab;
 
 :host ::ng-deep {
+  .p-autocomplete.p-disabled {
+    opacity: 1; /* fix: too much disabled levels */
+  }
   .p-autocomplete.p-autocomplete-multiple {
     min-width: 11rem;
     .p-autocomplete-multiple-container {

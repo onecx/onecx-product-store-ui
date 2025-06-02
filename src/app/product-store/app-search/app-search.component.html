@@ -12,15 +12,15 @@
         <input
           pInputText
           type="text"
-          id="ps_app_search_criteria_app_id"
+          id="ps_app_search_criteria_app_name"
           class="w-11rem sm:w-15rem text-responsive"
-          formControlName="appId"
-          [attr.aria-label]="'APP.APP_ID' | translate"
-          [pTooltip]="'APP.TOOLTIPS.APP_ID' | translate"
+          formControlName="appName"
+          [attr.aria-label]="'APP.CRITERIA.NAME' | translate"
+          [pTooltip]="'APP.CRITERIA.NAME.TOOLTIP' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="ps_app_search_criteria_app_id">{{ 'APP.APP_ID' | translate }}</label>
+        <label for="ps_app_search_criteria_app_name">{{ 'APP.CRITERIA.NAME' | translate }}</label>
       </span>
       <span class="p-float-label">
         <input

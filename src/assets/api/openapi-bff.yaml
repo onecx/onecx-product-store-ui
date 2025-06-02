@@ -1304,9 +1304,6 @@ components:
     MfeAndMsSearchCriteria:
       type: object
       properties:
-        appId:
-          type: string
-          nullable: true
         appName:
           type: string
           nullable: true

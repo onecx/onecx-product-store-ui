@@ -21,7 +21,7 @@ import {
 import { AppAbstract, AppType, AppSearchComponent, AppSearchCriteria } from './app-search.component'
 
 const form = new FormGroup<AppSearchCriteria>({
-  appId: new FormControl<string | null>(null, Validators.minLength(2)),
+  appName: new FormControl<string | null>(null, Validators.minLength(2)),
   appType: new FormControl<AppType | null>(null),
   productName: new FormControl<string | null>(null)
 })
