@@ -284,6 +284,10 @@
     "EXPOSED_MODULE": "Exposed Module",
     "DEPRECATED": "Veraltet",
     "UNDEPLOYED": "Unverfügbar",
+    "CRITERIA": {
+      "NAME": "ID / Name",
+      "NAME.TOOLTIP": "ID oder Name der App"
+    },
     "TOOLTIPS": {
       "APP_ID": "Eindeutige ID - Basis Bezeichner der App",
       "APP_NAME": "Name der App",

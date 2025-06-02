@@ -18,7 +18,7 @@ import {
 import { limitText } from 'src/app/shared/utils'
 
 export interface AppSearchCriteria {
-  appId: FormControl<string | null>
+  appName: FormControl<string | null>
   appType: FormControl<AppFilterType | null>
   productName: FormControl<string | null>
 }
@@ -51,7 +51,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public quickFilterValue: string = 'ALL'
   public quickFilterItems: SelectItem[]
   public filterValue: string | undefined
-  public filterValueDefault = 'appId,appType,appVersion,productName,classifications'
+  public filterValueDefault = 'appId,appName,appType,appVersion,productName,classifications'
   public filterBy = this.filterValueDefault
   public filter: string | undefined
   public sortField = 'appId'
@@ -85,7 +85,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
       { label: 'ACTIONS.SEARCH.APP.QUICK_FILTER.MS', value: 'MS' }
     ]
     this.appSearchCriteriaGroup = new FormGroup<AppSearchCriteria>({
-      appId: new FormControl<string | null>(null),
+      appName: new FormControl<string | null>(null),
       appType: new FormControl<AppFilterType | null>('ALL'),
       productName: new FormControl<string | null>(null)
     })
@@ -115,7 +115,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     this.mfes$ = this.mfeApi
       .searchMicrofrontends({
         mfeAndMsSearchCriteria: {
-          appId: this.appSearchCriteriaGroup.controls['appId'].value,
+          appName: this.appSearchCriteriaGroup.controls['appName'].value,
           productName: this.appSearchCriteriaGroup.controls['productName'].value,
           pageSize: 100
         }
@@ -133,7 +133,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     this.mss$ = this.msApi
       .searchMicroservice({
         mfeAndMsSearchCriteria: {
-          appId: this.appSearchCriteriaGroup.controls['appId'].value,
+          appName: this.appSearchCriteriaGroup.controls['appName'].value,
           productName: this.appSearchCriteriaGroup.controls['productName'].value,
           pageSize: 100
         }

@@ -13,7 +13,6 @@ import { MicrofrontendType } from './microfrontendType';
 
 
 export interface MfeAndMsSearchCriteria { 
-    appId?: string | null;
     appName?: string | null;
     productName?: string | null;
     type?: MicrofrontendType;
