@@ -6,7 +6,8 @@ import { SelectItem } from 'primeng/api'
 import { TabView } from 'primeng/tabview'
 import { Table } from 'primeng/table'
 
-import { PortalMessageService, UserService } from '@onecx/portal-integration-angular'
+import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
+
 import { IconService } from 'src/app/shared/iconservice'
 import { dropDownSortItemsByLabel, convertToUniqueStringArray } from 'src/app/shared/utils'
 import {

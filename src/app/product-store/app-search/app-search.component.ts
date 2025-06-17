@@ -6,7 +6,9 @@ import { SelectItem } from 'primeng/api'
 import { DataView } from 'primeng/dataview'
 import { combineLatest, finalize, map, of, Observable, Subject, catchError } from 'rxjs'
 
-import { Action, DataViewControlTranslations, UserService } from '@onecx/portal-integration-angular'
+import { UserService } from '@onecx/angular-integration-interface'
+import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+
 import {
   MicrofrontendPageResult,
   MicrofrontendsAPIService,

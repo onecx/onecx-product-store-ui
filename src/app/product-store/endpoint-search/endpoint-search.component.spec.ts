@@ -8,7 +8,8 @@ import { of, throwError } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
-import { Column, PortalMessageService } from '@onecx/portal-integration-angular'
+import { PortalMessageService } from '@onecx/angular-integration-interface'
+import { Column } from '@onecx/portal-integration-angular'
 
 import {
   MicrofrontendAbstract,

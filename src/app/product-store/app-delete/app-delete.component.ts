@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
 
-import { PortalMessageService } from '@onecx/portal-integration-angular'
+import { PortalMessageService } from '@onecx/angular-integration-interface'
+
 import { AppAbstract } from '../app-search/app-search.component'
 import { MicrofrontendsAPIService, MicroservicesAPIService } from 'src/app/shared/generated'
 

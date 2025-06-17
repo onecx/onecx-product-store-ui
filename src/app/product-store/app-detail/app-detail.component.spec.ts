@@ -6,8 +6,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
-import { ConfigurationService, UserService } from '@onecx/angular-integration-interface'
-import { PortalMessageService } from '@onecx/portal-integration-angular'
+import { ConfigurationService, PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 
 import {
   MicrofrontendsAPIService,

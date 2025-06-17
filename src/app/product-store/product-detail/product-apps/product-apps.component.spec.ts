@@ -3,8 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
-import { UserService } from '@onecx/angular-integration-interface'
-import { PortalMessageService } from '@onecx/portal-integration-angular'
+import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 
 import {
   MicrofrontendAbstract,

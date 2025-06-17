@@ -2,7 +2,8 @@ import { Component, Input, OnChanges, OnDestroy } from '@angular/core'
 import { finalize, of, Observable, catchError, Subject, takeUntil, tap } from 'rxjs'
 import { SelectItem } from 'primeng/api'
 
-import { UserService } from '@onecx/portal-integration-angular'
+import { UserService } from '@onecx/angular-integration-interface'
+
 import {
   MicrofrontendAbstract,
   Microservice,
