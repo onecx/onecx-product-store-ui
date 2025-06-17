@@ -5,7 +5,8 @@ import { TranslateService } from '@ngx-translate/core'
 import { catchError, combineLatest, finalize, map, Observable, of, tap } from 'rxjs'
 import { Table } from 'primeng/table'
 
-import { Action, Column, DataViewControlTranslations, PortalMessageService } from '@onecx/portal-integration-angular'
+import { PortalMessageService } from '@onecx/angular-integration-interface'
+import { Action, Column, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 
 import {
   MicrofrontendAbstract,

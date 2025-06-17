@@ -7,8 +7,7 @@ import { provideRouter, Router } from '@angular/router'
 import { of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
-import { ConfigurationService, UserService } from '@onecx/angular-integration-interface'
-import { PortalMessageService } from '@onecx/portal-integration-angular'
+import { ConfigurationService, PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 
 import { ProductDetailComponent } from './product-detail.component'
 import { ProductPropertyComponent } from './product-props/product-props.component'

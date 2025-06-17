@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
 
-import { PortalMessageService } from '@onecx/portal-integration-angular'
+import { PortalMessageService } from '@onecx/angular-integration-interface'
 import { Slot, SlotsAPIService } from 'src/app/shared/generated'
 
 @Component({

@@ -4,9 +4,10 @@ import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
-import { PortalMessageService } from '@onecx/portal-integration-angular'
-import { ProductPropertyComponent, ProductDetailForm, productNameValidator } from './product-props.component'
+import { PortalMessageService } from '@onecx/angular-integration-interface'
+
 import { Product, ProductCriteria, ProductsAPIService, ImagesInternalAPIService } from 'src/app/shared/generated'
+import { ProductPropertyComponent, ProductDetailForm, productNameValidator } from './product-props.component'
 
 const mockForm = new FormGroup<ProductDetailForm>({
   id: new FormControl<string | null>(null), // Assuming ID might not be needed or can be null for new entries

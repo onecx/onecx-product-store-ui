@@ -4,7 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { catchError, Observable, of, finalize, map } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 
-import { Action, PortalMessageService, UserService } from '@onecx/portal-integration-angular'
+import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
+import { Action } from '@onecx/angular-accelerator'
+
 import { ImagesInternalAPIService, Product, ProductsAPIService, RefType } from 'src/app/shared/generated'
 import { bffImageUrl, sortByLocale } from 'src/app/shared/utils'
 import { ProductPropertyComponent } from './product-props/product-props.component'

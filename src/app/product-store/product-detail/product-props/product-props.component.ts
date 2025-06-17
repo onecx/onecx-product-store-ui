@@ -3,7 +3,8 @@ import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn,
 import { SelectItem } from 'primeng/api'
 import { map, of, Observable, catchError } from 'rxjs'
 
-import { PortalMessageService } from '@onecx/portal-integration-angular'
+import { PortalMessageService } from '@onecx/angular-integration-interface'
+
 import {
   CreateProductRequest,
   ImagesInternalAPIService,

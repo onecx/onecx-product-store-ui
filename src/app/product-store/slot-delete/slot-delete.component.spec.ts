@@ -5,7 +5,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
-import { PortalMessageService } from '@onecx/portal-integration-angular'
+import { PortalMessageService } from '@onecx/angular-integration-interface'
 
 import { Slot, SlotsAPIService } from 'src/app/shared/generated'
 import { SlotDeleteComponent } from './slot-delete.component'

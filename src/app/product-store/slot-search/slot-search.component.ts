@@ -5,7 +5,8 @@ import { finalize, map, of, Observable, catchError } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 import { DataView } from 'primeng/dataview'
 
-import { Action, DataViewControlTranslations, UserService } from '@onecx/portal-integration-angular'
+import { UserService } from '@onecx/angular-integration-interface'
+import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 
 import { Slot, SlotPageResult, SlotsAPIService } from 'src/app/shared/generated'
 import { limitText } from 'src/app/shared/utils'
