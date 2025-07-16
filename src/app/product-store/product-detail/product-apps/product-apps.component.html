@@ -235,6 +235,14 @@
             >
               {{ slot.name }}
             </div>
+            <div
+              class="text-responsive"
+              [pTooltip]="slot.description && slot.description.length <= 25 ? '' : slot.description"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            >
+              {{ slot.description }}
+            </div>
           </div>
         </div>
       </ng-container>
