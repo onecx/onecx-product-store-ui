@@ -170,44 +170,54 @@
               (click)="onDetail($event, app)"
               (keydown.enter)="onDetail($event, app)"
               (keydown.space)="onDetail($event, app)"
+              [attr.aria-label]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
             >
               <!-- BADGES -->
               <a
                 tabindex="0"
                 *ngIf="hasCreatePermission"
                 [id]="'ps_app_search_data_' + app.appId + '_copy_app'"
-                class="card-badge-left badge-1 p-2 pi pi-copy button-icon-only"
+                class="card-badge-left badge-1 p-2 pi button-icon-only"
                 (click)="onCopy($event, app)"
                 (keydown.enter)="onCopy($event, app)"
                 (keydown.space)="onCopy($event, app)"
+                [attr.aria-label]="'ACTIONS.COPY.LABEL' | translate"
                 [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
-              ></a>
+              >
+                <span class="pi pi-copy" aria-hidden="true"></span>
+              </a>
               <a
                 tabindex="0"
                 *ngIf="hasDeletePermission"
                 [id]="'ps_app_search_data_' + app.appId + '_delete_app'"
-                class="card-badge-left badge-2 p-2 pi pi-trash danger-action-text button-icon-only"
+                class="card-badge-left badge-2 p-2 danger-action-text button-icon-only"
                 (click)="onDelete($event, app)"
                 (keydown.enter)="onDelete($event, app)"
                 (keydown.space)="onDelete($event, app)"
+                [attr.aria-label]="'ACTIONS.DELETE.LABEL' | translate"
                 [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
-              ></a>
+              >
+                <span class="pi pi-trash" aria-hidden="true"></span>
+              </a>
               <a
                 tabindex="0"
                 *ngIf="!(app?.deprecated || app?.undeployed)"
                 [id]="'ps_app_search_data_' + app.appId + '_goto_product'"
-                class="card-badge-right badge-1 p-2 pi pi-external-link button-icon-only"
+                class="card-badge-right badge-1 p-2 button-icon-only"
                 (click)="onGotoProduct($event, app.productName)"
                 (keydown.enter)="onGotoProduct($event, app.productName)"
                 (keydown.space)="onGotoProduct($event, app.productName)"
+                [attr.aria-label]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
                 [pTooltip]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
-              ></a>
+              >
+                <span class="pi pi-external-link" aria-hidden="true"></span>
+              </a>
               <span
                 *ngIf="app?.undeployed"
                 [id]="'ps_app_search_data_' + app.appId + '_undeployed'"

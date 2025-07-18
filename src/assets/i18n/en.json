@@ -218,17 +218,17 @@
       "APPS.LABEL": "Apps",
       "APPS.TOOLTIP": "List of UI Components and Microservices",
       "APPS.HEADER": "Apps",
-      "APPS.SUBHEADER": "Searching and Management of UI Components and Microservices",
+      "APPS.SUBHEADER": "Search and managing of UI Components and Microservices",
       "ENDPOINTS.LABEL": "Endpoints",
       "ENDPOINTS.TOOLTIP": "List of UI Endpoints",
       "ENDPOINTS.HEADER": "UI Endpoints",
-      "ENDPOINTS.SUBHEADER": "Search and showing UI Endpoints which were provided by Microfrontends",
+      "ENDPOINTS.SUBHEADER": "Search and showing UI Endpoints provided by Microfrontends",
       "PRODUCTS.LABEL": "Applications",
       "PRODUCTS.TOOLTIP": "List of Applications",
       "SLOTS.LABEL": "Slots",
       "SLOTS.TOOLTIP": "Display Slots",
       "SLOTS.HEADER": "Slots",
-      "SLOTS.SUBHEADER": "Search Slots"
+      "SLOTS.SUBHEADER": "Search and manage Slots (UI area with various content) declared by Microfrontends"
     },
     "LOGO": {
       "LABEL": "Logo",
