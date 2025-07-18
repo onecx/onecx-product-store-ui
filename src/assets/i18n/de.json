@@ -228,7 +228,7 @@
       "SLOTS.LABEL": "Slots",
       "SLOTS.TOOLTIP": "Slots anzeigen",
       "SLOTS.HEADER": "Slots",
-      "SLOTS.SUBHEADER": "Suchen von Slots"
+      "SLOTS.SUBHEADER": "Suchen und verwalten von Slots (UI Bereich mit variablem Inhalt)"
     },
     "LOGO": {
       "LABEL": "Logo",
