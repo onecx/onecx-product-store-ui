@@ -73,6 +73,20 @@ const ms: Microservice = {
   appVersion: 'version',
   description: 'description'
 }
+const mfeAbstract: AppAbstract = {
+  id: 'id',
+  appId: 'appId',
+  appType: 'MFE',
+  appName: 'name',
+  productName: 'productName'
+}
+const msAbstract: AppAbstract = {
+  id: 'id',
+  appId: 'appId',
+  appType: 'MFE',
+  appName: 'name',
+  productName: 'productName'
+}
 
 describe('AppDetailComponent', () => {
   let component: AppDetailComponent
@@ -178,13 +192,7 @@ describe('AppDetailComponent', () => {
 
       it('should successful in EDIT mode', () => {
         mfeApiServiceSpy.getMicrofrontend.and.returnValue(of(mfe))
-        component.appAbstract = {
-          id: 'id',
-          appId: 'appId',
-          appType: 'MFE',
-          appName: 'name',
-          productName: 'productName'
-        }
+        component.appAbstract = mfeAbstract
         spyOn(component, 'getMfe')
 
         component.ngOnChanges()
@@ -195,10 +203,11 @@ describe('AppDetailComponent', () => {
       it('should successful with return data - EDIT', () => {
         mfeApiServiceSpy.getMicrofrontend.and.returnValue(of(mfe))
         component.formGroupMfe = mfeForm
+        component.appAbstract = mfeAbstract
 
         component.getMfe()
 
-        expect(component.mfe).toBe(mfe)
+        expect(component.mfe).toEqual(mfe)
         expect(component.dialogTitleKey).toBe('ACTIONS.EDIT.MFE.HEADER')
       })
 
@@ -206,10 +215,11 @@ describe('AppDetailComponent', () => {
         mfeApiServiceSpy.getMicrofrontend.and.returnValue(of(mfe))
         component.formGroupMfe = mfeForm
         component.hasEditPermission = false
+        component.appAbstract = mfeAbstract
 
         component.getMfe()
 
-        expect(component.mfe).toBe(mfe)
+        expect(component.mfe).toEqual(mfe)
         expect(component.dialogTitleKey).toBe('ACTIONS.VIEW.MFE.HEADER')
       })
 
@@ -217,10 +227,11 @@ describe('AppDetailComponent', () => {
         mfeApiServiceSpy.getMicrofrontend.and.returnValue(of(mfe))
         component.changeMode = 'COPY'
         component.formGroupMfe = mfeForm
+        component.appAbstract = mfeAbstract
 
         component.getMfe()
 
-        expect(component.mfe).toBe(mfe)
+        expect(component.mfe).toEqual(mfe)
         expect(component.mfe?.id).toBeUndefined()
         expect(component.dialogTitleKey).toBe('ACTIONS.CREATE.MFE.HEADER')
       })
@@ -232,28 +243,23 @@ describe('AppDetailComponent', () => {
       })
 
       it('should set mfe to undefined onChanges in create mode', () => {
-        component.appAbstract = {
-          id: 'id',
-          appId: 'appId',
-          appType: 'MS',
-          appName: 'name',
-          productName: 'productName'
-        }
+        component.appAbstract = msAbstract
         component.changeMode = 'EDIT'
         spyOn(component, 'getMs')
 
         component.ngOnChanges()
 
-        expect(component.mfe).toBeUndefined()
+        expect(component.ms).toBeUndefined()
       })
 
       it('should successful with return data - EDIT', () => {
         msApiServiceSpy.getMicroservice.and.returnValue(of(ms))
         component.formGroupMs = msForm
+        component.appAbstract = msAbstract
 
         component.getMs()
 
-        expect(component.ms).toBe(ms)
+        expect(component.ms).toEqual(ms)
         expect(component.dialogTitleKey).toBe('ACTIONS.EDIT.MS.HEADER')
       })
 
@@ -261,10 +267,11 @@ describe('AppDetailComponent', () => {
         msApiServiceSpy.getMicroservice.and.returnValue(of(ms))
         component.formGroupMs = msForm
         component.hasEditPermission = false
+        component.appAbstract = msAbstract
 
         component.getMs()
 
-        expect(component.ms).toBe(ms)
+        expect(component.ms).toEqual(ms)
         expect(component.dialogTitleKey).toBe('ACTIONS.VIEW.MS.HEADER')
       })
 
@@ -272,10 +279,11 @@ describe('AppDetailComponent', () => {
         msApiServiceSpy.getMicroservice.and.returnValue(of(ms))
         component.formGroupMs = msForm
         component.changeMode = 'COPY'
+        component.appAbstract = msAbstract
 
         component.getMs()
 
-        expect(component.ms).toBe(ms)
+        expect(component.ms).toEqual(ms)
         expect(component.ms?.id).toBeUndefined()
         expect(component.dialogTitleKey).toBe('ACTIONS.CREATE.MS.HEADER')
       })

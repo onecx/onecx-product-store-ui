@@ -223,12 +223,14 @@
       "ENDPOINTS.TOOLTIP": "Liste der UI Endpunktes",
       "ENDPOINTS.HEADER": "Endpunkte",
       "ENDPOINTS.SUBHEADER": "Suchen und Anzeige von UI Endpunkten die von Microfrontends bereitgestellt wurden",
+      "PRODUCT.LABEL": "Applikation",
       "PRODUCTS.LABEL": "Applikationen",
       "PRODUCTS.TOOLTIP": "Liste der Applikationen",
+      "SLOT.LABEL": "Slot",
       "SLOTS.LABEL": "Slots",
       "SLOTS.TOOLTIP": "Slots anzeigen",
       "SLOTS.HEADER": "Slots",
-      "SLOTS.SUBHEADER": "Suchen von Slots"
+      "SLOTS.SUBHEADER": "Suchen und verwalten von Slots (UI Bereich mit variablem Inhalt)"
     },
     "LOGO": {
       "LABEL": "Logo",
@@ -255,7 +257,7 @@
     "COMPONENTS": {
       "MFE": "UI Komponenten",
       "MS": "Microservices",
-      "SLOT": "Slots",
+      "SLOT": "UI Slots",
       "TOOLTIPS": {
         "MFE": "UI Komponenten: Module, Remote Components",
         "MS": "Bereitgestellte Backend und Frontend Services",
@@ -327,7 +329,6 @@
     "PRODUCT_NAME": "Applikation",
     "APP_NAME": "Microfrontend",
     "CELL_EDITING_MESSAGE": "Das Erfassen und Ändern erfolgt direkt in der Tabelle.",
-    "LINK_APP": "App Detail anzeigen",
     "TOOLTIPS": {
       "NAME": "Name des UI-Endpunkts",
       "PATH": "Pfad zum UI-Endpunkt",
@@ -376,11 +377,17 @@
   },
   "SLOT": {
     "NAME": "Name",
+    "DESCRIPTION": "Beschreibung",
     "PRODUCT_NAME": "Applikationsname",
+    "APP_ID": "Microfrontend",
+    "STATE": "?",
     "TOOLTIPS": {
       "ID": "Eindeutige technische ID des Slots",
       "NAME": "Eindeutiger Name des Slots",
-      "PRODUCT_NAME": "Name der Applikation die den Slot anbietet"
+      "DESCRIPTION": "Beschreibung",
+      "PRODUCT_NAME": "Name der Applikation die den Slot anbietet",
+      "APP_ID": "Microfrontend das den Slot anbietet",
+      "STATE": "Verfügbarkeit des Slots"
     },
     "DEPRECATED_SEARCH": "Dieser Slot ist als veraltet markiert. Er kann derzeit weiter verwendet werden wird aber in Zukunft nicht mehr zur Verfügung stehen.",
     "UNDEPLOYED_SEARCH": "Dieser Slot ist nicht länger nutzbar. Eine weitere Nutzung führt zu Fehlermeldungen.",

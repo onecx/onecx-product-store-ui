@@ -313,22 +313,32 @@ describe('ProductDetailComponent', () => {
     expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm:ss')
   })
 
-  it('should behave correctly onTabChange: 3', () => {
-    component.onTabChange({ index: 3 }, product)
+  describe('UI actions', () => {
+    it('should go directly to apps TAB', () => {
+      component.uriFragment = 'apps'
+      component['goToTab'](product)
 
-    expect(component.selectedTabIndex).toEqual(3)
-    expect(component.product_for_apps).toEqual(product)
-  })
+      expect(component.selectedTabIndex).toEqual(1)
+      expect(component.product_for_apps).toEqual(product)
+    })
 
-  it('should update logo url', () => {
-    component.onUpdateLogoUrl('testUrl')
+    it('should behave correctly onTabChange: 1', () => {
+      component.onTabChange({ index: 1 }, product)
 
-    expect(component.currentLogoUrl).toBe('testUrl')
-  })
+      expect(component.selectedTabIndex).toEqual(1)
+      expect(component.product_for_apps).toEqual(product)
+    })
 
-  it('shoult get logo url', () => {
-    const result = component.getLogoUrl(product)
+    it('should update logo url', () => {
+      component.onUpdateLogoUrl('testUrl')
 
-    expect(result).toBe(product.imageUrl)
+      expect(component.currentLogoUrl).toBe('testUrl')
+    })
+
+    it('shoult get logo url', () => {
+      const result = component.getLogoUrl(product)
+
+      expect(result).toBe(product.imageUrl)
+    })
   })
 })

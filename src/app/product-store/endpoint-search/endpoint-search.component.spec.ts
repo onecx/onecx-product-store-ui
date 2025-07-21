@@ -255,7 +255,7 @@ describe('EndpointSearchComponent', () => {
       component.endpoints$?.subscribe({
         next: (data) => {
           expect(data.length).toEqual(0)
-          expect(msgServiceSpy.info).toHaveBeenCalledOnceWith({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
+          expect(msgServiceSpy.info).toHaveBeenCalledOnceWith({ summaryKey: 'ACTIONS.SEARCH.NOT_FOUND' })
           done()
         },
         error: done.fail

@@ -84,14 +84,14 @@ export class EndpointSearchComponent implements OnInit {
   ngOnInit(): void {
     this.prepareDialogTranslations()
     this.preparePageActions()
-    this.searchProducts()
+    this.declareDataSources()
     this.loadData()
   }
 
   /****************************************************************************
    *  SEARCHING
    */
-  public searchProducts(): void {
+  public declareDataSources(): void {
     // Products => to get the product display name
     const criteria: ProductSearchCriteria = {
       names: this.searchCriteria.controls['name'].value ? [this.searchCriteria.controls['name'].value] : undefined,
@@ -117,7 +117,7 @@ export class EndpointSearchComponent implements OnInit {
       .pipe(
         tap((data: any) => {
           if (data.totalElements === 0) {
-            this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.NO_RESULTS' })
+            this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.NOT_FOUND' })
             return data.size
           }
         }),
@@ -272,7 +272,7 @@ export class EndpointSearchComponent implements OnInit {
     this.dataTable?.filterGlobal(event, 'contains')
   }
   public onSearch() {
-    this.searchProducts()
+    this.declareDataSources()
     this.loadData()
   }
   public onCriteriaReset() {
