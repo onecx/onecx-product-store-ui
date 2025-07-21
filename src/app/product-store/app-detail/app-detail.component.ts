@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
-import { finalize } from 'rxjs'
+import { finalize, map } from 'rxjs'
 import { SelectItem } from 'primeng/api'
 import { TabView } from 'primeng/tabview'
 import { Table } from 'primeng/table'
@@ -139,9 +139,9 @@ export class AppDetailComponent implements OnInit, OnChanges {
       this.enableForms()
       this.selectedTabIndex = 0
       this.dialogTitleKey = undefined
+      this.ms = undefined
+      this.mfe = undefined
       if (this.changeMode === 'CREATE') {
-        this.ms = undefined
-        this.mfe = undefined
         this.formGroupMs.reset()
         this.formGroupMfe.reset()
         this.formGroupMfe.controls['type'].setValue('MODULE')
@@ -173,39 +173,43 @@ export class AppDetailComponent implements OnInit, OnChanges {
 
   public getMfe() {
     this.loading = true
-    this.mfeApi
-      .getMicrofrontend({ id: this.appAbstract?.id ?? '' } as GetMicrofrontendRequestParams)
-      .pipe(finalize(() => (this.loading = false)))
-      .subscribe({
-        next: (data: any) => {
-          if (data) {
-            this.mfe = data
-            if (this.mfe) this.viewFormMfe(this.mfe)
-            this.operator = this.mfe?.operator ?? false
-            this.undeployed = this.mfe?.undeployed ?? false
-            this.deprecated = this.mfe?.deprecated ?? false
-            this.endpoints = this.mfe?.endpoints ?? []
-            if (this.endpoints.length === 0) this.onAddEndpointRow()
-            if (this.changeMode === 'COPY') {
-              if (this.mfe?.id) {
-                this.mfe.id = undefined
-                this.mfe.operator = false
-                this.mfe.undeployed = false
-                this.mfe.deprecated = false
-                this.mfe.creationDate = undefined
-                this.mfe.creationUser = undefined
-                this.mfe.modificationDate = undefined
-                this.mfe.modificationUser = undefined
-              }
-              this.dialogTitleKey = 'ACTIONS.CREATE.MFE.HEADER'
-            } else {
-              this.dialogTitleKey = 'ACTIONS.' + (this.hasEditPermission ? 'EDIT' : 'VIEW') + '.MFE.HEADER'
-            }
-            this.enableForms()
-          }
-        }
-      })
+    if (this.appAbstract?.id)
+      this.mfeApi
+        .getMicrofrontend({ id: this.appAbstract.id } as GetMicrofrontendRequestParams)
+        .pipe(
+          map((data: Microfrontend) => this.getMfeData(data)),
+          finalize(() => (this.loading = false))
+        )
+        .subscribe()
   }
+  private getMfeData(data: Microfrontend) {
+    if (data) {
+      this.mfe = data
+      if (this.mfe) this.viewFormMfe(this.mfe)
+      this.operator = this.mfe?.operator ?? false
+      this.undeployed = this.mfe?.undeployed ?? false
+      this.deprecated = this.mfe?.deprecated ?? false
+      this.endpoints = this.mfe?.endpoints ?? []
+      if (this.endpoints.length === 0) this.onAddEndpointRow()
+      if (this.changeMode === 'COPY') {
+        if (this.mfe?.id) {
+          this.mfe.id = undefined
+          this.mfe.operator = false
+          this.mfe.undeployed = false
+          this.mfe.deprecated = false
+          this.mfe.creationDate = undefined
+          this.mfe.creationUser = undefined
+          this.mfe.modificationDate = undefined
+          this.mfe.modificationUser = undefined
+        }
+        this.dialogTitleKey = 'ACTIONS.CREATE.MFE.HEADER'
+      } else {
+        this.dialogTitleKey = 'ACTIONS.' + (this.hasEditPermission ? 'EDIT' : 'VIEW') + '.MFE.HEADER'
+      }
+      this.enableForms()
+    }
+  }
+
   public getMs() {
     this.loading = true
     this.msApi

@@ -22,6 +22,8 @@ app:
           endpoints:
             - name: product-detail
               path: /{product-name}
+            - name: product-detail#apps
+              path: /{product-name}#apps
             - name: apps
               path: /apps
             - name: endpoints

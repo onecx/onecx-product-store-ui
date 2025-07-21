@@ -21,6 +21,7 @@ export class ProductDetailComponent implements OnInit {
   public exceptionKey: string | undefined
   public loading = false
   public actions$: Observable<Action[]> | undefined
+  public uriFragment = this.route.snapshot.fragment // #fragment to address a certain TAB
   public productName: string | null = null
   public product$!: Observable<Product>
   public item4Delete: Product | undefined
@@ -61,10 +62,21 @@ export class ProductDetailComponent implements OnInit {
     }
   }
 
+  // triggered by URI
+  private goToTab(product: Product | undefined) {
+    if (product && this.uriFragment) {
+      const tabMap = new Map([
+        ['props', 0],
+        ['apps', 1],
+        ['use', 2]
+      ])
+      this.onTabChange({ index: tabMap.get(this.uriFragment) }, product)
+    }
+  }
   public onTabChange($event: any, product: Product) {
     this.selectedTabIndex = $event.index
     this.preparePageAction(product)
-    if (this.selectedTabIndex === 3) this.product_for_apps = product // lazy load
+    if (this.selectedTabIndex === 1) this.product_for_apps = product // lazy load
   }
 
   public getProduct(): void {
@@ -73,6 +85,7 @@ export class ProductDetailComponent implements OnInit {
       map((data: Product) => {
         this.preparePageAction(data)
         this.currentLogoUrl = this.getLogoUrl(data)
+        this.goToTab(data)
         return { ...data, classifications: data.classifications?.sort(sortByLocale) }
       }),
       catchError((err) => {

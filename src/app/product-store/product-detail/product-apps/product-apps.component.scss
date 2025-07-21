@@ -17,6 +17,9 @@
   .h-2-5rem {
     height: 2.5rem !important;
   }
+  .h-3-5rem {
+    height: 3.5rem !important;
+  }
   /**
    * position aligned to card dimensions
   */
@@ -27,6 +30,9 @@
     }
     &.badge-2-1 {
       top: 26px;
+    }
+    &.badge-2-2 {
+      top: 38px;
     }
   }
 }

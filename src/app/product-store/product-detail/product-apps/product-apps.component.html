@@ -120,6 +120,75 @@
   </p-fieldset>
 
   <p-fieldset
+    *ngIf="details.slots && details.slots.length > 0"
+    [toggleable]="false"
+    [collapsed]="false"
+    styleClass="surface-100 py-0 mt-1 mb-3 mx-1"
+  >
+    <ng-template pTemplate="header">
+      <span [pTooltip]="'DIALOG.COMPONENTS.TOOLTIPS.SLOT' | translate" tooltipPosition="top" tooltipEvent="hover">
+        {{ 'DIALOG.COMPONENTS.SLOT' | translate }}
+      </span>
+    </ng-template>
+    <div class="flex flex-row flex-wrap column-gap-3 sm:column-gap-4 row-gap-2 sm:row-gap-3">
+      <ng-container *ngFor="let slot of details.slots.sort(sortSlotsByName)">
+        <div class="card relative w-full sm:w-21rem m-0 py-0 px-0 flex flex-column justify-content-center">
+          <!-- BADGES -->
+          <a
+            *ngIf="hasDeletePermission"
+            tabindex="0"
+            [id]="'ps_product_apps_components_slot_' + slot.appId + '_delete'"
+            class="card-badge-left badge-2-2 p-2 danger-action-text button-icon-only"
+            (click)="onSlotDelete($event, slot)"
+            [attr.aria-label]="'ACTIONS.DELETE.LABEL' | translate"
+            [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
+            <span class="pi pi-trash" aria-hidden="true"></span>
+          </a>
+          <span
+            *ngIf="slot?.undeployed"
+            [id]="'ps_product_apps_components_slot_' + slot.name + '_undeployed'"
+            class="card-badge-right badge-1 pi pi-ban danger-action-text cursor-auto"
+            [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          ></span>
+          <span
+            *ngIf="slot?.deprecated && !slot?.undeployed"
+            [id]="'ps_product_apps_components_slot_' + slot.appId + '_deprecated'"
+            class="card-badge-right badge-1 pi pi-exclamation-circle danger-action-text cursor-auto"
+            [pTooltip]="'SLOT.DEPRECATED_SEARCH' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          ></span>
+          <!-- CONTENT -->
+          <div class="h-4rem gap-1 my-1 mx-6 flex flex-column justify-content-around text-center">
+            <div class="text-responsive">{{ slot.appId }}</div>
+            <div
+              class="font-bold text-responsive"
+              [pTooltip]="slot.name.length <= 25 ? '' : slot.name"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            >
+              {{ slot.name }}
+            </div>
+            <div
+              class="text-responsive"
+              [pTooltip]="slot.description && slot.description.length <= 25 ? '' : slot.description"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            >
+              {{ slot.description }} &nbsp;
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </p-fieldset>
+
+  <p-fieldset
     *ngIf="details.microservices && details.microservices.length > 0"
     [toggleable]="false"
     [collapsed]="false"
@@ -192,74 +261,6 @@
             </div>
           </div>
         </a>
-      </ng-container>
-    </div>
-  </p-fieldset>
-
-  <p-fieldset
-    *ngIf="details.slots && details.slots.length > 0"
-    [toggleable]="false"
-    [collapsed]="false"
-    styleClass="surface-100 py-0 mx-0 mt-3"
-  >
-    <ng-template pTemplate="header">
-      <span [pTooltip]="'DIALOG.COMPONENTS.TOOLTIPS.SLOT' | translate" tooltipPosition="top" tooltipEvent="hover">
-        {{ 'DIALOG.COMPONENTS.SLOT' | translate }}
-      </span>
-    </ng-template>
-    <div class="flex flex-row flex-wrap column-gap-3 sm:column-gap-4 row-gap-2 sm:row-gap-3">
-      <ng-container *ngFor="let slot of details.slots.sort(sortSlotsByName)">
-        <div class="card relative w-full sm:w-21rem m-0 py-0 px-0 flex flex-column justify-content-center">
-          <!-- BADGES -->
-          <a
-            *ngIf="hasDeletePermission"
-            tabindex="0"
-            [id]="'ps_product_apps_components_slot_' + slot.appId + '_delete'"
-            class="card-badge-left badge-2-1 p-2 danger-action-text button-icon-only"
-            (click)="onSlotDelete($event, slot)"
-            [attr.aria-label]="'ACTIONS.DELETE.LABEL' | translate"
-            [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          >
-            <span class="pi pi-trash" aria-hidden="true"></span>
-          </a>
-          <span
-            *ngIf="slot?.undeployed"
-            [id]="'ps_product_apps_components_slot_' + slot.name + '_undeployed'"
-            class="card-badge-right badge-1 pi pi-ban danger-action-text cursor-auto"
-            [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          ></span>
-          <span
-            *ngIf="slot?.deprecated && !slot?.undeployed"
-            [id]="'ps_product_apps_components_slot_' + slot.appId + '_deprecated'"
-            class="card-badge-right badge-1 pi pi-exclamation-circle danger-action-text font-bold cursor-auto"
-            [pTooltip]="'SLOT.DEPRECATED_SEARCH' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          ></span>
-          <!-- CONTENT -->
-          <div class="h-2-5rem my-2 mx-6 flex flex-column justify-content-around text-center">
-            <div
-              class="font-bold text-responsive"
-              [pTooltip]="slot.name.length <= 25 ? '' : slot.name"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            >
-              {{ slot.name }}
-            </div>
-            <div
-              class="text-responsive"
-              [pTooltip]="slot.description && slot.description.length <= 25 ? '' : slot.description"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            >
-              {{ slot.description }}
-            </div>
-          </div>
-        </div>
       </ng-container>
     </div>
   </p-fieldset>

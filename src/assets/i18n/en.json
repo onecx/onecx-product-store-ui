@@ -223,8 +223,10 @@
       "ENDPOINTS.TOOLTIP": "List of UI Endpoints",
       "ENDPOINTS.HEADER": "UI Endpoints",
       "ENDPOINTS.SUBHEADER": "Search and showing UI Endpoints provided by Microfrontends",
+      "PRODUCT.LABEL": "Application",
       "PRODUCTS.LABEL": "Applications",
       "PRODUCTS.TOOLTIP": "List of Applications",
+      "SLOT.LABEL": "Slot",
       "SLOTS.LABEL": "Slots",
       "SLOTS.TOOLTIP": "Display Slots",
       "SLOTS.HEADER": "Slots",
@@ -255,7 +257,7 @@
     "COMPONENTS": {
       "MFE": "UI Components",
       "MS": "Microservices",
-      "SLOT": "Slots",
+      "SLOT": "UI Slots",
       "TOOLTIPS": {
         "MFE": "UI Components: Modules, Remote Components",
         "MS": "Deployed backend and frontend services",
@@ -327,7 +329,6 @@
     "PRODUCT_NAME": "Application",
     "APP_NAME": "Microfrontend",
     "CELL_EDITING_MESSAGE": "Data entry and changes are made directly in the table.",
-    "LINK_APP": "Display App Details",
     "TOOLTIPS": {
       "NAME": "Unique name of the UI Endpoint",
       "PATH": "Path to the UI Endpoint",
@@ -376,11 +377,17 @@
   },
   "SLOT": {
     "NAME": "Name",
+    "DESCRIPTION": "Description",
     "PRODUCT_NAME": "Application name",
+    "APP_ID": "Microfrontend",
+    "STATE": "?",
     "TOOLTIPS": {
       "ID": "Unique technical ID of the Slot",
       "NAME": "Unique Name of the Slot",
-      "PRODUCT_NAME": "Name of the Application which provides the Slot"
+      "DESCRIPTION": "Description of the Slot",
+      "PRODUCT_NAME": "Name of the Application which provides the Slot",
+      "APP_ID": "Microfrontend providing the Slot",
+      "STATE": "Availability of the Slot"
     },
     "DEPRECATED_SEARCH": "This Slot is marked as deprecated. It can currently be used but will no longer be available in the future.",
     "UNDEPLOYED_SEARCH": "This Slot is no longer usable. Further use leads to error messages.",

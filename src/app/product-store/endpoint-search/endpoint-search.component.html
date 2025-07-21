@@ -14,7 +14,7 @@
           pInputText
           type="text"
           class="w-11rem sm:w-18rem text-responsive"
-          formControlName="productName"
+          formControlName="name"
           [attr.aria-label]="'ACTIONS.SEARCH.ENDPOINT.PRODUCT_NAME' | translate"
           [pTooltip]="
             ('ACTIONS.SEARCH.ENDPOINT.PRODUCT_NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)
@@ -51,7 +51,7 @@
       [value]="endpoints"
       [columns]="filteredColumns"
       dataKey="id"
-      [globalFilterFields]="['productName', 'appName', 'endpoint_name']"
+      [globalFilterFields]="['productDisplayName', 'appName', 'endpoint_name']"
       [reorderableColumns]="false"
       [scrollable]="true"
       scrollHeight="590px"
@@ -99,10 +99,27 @@
         </tr>
         <!-- HEADER 2 -->
         <tr>
-          <th id="ps_endpoint_search_table_header_col_product_name" [class]="'white-space-nowrap'" pFrozenColumn>
+          <th
+            id="ps_endpoint_search_table_header_col_product_name"
+            [class]="'white-space-nowrap'"
+            pFrozenColumn
+            [pSortableColumn]="'productDisplayName'"
+            [attr.aria-label]="'ENDPOINT.PRODUCT_NAME' | translate"
+            [pTooltip]="'ENDPOINT.TOOLTIPS.PRODUCT_NAME' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
             {{ 'ENDPOINT.PRODUCT_NAME' | translate }}
+            <p-sortIcon field="productDisplayName"></p-sortIcon>
           </th>
-          <th id="ps_endpoint_search_table_header_col_app_name" [class]="'white-space-nowrap'">
+          <th
+            id="ps_endpoint_search_table_header_col_app_name"
+            [class]="'white-space-nowrap'"
+            [attr.aria-label]="'ENDPOINT.APP_NAME' | translate"
+            [pTooltip]="'ENDPOINT.TOOLTIPS.APP_NAME' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
             {{ 'ENDPOINT.APP_NAME' | translate }}
           </th>
           <th id="ps_endpoint_search_table_header_2_counter" class="w-3rem text-center border-left-1 border-right-1">
@@ -141,7 +158,7 @@
             class="bg-inherit"
             pFrozenColumn
           >
-            {{ rowData['productDisplayName'] ?? rowData['productName'] }}
+            {{ rowData['productDisplayName'] }}
           </td>
 
           <td [id]="'ps_endpoint_search_table_row_app_name'">
@@ -152,8 +169,8 @@
               (click)="onAppDetail($event, rowData)"
               (keydown.enter)="onAppDetail($event, rowData)"
               (keydown.space)="onAppDetail($event, rowData)"
-              [attr.aria-label]="'ENDPOINT.LINK_APP' | translate"
-              [pTooltip]="'ENDPOINT.LINK_APP' | translate"
+              [attr.aria-label]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
+              [pTooltip]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
             >

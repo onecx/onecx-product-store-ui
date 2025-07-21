@@ -1,52 +1,87 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { FormControl, FormGroup } from '@angular/forms'
-import { finalize, map, of, Observable, catchError } from 'rxjs'
+import { catchError, combineLatest, finalize, map, of, Observable, tap } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
-import { DataView } from 'primeng/dataview'
+import { Table } from 'primeng/table'
 
-import { UserService } from '@onecx/angular-integration-interface'
-import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
+import { Action, Column, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 
-import { Slot, SlotPageResult, SlotsAPIService } from 'src/app/shared/generated'
+import {
+  ProductsAPIService,
+  ProductAbstract,
+  ProductSearchCriteria,
+  Slot,
+  SlotPageResult,
+  SlotsAPIService
+} from 'src/app/shared/generated'
 import { limitText } from 'src/app/shared/utils'
 
 export interface SlotSearchCriteria {
   slotName: FormControl<string | null>
   productName: FormControl<string | null>
 }
+export type SlotData = Slot & { productDisplayName: string }
+export type ExtendedColumn = Column & { sort?: boolean; css?: string }
 
 @Component({
   templateUrl: './slot-search.component.html',
   styleUrls: ['./slot-search.component.scss']
 })
 export class SlotSearchComponent implements OnInit {
-  public exceptionKey: string | undefined
+  // dialog
+  public loading = false
+  public exceptionKey: string | undefined = undefined
   public searchInProgress = false
-  public slots$!: Observable<SlotPageResult>
-  public slotSearchCriteriaGroup!: FormGroup<SlotSearchCriteria>
-  public slot!: Slot | undefined
   public actions$: Observable<Action[]> | undefined
-  public viewMode: 'grid' | 'list' = 'grid'
+  // data
+  public searchCriteria: FormGroup<SlotSearchCriteria>
+  public products$: Observable<ProductAbstract[]> = of([])
+  public slots$: Observable<Slot[]> = of([])
+  public slotData$: Observable<SlotData[]> = of([])
+
   public filter: string | undefined
+  public filteredColumns: ExtendedColumn[] = []
   public sortField = 'name'
   public sortOrder = 1
   public limitText = limitText
-  public displayDeleteDialog = false
-  public hasDeletePermission = false
 
-  @ViewChild(DataView) dv: DataView | undefined
+  @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
   public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
 
+  public columns: ExtendedColumn[] = [
+    {
+      field: 'state',
+      header: 'STATE',
+      active: true,
+      css: 'text-center',
+      translationPrefix: 'SLOT'
+    },
+    {
+      field: 'name',
+      header: 'NAME',
+      active: true,
+      translationPrefix: 'SLOT'
+    },
+    {
+      field: 'description',
+      header: 'DESCRIPTION',
+      active: true,
+      translationPrefix: 'SLOT'
+    }
+  ]
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly user: UserService,
+    private readonly productApi: ProductsAPIService,
     private readonly slotApi: SlotsAPIService,
-    private readonly translate: TranslateService
+    private readonly translate: TranslateService,
+    private readonly msgService: PortalMessageService
   ) {
-    this.hasDeletePermission = this.user.hasPermission('SLOT#DELETE')
-    this.slotSearchCriteriaGroup = new FormGroup<SlotSearchCriteria>({
+    this.filteredColumns = this.columns.filter((a) => a.active === true)
+    this.searchCriteria = new FormGroup<SlotSearchCriteria>({
       slotName: new FormControl<string | null>(null),
       productName: new FormControl<string | null>(null)
     })
@@ -55,30 +90,78 @@ export class SlotSearchComponent implements OnInit {
   ngOnInit(): void {
     this.prepareDialogTranslations()
     this.prepareActionButtons()
-    this.searchSlots()
+    this.declareDataSources()
+    this.loadData()
   }
 
-  public searchSlots(): void {
-    this.searchInProgress = true
+  /****************************************************************************
+   *  SEARCHING
+   */
+  public declareDataSources(): void {
+    // Products => to get the product display name
+    const criteria: ProductSearchCriteria = {
+      names: this.searchCriteria.controls['productName'].value
+        ? [this.searchCriteria.controls['productName'].value]
+        : undefined,
+      pageSize: 1000
+    }
+    this.products$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
+      map((data) => data.stream ?? []),
+      catchError((err) => {
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+        console.error('searchProducts', err)
+        return of([])
+      })
+    )
+    // Slots
     this.slots$ = this.slotApi
       .searchSlots({
         slotSearchCriteria: {
-          name: this.slotSearchCriteriaGroup.controls['slotName'].value!,
-          productName: this.slotSearchCriteriaGroup.controls['productName'].value!,
+          name: this.searchCriteria.controls['slotName'].value ?? undefined,
+          productName: this.searchCriteria.controls['productName'].value ?? undefined,
           pageSize: 1000
         }
       })
       .pipe(
+        tap((data: SlotPageResult) => {
+          if (data?.totalElements === 0) this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.NOT_FOUND' })
+        }),
+        map((data: SlotPageResult) => data.stream ?? []),
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.SLOTS'
           console.error('searchSlots', err)
-          return of({ stream: [] } as SlotPageResult)
+          return of([])
         }),
-        finalize(() => (this.searchInProgress = false))
+        finalize(() => (this.loading = false))
       )
   }
-  public sortSlotsByName(a: Slot, b: Slot): number {
-    return a.name.toUpperCase().localeCompare(b.name.toUpperCase())
+
+  // complete refresh: getting meta data and trigger search
+  private loadData(): void {
+    this.loading = true
+    this.exceptionKey = undefined
+    this.slotData$ = combineLatest([this.products$, this.slots$]).pipe(
+      map(([ps, slots]) => {
+        const sd: SlotData[] = []
+        slots.forEach((s) => {
+          sd.push({ ...s, productDisplayName: this.getProductDisplayName(s.productName, ps) })
+        })
+        sd.sort(this.sortSlots)
+        return sd
+      }),
+      finalize(() => (this.loading = false))
+    )
+  }
+  private getProductDisplayName(name: string, pas: ProductAbstract[]): string {
+    const pf = pas.find((p) => p.name === name)
+    return pf?.displayName ?? name
+  }
+  public sortSlots(a: SlotData, b: SlotData): number {
+    return (
+      a.productName.toUpperCase().localeCompare(b.productName.toUpperCase()) ||
+      a.appId.toUpperCase().localeCompare(b.appId.toUpperCase()) ||
+      a.name.toUpperCase().localeCompare(b.name.toUpperCase())
+    )
   }
 
   /**
@@ -88,6 +171,8 @@ export class SlotSearchComponent implements OnInit {
     this.dataViewControlsTranslations$ = this.translate
       .get([
         'SLOT.NAME',
+        'SLOT.PRODUCT_NAME',
+        'SLOT.APP_ID',
         'ACTIONS.DATAVIEW.VIEW_MODE_GRID',
         'ACTIONS.DATAVIEW.FILTER',
         'ACTIONS.DATAVIEW.FILTER_OF',
@@ -100,7 +185,13 @@ export class SlotSearchComponent implements OnInit {
           return {
             sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY'],
             filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
-            filterInputTooltip: data['ACTIONS.DATAVIEW.FILTER_OF'] + data['SLOT.NAME'],
+            filterInputTooltip:
+              data['ACTIONS.DATAVIEW.FILTER_OF'] +
+              data['SLOT.PRODUCT_NAME'] +
+              ', ' +
+              data['SLOT.APP_ID'] +
+              ', ' +
+              data['SLOT.NAME'],
             viewModeToggleTooltips: { grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID'] },
             sortOrderTooltips: {
               ascending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_ASC'],
@@ -157,34 +248,21 @@ export class SlotSearchComponent implements OnInit {
   /**
    * UI EVENTS
    */
-  public onFilterChange(filter: string): void {
-    this.filter = filter
-    this.dv?.filter(filter, 'contains')
+  public onFilterChange(event: any): void {
+    this.dataTable?.filterGlobal(event, 'contains')
   }
-  public onSortChange(field: string): void {
-    this.sortField = field
-  }
-  public onSortDirChange(asc: boolean): void {
-    this.sortOrder = asc ? -1 : 1
-  }
-
   public onSearch() {
-    this.searchSlots()
+    this.declareDataSources()
+    this.loadData()
   }
   public onSearchReset() {
-    this.slotSearchCriteriaGroup.reset()
+    this.searchCriteria.reset()
   }
   public onBack() {
     this.router.navigate(['../'], { relativeTo: this.route })
   }
-
-  public onDelete(ev: any, slot: Slot) {
+  public onGotoProduct(ev: any, data: SlotData) {
     ev.stopPropagation()
-    this.slot = slot
-    this.displayDeleteDialog = true
-  }
-  public slotDeleted(deleted: boolean) {
-    this.displayDeleteDialog = false
-    if (deleted) this.searchSlots()
+    this.router.navigate(['../', data.productName], { fragment: 'apps', relativeTo: this.route })
   }
 }
