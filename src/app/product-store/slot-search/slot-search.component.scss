@@ -56,4 +56,8 @@
     border-color: var(--tabview-header-hover-border-color);
     color: var(--text-secondary-color);
   }
+
+  .min-w-20rem {
+    min-width: 20rem;
+  }
 }

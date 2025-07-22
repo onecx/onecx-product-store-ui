@@ -23,7 +23,7 @@ export interface SlotSearchCriteria {
   productName: FormControl<string | null>
 }
 export type SlotData = Slot & { productDisplayName: string }
-export type ExtendedColumn = Column & { sort?: boolean; css?: string }
+export type ExtendedColumn = Column & { sort?: boolean; css?: string; limit?: number }
 
 @Component({
   templateUrl: './slot-search.component.html',
@@ -62,12 +62,14 @@ export class SlotSearchComponent implements OnInit {
       field: 'name',
       header: 'NAME',
       active: true,
+      limit: 20,
       translationPrefix: 'SLOT'
     },
     {
       field: 'description',
       header: 'DESCRIPTION',
       active: true,
+      limit: 100,
       translationPrefix: 'SLOT'
     }
   ]
