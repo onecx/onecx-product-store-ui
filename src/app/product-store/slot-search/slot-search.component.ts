@@ -63,6 +63,7 @@ export class SlotSearchComponent implements OnInit {
       header: 'NAME',
       active: true,
       limit: 20,
+      css: 'min-w-16rem',
       translationPrefix: 'SLOT'
     },
     {
@@ -70,6 +71,7 @@ export class SlotSearchComponent implements OnInit {
       header: 'DESCRIPTION',
       active: true,
       limit: 100,
+      css: 'min-w-20rem',
       translationPrefix: 'SLOT'
     }
   ]
