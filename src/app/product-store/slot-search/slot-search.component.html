@@ -20,7 +20,7 @@
           formControlName="slotName"
           class="w-15rem"
           [attr.aria-label]="'SLOT.NAME' | translate"
-          [pTooltip]="'SLOT.TOOLTIPS.NAME' | translate"
+          [pTooltip]="('SLOT.TOOLTIPS.NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
@@ -34,7 +34,7 @@
           formControlName="productName"
           class="w-15rem"
           [attr.aria-label]="'SLOT.PRODUCT_NAME' | translate"
-          [pTooltip]="'SLOT.TOOLTIPS.PRODUCT_NAME' | translate"
+          [pTooltip]="('SLOT.TOOLTIPS.PRODUCT_NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
@@ -75,8 +75,8 @@
       rowGroupMode="rowspan"
       sortField="productName"
       [sortOrder]="1"
-      [rows]="30"
-      [rowsPerPageOptions]="[30, 100]"
+      [rowsPerPageOptions]="[10, 30, 100]"
+      [rows]="10"
       [paginator]="true"
       paginatorPosition="bottom"
       [alwaysShowPaginator]="true"
@@ -191,18 +191,30 @@
 
           <td class="w-3rem text-center border-left-1 border-right-1">{{ i + 1 }}</td>
           <td *ngFor="let col of columns" [id]="'ps_slot_search_table_row_' + i + '_' + col.field" [class]="col.css">
-            <div *ngIf="col.field !== 'state'" class="text-responsive">{{ rowData[col.field] }}</div>
-            <ng-container *ngIf="col.field === 'state'">
-              @let tooltipText = 'SLOT.' + (rowData['undeployed'] ? 'UNDEPLOYED' : 'DEPRECATED') + '_SEARCH';
-              <span
-                class="danger-action-text pi"
-                [ngClass]="{ 'pi-ban': rowData['undeployed'], 'pi-exclamation-circle': rowData['deprecated'] }"
-                [attr.aria-label]="tooltipText | translate"
-                [pTooltip]="tooltipText | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              >
-              </span>
+            <div
+              *ngIf="col.limit"
+              class="text-ellipsis-2-lines"
+              [ngClass]="rowData[col.field].length > col.limit ? col.css : ''"
+              [pTooltip]="rowData[col.field].length > 100 ? rowData[col.field] : ''"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            >
+              {{ rowData[col.field] }}
+            </div>
+            <ng-container *ngIf="!col.limit">
+              <div *ngIf="col.field !== 'state'" class="text-responsive">{{ rowData[col.field] }}</div>
+              <ng-container *ngIf="col.field === 'state'">
+                @let tooltipText = 'SLOT.' + (rowData['undeployed'] ? 'UNDEPLOYED' : 'DEPRECATED') + '_SEARCH';
+                <span
+                  class="danger-action-text pi"
+                  [ngClass]="{ 'pi-ban': rowData['undeployed'], 'pi-exclamation-circle': rowData['deprecated'] }"
+                  [attr.aria-label]="tooltipText | translate"
+                  [pTooltip]="tooltipText | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                </span>
+              </ng-container>
             </ng-container>
           </td>
         </tr>
