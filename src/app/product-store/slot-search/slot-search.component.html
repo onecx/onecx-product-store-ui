@@ -101,21 +101,10 @@
       </ng-template>
 
       <ng-template pTemplate="header" let-columns>
-        <!-- HEADER 1 -->
-        <tr>
-          <th id="ps_slot_search_table_header_1_product_info" colspan="2" class="text-center">
-            {{ 'DIALOG.SEARCH.PRODUCT.LABEL' | translate }}
-          </th>
-          <th id="ps_slot_search_table_header_1_counter" class="w-3rem text-center border-left-1 border-right-1"></th>
-          <th id="ps_slot_search_table_header_1_slot_info" colspan="3" class="text-center">
-            {{ 'DIALOG.SEARCH.SLOT.LABEL' | translate }}
-          </th>
-        </tr>
-        <!-- HEADER 2 -->
         <tr>
           <th
             id="ps_slot_search_table_header_col_product_name"
-            [class]="'white-space-nowrap'"
+            [class]="'white-space-nowrap border-right-1'"
             pFrozenColumn
             pSortableColumn="productName"
             [attr.aria-label]="'SLOT.PRODUCT_NAME' | translate"
@@ -136,7 +125,6 @@
           >
             {{ 'SLOT.APP_ID' | translate }}
           </th>
-          <th id="ps_slot_search_table_header_2_counter" class="w-3rem text-center border-left-1 border-right-1">#</th>
           <th
             *ngFor="let col of columns"
             [id]="'ps_slot_search_table_header_col_' + col.field"
@@ -168,7 +156,7 @@
             *ngIf="rowgroup"
             [attr.rowspan]="rowspan"
             [id]="'ps_slot_search_table_row_product_name'"
-            class="bg-inherit white-space-nowrap"
+            class="bg-inherit white-space-nowrap border-right-1"
             pFrozenColumn
           >
             <a
@@ -186,35 +174,30 @@
               {{ rowData['productDisplayName'] }}
             </a>
           </td>
-
           <td [id]="'ps_slot_search_table_row_app_id'" class="white-space-nowrap">{{ rowData['appId'] }}</td>
-
-          <td class="w-3rem text-center border-left-1 border-right-1">{{ i + 1 }}</td>
           <td *ngFor="let col of columns" [id]="'ps_slot_search_table_row_' + i + '_' + col.field" [class]="col.css">
-            <div
-              *ngIf="col.limit"
-              class="text-ellipsis-2-lines"
-              [ngClass]="rowData[col.field].length > col.limit ? col.css : ''"
-              [pTooltip]="rowData[col.field].length > 100 ? rowData[col.field] : ''"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            >
-              {{ rowData[col.field] }}
-            </div>
-            <ng-container *ngIf="!col.limit">
-              <div *ngIf="col.field !== 'state'" class="text-responsive">{{ rowData[col.field] }}</div>
-              <ng-container *ngIf="col.field === 'state'">
-                @let tooltipText = 'SLOT.' + (rowData['undeployed'] ? 'UNDEPLOYED' : 'DEPRECATED') + '_SEARCH';
+            <ng-container *ngIf="col.field === 'name'">
+              @let tooltipText = 'SLOT.' + (rowData['undeployed'] ? 'UNDEPLOYED' : 'DEPRECATED') + '_SEARCH';
+              <span
+                class="text-ellipsis-2-lines"
+                [ngClass]="rowData[col.field].length > col.limit ? col.css : ''"
+                [pTooltip]="rowData[col.field].length > 100 ? rowData[col.field] : ''"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+                {{ rowData[col.field] }}
                 <span
-                  class="danger-action-text pi"
+                  class="ml-2 danger-action-text pi"
                   [ngClass]="{ 'pi-ban': rowData['undeployed'], 'pi-exclamation-circle': rowData['deprecated'] }"
                   [attr.aria-label]="tooltipText | translate"
                   [pTooltip]="tooltipText | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
-                >
-                </span>
-              </ng-container>
+                ></span>
+              </span>
+            </ng-container>
+            <ng-container *ngIf="col.field === 'description'">
+              <span class="text-responsive">{{ rowData[col.field] }}</span>
             </ng-container>
           </td>
         </tr>

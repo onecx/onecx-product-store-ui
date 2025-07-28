@@ -325,12 +325,14 @@
   },
   "ENDPOINT": {
     "NAME": "Name",
+    "NAME.SEARCH": "Endpunktname",
     "PATH": "Pfad",
     "PRODUCT_NAME": "Applikation",
     "APP_NAME": "Microfrontend",
     "CELL_EDITING_MESSAGE": "Das Erfassen und Ändern erfolgt direkt in der Tabelle.",
     "TOOLTIPS": {
       "NAME": "Name des UI-Endpunkts",
+      "NAME.SEARCH": "Name des UI-Endpunkts",
       "PATH": "Pfad zum UI-Endpunkt",
       "PRODUCT_NAME": "Name der Applikation bei der UI Endpunkte angeboten werden",
       "APP_NAME": "Microfrontend das den UI Endpunkt anbietet"
@@ -376,14 +378,14 @@
     }
   },
   "SLOT": {
-    "NAME": "Name",
+    "NAME": "Slotname",
     "DESCRIPTION": "Beschreibung",
     "PRODUCT_NAME": "Applikationsname",
     "APP_ID": "Microfrontend",
     "STATE": "?",
     "TOOLTIPS": {
       "ID": "Eindeutige technische ID des Slots",
-      "NAME": "Eindeutiger Name des Slots",
+      "NAME": "Name des Slots",
       "DESCRIPTION": "Beschreibung",
       "PRODUCT_NAME": "Name der Applikation die den Slot anbietet",
       "APP_ID": "Microfrontend das den Slot anbietet",

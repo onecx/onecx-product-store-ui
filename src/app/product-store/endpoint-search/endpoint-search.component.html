@@ -55,6 +55,8 @@
       [reorderableColumns]="false"
       [scrollable]="true"
       scrollHeight="590px"
+      sortField="productName"
+      [sortOrder]="1"
       groupRowsBy="productName"
       rowGroupMode="rowspan"
       [rows]="10"
@@ -84,33 +86,19 @@
       </ng-template>
 
       <ng-template pTemplate="header" let-columns>
-        <!-- HEADER 1 -->
-        <tr>
-          <th id="ps_endpoint_search_table_header_1_product_info" colspan="2" class="text-center">
-            {{ 'ACTIONS.SEARCH.PRODUCT.LABEL' | translate }}
-          </th>
-          <th
-            id="ps_endpoint_search_table_header_1_counter"
-            class="w-3rem text-center border-left-1 border-right-1"
-          ></th>
-          <th id="ps_endpoint_search_table_header_1_endpoint_info" colspan="2" class="text-center">
-            {{ 'ACTIONS.SEARCH.ENDPOINT.LABEL' | translate }}
-          </th>
-        </tr>
-        <!-- HEADER 2 -->
         <tr>
           <th
             id="ps_endpoint_search_table_header_col_product_name"
-            [class]="'white-space-nowrap'"
+            [class]="'white-space-nowrap border-right-1'"
             pFrozenColumn
-            [pSortableColumn]="'productDisplayName'"
+            [pSortableColumn]="'productName'"
             [attr.aria-label]="'ENDPOINT.PRODUCT_NAME' | translate"
             [pTooltip]="'ENDPOINT.TOOLTIPS.PRODUCT_NAME' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           >
             {{ 'ENDPOINT.PRODUCT_NAME' | translate }}
-            <p-sortIcon field="productDisplayName"></p-sortIcon>
+            <p-sortIcon field="productName"></p-sortIcon>
           </th>
           <th
             id="ps_endpoint_search_table_header_col_app_name"
@@ -122,21 +110,16 @@
           >
             {{ 'ENDPOINT.APP_NAME' | translate }}
           </th>
-          <th id="ps_endpoint_search_table_header_2_counter" class="w-3rem text-center border-left-1 border-right-1">
-            #
-          </th>
           <th
             *ngFor="let col of columns"
             [id]="'ps_endpoint_search_table_header_col_' + col.field"
             [class]="'white-space-nowrap'"
-            [pSortableColumn]="col.field"
             [attr.aria-label]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
             [pTooltip]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           >
             <span>{{ col.translationPrefix + '.' + col.header | translate }}</span>
-            <p-sortIcon [field]="col.field"></p-sortIcon>
             <p-columnFilter *ngIf="col.hasFilter" type="text" [field]="col.field" display="menu"></p-columnFilter>
           </th>
         </tr>
@@ -155,7 +138,7 @@
             *ngIf="rowgroup"
             [attr.rowspan]="rowspan"
             [id]="'ps_endpoint_search_table_row_product_name'"
-            class="bg-inherit"
+            class="bg-inherit white-space-nowrap border-right-1"
             pFrozenColumn
           >
             {{ rowData['productDisplayName'] }}
@@ -177,8 +160,6 @@
               {{ rowData['appName'] }}
             </a>
           </td>
-
-          <td class="w-3rem text-center border-left-1 border-right-1">{{ i + 1 }}</td>
           <td
             *ngFor="let col of columns"
             [id]="'ps_endpoint_search_table_row_' + i + '_' + col.field"
