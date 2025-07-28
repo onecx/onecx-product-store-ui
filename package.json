@@ -23,7 +23,7 @@
     "test": "ng test",
     "test:ci": "ng test --watch=false --browsers=ChromeHeadless --code-coverage",
     "karma": "rm -rf reports && npm run test:ci",
-    "sonar": "npx sonar-scanner -Dproject.settings=sonar-local-project.properties",
+    "sonar": "npx sonar-scanner",
     "apigen-cleanup": "rm -rf $npm_package_config_openapiOutput",
     "apigen-format": "npx prettier $npm_package_config_openapiYaml --write && npx prettier $npm_package_config_openapiOutput/**/* --write",
     "apigen-generate": "openapi-generator-cli generate -i $npm_package_config_openapiYaml -g typescript-angular -c apigen.yaml -o $npm_package_config_openapiOutput --type-mappings=AnyType=object,set=Array",
