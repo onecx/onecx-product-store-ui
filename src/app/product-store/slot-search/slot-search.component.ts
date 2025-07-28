@@ -52,13 +52,6 @@ export class SlotSearchComponent implements OnInit {
 
   public columns: ExtendedColumn[] = [
     {
-      field: 'state',
-      header: 'STATE',
-      active: true,
-      css: 'text-center',
-      translationPrefix: 'SLOT'
-    },
-    {
       field: 'name',
       header: 'NAME',
       active: true,

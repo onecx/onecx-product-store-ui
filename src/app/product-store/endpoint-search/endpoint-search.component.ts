@@ -56,7 +56,7 @@ export class EndpointSearchComponent implements OnInit {
   public columns: Column[] = [
     {
       field: 'endpoint_name',
-      header: 'NAME',
+      header: 'NAME.SEARCH',
       active: true,
       translationPrefix: 'ENDPOINT'
     },

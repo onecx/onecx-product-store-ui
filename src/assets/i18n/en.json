@@ -325,12 +325,14 @@
   },
   "ENDPOINT": {
     "NAME": "Name",
+    "NAME.SEARCH": "Endpoint Name",
     "PATH": "Path",
     "PRODUCT_NAME": "Application",
     "APP_NAME": "Microfrontend",
     "CELL_EDITING_MESSAGE": "Data entry and changes are made directly in the table.",
     "TOOLTIPS": {
-      "NAME": "Unique name of the UI Endpoint",
+      "NAME": "Name of the UI Endpoint",
+      "NAME.SEARCH": "Name of the UI Endpoint",
       "PATH": "Path to the UI Endpoint",
       "PRODUCT_NAME": "Name of the application where UI endpoints are offered",
       "APP_NAME": "Microfrontend that provides the UI endpoint"
@@ -376,14 +378,14 @@
     }
   },
   "SLOT": {
-    "NAME": "Name",
+    "NAME": "Slot Name",
     "DESCRIPTION": "Description",
     "PRODUCT_NAME": "Application name",
     "APP_ID": "Microfrontend",
     "STATE": "?",
     "TOOLTIPS": {
       "ID": "Unique technical ID of the Slot",
-      "NAME": "Unique Name of the Slot",
+      "NAME": "Name of the Slot",
       "DESCRIPTION": "Description of the Slot",
       "PRODUCT_NAME": "Name of the Application which provides the Slot",
       "APP_ID": "Microfrontend providing the Slot",

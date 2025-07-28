@@ -24,11 +24,7 @@
   }
 
   .p-datatable {
-    .p-datatable-thead > tr:first-child > th:first-child,
-    .p-datatable-thead > tr:first-child > th:last-child {
-      background-color: rgba(var(--primary-color-rgb), 0.12);
-    }
-    .p-datatable-thead > tr:nth-child(2) > th {
+    .p-datatable-thead > tr:nth-child(1) > th {
       border-bottom-width: 2px;
     }
     .p-datatable-thead > tr > th,
