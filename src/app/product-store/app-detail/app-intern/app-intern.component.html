@@ -6,14 +6,12 @@
   </ng-template>
   <div class="flex flex-column row-gap-4">
     <!-- row 1 -->
-    <div class="mx-3 flex flex-row flex-wrap column-gap-6 row-gap-3">
+    <form [formGroup]="appForm" class="mx-3 flex flex-row flex-wrap column-gap-6 row-gap-3">
       <p-checkbox
         type="text"
         inputId="ps_app_detail_form_field_operator"
-        [(ngModel)]="operator"
-        [ngModelOptions]="{ standalone: true }"
+        formControlName="operator"
         [binary]="true"
-        [disabled]="true"
         [label]="'INTERNAL.OPERATOR' | translate"
         [ariaLabel]="'INTERNAL.OPERATOR' | translate"
         [pTooltip]="'APP.TOOLTIPS.OPERATOR' | translate"
@@ -23,10 +21,9 @@
       <p-checkbox
         type="text"
         inputId="ps_app_detail_form_field_undeployed"
-        [(ngModel)]="undeployed"
-        [ngModelOptions]="{ standalone: true }"
+        formControlName="undeployed"
         [binary]="true"
-        [disabled]="true"
+        (onChange)="onChangeUndeployed($event)"
         [label]="'APP.UNDEPLOYED' | translate"
         [ariaLabel]="'APP.UNDEPLOYED' | translate"
         [pTooltip]="'APP.TOOLTIPS.UNDEPLOYED' | translate"
@@ -37,17 +34,15 @@
         *ngIf="appType === 'MFE'"
         type="text"
         inputId="ps_app_detail_form_field_deprecated"
-        [(ngModel)]="deprecated"
-        [ngModelOptions]="{ standalone: true }"
+        formControlName="deprecated"
         [binary]="true"
-        [disabled]="true"
         [label]="'APP.DEPRECATED' | translate"
         [ariaLabel]="'APP.DEPRECATED' | translate"
         [pTooltip]="'APP.TOOLTIPS.DEPRECATED' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
       ></p-checkbox>
-    </div>
+    </form>
 
     <!-- row 2 -->
     <div class="flex flex-row flex-wrap gap-4">

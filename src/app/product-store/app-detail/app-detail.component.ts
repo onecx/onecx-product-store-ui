@@ -26,6 +26,7 @@ import {
 } from 'src/app/shared/generated'
 
 import { AppAbstract, ChangeMode } from '../app-search/app-search.component'
+import { AppInternComponent } from './app-intern/app-intern.component'
 
 export interface MfeForm {
   appId: FormControl<string | null>
@@ -67,6 +68,8 @@ export class AppDetailComponent implements OnInit, OnChanges {
 
   @ViewChild('panelDetail') panelDetail: TabView | undefined
   @ViewChild('endpointTable') endpointTable: Table | undefined
+  @ViewChild(AppInternComponent, { static: false }) appInternComponent!: AppInternComponent
+
   public mfe: Microfrontend | undefined
   public ms: Microservice | undefined
   public formGroupMfe: FormGroup
@@ -87,6 +90,8 @@ export class AppDetailComponent implements OnInit, OnChanges {
   public iconItems: SelectItem[] = []
   public endpoints: UIEndpoint[] = []
   public MicrofrontendType = MicrofrontendType
+  public appUndeployedValue: boolean | undefined = undefined
+  public appForIntern: AppAbstract | undefined = undefined
 
   constructor(
     private readonly user: UserService,
@@ -152,6 +157,14 @@ export class AppDetailComponent implements OnInit, OnChanges {
         if (this.appAbstract.appType === 'MFE') this.getMfe()
         if (this.appAbstract.appType === 'MS') this.getMs()
       }
+    }
+  }
+
+  // activate TAB
+  public onTabChange($event: any, mfe: Microfrontend | undefined, ms: Microservice | undefined) {
+    if (mfe || ms) {
+      this.selectedTabIndex = $event.index
+      if (this.selectedTabIndex === 2) this.appForIntern = (mfe ?? ms) as AppAbstract
     }
   }
 
@@ -287,13 +300,17 @@ export class AppDetailComponent implements OnInit, OnChanges {
     if (this.endpoints.length > 1) this.endpoints.splice(row, 1)
   }
 
+  public onChangeUndeployedValue(val: boolean) {
+    if (this.appAbstract) this.appAbstract.undeployed = val
+  }
+
   public onSave() {
     if (this.appAbstract?.appType === 'MFE') {
       if (!this.formGroupMfe.valid) {
         this.msgService.error({ summaryKey: 'VALIDATION.FORM_INVALID' })
         return
       }
-      this.mfe = { ...this.formGroupMfe.value, id: this.mfe?.id }
+      this.mfe = { ...this.formGroupMfe.value, id: this.mfe?.id, undeployed: this.appAbstract.undeployed }
       if (this.mfe) {
         this.mfe.classifications = convertToUniqueStringArray(this.formGroupMfe.controls['classifications'].value)
         this.mfe.endpoints = this.endpoints.filter((endpoint) => !(endpoint.name === '' && endpoint.path === ''))
@@ -305,7 +322,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
         this.msgService.error({ summaryKey: 'VALIDATION.FORM_INVALID' })
         return
       }
-      this.ms = { ...this.formGroupMs.value, id: this.ms?.id }
+      this.ms = { ...this.formGroupMs.value, id: this.ms?.id, undeployed: this.appAbstract.undeployed }
       this.changeMode === 'CREATE' ? this.createMs() : this.updateMs()
     }
   }

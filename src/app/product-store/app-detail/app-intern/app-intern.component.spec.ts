@@ -50,9 +50,9 @@ describe('AppInternComponent', () => {
 
       component.ngOnChanges()
 
-      expect(component.undeployed).toBe(true)
-      expect(component.operator).toBe(true)
-      expect(component.deprecated).toBe(false)
+      expect(component.appForm.get('operator')?.value).toBeTrue()
+      expect(component.appForm.get('undeployed')?.value).toBeTrue()
+      expect(component.appForm.get('deprecated')?.value).toBeFalse()
     })
 
     it('should set relevant values to false when viewed app is Microservice', () => {
@@ -61,9 +61,9 @@ describe('AppInternComponent', () => {
 
       component.ngOnChanges()
 
-      expect(component.undeployed).toBe(true)
-      expect(component.operator).toBe(true)
-      expect(component.deprecated).toBe(false)
+      expect(component.appForm.get('operator')?.value).toBeTrue()
+      expect(component.appForm.get('undeployed')?.value).toBeTrue()
+      expect(component.appForm.get('deprecated')?.value).toBeUndefined()
     })
 
     it('should set all properties to false when app is undefined', () => {
@@ -71,12 +71,12 @@ describe('AppInternComponent', () => {
 
       component.ngOnChanges()
 
-      expect(component.undeployed).toBe(false)
-      expect(component.operator).toBe(false)
-      expect(component.deprecated).toBe(false)
+      expect(component.appForm.get('operator')?.value).toBeNull()
+      expect(component.appForm.get('undeployed')?.value).toBeNull()
+      expect(component.appForm.get('deprecated')?.value).toBeNull()
     })
 
-    it('should set deprecated to false if app is a Microfrontend and deprecated property is missing', () => {
+    it('should exclude deprecated flag if deprecated property is missing', () => {
       const appMfeNoDeprecated: Partial<Microfrontend> = {
         operator: true,
         undeployed: true
@@ -86,7 +86,28 @@ describe('AppInternComponent', () => {
 
       component.ngOnChanges()
 
-      expect(component.deprecated).toBe(false)
+      expect(component.appForm.get('deprecated')?.value).toBeUndefined()
+    })
+
+    it('should enable undeployed field', () => {
+      component.app = appMs
+      component.appType = 'MS'
+      component.changeMode = 'EDIT'
+
+      component.ngOnChanges()
+
+      expect(component.appForm.get('undeployed')?.enabled).toBeTrue()
+    })
+  })
+
+  describe('additionals', () => {
+    it('should emit undeployed value', () => {
+      component.app = appMs
+      component.appType = 'MS'
+      component.changeMode = 'EDIT'
+
+      component.ngOnChanges()
+      component.onChangeUndeployed({ checked: true })
     })
   })
 })

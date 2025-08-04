@@ -37,7 +37,7 @@
     </div>
   </ng-template>
 
-  <p-tabView #panelDetail [(activeIndex)]="selectedTabIndex">
+  <p-tabView #panelDetail (onChange)="onTabChange($event, mfe, ms)" [(activeIndex)]="selectedTabIndex">
     <p-tabPanel [header]="'DIALOG.TABS.LOCAL' | translate" [tooltip]="'DIALOG.TABS.TOOLTIPS.LOCAL' | translate">
       <form *ngIf="!loading && appAbstract?.appType === 'MFE'" [formGroup]="formGroupMfe" errorTailor>
         <ng-template pTemplate="header">
@@ -549,8 +549,20 @@
       [header]="'DIALOG.TABS.INTERN' | translate"
       [tooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate"
     >
-      <app-app-intern *ngIf="appAbstract?.appType === 'MFE'" [app]="mfe" appType="MFE"></app-app-intern>
-      <app-app-intern *ngIf="appAbstract?.appType === 'MS'" [app]="ms" appType="MS"></app-app-intern>
+      <app-app-intern
+        *ngIf="appAbstract?.appType === 'MFE'"
+        [app]="appForIntern"
+        appType="MFE"
+        [changeMode]="changeMode"
+        (undeployed)="onChangeUndeployedValue($event)"
+      ></app-app-intern>
+      <app-app-intern
+        *ngIf="appAbstract?.appType === 'MS'"
+        [app]="appForIntern"
+        appType="MS"
+        [changeMode]="changeMode"
+        (undeployed)="onChangeUndeployedValue($event)"
+      ></app-app-intern>
     </p-tabPanel>
   </p-tabView>
 
