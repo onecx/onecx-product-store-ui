@@ -598,4 +598,23 @@ describe('AppDetailComponent', () => {
       expect(component.endpoints.length).toBe(1)
     })
   })
+
+  describe('on undeployed changes', () => {
+    it('should set selectedTabIndex onChange', () => {
+      const event = { index: 2 }
+
+      component.onTabChange(event, mfe, ms)
+
+      expect(component.appForIntern).toEqual(mfe as unknown as AppAbstract)
+
+      component.onTabChange(event, undefined, ms)
+
+      expect(component.appForIntern).toEqual(ms as unknown as AppAbstract)
+    })
+
+    it('should set selectedTabIndex onChange', () => {
+      component.appAbstract = appMs
+      component.onChangeUndeployedValue(true)
+    })
+  })
 })
