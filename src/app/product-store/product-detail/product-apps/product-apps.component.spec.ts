@@ -262,7 +262,7 @@ describe('ProductAppsComponent', () => {
     const mockEvent = { stopPropagation: jasmine.createSpy() }
 
     it('should display details of an mfe', () => {
-      component.onDetail(mockEvent, mfeApp, AppType.MFE)
+      component.onAppDetail(mockEvent, mfeApp, AppType.MFE)
 
       expect(component.app).toEqual(mfeApp)
       expect(component.changeMode).toEqual('EDIT')
@@ -270,7 +270,7 @@ describe('ProductAppsComponent', () => {
     })
 
     it('should display details of an ms', () => {
-      component.onDetail(mockEvent, msApp, AppType.MS)
+      component.onAppDetail(mockEvent, msApp, AppType.MS)
 
       expect(component.app).toEqual(msApp)
       expect(component.changeMode).toEqual('EDIT')

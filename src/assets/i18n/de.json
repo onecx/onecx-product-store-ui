@@ -416,6 +416,7 @@
     "PRODUCT.UNIQUE_CONSTRAINT.NAME": "Eine Applikation mit diesem Namen existiert bereits.",
     "PRODUCT.UNIQUE_CONSTRAINT.BASEPATH": "Eine Applikation mit diesem Basepath existiert bereits.",
     "PRODUCT.INVALID_NAME": "Dieser Name ist reserviert und kann nicht verwendet werden.",
+    "SLOT.UNIQUE_CONSTRAINT.SLOT_NAME": "Einen Slot mit diesem Namen existiert bereits für die Applikation.",
     "ERRORS": {
       "PARSE_ERROR": "Parserfehler: Die enthaltene Struktur entspricht nicht dem erwarteten Format.",
       "INTERNAL_ERROR": "Interner Fehler",

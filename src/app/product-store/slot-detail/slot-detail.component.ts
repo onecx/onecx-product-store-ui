@@ -182,7 +182,7 @@ export class SlotDetailComponent implements OnInit, OnChanges {
   private createSlot() {
     this.slotApi.createSlot({ createSlotRequest: this.slot as CreateSlotRequest }).subscribe({
       next: () => {
-        this.msgService.success({ summaryKey: 'ACTIONS.CREATE.APP.OK' })
+        this.msgService.success({ summaryKey: 'ACTIONS.CREATE.SLOT.OK' })
         this.changed.emit(true)
       },
       error: (err) => {
@@ -198,7 +198,7 @@ export class SlotDetailComponent implements OnInit, OnChanges {
       })
       .subscribe({
         next: () => {
-          this.msgService.success({ summaryKey: 'ACTIONS.EDIT.APP.OK' })
+          this.msgService.success({ summaryKey: 'ACTIONS.EDIT.SLOT.OK' })
           this.changed.emit(true)
         },
         error: (err) => {
@@ -208,11 +208,10 @@ export class SlotDetailComponent implements OnInit, OnChanges {
   }
 
   private displaySaveError(funcName: string, err: any): void {
-    let key = err?.error?.detail.indexOf('slot_app_id') > 0 ? 'VALIDATION.APP.UNIQUE_CONSTRAINT.APP_ID' : ''
-    key = err?.error?.detail.indexOf('slot_remote_module') > 0 ? 'VALIDATION.APP.UNIQUE_CONSTRAINT.REMOTE_MODULE' : key
+    let key = err?.error?.detail.indexOf('slot_name') > 0 ? 'VALIDATION.SLOT.UNIQUE_CONSTRAINT.SLOT_NAME' : ''
 
     this.msgService.error({
-      summaryKey: 'ACTIONS.' + this.changeMode + '.APP.NOK',
+      summaryKey: 'ACTIONS.' + this.changeMode + '.SLOT.NOK',
       detailKey:
         err?.error?.errorCode && err?.error?.errorCode === 'PERSIST_ENTITY_FAILED'
           ? key
