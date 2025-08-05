@@ -11,7 +11,9 @@
     "COPY": {
       "LABEL": "Copy",
       "APP": {
-        "HEADER": "Copy App"
+        "HEADER": "Copy App",
+        "OK": "The App was created successfully",
+        "NOK": "An error has occurred. The App was not created."
       },
       "PRODUCT": {
         "HEADER": "Copy Application"

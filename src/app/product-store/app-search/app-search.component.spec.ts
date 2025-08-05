@@ -451,7 +451,7 @@ describe('AppSearchComponent', () => {
 
     expect(event.stopPropagation).toHaveBeenCalled()
     expect(component.app).toBe(mfeApp)
-    expect(component.changeMode).toBe('COPY')
+    expect(component.changeMode).toBe('CREATE')
   })
 
   it('should should assign app to component property and change to copy mode onCreate', () => {

@@ -17,7 +17,8 @@ import {
 import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
 import { IconService } from 'src/app/shared/iconservice'
 
-import { AppAbstract, ChangeMode } from '../../app-search/app-search.component'
+import { ChangeMode } from '../../product-detail/product-detail.component'
+import { AppAbstract } from '../../app-search/app-search.component'
 
 export enum AppType {
   MS = 'MS',
@@ -127,7 +128,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   public onCopy(ev: any, app: any, appType: AppType) {
     ev.stopPropagation()
     this.app = { ...app, appType: appType } as AppAbstract
-    this.changeMode = 'COPY'
+    this.changeMode = 'CREATE'
     this.displayDetailDialog = true
   }
   public onCreate() {

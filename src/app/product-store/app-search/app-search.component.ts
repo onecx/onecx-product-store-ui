@@ -8,6 +8,7 @@ import { combineLatest, finalize, map, of, Observable, Subject, catchError } fro
 
 import { UserService } from '@onecx/angular-integration-interface'
 import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+import { ChangeMode } from '../product-detail/product-detail.component'
 
 import {
   MicrofrontendPageResult,
@@ -28,7 +29,6 @@ export type AppType = 'MS' | 'MFE'
 export type AppName = 'Microservice' | 'Microfrontend'
 export type AppFilterType = 'ALL' | AppType
 export type AppAbstract = Microservice & { appType: AppType; appTypeKey?: string; mfeType?: MicrofrontendType }
-export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
 
 @Component({
   templateUrl: './app-search.component.html',
@@ -355,7 +355,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public onCopy(ev: any, app: AppAbstract) {
     ev.stopPropagation()
     this.app = app
-    this.changeMode = 'COPY'
+    this.changeMode = 'CREATE'
     this.displayDetailDialog = true
   }
   public onCreate(type: AppType) {

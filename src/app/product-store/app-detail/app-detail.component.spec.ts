@@ -225,7 +225,7 @@ describe('AppDetailComponent', () => {
 
       it('should getMfe and prepare copy', () => {
         mfeApiServiceSpy.getMicrofrontend.and.returnValue(of(mfe))
-        component.changeMode = 'COPY'
+        component.changeMode = 'CREATE'
         component.formGroupMfe = mfeForm
         component.appAbstract = mfeAbstract
 
@@ -278,7 +278,7 @@ describe('AppDetailComponent', () => {
       it('should getMs', () => {
         msApiServiceSpy.getMicroservice.and.returnValue(of(ms))
         component.formGroupMs = msForm
-        component.changeMode = 'COPY'
+        component.changeMode = 'CREATE'
         component.appAbstract = msAbstract
 
         component.getMs()
@@ -601,20 +601,17 @@ describe('AppDetailComponent', () => {
 
   describe('on undeployed changes', () => {
     it('should set selectedTabIndex onChange', () => {
-      const event = { index: 2 }
-
-      component.onTabChange(event, mfe, ms)
-
-      expect(component.appForIntern).toEqual(mfe as unknown as AppAbstract)
-
-      component.onTabChange(event, undefined, ms)
-
-      expect(component.appForIntern).toEqual(ms as unknown as AppAbstract)
-    })
-
-    it('should set selectedTabIndex onChange', () => {
-      component.appAbstract = appMs
+      component.mfe = mfe
+      component.ms = undefined
       component.onChangeUndeployedValue(true)
+
+      expect(component.mfe.undeployed).toBeTrue()
+
+      component.mfe = undefined
+      component.ms = ms
+      component.onChangeUndeployedValue(true)
+
+      expect(component.ms.undeployed).toBeTrue()
     })
   })
 })

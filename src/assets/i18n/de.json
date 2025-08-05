@@ -11,7 +11,9 @@
     "COPY": {
       "LABEL": "Kopieren",
       "APP": {
-        "HEADER": "App kopieren"
+        "HEADER": "App kopieren",
+        "OK": "Die App wurde erfolgreich erstellt",
+        "NOK": "Die App konnte nicht erstellt werden."
       },
       "PRODUCT": {
         "HEADER": "Applikation kopieren"

@@ -25,7 +25,8 @@ import {
   UIEndpoint
 } from 'src/app/shared/generated'
 
-import { AppAbstract, ChangeMode } from '../app-search/app-search.component'
+import { ChangeMode } from '../product-detail/product-detail.component'
+import { AppAbstract } from '../app-search/app-search.component'
 import { AppInternComponent } from './app-intern/app-intern.component'
 
 export interface MfeForm {
@@ -77,21 +78,17 @@ export class AppDetailComponent implements OnInit, OnChanges {
   public selectedTabIndex = 0
   public dialogTitleKey: string | undefined = undefined
   public loading = false
-  public operator = false
-  public undeployed = false
-  public deprecated = false
   public hasCreatePermission = false
   public hasEditPermission = false
-  public technologies: SelectItem[] = []
-  public types: SelectItem[] = [
+  public mfeTypes: SelectItem[] = [
     { label: 'Module', value: 'MODULE' },
     { label: 'Component', value: 'COMPONENT' }
   ]
+  public technologies: SelectItem[] = []
   public iconItems: SelectItem[] = []
   public endpoints: UIEndpoint[] = []
   public MicrofrontendType = MicrofrontendType
   public appUndeployedValue: boolean | undefined = undefined
-  public appForIntern: AppAbstract | undefined = undefined
 
   constructor(
     private readonly user: UserService,
@@ -101,9 +98,9 @@ export class AppDetailComponent implements OnInit, OnChanges {
     private readonly msgService: PortalMessageService,
     private readonly translate: TranslateService
   ) {
+    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'medium'
     this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
     this.hasEditPermission = this.user.hasPermission('APP#EDIT')
-    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'medium'
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
     this.iconItems.sort(dropDownSortItemsByLabel)
 
@@ -141,18 +138,15 @@ export class AppDetailComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     if (this.displayDialog) {
-      this.enableForms()
       this.selectedTabIndex = 0
       this.dialogTitleKey = undefined
       this.ms = undefined
       this.mfe = undefined
-      if (this.changeMode === 'CREATE') {
-        this.formGroupMs.reset()
-        this.formGroupMfe.reset()
-        this.formGroupMfe.controls['type'].setValue('MODULE')
-        this.formGroupMfe.controls['technology'].setValue('ANGULAR')
-        this.dialogTitleKey = 'ACTIONS.CREATE.' + this.appAbstract?.appType + '.HEADER'
-      }
+      this.formGroupMs.reset()
+      this.formGroupMfe.reset()
+      this.formGroupMs.disable()
+      this.formGroupMfe.disable()
+      this.prepareCreate()
       if (this.appAbstract?.id) {
         if (this.appAbstract.appType === 'MFE') this.getMfe()
         if (this.appAbstract.appType === 'MS') this.getMs()
@@ -160,20 +154,24 @@ export class AppDetailComponent implements OnInit, OnChanges {
     }
   }
 
-  // activate TAB
-  public onTabChange($event: any, mfe: Microfrontend | undefined, ms: Microservice | undefined) {
-    if (mfe || ms) {
-      this.selectedTabIndex = $event.index
-      if (this.selectedTabIndex === 2) this.appForIntern = (mfe ?? ms) as AppAbstract
+  private prepareCreate() {
+    if (this.changeMode === 'CREATE') {
+      this.enableForms()
+      if (this.appAbstract?.appType === 'MFE') {
+        this.formGroupMfe.controls['type'].setValue('MODULE')
+        this.formGroupMfe.controls['technology'].setValue('ANGULAR')
+      }
+      this.dialogTitleKey = 'ACTIONS.CREATE.' + this.appAbstract?.appType + '.HEADER'
     }
   }
 
   public allowEditing(): boolean {
     return (
       (this.hasEditPermission && this.changeMode === 'EDIT') ||
-      (this.hasCreatePermission && ['COPY', 'CREATE'].includes(this.changeMode))
+      (this.hasCreatePermission && this.changeMode === 'CREATE')
     )
   }
+
   private enableForms(): void {
     if (this.allowEditing()) {
       this.formGroupMs.enable()
@@ -198,13 +196,10 @@ export class AppDetailComponent implements OnInit, OnChanges {
   private getMfeData(data: Microfrontend) {
     if (data) {
       this.mfe = data
-      if (this.mfe) this.viewFormMfe(this.mfe)
-      this.operator = this.mfe?.operator ?? false
-      this.undeployed = this.mfe?.undeployed ?? false
-      this.deprecated = this.mfe?.deprecated ?? false
+      if (this.mfe) this.fillFormMfe(this.mfe)
       this.endpoints = this.mfe?.endpoints ?? []
       if (this.endpoints.length === 0) this.onAddEndpointRow()
-      if (this.changeMode === 'COPY') {
+      if (this.changeMode === 'CREATE') {
         if (this.mfe?.id) {
           this.mfe.id = undefined
           this.mfe.operator = false
@@ -232,10 +227,8 @@ export class AppDetailComponent implements OnInit, OnChanges {
         next: (data: any) => {
           if (data) {
             this.ms = data
-            if (this.ms) this.viewFormMs(this.ms)
-            this.operator = this.ms?.operator ?? false
-            this.undeployed = this.ms?.undeployed ?? false
-            if (this.changeMode === 'COPY') {
+            if (this.ms) this.fillFormMs(this.ms)
+            if (this.changeMode === 'CREATE') {
               if (this.ms?.id) {
                 this.ms.id = undefined
                 this.ms.operator = false
@@ -255,27 +248,24 @@ export class AppDetailComponent implements OnInit, OnChanges {
       })
   }
 
-  public viewFormMfe(mfe: Microfrontend): void {
-    this.formGroupMfe.setValue({
-      appId: mfe['appId'],
-      appName: mfe['appName'],
-      appVersion: mfe['appVersion'],
-      productName: mfe['productName'],
-      description: mfe['description'],
-      technology: mfe['technology'],
-      type: mfe['type'],
-      remoteBaseUrl: mfe['remoteBaseUrl'],
-      remoteEntry: mfe['remoteEntry'],
-      remoteName: mfe['remoteName'],
-      tagName: mfe['tagName'],
-      exposedModule: mfe['exposedModule'],
-      classifications: mfe['classifications'],
-      contact: mfe['contact'],
-      iconName: mfe['iconName'],
-      note: mfe['note']
-    })
+  public fillFormMfe(mfe: Microfrontend): void {
+    // build form mfe by excluding not used fields
+    const formMfe = (({
+      id,
+      creationDate,
+      creationUser,
+      modificationDate,
+      modificationUser,
+      modificationCount,
+      operator,
+      undeployed,
+      deprecated,
+      endpoints,
+      ...o
+    }) => o)(mfe)
+    this.formGroupMfe.setValue(formMfe) // assign
   }
-  public viewFormMs(ms: Microservice): void {
+  public fillFormMs(ms: Microservice): void {
     this.formGroupMs.setValue({
       appId: ms['appId'],
       appName: ms['appName'],
@@ -289,6 +279,8 @@ export class AppDetailComponent implements OnInit, OnChanges {
    * UI Actions
    */
   public onDialogHide() {
+    this.mfe = undefined
+    this.ms = undefined
     this.appChanged.emit(false)
   }
 
@@ -301,7 +293,8 @@ export class AppDetailComponent implements OnInit, OnChanges {
   }
 
   public onChangeUndeployedValue(val: boolean) {
-    if (this.appAbstract) this.appAbstract.undeployed = val
+    if (this.mfe) this.mfe.undeployed = val
+    if (this.ms) this.ms.undeployed = val
   }
 
   public onSave() {
@@ -310,26 +303,40 @@ export class AppDetailComponent implements OnInit, OnChanges {
         this.msgService.error({ summaryKey: 'VALIDATION.FORM_INVALID' })
         return
       }
-      this.mfe = { ...this.formGroupMfe.value, id: this.mfe?.id, undeployed: this.appAbstract.undeployed }
-      if (this.mfe) {
-        this.mfe.classifications = convertToUniqueStringArray(this.formGroupMfe.controls['classifications'].value)
-        this.mfe.endpoints = this.endpoints.filter((endpoint) => !(endpoint.name === '' && endpoint.path === ''))
-      }
-      this.changeMode === 'CREATE' ? this.createMfe() : this.updateMfe()
+      this.saveMfe()
     }
     if (this.appAbstract?.appType === 'MS') {
       if (!this.formGroupMs.valid) {
         this.msgService.error({ summaryKey: 'VALIDATION.FORM_INVALID' })
         return
       }
-      this.ms = { ...this.formGroupMs.value, id: this.ms?.id, undeployed: this.appAbstract.undeployed }
-      this.changeMode === 'CREATE' ? this.createMs() : this.updateMs()
+      this.saveMs()
     }
   }
 
   /**
    * DATA
    */
+  private saveMfe() {
+    this.mfe = {
+      ...this.formGroupMfe.value,
+      id: this.mfe?.id,
+      undeployed: this.changeMode === 'EDIT' ? this.mfe?.undeployed : undefined
+    }
+    if (this.mfe) {
+      this.mfe.classifications = convertToUniqueStringArray(this.formGroupMfe.controls['classifications'].value)
+      this.mfe.endpoints = this.endpoints.filter((endpoint) => !(endpoint.name === '' && endpoint.path === ''))
+    }
+    this.changeMode === 'CREATE' ? this.createMfe() : this.updateMfe()
+  }
+  private saveMs() {
+    this.ms = {
+      ...this.formGroupMs.value,
+      id: this.ms?.id,
+      undeployed: this.changeMode === 'EDIT' ? this.ms?.undeployed : undefined
+    }
+    this.changeMode === 'CREATE' ? this.createMs() : this.updateMs()
+  }
   private createMfe() {
     this.mfeApi.createMicrofrontend({ createMicrofrontendRequest: this.mfe as CreateMicrofrontendRequest }).subscribe({
       next: () => {

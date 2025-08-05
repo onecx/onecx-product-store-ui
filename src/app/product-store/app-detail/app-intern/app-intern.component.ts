@@ -3,15 +3,15 @@ import { FormControl, FormGroup } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 
 import { Microfrontend, Microservice } from 'src/app/shared/generated'
-import { ChangeMode } from '../../app-search/app-search.component'
+import { ChangeMode } from '../../product-detail/product-detail.component'
 
 @Component({
   selector: 'app-app-intern',
   templateUrl: './app-intern.component.html'
 })
 export class AppInternComponent implements OnChanges {
-  @Input() app: (Microfrontend | Microservice) | undefined
-  @Input() appType: 'MFE' | 'MS' = 'MFE'
+  @Input() mfe: Microfrontend | undefined
+  @Input() ms: Microservice | undefined
   @Input() dateFormat = 'medium'
   @Input() changeMode: ChangeMode = 'VIEW'
   @Output() undeployed = new EventEmitter<boolean>()
@@ -29,15 +29,17 @@ export class AppInternComponent implements OnChanges {
   public ngOnChanges(): void {
     this.appForm.reset()
     this.appForm.disable()
-    if (this.app) {
+    if (this.mfe || this.ms) {
       this.setFormData()
+      console.log('ngOnChanges', this.mfe, this.ms, this.changeMode)
       this.changeMode === 'EDIT' ? this.appForm.get('undeployed')?.enable() : this.appForm.get('undeployed')?.disable()
     }
   }
 
   private setFormData(): void {
     Object.keys(this.appForm.controls).forEach((key) => {
-      if ((this.app as any)[key] !== null) this.appForm.controls[key].setValue((this.app as any)[key])
+      if (this.mfe && (this.mfe as any)[key] !== null) this.appForm.controls[key].setValue((this.mfe as any)[key])
+      if (this.ms && (this.ms as any)[key] !== null) this.appForm.controls[key].setValue((this.ms as any)[key])
     })
   }
 
