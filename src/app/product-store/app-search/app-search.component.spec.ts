@@ -71,7 +71,7 @@ describe('AppSearchComponent', () => {
   }
   const mockUserService = {
     lang$: {
-      getValue: jasmine.createSpy('getValue').and.returnValue('en')
+      getValue: jasmine.createSpy('getValue').and.returnValue('de')
     },
     hasPermission: jasmine.createSpy('hasPermission').and.callFake((permission) => {
       return ['APP#CREATE', 'APP#DELETE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
@@ -489,5 +489,22 @@ describe('AppSearchComponent', () => {
 
     expect(component.searchApps).toHaveBeenCalled()
     expect(component.displayDetailDialog).toBeFalse()
+  })
+
+  /**
+   * Language tests
+   */
+  describe('language', () => {
+    it('should set a German date format', () => {
+      expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm:ss')
+    })
+
+    it('should set default date format', () => {
+      mockUserService.lang$.getValue.and.returnValue('en')
+      fixture = TestBed.createComponent(AppSearchComponent)
+      component = fixture.componentInstance
+      fixture.detectChanges()
+      expect(component.dateFormat).toEqual('M/d/yy, hh:mm:ss a')
+    })
   })
 })

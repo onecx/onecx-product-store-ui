@@ -77,7 +77,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     private readonly msApi: MicroservicesAPIService,
     private readonly translate: TranslateService
   ) {
-    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'medium'
+    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
     this.hasDeletePermission = this.user.hasPermission('APP#DELETE')
     this.hasEditPermission = this.user.hasPermission('APP#EDIT')

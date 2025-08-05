@@ -58,7 +58,7 @@ describe('ProductAppsComponent', () => {
   }
   const mockUserService = {
     lang$: {
-      getValue: jasmine.createSpy('getValue').and.returnValue('en')
+      getValue: jasmine.createSpy('getValue').and.returnValue('de')
     },
     hasPermission: jasmine.createSpy('hasPermission').and.callFake((permission) => {
       return ['APP#CREATE', 'APP#DELETE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
@@ -363,6 +363,35 @@ describe('ProductAppsComponent', () => {
 
       expect(component.displaySlotDeleteDialog).toBe(false)
       expect(component['getProductDetails']).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('open slot detail', () => {
+    it('should stop event propagation and open slot detail in edit mode', () => {
+      const event = { stopPropagation: jasmine.createSpy() }
+      const slot: Slot = { id: 'id', name: 'Test Slot' } as Slot
+
+      component.onSlotDetail(event as any, slot)
+
+      expect(event.stopPropagation).toHaveBeenCalled()
+      expect(component.displaySlotDetailDialog).toBeTrue()
+    })
+  })
+
+  /**
+   * Language tests
+   */
+  describe('language', () => {
+    it('should set a German date format', () => {
+      expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm:ss')
+    })
+
+    it('should set default date format', () => {
+      mockUserService.lang$.getValue.and.returnValue('en')
+      fixture = TestBed.createComponent(ProductAppsComponent)
+      component = fixture.componentInstance
+      fixture.detectChanges()
+      expect(component.dateFormat).toEqual('M/d/yy, hh:mm:ss a')
     })
   })
 })

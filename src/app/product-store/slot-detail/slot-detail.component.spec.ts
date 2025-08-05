@@ -92,8 +92,37 @@ describe('SlotDetailComponent', () => {
     component.formGroupSlot.reset()
   })
 
-  it('should create', () => {
-    expect(component).toBeTruthy()
+  describe('initialize', () => {
+    it('should create component', () => {
+      expect(component).toBeTruthy()
+    })
+
+    it('should switch to EDIT', () => {
+      component.hasEditPermission = true
+      component.changeMode = 'VIEW'
+
+      component.ngOnInit()
+
+      expect(component.changeMode).toBe('EDIT')
+    })
+
+    it('should not switching to EDIT when creation', () => {
+      component.hasEditPermission = true
+      component.changeMode = 'CREATE'
+
+      component.ngOnInit()
+
+      expect(component.changeMode).toBe('CREATE')
+    })
+
+    it('should allow editing', () => {
+      component.hasCreatePermission = true
+      component.changeMode = 'CREATE'
+
+      const val = component.allowEditing()
+
+      expect(val).toBeTrue()
+    })
   })
 
   describe('get data', () => {
@@ -114,6 +143,7 @@ describe('SlotDetailComponent', () => {
 
     it('should successful with return data - VIEW', () => {
       slotsAPIService.getSlot.and.returnValue(of(slot))
+      component.changeMode = 'VIEW'
       component.hasEditPermission = false
       component.slot = slot
 
@@ -126,9 +156,10 @@ describe('SlotDetailComponent', () => {
     it('should successful with return data - EDIT', () => {
       slotsAPIService.getSlot.and.returnValue(of(slot))
       component.hasEditPermission = true
+      component.changeMode = 'EDIT'
       component.slot = slot
 
-      component.getSlot()
+      component.ngOnChanges()
 
       expect(component.slot).toEqual(slot)
       expect(component.dialogTitleKey).toBe('ACTIONS.EDIT.SLOT.HEADER')

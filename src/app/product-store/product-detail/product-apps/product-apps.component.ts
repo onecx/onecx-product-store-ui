@@ -57,7 +57,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
     private readonly user: UserService,
     private readonly productApi: ProductsAPIService
   ) {
-    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'medium'
+    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
     this.hasDeletePermission = this.user.hasPermission('APP#DELETE')
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))

@@ -83,7 +83,7 @@ export class SlotSearchComponent implements OnInit {
     private readonly translate: TranslateService,
     private readonly msgService: PortalMessageService
   ) {
-    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'medium'
+    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.hasEditPermission = this.user.hasPermission('APP#EDIT')
     this.filteredColumns = this.columns.filter((a) => a.active === true)
     this.searchCriteria = new FormGroup<SlotSearchCriteria>({

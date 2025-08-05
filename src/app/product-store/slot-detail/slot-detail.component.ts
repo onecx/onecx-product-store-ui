@@ -63,7 +63,7 @@ export class SlotDetailComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    if (this.hasEditPermission && this.changeMode === 'VIEW') this.changeMode = 'EDIT'
+    if (this.hasEditPermission && this.changeMode !== 'CREATE') this.changeMode = 'EDIT'
   }
 
   ngOnChanges() {
