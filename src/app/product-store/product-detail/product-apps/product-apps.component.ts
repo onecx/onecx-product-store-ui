@@ -127,7 +127,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   public onCopy(ev: any, app: any, appType: AppType) {
     ev.stopPropagation()
     this.app = { ...app, appType: appType } as AppAbstract
-    this.changeMode = 'COPY'
+    this.changeMode = 'CREATE'
     this.displayDetailDialog = true
   }
   public onCreate() {

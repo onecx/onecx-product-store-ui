@@ -28,7 +28,7 @@ export type AppType = 'MS' | 'MFE'
 export type AppName = 'Microservice' | 'Microfrontend'
 export type AppFilterType = 'ALL' | AppType
 export type AppAbstract = Microservice & { appType: AppType; appTypeKey?: string; mfeType?: MicrofrontendType }
-export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
+export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT'
 
 @Component({
   templateUrl: './app-search.component.html',
@@ -355,7 +355,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public onCopy(ev: any, app: AppAbstract) {
     ev.stopPropagation()
     this.app = app
-    this.changeMode = 'COPY'
+    this.changeMode = 'CREATE'
     this.displayDetailDialog = true
   }
   public onCreate(type: AppType) {
