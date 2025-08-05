@@ -45,8 +45,7 @@ describe('AppInternComponent', () => {
 
   describe('ngOnChanges', () => {
     it('should set relevant values correctly when viewed app is Microfrontend', () => {
-      component.app = appMfe
-      component.appType = 'MFE'
+      component.mfe = appMfe
 
       component.ngOnChanges()
 
@@ -56,8 +55,7 @@ describe('AppInternComponent', () => {
     })
 
     it('should set relevant values to false when viewed app is Microservice', () => {
-      component.app = appMs
-      component.appType = 'MS'
+      component.ms = appMs
 
       component.ngOnChanges()
 
@@ -67,7 +65,8 @@ describe('AppInternComponent', () => {
     })
 
     it('should set all properties to false when app is undefined', () => {
-      component.app = undefined
+      component.mfe = undefined
+      component.ms = undefined
 
       component.ngOnChanges()
 
@@ -81,8 +80,7 @@ describe('AppInternComponent', () => {
         operator: true,
         undeployed: true
       }
-      component.app = appMfeNoDeprecated as Microfrontend
-      component.appType = 'MFE'
+      component.mfe = appMfeNoDeprecated as Microfrontend
 
       component.ngOnChanges()
 
@@ -90,8 +88,7 @@ describe('AppInternComponent', () => {
     })
 
     it('should enable undeployed field', () => {
-      component.app = appMs
-      component.appType = 'MS'
+      component.ms = appMs
       component.changeMode = 'EDIT'
 
       component.ngOnChanges()
@@ -102,8 +99,7 @@ describe('AppInternComponent', () => {
 
   describe('additionals', () => {
     it('should emit undeployed value', () => {
-      component.app = appMs
-      component.appType = 'MS'
+      component.ms = appMs
       component.changeMode = 'EDIT'
 
       component.ngOnChanges()

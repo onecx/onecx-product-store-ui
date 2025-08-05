@@ -601,8 +601,17 @@ describe('AppDetailComponent', () => {
 
   describe('on undeployed changes', () => {
     it('should set selectedTabIndex onChange', () => {
-      component.appAbstract = appMs
+      component.mfe = mfe
+      component.ms = undefined
       component.onChangeUndeployedValue(true)
+
+      expect(component.mfe.undeployed).toBeTrue()
+
+      component.mfe = undefined
+      component.ms = ms
+      component.onChangeUndeployedValue(true)
+
+      expect(component.ms.undeployed).toBeTrue()
     })
   })
 })

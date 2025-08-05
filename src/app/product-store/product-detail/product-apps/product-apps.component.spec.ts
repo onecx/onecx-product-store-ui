@@ -284,7 +284,7 @@ describe('ProductAppsComponent', () => {
     component.onCopy(mockEvent, mfeApp, AppType.MFE)
 
     expect(component.app).toEqual(mfeApp)
-    expect(component.changeMode).toEqual('COPY')
+    expect(component.changeMode).toEqual('CREATE')
     expect(component.displayDetailDialog).toBeTrue()
   })
 
