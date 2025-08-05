@@ -71,7 +71,7 @@ describe('SlotSearchComponent', () => {
   }
   const mockUserService = {
     lang$: {
-      getValue: jasmine.createSpy('getValue').and.returnValue('en')
+      getValue: jasmine.createSpy('getValue').and.returnValue('de')
     },
     hasPermission: jasmine.createSpy('hasPermission').and.callFake((permission) => {
       return ['APP#CREATE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
@@ -265,6 +265,25 @@ describe('SlotSearchComponent', () => {
           error: done.fail
         })
       })
+
+      it('should search slots - slot error', (done) => {
+        const errorResponse = { status: 401, statusText: 'Not authorized' }
+        apiProductsServiceSpy.searchProducts.and.returnValue(of({ stream: products }))
+        apiSlotsServiceSpy.searchSlots.and.returnValue(throwError(() => errorResponse))
+        spyOn(console, 'error')
+
+        component.onSearch()
+
+        component.slotData$.subscribe({
+          next: (result) => {
+            expect(result.length).toBe(0)
+            expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.SLOTS')
+            expect(console.error).toHaveBeenCalledWith('searchSlots', errorResponse)
+            done()
+          },
+          error: done.fail
+        })
+      })
     })
 
     describe('slot issues', () => {
@@ -361,6 +380,51 @@ describe('SlotSearchComponent', () => {
         fragment: 'apps',
         relativeTo: routeMock
       })
+    })
+
+    it('should stop event propagation and open slot detail in edit mode', () => {
+      const event = { stopPropagation: jasmine.createSpy() }
+      component.hasEditPermission = true
+
+      component.onGotoSlot(event as any, { ...slots[0] } as SlotData)
+
+      expect(event.stopPropagation).toHaveBeenCalled()
+      expect(component.displaySlotDetailDialog).toBeTrue()
+      expect(component.changeMode).toBe('EDIT')
+    })
+
+    it('should stop event propagation and open slot detail in view mode', () => {
+      const event = { stopPropagation: jasmine.createSpy() }
+      component.hasEditPermission = false
+
+      component.onGotoSlot(event as any, { ...slots[0] } as SlotData)
+
+      expect(event.stopPropagation).toHaveBeenCalled()
+      expect(component.displaySlotDetailDialog).toBeTrue()
+      expect(component.changeMode).toBe('VIEW')
+    })
+
+    it('should get slot change event', () => {
+      component.slotChanged(true)
+
+      expect().nothing()
+    })
+  })
+
+  /**
+   * Language tests
+   */
+  describe('language', () => {
+    it('should set a German date format', () => {
+      expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm:ss')
+    })
+
+    it('should set default date format', () => {
+      mockUserService.lang$.getValue.and.returnValue('en')
+      fixture = TestBed.createComponent(SlotSearchComponent)
+      component = fixture.componentInstance
+      fixture.detectChanges()
+      expect(component.dateFormat).toEqual('M/d/yy, hh:mm:ss a')
     })
   })
 })

@@ -104,6 +104,8 @@ describe('AppInternComponent', () => {
 
       component.ngOnChanges()
       component.onChangeUndeployed({ checked: true })
+
+      expect().nothing()
     })
   })
 })

@@ -2,24 +2,23 @@ import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core
 import { FormControl, FormGroup } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 
-import { Microfrontend, Microservice } from 'src/app/shared/generated'
+import { Slot } from 'src/app/shared/generated'
 import { ChangeMode } from '../../product-detail/product-detail.component'
 
 @Component({
-  selector: 'app-app-intern',
-  templateUrl: './app-intern.component.html'
+  selector: 'app-slot-intern',
+  templateUrl: './slot-intern.component.html'
 })
-export class AppInternComponent implements OnChanges {
-  @Input() mfe: Microfrontend | undefined
-  @Input() ms: Microservice | undefined
+export class SlotInternComponent implements OnChanges {
+  @Input() slot: Slot | undefined
   @Input() dateFormat = 'medium'
   @Input() changeMode: ChangeMode = 'VIEW'
   @Output() undeployed = new EventEmitter<boolean>()
 
-  public appForm: FormGroup
+  public slotForm: FormGroup
 
   constructor(private readonly translate: TranslateService) {
-    this.appForm = new FormGroup({
+    this.slotForm = new FormGroup({
       operator: new FormControl<boolean | null>(null),
       deprecated: new FormControl<boolean | null>(null),
       undeployed: new FormControl<boolean | null>(null)
@@ -27,18 +26,19 @@ export class AppInternComponent implements OnChanges {
   }
 
   public ngOnChanges(): void {
-    this.appForm.reset()
-    this.appForm.disable()
-    if (this.mfe || this.ms) {
+    this.slotForm.reset()
+    this.slotForm.disable()
+    if (this.slot) {
       this.setFormData()
-      this.changeMode === 'EDIT' ? this.appForm.get('undeployed')?.enable() : this.appForm.get('undeployed')?.disable()
+      this.changeMode === 'EDIT'
+        ? this.slotForm.get('undeployed')?.enable()
+        : this.slotForm.get('undeployed')?.disable()
     }
   }
 
   private setFormData(): void {
-    Object.keys(this.appForm.controls).forEach((key) => {
-      if (this.mfe && (this.mfe as any)[key] !== null) this.appForm.controls[key].setValue((this.mfe as any)[key])
-      if (this.ms && (this.ms as any)[key] !== null) this.appForm.controls[key].setValue((this.ms as any)[key])
+    Object.keys(this.slotForm.controls).forEach((key) => {
+      if (this.slot && (this.slot as any)[key] !== null) this.slotForm.controls[key].setValue((this.slot as any)[key])
     })
   }
 

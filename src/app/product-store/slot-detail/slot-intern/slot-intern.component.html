@@ -1,0 +1,118 @@
+<form>
+  <ng-template pTemplate="header">
+    <span [pTooltip]="'APP.TOOLTIPS.GROUP.INTERNALS' | translate" tooltipPosition="top" tooltipEvent="hover">
+      {{ 'APP.GROUP.INTERNALS' | translate }}</span
+    >
+  </ng-template>
+  <div class="flex flex-column row-gap-4">
+    <!-- row 1 -->
+    <form [formGroup]="slotForm" class="mx-3 flex flex-row flex-wrap column-gap-6 row-gap-3">
+      <p-checkbox
+        type="text"
+        inputId="ps_slot_detail_form_field_operator"
+        formControlName="operator"
+        [binary]="true"
+        [label]="'INTERNAL.OPERATOR' | translate"
+        [ariaLabel]="'INTERNAL.OPERATOR' | translate"
+        [pTooltip]="'SLOT.TOOLTIPS.OPERATOR' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      ></p-checkbox>
+      <p-checkbox
+        type="text"
+        inputId="ps_slot_detail_form_field_undeployed"
+        formControlName="undeployed"
+        [binary]="true"
+        (onChange)="onChangeUndeployed($event)"
+        [label]="'APP.UNDEPLOYED' | translate"
+        [ariaLabel]="'APP.UNDEPLOYED' | translate"
+        [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      ></p-checkbox>
+      <p-checkbox
+        type="text"
+        inputId="ps_slot_detail_form_field_deprecated"
+        formControlName="deprecated"
+        [binary]="true"
+        [label]="'APP.DEPRECATED' | translate"
+        [ariaLabel]="'APP.DEPRECATED' | translate"
+        [pTooltip]="'SLOT.DEPRECATED_SEARCH' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      ></p-checkbox>
+    </form>
+
+    <!-- row 2 -->
+    <div class="flex flex-row flex-wrap gap-4">
+      <span class="flex-grow-1 sm:flex-grow-0 p-float-label">
+        <input
+          pInputText
+          type="text"
+          id="ps_slot_detail_form_field_creation_date"
+          class="w-full sm:w-13rem pt-3 pb-2 text-responsive"
+          [value]="slot?.creationDate ? (slot?.creationDate | date: dateFormat) : ''"
+          [disabled]="true"
+          [attr.aria-label]="'INTERNAL.CREATION_DATE' | translate"
+          [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        />
+        <label for="ps_slot_detail_form_field_creation_date">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
+      </span>
+      <span class="flex-grow-1 p-float-label">
+        <input
+          pInputText
+          type="text"
+          id="ps_slot_detail_form_field_creation_user"
+          class="w-full pt-3 pb-2 text-responsive"
+          [value]="slot?.creationUser"
+          [disabled]="true"
+          [attr.aria-label]="'INTERNAL.CREATION_USER' | translate"
+          [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_USER' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        />
+        <label for="ps_slot_detail_form_field_creation_user"> {{ 'INTERNAL.CREATION_USER' | translate }} </label>
+      </span>
+    </div>
+
+    <!-- row 3 -->
+    <div class="flex flex-row flex-wrap gap-4">
+      <span class="flex-grow-1 sm:flex-grow-0 p-float-label">
+        <input
+          pInputText
+          type="text"
+          id="ps_slot_detail_form_field_modification_date"
+          class="w-full sm:w-13rem pt-3 pb-2"
+          [value]="slot?.modificationDate ? (slot?.modificationDate | date: dateFormat) : ''"
+          [disabled]="true"
+          [attr.aria-label]="'INTERNAL.MODIFICATION_DATE' | translate"
+          [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        />
+        <label for="ps_slot_detail_form_field_modification_date">
+          {{ 'INTERNAL.MODIFICATION_DATE' | translate }}
+        </label>
+      </span>
+      <span class="flex-grow-1 p-float-label">
+        <input
+          pInputText
+          type="text"
+          id="ps_slot_detail_form_field_modification_user"
+          class="w-full pt-3 pb-2 text-responsive"
+          [value]="slot?.modificationUser"
+          [disabled]="true"
+          [attr.aria-label]="'INTERNAL.MODIFICATION_USER' | translate"
+          [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_USER' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        />
+        <label for="ps_slot_detail_form_field_modification_user">
+          {{ 'INTERNAL.MODIFICATION_USER' | translate }}
+        </label>
+      </span>
+    </div>
+  </div>
+</form>

@@ -39,7 +39,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public exceptionKey: string | undefined
   public loading = true
   public actions$: Observable<Action[]> | undefined
-
+  public dateFormat = 'medium'
   public apps$!: Observable<AppAbstract[]>
   public mfes$!: Observable<MicrofrontendPageResult>
   public mss$!: Observable<MicroservicePageResult>
@@ -77,6 +77,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     private readonly msApi: MicroservicesAPIService,
     private readonly translate: TranslateService
   ) {
+    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
     this.hasDeletePermission = this.user.hasPermission('APP#DELETE')
     this.hasEditPermission = this.user.hasPermission('APP#EDIT')
@@ -249,7 +250,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
             {
               label: data['ACTIONS.CREATE.MFE.LABEL'],
               title: data['ACTIONS.CREATE.APP.TOOLTIP'],
-              actionCallback: () => this.onCreate('MFE'),
+              actionCallback: () => this.onAppCreate('MFE'),
               permission: 'APP#CREATE',
               icon: 'pi pi-plus',
               show: 'asOverflow'
@@ -257,7 +258,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
             {
               label: data['ACTIONS.CREATE.MS.LABEL'],
               title: data['ACTIONS.CREATE.APP.TOOLTIP'],
-              actionCallback: () => this.onCreate('MS'),
+              actionCallback: () => this.onAppCreate('MS'),
               permission: 'APP#CREATE',
               icon: 'pi pi-plus',
               show: 'asOverflow'
@@ -346,24 +347,24 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     this.router.navigate(['../', product], { relativeTo: this.route })
   }
 
-  public onDetail(ev: any, app: AppAbstract) {
+  public onAppDetail(ev: any, app: AppAbstract) {
     ev.stopPropagation()
     this.app = app
     this.changeMode = this.hasEditPermission ? 'EDIT' : 'VIEW'
     this.displayDetailDialog = true
   }
-  public onCopy(ev: any, app: AppAbstract) {
+  public onAppCopy(ev: any, app: AppAbstract) {
     ev.stopPropagation()
     this.app = app
     this.changeMode = 'CREATE'
     this.displayDetailDialog = true
   }
-  public onCreate(type: AppType) {
+  public onAppCreate(type: AppType) {
     this.changeMode = 'CREATE'
     this.app = { appType: type } as AppAbstract
     this.displayDetailDialog = true
   }
-  public onDelete(ev: any, app: AppAbstract) {
+  public onAppDelete(ev: any, app: AppAbstract) {
     ev.stopPropagation()
     this.app = app
     this.displayDeleteDialog = true
@@ -374,6 +375,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
    */
   public appChanged(changed: any) {
     this.displayDetailDialog = false
+    this.displayDeleteDialog = false
     if (changed) this.searchApps()
   }
   public appDeleted(deleted: any) {

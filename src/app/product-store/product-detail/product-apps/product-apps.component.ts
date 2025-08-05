@@ -47,6 +47,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   public displayDetailDialog = false
   public displayDeleteDialog = false
   public displaySlotDeleteDialog = false
+  public displaySlotDetailDialog = false
   public hasCreatePermission = false
   public hasDeletePermission = false
   public hasComponents = false
@@ -56,6 +57,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
     private readonly user: UserService,
     private readonly productApi: ProductsAPIService
   ) {
+    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
     this.hasDeletePermission = this.user.hasPermission('APP#DELETE')
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
@@ -75,6 +77,8 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
    * GET product
    */
   private getProductDetails(): void {
+    this.app = undefined
+    this.slot = undefined
     const criteria: ProductDetailsCriteria = {
       name: this.product?.name,
       pageSize: 1000 // page size of the children
@@ -119,7 +123,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   /**
    * UI EVENTS
    */
-  public onDetail(ev: any, app: any, appType: AppType) {
+  public onAppDetail(ev: any, app: any, appType: AppType) {
     ev.stopPropagation()
     this.app = { ...app, appType: appType, mfeType: app.mfeType ?? app.type } as AppAbstract
     this.changeMode = 'EDIT'
@@ -144,6 +148,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
 
   public appChanged(changed: any) {
     this.displayDetailDialog = false
+    this.displaySlotDetailDialog = false
     if (changed) this.getProductDetails()
   }
   public appDeleted(deleted: any) {
@@ -159,5 +164,10 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   public slotDeleted(deleted: boolean) {
     this.displaySlotDeleteDialog = false
     if (deleted) this.getProductDetails()
+  }
+  public onSlotDetail(ev: any, slot: Slot) {
+    ev.stopPropagation()
+    this.slot = { ...slot }
+    this.displaySlotDetailDialog = true
   }
 }

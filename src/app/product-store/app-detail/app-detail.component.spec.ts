@@ -569,14 +569,6 @@ describe('AppDetailComponent', () => {
   })
 
   describe('various', () => {
-    it('should call this.user.lang$ from the constructor and set this.dateFormat to the default format if user.lang$ is not de', () => {
-      mockUserService.lang$.getValue.and.returnValue('de')
-      fixture = TestBed.createComponent(AppDetailComponent)
-      component = fixture.componentInstance
-      fixture.detectChanges()
-      expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm:ss')
-    })
-
     it('should behave correctly onDialogHide', () => {
       spyOn(component.appChanged, 'emit')
 

@@ -71,7 +71,7 @@ describe('AppSearchComponent', () => {
   }
   const mockUserService = {
     lang$: {
-      getValue: jasmine.createSpy('getValue').and.returnValue('en')
+      getValue: jasmine.createSpy('getValue').and.returnValue('de')
     },
     hasPermission: jasmine.createSpy('hasPermission').and.callFake((permission) => {
       return ['APP#CREATE', 'APP#DELETE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
@@ -175,8 +175,8 @@ describe('AppSearchComponent', () => {
       }
     })
 
-    it('should call onCreate when actionCallback is executed', () => {
-      spyOn(component, 'onCreate')
+    it('should call onAppCreate when actionCallback is executed', () => {
+      spyOn(component, 'onAppCreate')
 
       component.ngOnInit()
 
@@ -184,13 +184,13 @@ describe('AppSearchComponent', () => {
         component.actions$.subscribe((actions) => {
           const action = actions[3]
           action.actionCallback()
-          expect(component.onCreate).toHaveBeenCalledWith('MFE')
+          expect(component.onAppCreate).toHaveBeenCalledWith('MFE')
         })
       }
     })
 
-    it('should call onCreate when actionCallback is executed', () => {
-      spyOn(component, 'onCreate')
+    it('should call onAppCreate when actionCallback is executed', () => {
+      spyOn(component, 'onAppCreate')
 
       component.ngOnInit()
 
@@ -198,7 +198,7 @@ describe('AppSearchComponent', () => {
         component.actions$.subscribe((actions) => {
           const action = actions[4]
           action.actionCallback()
-          expect(component.onCreate).toHaveBeenCalledWith('MS')
+          expect(component.onAppCreate).toHaveBeenCalledWith('MS')
         })
       }
     })
@@ -426,45 +426,45 @@ describe('AppSearchComponent', () => {
     expect(routerSpy.navigate).toHaveBeenCalledWith(['../', 'product'], { relativeTo: routeMock })
   })
 
-  it('should assign app to component property and change to edit mode onDetail', () => {
+  it('should assign app to component property and change to edit mode onAppDetail', () => {
     const event = { stopPropagation: jasmine.createSpy() }
-    component.onDetail(event as any, mfeApp)
+    component.onAppDetail(event as any, mfeApp)
 
     expect(event.stopPropagation).toHaveBeenCalled()
     expect(component.app).toBe(mfeApp)
     expect(component.changeMode).toBe('EDIT')
   })
 
-  it('should change to view mode if no editPermission onDetail', () => {
+  it('should change to view mode if no editPermission onAppDetail', () => {
     const event = { stopPropagation: jasmine.createSpy() }
     component.hasEditPermission = false
 
-    component.onDetail(event as any, mfeApp)
+    component.onAppDetail(event as any, mfeApp)
 
     expect(component.changeMode).toBe('VIEW')
   })
 
-  it('should should assign app to component property and change to copy mode onCopy', () => {
+  it('should should assign app to component property and change to copy mode onAppCopy', () => {
     const event = { stopPropagation: jasmine.createSpy() }
 
-    component.onCopy(event as any, mfeApp)
+    component.onAppCopy(event as any, mfeApp)
 
     expect(event.stopPropagation).toHaveBeenCalled()
     expect(component.app).toBe(mfeApp)
     expect(component.changeMode).toBe('CREATE')
   })
 
-  it('should should assign app to component property and change to copy mode onCreate', () => {
-    component.onCreate('MFE')
+  it('should should assign app to component property and change to copy mode onAppCreate', () => {
+    component.onAppCreate('MFE')
 
     expect(component.changeMode).toBe('CREATE')
     expect(component.displayDetailDialog).toBeTrue()
   })
 
-  it('should should assign app to component property and change to copy mode onDelete', () => {
+  it('should should assign app to component property and change to copy mode onAppDelete', () => {
     const event = { stopPropagation: jasmine.createSpy() }
 
-    component.onDelete(event as any, msApp)
+    component.onAppDelete(event as any, msApp)
 
     expect(event.stopPropagation).toHaveBeenCalled()
     expect(component.app).toBe(msApp)
@@ -489,5 +489,22 @@ describe('AppSearchComponent', () => {
 
     expect(component.searchApps).toHaveBeenCalled()
     expect(component.displayDetailDialog).toBeFalse()
+  })
+
+  /**
+   * Language tests
+   */
+  describe('language', () => {
+    it('should set a German date format', () => {
+      expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm:ss')
+    })
+
+    it('should set default date format', () => {
+      mockUserService.lang$.getValue.and.returnValue('en')
+      fixture = TestBed.createComponent(AppSearchComponent)
+      component = fixture.componentInstance
+      fixture.detectChanges()
+      expect(component.dateFormat).toEqual('M/d/yy, hh:mm:ss a')
+    })
   })
 })

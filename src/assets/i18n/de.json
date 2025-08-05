@@ -10,11 +10,6 @@
     },
     "COPY": {
       "LABEL": "Kopieren",
-      "APP": {
-        "HEADER": "App kopieren",
-        "OK": "Die App wurde erfolgreich erstellt",
-        "NOK": "Die App konnte nicht erstellt werden."
-      },
       "PRODUCT": {
         "HEADER": "Applikation kopieren"
       }
@@ -36,6 +31,13 @@
         "TOOLTIP": "Eine neue Applikation erstellen",
         "OK": "Die Applikation wurde erfolgreich erstellt",
         "NOK": "Die Applikation konnte nicht erstellt werden."
+      },
+      "SLOT": {
+        "LABEL": "Slot erstellen",
+        "HEADER": "Slot erstellen",
+        "TOOLTIP": "Eine neue Slot erstellen",
+        "OK": "Der Slot wurde erfolgreich erstellt",
+        "NOK": "Der Slot konnte nicht erstellt werden."
       }
     },
     "DELETE": {
@@ -83,6 +85,12 @@
         "TOOLTIP": "Die Eigenschaften der Applikation bearbeiten",
         "OK": "Die Applikation wurde erfolgreich geändert",
         "NOK": "Die Applikation konnte nicht geändert werden."
+      },
+      "SLOT": {
+        "HEADER": "Slot bearbeiten",
+        "TOOLTIP": "Die Eigenschaften des Slots bearbeiten",
+        "OK": "Der Slot wurde erfolgreich geändert",
+        "NOK": "Der Slot konnte nicht geändert werden."
       }
     },
     "NAVIGATION": {
@@ -389,6 +397,7 @@
       "ID": "Eindeutige technische ID des Slots",
       "NAME": "Name des Slots",
       "DESCRIPTION": "Beschreibung",
+      "OPERATOR": "Wenn gesetzt, dann wurde der Slot automatisiert erstellt. Alle Änderungen gehen beim beim nächsten Deployment verloren.",
       "PRODUCT_NAME": "Name der Applikation die den Slot anbietet",
       "APP_ID": "Microfrontend das den Slot anbietet",
       "STATE": "Verfügbarkeit des Slots"
@@ -407,6 +416,7 @@
     "PRODUCT.UNIQUE_CONSTRAINT.NAME": "Eine Applikation mit diesem Namen existiert bereits.",
     "PRODUCT.UNIQUE_CONSTRAINT.BASEPATH": "Eine Applikation mit diesem Basepath existiert bereits.",
     "PRODUCT.INVALID_NAME": "Dieser Name ist reserviert und kann nicht verwendet werden.",
+    "SLOT.UNIQUE_CONSTRAINT.SLOT_NAME": "Einen Slot mit diesem Namen existiert bereits für die Applikation.",
     "ERRORS": {
       "PARSE_ERROR": "Parserfehler: Die enthaltene Struktur entspricht nicht dem erwarteten Format.",
       "INTERNAL_ERROR": "Interner Fehler",
