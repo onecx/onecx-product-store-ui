@@ -185,7 +185,21 @@
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
-                {{ rowData[col.field] }}
+                <a
+                  tabindex="0"
+                  [id]="'ps_slot_search_table_row_' + i + '_goto_product'"
+                  class="p-2 bookmark-link font-italic text-primary cursor-pointer"
+                  (click)="onGotoSlot($event, rowData)"
+                  (keydown.enter)="onGotoSlot($event, rowData)"
+                  (keydown.space)="onGotoSlot($event, rowData)"
+                  [attr.aria-label]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
+                  [pTooltip]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  {{ rowData[col.field] }}
+                </a>
+
                 <span
                   class="ml-2 danger-action-text pi"
                   [ngClass]="{ 'pi-ban': rowData['undeployed'], 'pi-exclamation-circle': rowData['deprecated'] }"
@@ -205,3 +219,11 @@
     </p-table>
   </ocx-page-content>
 </ocx-portal-page>
+
+<app-slot-detail
+  [displayDialog]="displaySlotDetailDialog"
+  [slot]="item4Detail"
+  [dateFormat]="dateFormat"
+  [changeMode]="changeMode"
+  (changed)="slotChanged($event)"
+></app-slot-detail>

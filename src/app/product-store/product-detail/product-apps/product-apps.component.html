@@ -24,9 +24,9 @@
         tabindex="0"
         [id]="'ps_product_apps_components_mfe_' + mfe.appId"
         class="card relative w-full sm:w-21rem m-0 pt-2 pb-1 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
-        (click)="onDetail($event, mfe, AppType.MFE)"
-        (keydown.enter)="onDetail($event, mfe, AppType.MFE)"
-        (keydown.space)="onDetail($event, mfe, AppType.MFE)"
+        (click)="onAppDetail($event, mfe, AppType.MFE)"
+        (keydown.enter)="onAppDetail($event, mfe, AppType.MFE)"
+        (keydown.space)="onAppDetail($event, mfe, AppType.MFE)"
         [attr.aria-label]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
       >
         <!-- BADGES -->
@@ -63,7 +63,7 @@
         <span
           *ngIf="mfe?.undeployed"
           [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_undeployed'"
-          class="card-badge-right badge-1 pi pi-ban danger-action-text font-bold cursor-auto"
+          class="card-badge-right badge-1 pi pi-ban danger-action-text cursor-auto"
           [attr.aria-label]="'APP.UNDEPLOYED' | translate"
           [pTooltip]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
           tooltipPosition="top"
@@ -72,7 +72,7 @@
         <span
           *ngIf="mfe?.deprecated && !mfe?.undeployed"
           [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_deprecated'"
-          class="card-badge-right badge-1 pi pi-exclamation-circle danger-action-text font-bold cursor-auto"
+          class="card-badge-right badge-1 pi pi-exclamation-circle danger-action-text cursor-auto"
           [attr.aria-label]="'APP.DEPRECATED' | translate"
           [pTooltip]="'APP.TOOLTIPS.DEPRECATED_SEARCH' | translate"
           tooltipPosition="top"
@@ -132,13 +132,19 @@
     </ng-template>
     <div class="flex flex-row flex-wrap column-gap-3 sm:column-gap-4 row-gap-2 sm:row-gap-3">
       <ng-container *ngFor="let slot of details.slots.sort(sortSlotsByName)">
-        <div class="card relative w-full sm:w-21rem m-0 py-0 px-0 flex flex-column justify-content-center">
+        <a
+          class="card relative w-full sm:w-21rem m-0 pt-2 pb-1 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
+          (click)="onSlotDetail($event, slot)"
+          (keydown.enter)="onSlotDetail($event, slot)"
+          (keydown.space)="onSlotDetail($event, slot)"
+          [attr.aria-label]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
+        >
           <!-- BADGES -->
           <a
             *ngIf="hasDeletePermission"
             tabindex="0"
             [id]="'ps_product_apps_components_slot_' + slot.appId + '_delete'"
-            class="card-badge-left badge-2-2 p-2 danger-action-text button-icon-only"
+            class="card-badge-left badge-2 p-2 danger-action-text button-icon-only"
             (click)="onSlotDelete($event, slot)"
             [attr.aria-label]="'ACTIONS.DELETE.LABEL' | translate"
             [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
@@ -150,7 +156,7 @@
           <span
             *ngIf="slot?.undeployed"
             [id]="'ps_product_apps_components_slot_' + slot.name + '_undeployed'"
-            class="card-badge-right badge-1 pi pi-ban danger-action-text font-bold cursor-auto"
+            class="card-badge-right badge-1 pi pi-ban danger-action-text cursor-auto"
             [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
@@ -158,13 +164,13 @@
           <span
             *ngIf="slot?.deprecated && !slot?.undeployed"
             [id]="'ps_product_apps_components_slot_' + slot.appId + '_deprecated'"
-            class="card-badge-right badge-1 pi pi-exclamation-circle danger-action-text font-bold cursor-auto"
+            class="card-badge-right badge-1 pi pi-exclamation-circle danger-action-text cursor-auto"
             [pTooltip]="'SLOT.DEPRECATED_SEARCH' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           ></span>
           <!-- CONTENT -->
-          <div class="h-4rem gap-1 my-1 mx-6 flex flex-column justify-content-around text-center">
+          <div class="flex flex-column justify-content-between gap-1 text-center">
             <div class="text-responsive">{{ slot.appId }}</div>
             <div
               class="font-bold text-responsive"
@@ -183,7 +189,7 @@
               {{ slot.description }} &nbsp;
             </div>
           </div>
-        </div>
+        </a>
       </ng-container>
     </div>
   </p-fieldset>
@@ -203,7 +209,7 @@
       <ng-container *ngFor="let ms of details.microservices.sort(sortMssByAppId)">
         <a
           class="card relative w-full sm:w-21rem m-0 py-2 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
-          (click)="onDetail($event, ms, AppType.MS)"
+          (click)="onAppDetail($event, ms, AppType.MS)"
           [attr.aria-label]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
         >
           <!-- BADGES -->
@@ -236,7 +242,7 @@
           <span
             *ngIf="ms?.undeployed"
             [id]="'ps_product_apps_components_ms_' + ms.appId + '_undeployed'"
-            class="card-badge-right badge-1 pi pi-ban danger-action-text font-bold cursor-auto"
+            class="card-badge-right badge-1 pi pi-ban danger-action-text cursor-auto"
             [pTooltip]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
@@ -269,6 +275,7 @@
 <app-app-detail
   [displayDialog]="displayDetailDialog"
   [appAbstract]="app"
+  [dateFormat]="dateFormat"
   [changeMode]="changeMode"
   (appChanged)="appChanged($event)"
 ></app-app-detail>
@@ -284,3 +291,11 @@
   [slot]="slot"
   (slotDeleted)="slotDeleted($event)"
 ></app-slot-delete>
+
+<app-slot-detail
+  [displayDialog]="displaySlotDetailDialog"
+  [slot]="slot"
+  [dateFormat]="dateFormat"
+  [changeMode]="changeMode"
+  (changed)="appChanged($event)"
+></app-slot-detail>

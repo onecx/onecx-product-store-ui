@@ -31,7 +31,6 @@ export class AppInternComponent implements OnChanges {
     this.appForm.disable()
     if (this.mfe || this.ms) {
       this.setFormData()
-      console.log('ngOnChanges', this.mfe, this.ms, this.changeMode)
       this.changeMode === 'EDIT' ? this.appForm.get('undeployed')?.enable() : this.appForm.get('undeployed')?.disable()
     }
   }

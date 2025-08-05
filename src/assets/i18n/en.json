@@ -10,11 +10,6 @@
     },
     "COPY": {
       "LABEL": "Copy",
-      "APP": {
-        "HEADER": "Copy App",
-        "OK": "The App was created successfully",
-        "NOK": "An error has occurred. The App was not created."
-      },
       "PRODUCT": {
         "HEADER": "Copy Application"
       }
@@ -36,6 +31,13 @@
         "TOOLTIP": "Create a new Application",
         "OK": "The Application was created successfully",
         "NOK": "An error has occurred. The Application was not created."
+      },
+      "SLOT": {
+        "LABEL": "Create Slot",
+        "HEADER": "Create Slot",
+        "TOOLTIP": "Create a new Slot",
+        "OK": "The Slot was created successfully",
+        "NOK": "An error has occurred. The Slot was not created."
       }
     },
     "DELETE": {
@@ -83,6 +85,12 @@
         "TOOLTIP": "Edit Application properties",
         "OK": "The Application was changed successfully",
         "NOK": "An error has occurred. The Application was not changed."
+      },
+      "SLOT": {
+        "HEADER": "Edit Slot",
+        "TOOLTIP": "Edit Slot properties",
+        "OK": "The Slot was changed successfully",
+        "NOK": "An error has occurred. The Slot was not changed."
       }
     },
     "NAVIGATION": {
@@ -389,6 +397,7 @@
       "ID": "Unique technical ID of the Slot",
       "NAME": "Name of the Slot",
       "DESCRIPTION": "Description of the Slot",
+      "OPERATOR": "If set, the Slot was created by automation. All changes will be lost during the next deployment.",
       "PRODUCT_NAME": "Name of the Application which provides the Slot",
       "APP_ID": "Microfrontend providing the Slot",
       "STATE": "Availability of the Slot"

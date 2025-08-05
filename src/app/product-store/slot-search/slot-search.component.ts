@@ -17,6 +17,7 @@ import {
   SlotsAPIService
 } from 'src/app/shared/generated'
 import { limitText } from 'src/app/shared/utils'
+import { ChangeMode } from '../product-detail/product-detail.component'
 
 export interface SlotSearchCriteria {
   slotName: FormControl<string | null>
@@ -35,11 +36,16 @@ export class SlotSearchComponent implements OnInit {
   public exceptionKey: string | undefined = undefined
   public searchInProgress = false
   public actions$: Observable<Action[]> | undefined
+  public dateFormat = 'medium'
+  public displaySlotDetailDialog = false
+  public changeMode: ChangeMode = 'VIEW'
+  public hasEditPermission = false
   // data
   public searchCriteria: FormGroup<SlotSearchCriteria>
   public products$: Observable<ProductAbstract[]> = of([])
   public slots$: Observable<Slot[]> = of([])
   public slotData$: Observable<SlotData[]> = of([])
+  public item4Detail: Slot | undefined
 
   public filter: string | undefined
   public filteredColumns: ExtendedColumn[] = []
@@ -77,6 +83,8 @@ export class SlotSearchComponent implements OnInit {
     private readonly translate: TranslateService,
     private readonly msgService: PortalMessageService
   ) {
+    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'medium'
+    this.hasEditPermission = this.user.hasPermission('APP#EDIT')
     this.filteredColumns = this.columns.filter((a) => a.active === true)
     this.searchCriteria = new FormGroup<SlotSearchCriteria>({
       slotName: new FormControl<string | null>(null),
@@ -261,5 +269,15 @@ export class SlotSearchComponent implements OnInit {
   public onGotoProduct(ev: any, data: SlotData) {
     ev.stopPropagation()
     this.router.navigate(['../', data.productName], { fragment: 'apps', relativeTo: this.route })
+  }
+  public onGotoSlot(ev: any, data: SlotData) {
+    ev.stopPropagation()
+    this.displaySlotDetailDialog = true
+    this.item4Detail = data
+    this.changeMode = this.hasEditPermission ? 'EDIT' : 'VIEW'
+  }
+  public slotChanged(changed: any) {
+    this.displaySlotDetailDialog = false
+    if (changed) this.onSearch()
   }
 }
