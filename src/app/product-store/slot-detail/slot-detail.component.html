@@ -1,0 +1,176 @@
+<p-dialog
+  [(visible)]="displayDialog"
+  (onHide)="onDialogHide()"
+  [modal]="true"
+  [closable]="true"
+  [resizable]="true"
+  [draggable]="true"
+  [style]="{ width: '600px' }"
+  [breakpoints]="{
+    '992px': '80vw',
+    '750px': '90vw',
+    '600px': '100vw'
+  }"
+>
+  <ng-template pTemplate="header">
+    <div *ngIf="loading" class="pi pi-spinner"></div>
+    <div *ngIf="!loading" class="w-full flex flex-row justify-content-between align-items-center">
+      <div *ngIf="dialogTitleKey" class="p-dialog-title">{{ dialogTitleKey | translate }}</div>
+      <div
+        *ngIf="slot?.undeployed"
+        id="ps_app_detail_header_field_undeployed"
+        class="p-dialog-title danger-action-text font-bold pi pi-ban"
+        [attr.aria-label]="'SLOT.UNDEPLOYED_SEARCH' | translate"
+        [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      ></div>
+      <div
+        *ngIf="!slot?.undeployed && slot?.deprecated"
+        id="ps_app_detail_header_field_deprecated"
+        class="p-dialog-title danger-action-text font-bold pi pi-exclamation-circle"
+        [attr.aria-label]="'SLOT.DEPRECATED_SEARCH' | translate"
+        [pTooltip]="'SLOT.DEPRECATED_SEARCH' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      ></div>
+    </div>
+  </ng-template>
+
+  <p-tabView #panelDetail [(activeIndex)]="selectedTabIndex">
+    <p-tabPanel [header]="'DIALOG.TABS.LOCAL' | translate" [tooltip]="'DIALOG.TABS.TOOLTIPS.LOCAL' | translate">
+      <form *ngIf="!loading" [formGroup]="formGroupSlot" errorTailor>
+        <ng-template pTemplate="header">
+          <span>{{ 'ACTIONS.' + this.changeMode + '.SLOT.HEADER' | translate }}</span>
+        </ng-template>
+
+        <div class="flex flex-column row-gap-4">
+          <!-- row 1 -->
+          <div class="flex flex-row flex-wrap gap-4">
+            <span class="flex-grow-1 p-float-label" controlErrorAnchor>
+              <input
+                pInputText
+                type="text"
+                id="ps_slot_detail_form_field_app_id"
+                class="w-full pt-3 pb-2 text-responsive"
+                formControlName="appId"
+                [attr.aria-label]="'SLOT.APP_ID' | translate"
+                [pTooltip]="'SLOT.TOOLTIPS.APP_ID' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              />
+              <label class="ocx-required-label" for="ps_slot_detail_form_field_app_id">
+                {{ 'SLOT.APP_ID' | translate }}
+              </label>
+            </span>
+            <span class="flex-grow-1 p-float-label" controlErrorAnchor>
+              <input
+                pInputText
+                type="text"
+                id="ps_slot_detail_form_field_slot_name"
+                class="w-full pt-3 pb-2 text-responsive"
+                formControlName="name"
+                [attr.aria-label]="'SLOT.NAME' | translate"
+                [pTooltip]="'SLOT.TOOLTIPS.NAME' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              />
+              <label class="ocx-required-label" for="ps_slot_detail_form_field_app_name">
+                {{ 'SLOT.NAME' | translate }}
+              </label>
+            </span>
+          </div>
+
+          <!-- row 2 -->
+          <div class="flex flex-row flex-wrap gap-4">
+            <span class="flex-grow-1 p-float-label" controlErrorAnchor>
+              <input
+                pInputText
+                type="text"
+                id="ps_slot_detail_form_field_product_name"
+                class="w-full pt-3 pb-2 text-responsive"
+                formControlName="productName"
+                [attr.aria-label]="'SLOT.PRODUCT_NAME' | translate"
+                [pTooltip]="'SLOT.TOOLTIPS.PRODUCT_NAME' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              />
+              <label class="ocx-required-label" for="ps_slot_detail_form_field_product_name">
+                {{ 'SLOT.PRODUCT_NAME' | translate }}
+              </label>
+            </span>
+          </div>
+
+          <!-- row 3 -->
+          <!-- row 4 -->
+          <!-- row 5 -->
+          <span class="p-float-label" controlErrorAnchor>
+            <input
+              pInputText
+              type="text"
+              id="ps_slot_detail_form_field_description"
+              class="w-full pt-3 pb-2 text-responsive"
+              formControlName="description"
+              [attr.aria-label]="'SLOT.DESCRIPTION' | translate"
+              [pTooltip]="'SLOT.TOOLTIPS.DESCRIPTION' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <label for="ps_slot_detail_form_field_description"> {{ 'SLOT.DESCRIPTION' | translate }} </label>
+          </span>
+        </div>
+      </form>
+    </p-tabPanel>
+
+    <p-tabPanel
+      [disabled]="changeMode === 'CREATE'"
+      [header]="'DIALOG.TABS.INTERN' | translate"
+      [tooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate"
+    >
+      <app-slot-intern
+        [slot]="slot"
+        [changeMode]="changeMode"
+        (undeployed)="onChangeUndeployedValue($event)"
+      ></app-slot-intern>
+    </p-tabPanel>
+  </p-tabView>
+
+  <ng-template pTemplate="footer">
+    <div class="flex flex-wrap justify-content-end gap-2 mb-1">
+      <p-button
+        *ngIf="!allowEditing()"
+        id="ps_app_detail_action_close"
+        icon="pi pi-times"
+        (onClick)="onDialogHide()"
+        [label]="'ACTIONS.NAVIGATION.CLOSE' | translate"
+        [ariaLabel]="'ACTIONS.NAVIGATION.CLOSE' | translate"
+        [pTooltip]="'ACTIONS.NAVIGATION.CLOSE.TOOLTIP' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      ></p-button>
+      <p-button
+        *ngIf="allowEditing()"
+        id="ps_app_detail_action_cancel"
+        icon="pi pi-times"
+        (onClick)="onDialogHide()"
+        [label]="'ACTIONS.CANCEL' | translate"
+        [ariaLabel]="'ACTIONS.CANCEL' | translate"
+        [pTooltip]="'ACTIONS.TOOLTIPS.CANCEL' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      ></p-button>
+      <p-button
+        *ngIf="allowEditing()"
+        id="ps_app_detail_action_save"
+        icon="pi pi-save"
+        (onClick)="onSave()"
+        [disabled]="!formGroupSlot.valid"
+        [label]="'ACTIONS.SAVE' | translate"
+        [ariaLabel]="'ACTIONS.SAVE' | translate"
+        [pTooltip]="'ACTIONS.TOOLTIPS.SAVE_AND_CLOSE' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      ></p-button>
+    </div>
+  </ng-template>
+</p-dialog>
