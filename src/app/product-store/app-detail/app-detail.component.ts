@@ -25,7 +25,8 @@ import {
   UIEndpoint
 } from 'src/app/shared/generated'
 
-import { AppAbstract, ChangeMode } from '../app-search/app-search.component'
+import { ChangeMode } from '../product-detail/product-detail.component'
+import { AppAbstract } from '../app-search/app-search.component'
 import { AppInternComponent } from './app-intern/app-intern.component'
 
 export interface MfeForm {

@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 
 import { Microfrontend, Microservice } from 'src/app/shared/generated'
-import { ChangeMode } from '../../app-search/app-search.component'
+import { ChangeMode } from '../../product-detail/product-detail.component'
 
 @Component({
   selector: 'app-app-intern',

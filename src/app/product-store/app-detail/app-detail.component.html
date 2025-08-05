@@ -543,7 +543,7 @@
     </p-tabPanel>
 
     <p-tabPanel
-      [disabled]="['CREATE', 'COPY'].includes(changeMode)"
+      [disabled]="changeMode === 'CREATE'"
       [header]="'DIALOG.TABS.INTERN' | translate"
       [tooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate"
     >
