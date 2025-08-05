@@ -208,7 +208,7 @@ export class SlotDetailComponent implements OnInit, OnChanges {
   }
 
   private displaySaveError(funcName: string, err: any): void {
-    let key = err?.error?.detail.indexOf('slot_name') > 0 ? 'VALIDATION.SLOT.UNIQUE_CONSTRAINT.SLOT_NAME' : ''
+    const key = err?.error?.detail.indexOf('slot_name') > 0 ? 'VALIDATION.SLOT.UNIQUE_CONSTRAINT.SLOT_NAME' : ''
 
     this.msgService.error({
       summaryKey: 'ACTIONS.' + this.changeMode + '.SLOT.NOK',
