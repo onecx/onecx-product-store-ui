@@ -80,17 +80,11 @@ export class AppDetailComponent implements OnInit, OnChanges {
   public loading = false
   public hasCreatePermission = false
   public hasEditPermission = false
-  public technologies: SelectItem[] = []
   public mfeTypes: SelectItem[] = [
     { label: 'Module', value: 'MODULE' },
     { label: 'Component', value: 'COMPONENT' }
   ]
-  public msTypes: SelectItem[] = [
-    { label: 'ui', value: 'ui' },
-    { label: 'bff', value: 'bff' },
-    { label: 'svc', value: 'svc' },
-    { label: 'operator', value: 'operator' }
-  ]
+  public technologies: SelectItem[] = []
   public iconItems: SelectItem[] = []
   public endpoints: UIEndpoint[] = []
   public MicrofrontendType = MicrofrontendType
@@ -104,9 +98,9 @@ export class AppDetailComponent implements OnInit, OnChanges {
     private readonly msgService: PortalMessageService,
     private readonly translate: TranslateService
   ) {
+    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'medium'
     this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
     this.hasEditPermission = this.user.hasPermission('APP#EDIT')
-    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'medium'
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
     this.iconItems.sort(dropDownSortItemsByLabel)
 
@@ -152,20 +146,22 @@ export class AppDetailComponent implements OnInit, OnChanges {
       this.formGroupMfe.reset()
       this.formGroupMs.disable()
       this.formGroupMfe.disable()
-      if (this.changeMode === 'CREATE') {
-        this.enableForms()
-        if (this.appAbstract?.appType === 'MFE') {
-          this.formGroupMfe.controls['type'].setValue('MODULE')
-          this.formGroupMfe.controls['technology'].setValue('ANGULAR')
-        }
-        if (this.appAbstract?.appType === 'MS') {
-        }
-        this.dialogTitleKey = 'ACTIONS.CREATE.' + this.appAbstract?.appType + '.HEADER'
-      }
+      this.prepareCreate()
       if (this.appAbstract?.id) {
         if (this.appAbstract.appType === 'MFE') this.getMfe()
         if (this.appAbstract.appType === 'MS') this.getMs()
       }
+    }
+  }
+
+  private prepareCreate() {
+    if (this.changeMode === 'CREATE') {
+      this.enableForms()
+      if (this.appAbstract?.appType === 'MFE') {
+        this.formGroupMfe.controls['type'].setValue('MODULE')
+        this.formGroupMfe.controls['technology'].setValue('ANGULAR')
+      }
+      this.dialogTitleKey = 'ACTIONS.CREATE.' + this.appAbstract?.appType + '.HEADER'
     }
   }
 
@@ -175,6 +171,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
       (this.hasCreatePermission && this.changeMode === 'CREATE')
     )
   }
+
   private enableForms(): void {
     if (this.allowEditing()) {
       this.formGroupMs.enable()
@@ -306,34 +303,40 @@ export class AppDetailComponent implements OnInit, OnChanges {
         this.msgService.error({ summaryKey: 'VALIDATION.FORM_INVALID' })
         return
       }
-      this.mfe = {
-        ...this.formGroupMfe.value,
-        id: this.mfe?.id,
-        undeployed: this.changeMode === 'EDIT' ? this.mfe?.undeployed : undefined
-      }
-      if (this.mfe) {
-        this.mfe.classifications = convertToUniqueStringArray(this.formGroupMfe.controls['classifications'].value)
-        this.mfe.endpoints = this.endpoints.filter((endpoint) => !(endpoint.name === '' && endpoint.path === ''))
-      }
-      this.changeMode === 'CREATE' ? this.createMfe() : this.updateMfe()
+      this.saveMfe()
     }
     if (this.appAbstract?.appType === 'MS') {
       if (!this.formGroupMs.valid) {
         this.msgService.error({ summaryKey: 'VALIDATION.FORM_INVALID' })
         return
       }
-      this.ms = {
-        ...this.formGroupMs.value,
-        id: this.ms?.id,
-        undeployed: this.changeMode === 'EDIT' ? this.ms?.undeployed : undefined
-      }
-      this.changeMode === 'CREATE' ? this.createMs() : this.updateMs()
+      this.saveMs()
     }
   }
 
   /**
    * DATA
    */
+  private saveMfe() {
+    this.mfe = {
+      ...this.formGroupMfe.value,
+      id: this.mfe?.id,
+      undeployed: this.changeMode === 'EDIT' ? this.mfe?.undeployed : undefined
+    }
+    if (this.mfe) {
+      this.mfe.classifications = convertToUniqueStringArray(this.formGroupMfe.controls['classifications'].value)
+      this.mfe.endpoints = this.endpoints.filter((endpoint) => !(endpoint.name === '' && endpoint.path === ''))
+    }
+    this.changeMode === 'CREATE' ? this.createMfe() : this.updateMfe()
+  }
+  private saveMs() {
+    this.ms = {
+      ...this.formGroupMs.value,
+      id: this.ms?.id,
+      undeployed: this.changeMode === 'EDIT' ? this.ms?.undeployed : undefined
+    }
+    this.changeMode === 'CREATE' ? this.createMs() : this.updateMs()
+  }
   private createMfe() {
     this.mfeApi.createMicrofrontend({ createMicrofrontendRequest: this.mfe as CreateMicrofrontendRequest }).subscribe({
       next: () => {
