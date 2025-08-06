@@ -14,12 +14,12 @@
 >
   <ng-template pTemplate="header">
     <div *ngIf="loading" class="pi pi-spinner"></div>
-    <div *ngIf="!loading" class="w-full flex flex-row justify-content-between align-items-center">
+    <div *ngIf="!loading" class="mr-2 w-full flex flex-row justify-content-between align-items-center">
       <div *ngIf="dialogTitleKey" class="p-dialog-title">{{ dialogTitleKey | translate }}</div>
       <div
         *ngIf="slot?.undeployed"
         id="ps_app_detail_header_field_undeployed"
-        class="p-dialog-title danger-action-text font-bold pi pi-ban"
+        class="p-dialog-title danger-action-text pi pi-ban"
         [attr.aria-label]="'SLOT.UNDEPLOYED_SEARCH' | translate"
         [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
         tooltipPosition="top"
@@ -28,7 +28,7 @@
       <div
         *ngIf="!slot?.undeployed && slot?.deprecated"
         id="ps_app_detail_header_field_deprecated"
-        class="p-dialog-title danger-action-text font-bold pi pi-exclamation-circle"
+        class="p-dialog-title danger-action-text pi pi-exclamation-circle"
         [attr.aria-label]="'SLOT.DEPRECATED_SEARCH' | translate"
         [pTooltip]="'SLOT.DEPRECATED_SEARCH' | translate"
         tooltipPosition="top"

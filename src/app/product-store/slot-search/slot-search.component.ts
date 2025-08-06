@@ -3,8 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { FormControl, FormGroup } from '@angular/forms'
 import { catchError, combineLatest, finalize, map, of, Observable, tap } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
+import { SelectItem } from 'primeng/api'
 import { Table } from 'primeng/table'
-
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 import { Action, Column, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 
@@ -23,8 +23,8 @@ export interface SlotSearchCriteria {
   slotName: FormControl<string | null>
   productName: FormControl<string | null>
 }
-export type SlotData = Slot & { productDisplayName: string }
-export type ExtendedColumn = Column & { sort?: boolean; css?: string; limit?: number }
+export type SlotData = Slot & { productDisplayName: string; stateValue: number }
+export type ExtendedColumn = Column & { sort?: boolean; css?: string; limit?: number; hasFilter?: boolean }
 
 @Component({
   templateUrl: './slot-search.component.html',
@@ -38,6 +38,7 @@ export class SlotSearchComponent implements OnInit {
   public actions$: Observable<Action[]> | undefined
   public dateFormat = 'medium'
   public displaySlotDetailDialog = false
+  public displaySlotDeleteDialog = false
   public changeMode: ChangeMode = 'VIEW'
   public hasEditPermission = false
   // data
@@ -46,9 +47,16 @@ export class SlotSearchComponent implements OnInit {
   public slots$: Observable<Slot[]> = of([])
   public slotData$: Observable<SlotData[]> = of([])
   public item4Detail: Slot | undefined
+  public item4Delete: Slot | undefined
 
   public filter: string | undefined
   public filteredColumns: ExtendedColumn[] = []
+  public filterProductItems: string[] = []
+  public filterProductValue: string | undefined = undefined
+  public filterSlotNameItems: string[] = []
+  public filterSlotNameValue: string | undefined = undefined
+  public filterStateItems: SelectItem[] = []
+  public filterStateValue: number = 0
   public sortField = 'name'
   public sortOrder = 1
   public limitText = limitText
@@ -62,7 +70,15 @@ export class SlotSearchComponent implements OnInit {
       header: 'NAME',
       active: true,
       limit: 20,
+      hasFilter: true,
       css: 'min-w-16rem',
+      translationPrefix: 'SLOT'
+    },
+    {
+      field: 'state',
+      header: 'STATE',
+      active: true,
+      css: 'text-center',
       translationPrefix: 'SLOT'
     },
     {
@@ -90,6 +106,11 @@ export class SlotSearchComponent implements OnInit {
       slotName: new FormControl<string | null>(null),
       productName: new FormControl<string | null>(null)
     })
+    this.filterStateItems = [
+      { label: 'operator', value: 100 },
+      { label: 'undeployed', value: 10 },
+      { label: 'deprecated', value: 1 }
+    ]
   }
 
   ngOnInit(): void {
@@ -111,7 +132,10 @@ export class SlotSearchComponent implements OnInit {
       pageSize: 1000
     }
     this.products$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
-      map((data) => data.stream ?? []),
+      map((data) => {
+        this.prepareFilterProducts(data.stream)
+        return data.stream ?? []
+      }),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
         console.error('searchProducts', err)
@@ -149,7 +173,12 @@ export class SlotSearchComponent implements OnInit {
       map(([ps, slots]) => {
         const sd: SlotData[] = []
         slots.forEach((s) => {
-          sd.push({ ...s, productDisplayName: this.getProductDisplayName(s.productName, ps) })
+          this.prepareFilterSlotNames(slots)
+          sd.push({
+            ...s,
+            productDisplayName: this.getProductDisplayName(s.productName, ps),
+            stateValue: this.calculateFeatureValue(s)
+          })
         })
         sd.sort(this.sortSlots)
         return sd
@@ -157,6 +186,22 @@ export class SlotSearchComponent implements OnInit {
       finalize(() => (this.loading = false))
     )
   }
+  private calculateFeatureValue(slot: Slot): number {
+    return (slot.operator ? 100 : 0) + (slot.undeployed ? 10 : 0) + (slot.deprecated ? 1 : 0)
+  }
+  private prepareFilterSlotNames(ss: Slot[] | undefined) {
+    this.filterSlotNameItems = []
+    ss?.forEach((s) => {
+      if (s.name && !this.filterSlotNameItems.includes(s.name)) this.filterSlotNameItems.push(s.name)
+    })
+  }
+  private prepareFilterProducts(pas: ProductAbstract[] | undefined) {
+    this.filterProductItems = []
+    pas?.forEach((p) => {
+      if (p.displayName && !this.filterProductItems.includes(p.displayName)) this.filterProductItems.push(p.displayName)
+    })
+  }
+
   private getProductDisplayName(name: string, pas: ProductAbstract[]): string {
     const pf = pas.find((p) => p.name === name)
     return pf?.displayName ?? name
@@ -178,31 +223,31 @@ export class SlotSearchComponent implements OnInit {
         'SLOT.NAME',
         'SLOT.PRODUCT_NAME',
         'SLOT.APP_ID',
-        'ACTIONS.DATAVIEW.VIEW_MODE_GRID',
-        'ACTIONS.DATAVIEW.FILTER',
-        'ACTIONS.DATAVIEW.FILTER_OF',
-        'ACTIONS.DATAVIEW.SORT_BY',
-        'ACTIONS.DATAVIEW.SORT_DIRECTION_ASC',
-        'ACTIONS.DATAVIEW.SORT_DIRECTION_DESC'
+        'DIALOG.DATAVIEW.VIEW_MODE_GRID',
+        'DIALOG.DATAVIEW.FILTER',
+        'DIALOG.DATAVIEW.FILTER_OF',
+        'DIALOG.DATAVIEW.SORT_BY',
+        'DIALOG.DATAVIEW.SORT_DIRECTION_ASC',
+        'DIALOG.DATAVIEW.SORT_DIRECTION_DESC'
       ])
       .pipe(
         map((data) => {
           return {
-            sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY'],
-            filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
+            sortDropdownPlaceholder: data['DIALOG.DATAVIEW.SORT_BY'],
+            filterInputPlaceholder: data['DIALOG.DATAVIEW.FILTER'],
             filterInputTooltip:
-              data['ACTIONS.DATAVIEW.FILTER_OF'] +
+              data['DIALOG.DATAVIEW.FILTER_OF'] +
               data['SLOT.PRODUCT_NAME'] +
               ', ' +
               data['SLOT.APP_ID'] +
               ', ' +
               data['SLOT.NAME'],
-            viewModeToggleTooltips: { grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID'] },
+            viewModeToggleTooltips: { grid: data['DIALOG.DATAVIEW.VIEW_MODE_GRID'] },
             sortOrderTooltips: {
-              ascending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_ASC'],
-              descending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_DESC']
+              ascending: data['DIALOG.DATAVIEW.SORT_DIRECTION_ASC'],
+              descending: data['DIALOG.DATAVIEW.SORT_DIRECTION_DESC']
             },
-            sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY']
+            sortDropdownTooltip: data['DIALOG.DATAVIEW.SORT_BY']
           } as DataViewControlTranslations
         })
       )
@@ -270,14 +315,75 @@ export class SlotSearchComponent implements OnInit {
     ev.stopPropagation()
     this.router.navigate(['../', data.productName], { fragment: 'apps', relativeTo: this.route })
   }
-  public onGotoSlot(ev: any, data: SlotData) {
+
+  public onSlotDetail(mode: ChangeMode, ev: MouseEvent, data: SlotData) {
     ev.stopPropagation()
+    this.item4Detail = { ...data } as Slot
+    this.changeMode = mode
     this.displaySlotDetailDialog = true
-    this.item4Detail = data
-    this.changeMode = this.hasEditPermission ? 'EDIT' : 'VIEW'
   }
   public slotChanged(changed: any) {
     this.displaySlotDetailDialog = false
     if (changed) this.onSearch()
+  }
+
+  public onSlotDelete(ev: any, slot: Slot) {
+    ev.stopPropagation()
+    this.item4Delete = { ...slot }
+    this.displaySlotDeleteDialog = true
+  }
+  public slotDeleted(deleted: boolean) {
+    this.displaySlotDeleteDialog = false
+    if (deleted) this.onSearch()
+  }
+
+  /**
+   * FILTER
+   */
+  public onClick(ev: MouseEvent) {
+    ev.stopPropagation()
+  }
+
+  public onFilterItemChangeSlotName(ev: any) {
+    this.filterSlotNameValue = ev.value
+    this.dataTable?.filter(this.filterSlotNameValue, 'name', 'equals')
+  }
+  public onFilterItemChangeProduct(ev: any) {
+    this.filterProductValue = ev.value
+    this.dataTable?.filter(this.filterProductValue, 'productDisplayName', 'equals')
+  }
+  public onFilterItemChangeState(ev: any) {
+    this.filterStateValue = ev.value
+    this.dataTable?.filter(this.filterStateValue, 'state', 'equals')
+  }
+
+  /**
+   * SORT
+   */
+  public onSortProducts(ev: MouseEvent, icon: HTMLSpanElement) {
+    ev.stopPropagation()
+    this.dataTable?.clear()
+    switch (icon.className) {
+      case 'pi pi-fw pi-sort-amount-down':
+        icon.className = 'pi pi-fw pi-sort-amount-up-alt'
+        this.dataTable?._value.sort(this.sortRowByProductAsc)
+        break
+      case 'pi pi-fw pi-sort-amount-up-alt':
+        icon.className = 'pi pi-fw pi-sort-amount-down'
+        this.dataTable?._value.sort(this.sortByProductDesc)
+        break
+    }
+  }
+  private sortRowByProductAsc(a: SlotData, b: SlotData): number {
+    return (
+      a.productDisplayName.toUpperCase().localeCompare(b.productDisplayName.toUpperCase()) ||
+      a.appId?.localeCompare(b.appId)
+    )
+  }
+  private sortByProductDesc(a: SlotData, b: SlotData): number {
+    return (
+      b.productDisplayName.toUpperCase().localeCompare(a.productDisplayName.toUpperCase()) ||
+      b.appId?.localeCompare(a.appId)
+    )
   }
 }

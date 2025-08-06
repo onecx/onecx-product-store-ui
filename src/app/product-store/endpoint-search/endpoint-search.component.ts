@@ -188,33 +188,33 @@ export class EndpointSearchComponent implements OnInit {
         'ENDPOINT.APP_NAME',
         'ENDPOINT.PRODUCT_NAME',
         'ENDPOINT.NAME',
-        'ACTIONS.DATAVIEW.VIEW_MODE_TABLE',
-        'ACTIONS.DATAVIEW.FILTER',
-        'ACTIONS.DATAVIEW.FILTER_OF',
-        'ACTIONS.DATAVIEW.SORT_BY',
-        'ACTIONS.DATAVIEW.SORT_DIRECTION_ASC',
-        'ACTIONS.DATAVIEW.SORT_DIRECTION_DESC'
+        'DIALOG.DATAVIEW.VIEW_MODE_TABLE',
+        'DIALOG.DATAVIEW.FILTER',
+        'DIALOG.DATAVIEW.FILTER_OF',
+        'DIALOG.DATAVIEW.SORT_BY',
+        'DIALOG.DATAVIEW.SORT_DIRECTION_ASC',
+        'DIALOG.DATAVIEW.SORT_DIRECTION_DESC'
       ])
       .pipe(
         map((data) => {
           return {
-            sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY'],
-            filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
+            sortDropdownPlaceholder: data['DIALOG.DATAVIEW.SORT_BY'],
+            filterInputPlaceholder: data['DIALOG.DATAVIEW.FILTER'],
             filterInputTooltip:
-              data['ACTIONS.DATAVIEW.FILTER_OF'] +
+              data['DIALOG.DATAVIEW.FILTER_OF'] +
               data['ENDPOINT.PRODUCT_NAME'] +
               ', ' +
               data['ENDPOINT.APP_NAME'] +
               ', ' +
               data['ENDPOINT.NAME'],
             viewModeToggleTooltips: {
-              table: data['ACTIONS.DATAVIEW.VIEW_MODE_TABLE']
+              table: data['DIALOG.DATAVIEW.VIEW_MODE_TABLE']
             },
             sortOrderTooltips: {
-              ascending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_ASC'],
-              descending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_DESC']
+              ascending: data['DIALOG.DATAVIEW.SORT_DIRECTION_ASC'],
+              descending: data['DIALOG.DATAVIEW.SORT_DIRECTION_DESC']
             },
-            sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY']
+            sortDropdownTooltip: data['DIALOG.DATAVIEW.SORT_BY']
           } as DataViewControlTranslations
         })
       )

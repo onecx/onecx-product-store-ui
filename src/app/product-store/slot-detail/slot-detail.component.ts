@@ -79,7 +79,6 @@ export class SlotDetailComponent implements OnInit, OnChanges {
 
   private prepareCreate() {
     if (this.changeMode === 'CREATE') {
-      this.slot = undefined
       this.enableForms()
       this.dialogTitleKey = 'ACTIONS.CREATE.SLOT.HEADER'
     }

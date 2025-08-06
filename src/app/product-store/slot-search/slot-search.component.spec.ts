@@ -7,6 +7,7 @@ import { of, throwError } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { DataViewModule } from 'primeng/dataview'
+import { Table } from 'primeng/table'
 
 import { UserService } from '@onecx/angular-integration-interface'
 import { PortalMessageService } from '@onecx/angular-integration-interface'
@@ -39,19 +40,25 @@ const slots: Slot[] = [
     id: 'id2',
     name: 'slot-2',
     appId: 'appId2',
-    productName: products[1].name
+    productName: products[1].name,
+    operator: true,
+    deprecated: true,
+    undeployed: true
   },
   {
     id: 'id4',
     name: 'slot-4',
     appId: 'appId1',
-    productName: products[0].name
+    productName: products[0].name,
+    operator: true
   },
   {
     id: 'id3',
     name: 'slot-3',
     appId: 'appId2',
-    productName: products[1].name
+    productName: products[1].name,
+    deprecated: true,
+    undeployed: true
   }
 ]
 
@@ -123,7 +130,7 @@ describe('SlotSearchComponent', () => {
     })
     it('dataview translations', (done) => {
       const translationData = {
-        'ACTIONS.DATAVIEW.SORT_BY': 'sortBy'
+        'DIALOG.DATAVIEW.SORT_BY': 'sortBy'
       }
       const translateService = TestBed.inject(TranslateService)
       spyOn(translateService, 'get').and.returnValue(of(translationData))
@@ -382,22 +389,32 @@ describe('SlotSearchComponent', () => {
       })
     })
 
+    it('should stop event propagation on click', () => {
+      const event: any = { stopPropagation: jasmine.createSpy() }
+
+      component.onClick(event)
+
+      expect(event.stopPropagation).toHaveBeenCalled()
+    })
+  })
+
+  describe('detail', () => {
     it('should stop event propagation and open slot detail in edit mode', () => {
       const event = { stopPropagation: jasmine.createSpy() }
       component.hasEditPermission = true
 
-      component.onGotoSlot(event as any, { ...slots[0] } as SlotData)
+      component.onSlotDetail('VIEW', event as any, { ...slots[0] } as SlotData)
 
       expect(event.stopPropagation).toHaveBeenCalled()
       expect(component.displaySlotDetailDialog).toBeTrue()
-      expect(component.changeMode).toBe('EDIT')
+      expect(component.changeMode).toBe('VIEW')
     })
 
     it('should stop event propagation and open slot detail in view mode', () => {
       const event = { stopPropagation: jasmine.createSpy() }
       component.hasEditPermission = false
 
-      component.onGotoSlot(event as any, { ...slots[0] } as SlotData)
+      component.onSlotDetail('VIEW', event as any, { ...slots[0] } as SlotData)
 
       expect(event.stopPropagation).toHaveBeenCalled()
       expect(component.displaySlotDetailDialog).toBeTrue()
@@ -408,6 +425,25 @@ describe('SlotSearchComponent', () => {
       component.slotChanged(true)
 
       expect().nothing()
+    })
+  })
+
+  describe('delete', () => {
+    it('should call deletion dialog', () => {
+      const event = { stopPropagation: jasmine.createSpy() }
+
+      component.onSlotDelete(event as any, slots[0])
+
+      expect(event.stopPropagation).toHaveBeenCalled()
+      expect(component.displaySlotDeleteDialog).toBeTrue()
+    })
+
+    it('should refresh search results after deletion', () => {
+      spyOn(component, 'onSearch')
+      component.slotDeleted(true)
+
+      expect(component.displaySlotDeleteDialog).toBeFalse()
+      expect(component.onSearch).toHaveBeenCalled()
     })
   })
 
@@ -425,6 +461,98 @@ describe('SlotSearchComponent', () => {
       component = fixture.componentInstance
       fixture.detectChanges()
       expect(component.dateFormat).toEqual('M/d/yy, hh:mm:ss a')
+    })
+  })
+
+  /*
+   * FILTER
+   */
+  describe('table column filtering', () => {
+    it('should filter data for products', () => {
+      component.onFilterItemChangeSlotName({ value: 'slot' })
+
+      expect().nothing()
+    })
+
+    it('should filter data for products', () => {
+      component.onFilterItemChangeProduct({ value: 'prod' })
+
+      expect().nothing()
+    })
+
+    it('should filter data for states', () => {
+      component.onFilterItemChangeState({ value: 11 })
+
+      expect().nothing()
+    })
+  })
+
+  /*
+   * SORT
+   */
+  describe('table column sorting', () => {
+    it('should return 0 when sorting permissions without appIds or prod names', () => {
+      const slotData: SlotData[] = []
+      slotData[0] = { ...slots[0], productDisplayName: 'abc', stateValue: 1 }
+      slotData[1] = { ...slots[1], productDisplayName: 'abc', stateValue: 1 }
+      slotData[2] = { ...slots[1], productDisplayName: 'bca', stateValue: 11 }
+
+      let result = 0
+      result = (component as any).sortRowByProductAsc(slotData[0], slotData[2])
+      expect(result).toBe(-1)
+      result = (component as any).sortRowByProductAsc(slotData[0], slotData[1])
+      expect(result).toBe(-1)
+
+      result = (component as any).sortByProductDesc(slotData[0], slotData[2])
+      expect(result).toBe(1)
+      result = (component as any).sortByProductDesc(slotData[0], slotData[1])
+      expect(result).toBe(1)
+    })
+
+    it('should set icon class and sort by descending when icon class is "sort-amount-down"', () => {
+      const slotData: SlotData[] = []
+      slotData[0] = { ...slots[0], productDisplayName: 'abc', stateValue: 1 }
+      slotData[1] = { ...slots[1], productDisplayName: 'abc', stateValue: 1 }
+      slotData[2] = { ...slots[1], productDisplayName: 'bca', stateValue: 11 }
+      const event = new MouseEvent('click')
+      const icon = document.createElement('span')
+      icon.className = 'pi pi-fw pi-sort-amount-down'
+
+      spyOn(event, 'stopPropagation')
+      component.dataTable = {
+        clear: jasmine.createSpy(),
+        _value: [slotData[0], slotData[1]],
+        filterGlobal: jasmine.createSpy()
+      } as unknown as Table
+
+      component.onSortProducts(event, icon)
+
+      expect(event.stopPropagation).toHaveBeenCalled()
+      expect(component.dataTable.clear).toHaveBeenCalled()
+      expect(icon.className).toBe('pi pi-fw pi-sort-amount-up-alt')
+    })
+
+    it('should set icon class and sort by descending when icon class is "sort-amount-up-alt"', () => {
+      const slotData: SlotData[] = []
+      slotData[0] = { ...slots[0], productDisplayName: 'abc', stateValue: 1 }
+      slotData[1] = { ...slots[1], productDisplayName: 'abc', stateValue: 1 }
+      slotData[2] = { ...slots[1], productDisplayName: 'bca', stateValue: 11 }
+      const event = new MouseEvent('click')
+      const icon = document.createElement('span')
+      icon.className = 'pi pi-fw pi-sort-amount-up-alt'
+
+      spyOn(event, 'stopPropagation')
+      component.dataTable = {
+        clear: jasmine.createSpy(),
+        _value: [slotData[0], slotData[1]],
+        filterGlobal: jasmine.createSpy()
+      } as unknown as Table
+
+      component.onSortProducts(event, icon)
+
+      expect(event.stopPropagation).toHaveBeenCalled()
+      expect(component.dataTable.clear).toHaveBeenCalled()
+      expect(icon.className).toBe('pi pi-fw pi-sort-amount-down')
     })
   })
 })

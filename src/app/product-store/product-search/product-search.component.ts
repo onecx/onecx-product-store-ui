@@ -120,22 +120,22 @@ export class ProductSearchComponent implements OnInit {
         'PRODUCT.PROVIDER',
         'PRODUCT.DESCRIPTION',
         'PRODUCT.VERSION',
-        'ACTIONS.DATAVIEW.VIEW_MODE_GRID',
-        'ACTIONS.DATAVIEW.VIEW_MODE_LIST',
-        'ACTIONS.DATAVIEW.VIEW_MODE_TABLE',
-        'ACTIONS.DATAVIEW.FILTER',
-        'ACTIONS.DATAVIEW.FILTER_OF',
-        'ACTIONS.DATAVIEW.SORT_BY',
-        'ACTIONS.DATAVIEW.SORT_DIRECTION_ASC',
-        'ACTIONS.DATAVIEW.SORT_DIRECTION_DESC'
+        'DIALOG.DATAVIEW.VIEW_MODE_GRID',
+        'DIALOG.DATAVIEW.VIEW_MODE_LIST',
+        'DIALOG.DATAVIEW.VIEW_MODE_TABLE',
+        'DIALOG.DATAVIEW.FILTER',
+        'DIALOG.DATAVIEW.FILTER_OF',
+        'DIALOG.DATAVIEW.SORT_BY',
+        'DIALOG.DATAVIEW.SORT_DIRECTION_ASC',
+        'DIALOG.DATAVIEW.SORT_DIRECTION_DESC'
       ])
       .pipe(
         map((data) => {
           return {
-            sortDropdownPlaceholder: data['ACTIONS.DATAVIEW.SORT_BY'],
-            filterInputPlaceholder: data['ACTIONS.DATAVIEW.FILTER'],
+            sortDropdownPlaceholder: data['DIALOG.DATAVIEW.SORT_BY'],
+            filterInputPlaceholder: data['DIALOG.DATAVIEW.FILTER'],
             filterInputTooltip:
-              data['ACTIONS.DATAVIEW.FILTER_OF'] +
+              data['DIALOG.DATAVIEW.FILTER_OF'] +
               data['PRODUCT.DISPLAY_NAME'] +
               ', ' +
               data['PRODUCT.PROVIDER'] +
@@ -146,14 +146,14 @@ export class ProductSearchComponent implements OnInit {
               ', ' +
               data['PRODUCT.VERSION'],
             viewModeToggleTooltips: {
-              grid: data['ACTIONS.DATAVIEW.VIEW_MODE_GRID'],
-              list: data['ACTIONS.DATAVIEW.VIEW_MODE_LIST']
+              grid: data['DIALOG.DATAVIEW.VIEW_MODE_GRID'],
+              list: data['DIALOG.DATAVIEW.VIEW_MODE_LIST']
             },
             sortOrderTooltips: {
-              ascending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_ASC'],
-              descending: data['ACTIONS.DATAVIEW.SORT_DIRECTION_DESC']
+              ascending: data['DIALOG.DATAVIEW.SORT_DIRECTION_ASC'],
+              descending: data['DIALOG.DATAVIEW.SORT_DIRECTION_DESC']
             },
-            sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY']
+            sortDropdownTooltip: data['DIALOG.DATAVIEW.SORT_BY']
           } as DataViewControlTranslations
         })
       )
