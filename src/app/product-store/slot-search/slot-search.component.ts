@@ -23,7 +23,7 @@ export interface SlotSearchCriteria {
   slotName: FormControl<string | null>
   productName: FormControl<string | null>
 }
-export type SlotData = Slot & { productDisplayName: string; featureValue: number }
+export type SlotData = Slot & { productDisplayName: string; stateValue: number }
 export type ExtendedColumn = Column & { sort?: boolean; css?: string; limit?: number; hasFilter?: boolean }
 
 @Component({
@@ -174,7 +174,7 @@ export class SlotSearchComponent implements OnInit {
           sd.push({
             ...s,
             productDisplayName: this.getProductDisplayName(s.productName, ps),
-            featureValue: this.calculateFeatureValue(s)
+            stateValue: this.calculateFeatureValue(s)
           })
         })
         sd.sort(this.sortSlots)
@@ -183,54 +183,12 @@ export class SlotSearchComponent implements OnInit {
       finalize(() => (this.loading = false))
     )
   }
-  //     this.filterFeatureValue = [{label: 'operator', value: 100}, { label: 'undeployed', value: 10 }, { label: 'deprecated', value: 1 }]
   private calculateFeatureValue(slot: Slot): number {
     return (slot.operator ? 100 : 0) + (slot.undeployed ? 10 : 0) + (slot.deprecated ? 1 : 0)
   }
   private prepareFilterProducts(pas: ProductAbstract[] | undefined) {
     this.filterProductItems = []
     pas?.forEach((p) => this.filterProductItems.push(p.displayName ?? ''))
-  }
-  // if product name selected then reload app id filter
-  public onFilterItemChangeProduct(ev: any) {
-    this.filterProductValue = ev.value
-    this.dataTable?.filter(this.filterProductValue, 'productDisplayName', 'equals')
-  }
-  public onFilterItemChangeState(ev: any) {
-    this.filterStateValue = ev.value
-    this.dataTable?.filter(this.filterStateValue, 'state', 'equals')
-  }
-  public onClick(ev: MouseEvent) {
-    ev.stopPropagation()
-  }
-  public onFilterItemSortIcon(ev: MouseEvent, icon: HTMLSpanElement, field: string) {
-    ev.stopPropagation()
-    this.dataTable?.clear()
-    switch (icon.className) {
-      case 'pi pi-fw pi-sort-amount-down':
-        icon.className = 'pi pi-fw pi-sort-amount-up-alt'
-        this.dataTable?._value.sort(this.sortPermissionRowByProductAsc)
-        break
-      case 'pi pi-fw pi-sort-alt': // init
-      case 'pi pi-fw pi-sort-amount-up-alt':
-        icon.className = 'pi pi-fw pi-sort-amount-down'
-        this.dataTable?._value.sort(this.sortPermissionRowByProductDesc)
-        break
-    }
-  }
-  private sortPermissionRowByProductAsc(a: SlotData, b: SlotData): number {
-    return (
-      (a.productName ? a.productName.toUpperCase() : '').localeCompare(
-        b.productName ? b.productName.toUpperCase() : ''
-      ) || a.appId?.localeCompare(b.appId!)
-    )
-  }
-  private sortPermissionRowByProductDesc(bP: SlotData, aP: SlotData): number {
-    return (
-      (aP.productName ? aP.productName.toUpperCase() : '').localeCompare(
-        bP.productName ? bP.productName.toUpperCase() : ''
-      ) || aP.appId?.localeCompare(bP.appId!)
-    )
   }
 
   private getProductDisplayName(name: string, pas: ProductAbstract[]): string {
@@ -347,11 +305,11 @@ export class SlotSearchComponent implements OnInit {
     this.router.navigate(['../', data.productName], { fragment: 'apps', relativeTo: this.route })
   }
 
-  public onSlotDetail(mode: ChangeMode, ev: any, data: SlotData) {
+  public onSlotDetail(mode: ChangeMode, ev: MouseEvent, data: SlotData) {
     ev.stopPropagation()
-    this.displaySlotDetailDialog = true
-    this.item4Detail = data
+    this.item4Detail = { ...data } as Slot
     this.changeMode = mode
+    this.displaySlotDetailDialog = true
   }
   public slotChanged(changed: any) {
     this.displaySlotDetailDialog = false
@@ -360,7 +318,7 @@ export class SlotSearchComponent implements OnInit {
 
   public onSlotDelete(ev: any, slot: Slot) {
     ev.stopPropagation()
-    this.item4Delete = slot
+    this.item4Delete = { ...slot }
     this.displaySlotDeleteDialog = true
   }
   public slotDeleted(deleted: boolean) {
@@ -368,8 +326,48 @@ export class SlotSearchComponent implements OnInit {
     if (deleted) this.onSearch()
   }
 
+  /**
+   * FILTER
+   */
+  public onClick(ev: MouseEvent) {
+    ev.stopPropagation()
+  }
+  public onFilterItemChangeProduct(ev: any) {
+    this.filterProductValue = ev.value
+    this.dataTable?.filter(this.filterProductValue, 'productDisplayName', 'equals')
+  }
+  public onFilterItemChangeState(ev: any) {
+    this.filterStateValue = ev.value
+    this.dataTable?.filter(this.filterStateValue, 'state', 'equals')
+  }
   public customFilterCallback(filter: (a: any) => void, value: any): void {
     this.dataTable?.filterGlobal(value, 'contains')
-    //filter(value)
+  }
+
+  /**
+   * SORT
+   */
+  public onSortProducts(ev: MouseEvent, icon: HTMLSpanElement) {
+    ev.stopPropagation()
+    this.dataTable?.clear()
+    switch (icon.className) {
+      case 'pi pi-fw pi-sort-amount-down':
+        icon.className = 'pi pi-fw pi-sort-amount-up-alt'
+        this.dataTable?._value.sort(this.sortRowByProductAsc)
+        break
+      case 'pi pi-fw pi-sort-alt': // init
+      case 'pi pi-fw pi-sort-amount-up-alt':
+        icon.className = 'pi pi-fw pi-sort-amount-down'
+        this.dataTable?._value.sort(this.sortByProductDesc)
+        break
+    }
+  }
+  private sortRowByProductAsc(a: SlotData, b: SlotData): number {
+    return this.sortByProductDesc(b, a)
+  }
+  private sortByProductDesc(b: SlotData, a: SlotData): number {
+    return (
+      a.productName.toUpperCase().localeCompare(b.productDisplayName.toUpperCase()) || a.appId?.localeCompare(b.appId!)
+    )
   }
 }
