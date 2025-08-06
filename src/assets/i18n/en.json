@@ -107,16 +107,6 @@
         "GOTO.PRODUCT": "Display Application details"
       }
     },
-    "DATAVIEW": {
-      "FILTER": "Filter",
-      "FILTER_OF": "Filter for ",
-      "SORT_BY": "Sort By",
-      "SORT_DIRECTION_ASC": "ascending",
-      "SORT_DIRECTION_DESC": "descending",
-      "VIEW_MODE_GRID": "Tile view",
-      "VIEW_MODE_LIST": "List view",
-      "VIEW_MODE_TABLE": "Table view"
-    },
     "TABLE": {
       "ADD_ROW": {
         "LABEL": "Add Row",
@@ -167,9 +157,7 @@
       "LABEL": "View",
       "MFE.HEADER": "UI Component Details",
       "MS.HEADER": "Microservice Details",
-      "PRODUCT": {
-        "HEADER": "Edit Application"
-      }
+      "SLOT.HEADER": "Slot Details"
     },
     "CANCEL": "Cancel",
     "CHOOSE": "Choose",
@@ -221,6 +209,16 @@
   "DIALOG": {
     "DETAIL": {
       "SUBHEADER": "Application Details"
+    },
+    "DATAVIEW": {
+      "FILTER": "Filter",
+      "FILTER_OF": "Filter for ",
+      "SORT_BY": "Sort By",
+      "SORT_DIRECTION_ASC": "ascending",
+      "SORT_DIRECTION_DESC": "descending",
+      "VIEW_MODE_GRID": "Tile view",
+      "VIEW_MODE_LIST": "List view",
+      "VIEW_MODE_TABLE": "Table view"
     },
     "SEARCH": {
       "HEADER": "Application Store",
@@ -392,7 +390,7 @@
     "DESCRIPTION": "Description",
     "PRODUCT_NAME": "Application name",
     "APP_ID": "Microfrontend",
-    "STATE": "?",
+    "STATE": "Zustand",
     "TOOLTIPS": {
       "ID": "Unique technical ID of the Slot",
       "NAME": "Name of the Slot",
@@ -402,9 +400,14 @@
       "APP_ID": "Microfrontend providing the Slot",
       "STATE": "Availability of the Slot"
     },
+    "OPERATOR_SEARCH": "This Slot was created by automation. All changes will be lost during the next deployment.",
     "DEPRECATED_SEARCH": "This Slot is marked as deprecated. It can currently be used but will no longer be available in the future.",
     "UNDEPLOYED_SEARCH": "This Slot is no longer usable. Further use leads to error messages.",
-    "NOT_DEFINED": "This functionality is not available at the moment."
+    "NOT_DEFINED": "This functionality is not available at the moment.",
+    "SORT": {
+      "APP_ID": "Sorting by App IDs",
+      "PRODUCT": "Sorting by Application und App IDs"
+    }
   },
   "VALIDATION": {
     "FORM_INVALID": "The data are not ready to store.",

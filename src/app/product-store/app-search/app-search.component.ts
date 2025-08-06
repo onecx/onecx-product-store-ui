@@ -276,14 +276,14 @@ export class AppSearchComponent implements OnInit, OnDestroy {
         'APP.APP_VERSION',
         'APP.CLASSIFICATIONS',
         'APP.PRODUCT_NAME',
-        'ACTIONS.DATAVIEW.FILTER_OF',
-        'ACTIONS.DATAVIEW.SORT_BY'
+        'DIALOG.DATAVIEW.FILTER_OF',
+        'DIALOG.DATAVIEW.SORT_BY'
       ])
       .pipe(
         map((data) => {
           return {
             filterInputTooltip:
-              data['ACTIONS.DATAVIEW.FILTER_OF'] +
+              data['DIALOG.DATAVIEW.FILTER_OF'] +
               data['APP.APP_ID'] +
               ', ' +
               data['APP.APP_TYPE'] +
@@ -293,7 +293,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
               data['APP.CLASSIFICATIONS'] +
               ', ' +
               data['APP.PRODUCT_NAME'],
-            sortDropdownTooltip: data['ACTIONS.DATAVIEW.SORT_BY']
+            sortDropdownTooltip: data['DIALOG.DATAVIEW.SORT_BY']
           } as DataViewControlTranslations
         })
       )

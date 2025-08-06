@@ -123,7 +123,7 @@ describe('SlotSearchComponent', () => {
     })
     it('dataview translations', (done) => {
       const translationData = {
-        'ACTIONS.DATAVIEW.SORT_BY': 'sortBy'
+        'DIALOG.DATAVIEW.SORT_BY': 'sortBy'
       }
       const translateService = TestBed.inject(TranslateService)
       spyOn(translateService, 'get').and.returnValue(of(translationData))
@@ -382,32 +382,53 @@ describe('SlotSearchComponent', () => {
       })
     })
 
-    it('should stop event propagation and open slot detail in edit mode', () => {
-      const event = { stopPropagation: jasmine.createSpy() }
-      component.hasEditPermission = true
+    describe('detail', () => {
+      it('should stop event propagation and open slot detail in edit mode', () => {
+        const event = { stopPropagation: jasmine.createSpy() }
+        component.hasEditPermission = true
 
-      component.onGotoSlot(event as any, { ...slots[0] } as SlotData)
+        component.onSlotDetail('VIEW', event as any, { ...slots[0] } as SlotData)
 
-      expect(event.stopPropagation).toHaveBeenCalled()
-      expect(component.displaySlotDetailDialog).toBeTrue()
-      expect(component.changeMode).toBe('EDIT')
+        expect(event.stopPropagation).toHaveBeenCalled()
+        expect(component.displaySlotDetailDialog).toBeTrue()
+        expect(component.changeMode).toBe('VIEW')
+      })
+
+      it('should stop event propagation and open slot detail in view mode', () => {
+        const event = { stopPropagation: jasmine.createSpy() }
+        component.hasEditPermission = false
+
+        component.onSlotDetail('VIEW', event as any, { ...slots[0] } as SlotData)
+
+        expect(event.stopPropagation).toHaveBeenCalled()
+        expect(component.displaySlotDetailDialog).toBeTrue()
+        expect(component.changeMode).toBe('VIEW')
+      })
+
+      it('should get slot change event', () => {
+        component.slotChanged(true)
+
+        expect().nothing()
+      })
     })
 
-    it('should stop event propagation and open slot detail in view mode', () => {
-      const event = { stopPropagation: jasmine.createSpy() }
-      component.hasEditPermission = false
+    describe('delete', () => {
+      it('should call deletion dialog', () => {
+        const event = { stopPropagation: jasmine.createSpy() }
 
-      component.onGotoSlot(event as any, { ...slots[0] } as SlotData)
+        component.onSlotDelete(event as any, slots[0])
 
-      expect(event.stopPropagation).toHaveBeenCalled()
-      expect(component.displaySlotDetailDialog).toBeTrue()
-      expect(component.changeMode).toBe('VIEW')
-    })
+        expect(event.stopPropagation).toHaveBeenCalled()
+        expect(component.displaySlotDeleteDialog).toBeTrue()
+      })
 
-    it('should get slot change event', () => {
-      component.slotChanged(true)
+      it('should refresh search results after deletion', () => {
+        spyOn(component, 'onSearch')
+        component.slotDeleted(true)
 
-      expect().nothing()
+        expect(component.displaySlotDeleteDialog).toBeFalse()
+        expect(component.onSearch).toHaveBeenCalled()
+      })
     })
   })
 

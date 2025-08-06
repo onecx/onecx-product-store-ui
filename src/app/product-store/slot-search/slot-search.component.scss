@@ -3,6 +3,7 @@
 @include card-badges;
 @include danger-action;
 @include displaying-text-responsive;
+@include table-zebra-rows;
 @include table-inline-buttons;
 @include table-responsive-columns;
 @include dialog-footer-buttons;
@@ -11,15 +12,6 @@
   .card-badge-left {
     &.badge-2 {
       top: 33px;
-    }
-  }
-  /* special handling for zebra look on table rows */
-  .p-datatable .p-datatable-tbody {
-    tr:nth-child(even) td {
-      background-color: var(--table-body-row-even-bg);
-    }
-    tr td:nth-child(1).bg-inherit {
-      background-color: inherit !important;
     }
   }
 
@@ -32,6 +24,15 @@
       padding: 0.5rem;
     }
   }
+  .p-dropdown {
+    &.clear-icon-used .p-inputtext {
+      padding-right: 2rem;
+    }
+    .p-inputtext {
+      padding: 0.6rem;
+    }
+  }
+
   /* hide unusable stuff */
   ocx-column-group-selection,
   ocx-data-view-controls div div button {

@@ -107,16 +107,6 @@
         "GOTO.PRODUCT": "Details der Applikation anzeigen"
       }
     },
-    "DATAVIEW": {
-      "FILTER": "Filter",
-      "FILTER_OF": "Filter für ",
-      "SORT_BY": "Sortiert nach",
-      "SORT_DIRECTION_ASC": "aufsteigend",
-      "SORT_DIRECTION_DESC": "absteigend",
-      "VIEW_MODE_GRID": "Kachelansicht",
-      "VIEW_MODE_LIST": "Listenansicht",
-      "VIEW_MODE_TABLE": "Tabellenansicht"
-    },
     "TABLE": {
       "ADD_ROW": {
         "LABEL": "Zeile hinzufügen",
@@ -167,9 +157,7 @@
       "LABEL": "Ansehen",
       "MFE.HEADER": "UI Komponente Details",
       "MS.HEADER": "Microservice Details",
-      "PRODUCT": {
-        "HEADER": "Applikation bearbeiten"
-      }
+      "SLOT.HEADER": "Slot Details"
     },
     "CANCEL": "Abbrechen",
     "CHOOSE": "Auswählen",
@@ -221,6 +209,16 @@
   "DIALOG": {
     "DETAIL": {
       "SUBHEADER": "Application Details"
+    },
+    "DATAVIEW": {
+      "FILTER": "Filter",
+      "FILTER_OF": "Filter für ",
+      "SORT_BY": "Sortiert nach",
+      "SORT_DIRECTION_ASC": "aufsteigend",
+      "SORT_DIRECTION_DESC": "absteigend",
+      "VIEW_MODE_GRID": "Kachelansicht",
+      "VIEW_MODE_LIST": "Listenansicht",
+      "VIEW_MODE_TABLE": "Tabellenansicht"
     },
     "SEARCH": {
       "HEADER": "Application Store",
@@ -392,7 +390,7 @@
     "DESCRIPTION": "Beschreibung",
     "PRODUCT_NAME": "Applikationsname",
     "APP_ID": "Microfrontend",
-    "STATE": "?",
+    "STATE": "Zustand",
     "TOOLTIPS": {
       "ID": "Eindeutige technische ID des Slots",
       "NAME": "Name des Slots",
@@ -402,9 +400,14 @@
       "APP_ID": "Microfrontend das den Slot anbietet",
       "STATE": "Verfügbarkeit des Slots"
     },
+    "OPERATOR_SEARCH": "Dieser Slot wurde automatisiert erstellt. Alle Änderungen gehen beim beim nächsten Deployment verloren.",
     "DEPRECATED_SEARCH": "Dieser Slot ist als veraltet markiert. Er kann derzeit weiter verwendet werden wird aber in Zukunft nicht mehr zur Verfügung stehen.",
     "UNDEPLOYED_SEARCH": "Dieser Slot ist nicht länger nutzbar. Eine weitere Nutzung führt zu Fehlermeldungen.",
-    "NOT_DEFINED": "Diese Funktionalität ist derzeit nicht vefügbar."
+    "NOT_DEFINED": "Diese Funktionalität ist derzeit nicht vefügbar.",
+    "SORT": {
+      "APP_ID": "Sortierung nach App IDs",
+      "PRODUCT": "Sortierung nach Applikation und App IDs"
+    }
   },
   "VALIDATION": {
     "FORM_INVALID": "Die Daten sind nicht bereit zum Speichern.",

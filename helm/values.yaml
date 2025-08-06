@@ -81,5 +81,8 @@ app:
             SEARCH: Search products
             VIEW: View product details
           SLOT:
-            SEARCH: Search slots
+            CREATE: Create slot
             DELETE: Delete slot
+            EDIT: Edit slot
+            SEARCH: Search products
+            VIEW: View slot details
