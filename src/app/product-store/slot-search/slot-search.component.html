@@ -112,14 +112,31 @@
               [id]="'ps_slot_search_table_header_col_' + col.field"
               class="white-space-nowrap border-right-1"
               [class]="col.css"
-              [pSortableColumn]="col.field"
               [attr.aria-label]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
               [pTooltip]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
               tooltipPosition="top"
               tooltipEvent="hover"
             >
-              <span>{{ col.translationPrefix + '.' + col.header | translate }}</span>
-              <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
+              <span class="p-float-label inline-block">
+                <p-dropdown
+                  id="ps_slot_search_table_header_filter_slot_name"
+                  styleClass="w-full clear-icon-used"
+                  [appendTo]="'body'"
+                  [showClear]="true"
+                  [options]="filterSlotNameItems"
+                  [(ngModel)]="filterSlotNameValue"
+                  (onClick)="onClick($event)"
+                  (onChange)="onFilterItemChangeSlotName($event)"
+                  [emptyMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
+                  [attr.aria-label]="'SLOT.NAME' | translate"
+                  [pTooltip]="'SLOT.TOOLTIPS.NAME' | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                ></p-dropdown>
+                <label for="ps_slot_search_table_header_filter_slot_name">
+                  {{ col.translationPrefix + '.' + col.header | translate }}
+                </label>
+              </span>
             </th>
             <th
               *ngIf="col.field === 'state'"
@@ -194,8 +211,8 @@
                   tooltipEvent="hover"
                 ></p-dropdown>
                 <label for="ps_slot_search_table_header_filter_product_name">
-                  {{ 'SLOT.PRODUCT_NAME' | translate }}</label
-                >
+                  {{ 'SLOT.PRODUCT_NAME' | translate }}
+                </label>
               </span>
               <button
                 pbutton

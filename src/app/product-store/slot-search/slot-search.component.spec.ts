@@ -469,6 +469,12 @@ describe('SlotSearchComponent', () => {
    */
   describe('table column filtering', () => {
     it('should filter data for products', () => {
+      component.onFilterItemChangeSlotName({ value: 'slot' })
+
+      expect().nothing()
+    })
+
+    it('should filter data for products', () => {
       component.onFilterItemChangeProduct({ value: 'prod' })
 
       expect().nothing()

@@ -53,6 +53,8 @@ export class SlotSearchComponent implements OnInit {
   public filteredColumns: ExtendedColumn[] = []
   public filterProductItems: string[] = []
   public filterProductValue: string | undefined = undefined
+  public filterSlotNameItems: string[] = []
+  public filterSlotNameValue: string | undefined = undefined
   public filterStateItems: SelectItem[] = []
   public filterStateValue: number = 0
   public sortField = 'name'
@@ -171,6 +173,7 @@ export class SlotSearchComponent implements OnInit {
       map(([ps, slots]) => {
         const sd: SlotData[] = []
         slots.forEach((s) => {
+          this.prepareFilterSlotNames(slots)
           sd.push({
             ...s,
             productDisplayName: this.getProductDisplayName(s.productName, ps),
@@ -186,10 +189,16 @@ export class SlotSearchComponent implements OnInit {
   private calculateFeatureValue(slot: Slot): number {
     return (slot.operator ? 100 : 0) + (slot.undeployed ? 10 : 0) + (slot.deprecated ? 1 : 0)
   }
+  private prepareFilterSlotNames(ss: Slot[] | undefined) {
+    this.filterSlotNameItems = []
+    ss?.forEach((s) => {
+      if (s.name && !this.filterSlotNameItems.includes(s.name)) this.filterSlotNameItems.push(s.name)
+    })
+  }
   private prepareFilterProducts(pas: ProductAbstract[] | undefined) {
     this.filterProductItems = []
     pas?.forEach((p) => {
-      if (p.displayName) this.filterProductItems.push(p.displayName)
+      if (p.displayName && !this.filterProductItems.includes(p.displayName)) this.filterProductItems.push(p.displayName)
     })
   }
 
@@ -333,6 +342,11 @@ export class SlotSearchComponent implements OnInit {
    */
   public onClick(ev: MouseEvent) {
     ev.stopPropagation()
+  }
+
+  public onFilterItemChangeSlotName(ev: any) {
+    this.filterSlotNameValue = ev.value
+    this.dataTable?.filter(this.filterSlotNameValue, 'name', 'equals')
   }
   public onFilterItemChangeProduct(ev: any) {
     this.filterProductValue = ev.value
