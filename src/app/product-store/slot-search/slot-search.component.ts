@@ -363,11 +363,15 @@ export class SlotSearchComponent implements OnInit {
     }
   }
   private sortRowByProductAsc(a: SlotData, b: SlotData): number {
-    return this.sortByProductDesc(b, a)
+    return (
+      a.productDisplayName.toUpperCase().localeCompare(b.productDisplayName.toUpperCase()) ||
+      a.appId?.localeCompare(b.appId!)
+    )
   }
   private sortByProductDesc(b: SlotData, a: SlotData): number {
     return (
-      a.productName.toUpperCase().localeCompare(b.productDisplayName.toUpperCase()) || a.appId?.localeCompare(b.appId!)
+      a.productDisplayName.toUpperCase().localeCompare(b.productDisplayName.toUpperCase()) ||
+      a.appId?.localeCompare(b.appId!)
     )
   }
 }
