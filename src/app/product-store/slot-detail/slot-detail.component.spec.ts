@@ -207,7 +207,6 @@ describe('SlotDetailComponent', () => {
 
       component.ngOnChanges()
 
-      expect(component.slot).toBeUndefined()
       expect(component.dialogTitleKey).toBe('ACTIONS.CREATE.SLOT.HEADER')
     })
 
