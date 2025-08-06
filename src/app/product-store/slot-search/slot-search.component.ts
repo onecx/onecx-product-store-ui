@@ -188,7 +188,9 @@ export class SlotSearchComponent implements OnInit {
   }
   private prepareFilterProducts(pas: ProductAbstract[] | undefined) {
     this.filterProductItems = []
-    pas?.forEach((p) => this.filterProductItems.push(p.displayName ?? ''))
+    pas?.forEach((p) => {
+      if (p.displayName) this.filterProductItems.push(p.displayName)
+    })
   }
 
   private getProductDisplayName(name: string, pas: ProductAbstract[]): string {
@@ -340,9 +342,6 @@ export class SlotSearchComponent implements OnInit {
     this.filterStateValue = ev.value
     this.dataTable?.filter(this.filterStateValue, 'state', 'equals')
   }
-  public customFilterCallback(filter: (a: any) => void, value: any): void {
-    this.dataTable?.filterGlobal(value, 'contains')
-  }
 
   /**
    * SORT
@@ -355,7 +354,6 @@ export class SlotSearchComponent implements OnInit {
         icon.className = 'pi pi-fw pi-sort-amount-up-alt'
         this.dataTable?._value.sort(this.sortRowByProductAsc)
         break
-      case 'pi pi-fw pi-sort-alt': // init
       case 'pi pi-fw pi-sort-amount-up-alt':
         icon.className = 'pi pi-fw pi-sort-amount-down'
         this.dataTable?._value.sort(this.sortByProductDesc)
@@ -365,13 +363,13 @@ export class SlotSearchComponent implements OnInit {
   private sortRowByProductAsc(a: SlotData, b: SlotData): number {
     return (
       a.productDisplayName.toUpperCase().localeCompare(b.productDisplayName.toUpperCase()) ||
-      a.appId?.localeCompare(b.appId!)
+      a.appId?.localeCompare(b.appId)
     )
   }
-  private sortByProductDesc(b: SlotData, a: SlotData): number {
+  private sortByProductDesc(a: SlotData, b: SlotData): number {
     return (
-      a.productDisplayName.toUpperCase().localeCompare(b.productDisplayName.toUpperCase()) ||
-      a.appId?.localeCompare(b.appId!)
+      b.productDisplayName.toUpperCase().localeCompare(a.productDisplayName.toUpperCase()) ||
+      b.appId?.localeCompare(a.appId)
     )
   }
 }
