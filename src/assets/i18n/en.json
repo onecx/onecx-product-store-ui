@@ -390,7 +390,7 @@
     "DESCRIPTION": "Description",
     "PRODUCT_NAME": "Application name",
     "APP_ID": "Microfrontend",
-    "STATE": "Zustand",
+    "STATE": "State",
     "TOOLTIPS": {
       "ID": "Unique technical ID of the Slot",
       "NAME": "Name of the Slot",
