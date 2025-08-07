@@ -16,7 +16,7 @@ import {
   SlotPageResult,
   SlotsAPIService
 } from 'src/app/shared/generated'
-import { limitText } from 'src/app/shared/utils'
+import { limitText, sortByLocale } from 'src/app/shared/utils'
 import { ChangeMode } from '../product-detail/product-detail.component'
 
 export interface SlotSearchCriteria {
@@ -132,10 +132,7 @@ export class SlotSearchComponent implements OnInit {
       pageSize: 1000
     }
     this.products$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
-      map((data) => {
-        this.prepareFilterProducts(data.stream)
-        return data.stream ?? []
-      }),
+      map((data) => data.stream ?? []),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
         console.error('searchProducts', err)
@@ -172,15 +169,21 @@ export class SlotSearchComponent implements OnInit {
     this.slotData$ = combineLatest([this.products$, this.slots$]).pipe(
       map(([ps, slots]) => {
         const sd: SlotData[] = []
+        this.prepareFilterSlotNames(slots)
+        this.filterProductItems = []
+        let slot: SlotData
         slots.forEach((s) => {
-          this.prepareFilterSlotNames(slots)
-          sd.push({
+          slot = {
             ...s,
             productDisplayName: this.getProductDisplayName(s.productName, ps),
             stateValue: this.calculateFeatureValue(s)
-          })
+          }
+          sd.push(slot)
+          if (slot.productDisplayName && !this.filterProductItems.includes(slot.productDisplayName))
+            this.filterProductItems.push(slot.productDisplayName)
         })
         sd.sort(this.sortSlots)
+        this.filterProductItems.sort(sortByLocale)
         return sd
       }),
       finalize(() => (this.loading = false))
@@ -194,12 +197,7 @@ export class SlotSearchComponent implements OnInit {
     ss?.forEach((s) => {
       if (s.name && !this.filterSlotNameItems.includes(s.name)) this.filterSlotNameItems.push(s.name)
     })
-  }
-  private prepareFilterProducts(pas: ProductAbstract[] | undefined) {
-    this.filterProductItems = []
-    pas?.forEach((p) => {
-      if (p.displayName && !this.filterProductItems.includes(p.displayName)) this.filterProductItems.push(p.displayName)
-    })
+    this.filterSlotNameItems.sort(sortByLocale)
   }
 
   private getProductDisplayName(name: string, pas: ProductAbstract[]): string {

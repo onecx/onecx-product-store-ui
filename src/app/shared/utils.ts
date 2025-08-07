@@ -13,9 +13,7 @@ export function limitText(text: string | undefined, limit: number): string {
 }
 
 export function dropDownSortItemsByLabel(a: SelectItem, b: SelectItem): number {
-  return (a.label ? (a.label as string).toUpperCase() : '').localeCompare(
-    b.label ? (b.label as string).toUpperCase() : ''
-  )
+  return (a.label ? a.label.toUpperCase() : '').localeCompare(b.label ? b.label.toUpperCase() : '')
 }
 export function dropDownGetLabelByValue(ddArray: SelectItem[], val: string): string | undefined {
   const a: any = ddArray.find((item: SelectItem) => {
