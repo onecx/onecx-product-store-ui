@@ -7,10 +7,11 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <div
+    <section
       id="ps_slot_search_criteria"
       [formGroup]="searchCriteria"
       class="flex flex-row flex-wrap gap-4 row-gap-3 md:px-2"
+      [attr.aria-label]="'DIALOG.SEARCH.CRITERIA' | translate"
     >
       <span class="p-float-label">
         <input
@@ -24,7 +25,7 @@
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="ps_slot_search_criteria_slot_name">{{ 'SLOT.NAME' | translate }}</label>
+        <label for="ps_slot_search_criteria_slot_name" aria-hidden="true">{{ 'SLOT.NAME' | translate }}</label>
       </span>
       <span class="p-float-label">
         <input
@@ -38,9 +39,11 @@
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="ps_slot_search_criteria_product_name">{{ 'SLOT.PRODUCT_NAME' | translate }}</label>
+        <label for="ps_slot_search_criteria_product_name" aria-hidden="true"
+          >{{ 'SLOT.PRODUCT_NAME' | translate }}</label
+        >
       </span>
-    </div>
+    </section>
   </ocx-search-header>
 
   <ocx-page-content *ngIf="slotData$ | async as slots">
@@ -112,10 +115,7 @@
               [id]="'ps_slot_search_table_header_col_' + col.field"
               class="white-space-nowrap border-right-1"
               [class]="col.css"
-              [attr.aria-label]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
-              [pTooltip]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
+              [attr.aria-label]="'SLOT.NAME' | translate"
             >
               <span class="p-float-label inline-block">
                 <p-dropdown
@@ -128,12 +128,11 @@
                   (onClick)="onClick($event)"
                   (onChange)="onFilterItemChangeSlotName($event)"
                   [emptyMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
-                  [attr.aria-label]="'SLOT.NAME' | translate"
                   [pTooltip]="'SLOT.TOOLTIPS.NAME' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 ></p-dropdown>
-                <label for="ps_slot_search_table_header_filter_slot_name">
+                <label for="ps_slot_search_table_header_filter_slot_name" aria-hidden="true">
                   {{ col.translationPrefix + '.' + col.header | translate }}
                 </label>
               </span>
@@ -164,7 +163,7 @@
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 ></p-dropdown>
-                <label for="ps_slot_search_table_header_filter_state">
+                <label for="ps_slot_search_table_header_filter_state" aria-hidden="true">
                   {{ 'SLOT.STATE' | translate }}
                 </label>
               </span-->
@@ -193,7 +192,10 @@
             {{ 'SLOT.APP_ID' | translate }}
           </th>
           <th id="ps_slot_search_table_header_col_product_name" [class]="'white-space-nowrap'">
-            <div class="flex flex-row align-items-center column-gap-1">
+            <section
+              class="flex flex-row align-items-center column-gap-1"
+              [attr.aria-label]="'SLOT.PRODUCT_NAME' | translate"
+            >
               <span class="p-float-label inline-block">
                 <p-dropdown
                   id="ps_slot_search_table_header_filter_product_name"
@@ -210,7 +212,7 @@
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 ></p-dropdown>
-                <label for="ps_slot_search_table_header_filter_product_name">
+                <label for="ps_slot_search_table_header_filter_product_name" aria-hidden="true">
                   {{ 'SLOT.PRODUCT_NAME' | translate }}
                 </label>
               </span>
@@ -226,7 +228,7 @@
               >
                 <span #sortIconProduct class="pi pi-fw pi-sort-amount-up-alt"></span>
               </button>
-            </div>
+            </section>
           </th>
         </tr>
       </ng-template>

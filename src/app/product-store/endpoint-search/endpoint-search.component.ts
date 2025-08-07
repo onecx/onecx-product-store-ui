@@ -121,7 +121,7 @@ export class EndpointSearchComponent implements OnInit {
             return data.size
           }
         }),
-        map((data) => (data.stream ? data.stream : [])),
+        map((data) => data.stream ?? []),
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.MFES'
           console.error('searchMicrofrontends', err)
