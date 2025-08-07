@@ -199,11 +199,6 @@ export class SlotSearchComponent implements OnInit {
     })
     this.filterSlotNameItems.sort(sortByLocale)
   }
-  private addToFilterProducts(name: string) {
-    this.filterProductItems = []
-    if (name && !this.filterProductItems.includes(name)) this.filterProductItems.push(name)
-    this.filterProductItems.sort(sortByLocale)
-  }
 
   private getProductDisplayName(name: string, pas: ProductAbstract[]): string {
     const pf = pas.find((p) => p.name === name)
@@ -376,6 +371,8 @@ export class SlotSearchComponent implements OnInit {
         this.dataTable?._value.sort(this.sortByProductDesc)
         break
     }
+    this.onFilterItemChangeSlotName({ value: this.filterSlotNameValue })
+    this.onFilterItemChangeProduct({ value: this.filterProductValue })
   }
   private sortRowByProductAsc(a: SlotData, b: SlotData): number {
     return (
