@@ -371,8 +371,6 @@ export class SlotSearchComponent implements OnInit {
         this.dataTable?._value.sort(this.sortByProductDesc)
         break
     }
-    this.onFilterItemChangeSlotName({ value: this.filterSlotNameValue })
-    this.onFilterItemChangeProduct({ value: this.filterProductValue })
   }
   private sortRowByProductAsc(a: SlotData, b: SlotData): number {
     return (
