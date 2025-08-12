@@ -222,8 +222,9 @@
     },
     "SEARCH": {
       "HEADER": "Application Store",
-      "SUBHEADER": "Managing Products and their Components (UI Components, Microservices, Slots)",
-      "CRITERIA": "Suchfelder",
+      "SUBHEADER": "Managing Applications and their Components (UI Components, Microservices, Slots)",
+      "CRITERIA": "Search Criteria",
+      "RESULTS": "Search Results",
       "APPS.LABEL": "Apps",
       "APPS.TOOLTIP": "List of UI Components and Microservices",
       "APPS.HEADER": "Apps",
@@ -381,9 +382,9 @@
       "WORKSPACES": "Workspaces using the Application"
     },
     "WORKSPACES_USING_PRODUCT": {
-      "MISSING_COMPONENT": "Information on using the Product in a Workspace could not be obtained.",
-      "USED": "The Product is registered by the following Workspaces: ",
-      "UNUSED": "The Product is not used by any Workspace."
+      "MISSING_COMPONENT": "Information on using the Application in a Workspace could not be obtained.",
+      "USED": "The Application is registered by the following Workspaces: ",
+      "UNUSED": "The Application is not used by any Workspace."
     }
   },
   "SLOT": {

@@ -7,7 +7,7 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <div [formGroup]="appSearchCriteriaGroup" class="flex flex-wrap gap-4 row-gap-3 md:px-2">
+    <form [formGroup]="appSearchCriteriaGroup" class="flex flex-wrap gap-3 md:px-2">
       <span class="p-float-label">
         <input
           pInputText
@@ -20,7 +20,7 @@
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="ps_app_search_criteria_app_name">{{ 'APP.CRITERIA.NAME' | translate }}</label>
+        <label for="ps_app_search_criteria_app_name" aria-hidden="true">{{ 'APP.CRITERIA.NAME' | translate }}</label>
       </span>
       <span class="p-float-label">
         <input
@@ -34,7 +34,7 @@
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="ps_app_search_criteria_product_name">{{ 'APP.PRODUCT_NAME' | translate }}</label>
+        <label for="ps_app_search_criteria_product_name" aria-hidden="true">{{ 'APP.PRODUCT_NAME' | translate }}</label>
       </span>
       <div class="slim-selectbutton search-criteria-selectbutton">
         <p-selectButton
@@ -66,7 +66,7 @@
           <span> {{ 'ACTIONS.SEARCH.APP.QUICK_FILTER.' + appTypeFilterValue | translate }}</span>
         </div>
       </div>
-    </div>
+    </form>
   </ocx-search-header>
 
   <ocx-page-content>
@@ -111,6 +111,7 @@
               <ng-template let-item pTemplate>
                 <span
                   [id]="'ps_app_search_quick_filter_' + item.value"
+                  [attr.aria-label]="'ACTIONS.SEARCH.APP.FILTER.' + item.value | translate"
                   [pTooltip]="item.label | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
@@ -161,8 +162,12 @@
       </ng-template>
 
       <ng-template let-apps pTemplate="gridItem">
-        <div class="p-grid p-nogutter grid grid-nogutter">
-          <div *ngFor="let app of apps" class="col-6 md:col-4 lg:col-4 xl:col-3 p-2 md:px-3">
+        <section class="grid grid-nogutter" [attr.aria-label]="'DIALOG.SEARCH.RESULTS' | translate">
+          <article
+            *ngFor="let app of apps"
+            class="col-6 md:col-4 lg:col-4 xl:col-3 p-2 md:px-3"
+            [attr.aria-label]="app.appId"
+          >
             <a
               tabindex="0"
               [id]="'ps_app_search_data_' + app.appId"
@@ -171,6 +176,7 @@
               (keydown.enter)="onAppDetail($event, app)"
               (keydown.space)="onAppDetail($event, app)"
               [attr.aria-label]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
+              role="link"
             >
               <!-- BADGES -->
               <a
@@ -292,8 +298,8 @@
                 </div>
               </div>
             </a>
-          </div>
-        </div>
+          </article>
+        </section>
       </ng-template>
     </p-dataView>
   </ocx-page-content>
