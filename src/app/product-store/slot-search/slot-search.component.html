@@ -7,12 +7,7 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <section
-      id="ps_slot_search_criteria"
-      [formGroup]="searchCriteria"
-      class="flex flex-row flex-wrap gap-4 row-gap-3 md:px-2"
-      [attr.aria-label]="'DIALOG.SEARCH.CRITERIA' | translate"
-    >
+    <form id="ps_slot_search_criteria" [formGroup]="searchCriteria" class="flex flex-row flex-wrap gap-3 md:px-2">
       <span class="p-float-label">
         <input
           pInputText
@@ -43,7 +38,7 @@
           {{ 'SLOT.PRODUCT_NAME' | translate }}
         </label>
       </span>
-    </section>
+    </form>
   </ocx-search-header>
 
   <ocx-page-content *ngIf="slotData$ | async as slots">

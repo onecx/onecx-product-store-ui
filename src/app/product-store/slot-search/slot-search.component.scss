@@ -24,6 +24,11 @@
     .p-datatable-tbody > tr > td {
       padding: 0.5rem;
     }
+    .p-datatable-tbody {
+      tr td.bg-inherit {
+        background-color: var(--table-body-row-bg) !important;
+      }
+    }
   }
   .p-dropdown {
     &.clear-icon-used .p-inputtext {

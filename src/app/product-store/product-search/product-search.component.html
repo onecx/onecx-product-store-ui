@@ -20,7 +20,7 @@
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="ps_product_search_criteria_name">{{ 'PRODUCT.NAME' | translate }}</label>
+        <label for="ps_product_search_criteria_name" aria-hidden="true">{{ 'PRODUCT.NAME' | translate }}</label>
       </span>
       <ng-container *ngIf="criteria$ | async as criteria">
         <span class="p-float-label">
@@ -38,7 +38,9 @@
             tooltipPosition="top"
             tooltipEvent="hover"
           />
-          <label for="ps_product_search_criteria_providers">{{ 'PRODUCT.PROVIDER' | translate }}</label>
+          <label for="ps_product_search_criteria_providers" aria-hidden="true">
+            {{ 'PRODUCT.PROVIDER' | translate }}
+          </label>
         </span>
         <span class="p-float-label">
           <p-multiSelect
@@ -55,7 +57,9 @@
             tooltipPosition="top"
             tooltipEvent="hover"
           />
-          <label for="ps_product_search_criteria_classifications">{{ 'PRODUCT.CLASSIFICATIONS' | translate }}</label>
+          <label for="ps_product_search_criteria_classifications" aria-hidden="true">
+            {{ 'PRODUCT.CLASSIFICATIONS' | translate }}
+          </label>
         </span>
       </ng-container>
     </div>
@@ -176,13 +180,19 @@
 
       <!-- GRID -->
       <ng-template let-products pTemplate="gridItem">
-        <div class="grid grid-nogutter">
-          <div *ngFor="let product of products; index as i" class="col-6 md:col-4 xl:col-3 p-2 md:px-3">
+        <section class="grid grid-nogutter" [attr.aria-label]="'DIALOG.SEARCH.RESULTS' | translate">
+          <article
+            *ngFor="let product of products; index as i"
+            class="col-6 md:col-4 xl:col-3 p-2 md:px-3"
+            [attr.aria-label]="product.displayName"
+          >
             <a
               [id]="'ps_product_search_data_grid_row_' + i"
               class="card relative p-1 sm:p-2 sm:px-3 flex flex-column gap-1 lg:gap-2 justify-content-between text-center hover:bg-gray-200 cursor-pointer"
               routerLinkActive="active"
               [routerLink]="['./', product.name]"
+              [attr.aria-label]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
+              role="link"
             >
               <!-- BADGES -->
               <span
@@ -193,6 +203,7 @@
                 [pTooltip]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
+                role="note"
               ></span>
               <!-- CONTENT -->
               <div
@@ -203,10 +214,14 @@
                 [pTooltip]="product.displayName.length <= 20 ? '' : product.displayName"
                 tooltipPosition="top"
                 tooltipEvent="hover"
+                role="note"
               >
                 {{ product.displayName }}
               </div>
-              <div class="h-4rem sm:h-6rem md:h-7rem lg:h-9rem flex justify-content-center align-items-center">
+              <div
+                class="h-4rem sm:h-6rem md:h-7rem lg:h-9rem flex justify-content-center align-items-center"
+                aria-hidden="true"
+              >
                 <app-image-container
                   [id]="'ps_product_search_data_grid_row_' + i + '_image'"
                   styleClass="max-h-4rem sm:max-h-6rem md:max-h-7rem lg:max-h-9rem max-w-6rem sm:max-w-10rem md:max-w-11rem lg:max-w-13rem xl:max-w-14rem"
@@ -221,6 +236,7 @@
                   [pTooltip]="'PRODUCT.CLASSIFICATIONS' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
+                  role="note"
                 >
                   {{ product.classes }}
                 </div>
@@ -229,10 +245,11 @@
                   <span
                     [id]="'ps_product_search_data_grid_row_' + i + '_provider'"
                     class="text-xs sm:text-sm md:text-base text-responsive"
-                    [attr.aria-label]="product.provider"
+                    [attr.aria-label]="'PRODUCT.PROVIDER' | translate"
                     [pTooltip]="'PRODUCT.PROVIDER' | translate"
                     tooltipPosition="top"
                     tooltipEvent="hover"
+                    role="note"
                   >
                     {{ product.provider }}
                   </span>
@@ -244,13 +261,14 @@
                   [pTooltip]="'PRODUCT.VERSION' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
+                  role="note"
                 >
                   Version: {{ product.version ?? ('PRODUCT.VERSION.MISSING' | translate) }}
                 </div>
               </div>
             </a>
-          </div>
-        </div>
+          </article>
+        </section>
       </ng-template>
     </p-dataView>
   </ocx-page-content>
