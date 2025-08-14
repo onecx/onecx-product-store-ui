@@ -293,7 +293,7 @@
     </p-tabPanel>
 
     <p-tabPanel
-      *ngIf="mfe"
+      *ngIf="appAbstract?.appType === 'MFE' && (mfe || changeMode === 'CREATE')"
       [header]="'DIALOG.TABS.REMOTE' | translate"
       [tooltip]="'DIALOG.TABS.TOOLTIPS.REMOTE' | translate"
     >
