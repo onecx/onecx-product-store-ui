@@ -374,7 +374,7 @@
               <div class="flex flex-nowrap justify-content-center">
                 <span
                   class="p-1 pi pi-cog"
-                  [ngClass]="{ 'invisible': !rowData['operator']}"
+                  [ngClass]="{ `invisible`: !rowData['operator'] }"
                   [attr.aria-label]="'SLOT.OPERATOR_SEARCH' | translate"
                   [pTooltip]="'SLOT.OPERATOR_SEARCH' | translate"
                   tooltipPosition="top"
@@ -382,9 +382,7 @@
                 ></span>
                 <span
                   class="p-1 danger-action-text pi pi-ban"
-                  [ngClass]="{
-                    'hidden': (!rowData['undeployed'])
-                  }"
+                  [ngClass]="{ `hidden`: (!rowData['undeployed']) }"
                   [attr.aria-label]="'SLOT.UNDEPLOYED_SEARCH' | translate"
                   [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
                   tooltipPosition="top"
@@ -393,8 +391,8 @@
                 <span
                   class="p-1 danger-action-text pi pi-exclamation-circle"
                   [ngClass]="{
-                    'invisible': !rowData['deprecated'],
-                    'hidden': rowData['undeployed']
+                    `invisible`: !rowData['deprecated'],
+                    `hidden`: rowData['undeployed']
                   }"
                   [attr.aria-label]="'SLOT.DEPRECATED_SEARCH' | translate"
                   [pTooltip]="'SLOT.DEPRECATED_SEARCH' | translate"
