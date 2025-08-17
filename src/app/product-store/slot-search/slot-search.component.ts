@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { FormControl, FormGroup } from '@angular/forms'
-import { catchError, combineLatest, finalize, map, of, Observable, tap } from 'rxjs'
+import { BehaviorSubject, catchError, combineLatest, finalize, map, of, Observable, tap } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
-import { SelectItem } from 'primeng/api'
 import { Table } from 'primeng/table'
+
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 import { Action, Column, DataViewControlTranslations } from '@onecx/portal-integration-angular'
 
@@ -23,7 +23,8 @@ export interface SlotSearchCriteria {
   slotName: FormControl<string | null>
   productName: FormControl<string | null>
 }
-export type SlotData = Slot & { productDisplayName: string; stateValue: number }
+export type SlotData = Slot & { productDisplayName: string }
+export type SlotState = { label: string; value: string; icon: string }
 export type ExtendedColumn = Column & { sort?: boolean; css?: string; limit?: number; hasFilter?: boolean }
 
 @Component({
@@ -34,13 +35,11 @@ export class SlotSearchComponent implements OnInit {
   // dialog
   public loading = false
   public exceptionKey: string | undefined = undefined
-  public searchInProgress = false
   public actions$: Observable<Action[]> | undefined
   public dateFormat = 'medium'
   public displaySlotDetailDialog = false
   public displaySlotDeleteDialog = false
   public changeMode: ChangeMode = 'VIEW'
-  public hasEditPermission = false
   // data
   public searchCriteria: FormGroup<SlotSearchCriteria>
   public products$: Observable<ProductAbstract[]> = of([])
@@ -48,17 +47,19 @@ export class SlotSearchComponent implements OnInit {
   public slotData$: Observable<SlotData[]> = of([])
   public item4Detail: Slot | undefined
   public item4Delete: Slot | undefined
+  public filteredData$ = new BehaviorSubject<SlotData[]>([])
+  public resultData$ = new BehaviorSubject<SlotData[]>([])
 
-  public filter: string | undefined
+  private filterData: any = ''
   public filteredColumns: ExtendedColumn[] = []
   public filterProductItems: string[] = []
   public filterProductValue: string | undefined = undefined
   public filterSlotNameItems: string[] = []
   public filterSlotNameValue: string | undefined = undefined
-  public filterStateItems: SelectItem[] = []
-  public filterStateValue: number = 0
-  public sortField = 'name'
-  public sortOrder = 1
+  public filterStateItems: SlotState[] = []
+  public statefilterValue: SlotState[] = []
+  public stateFilterValues$: Observable<SlotState[]> | undefined
+  public statefilterPanelVisible = false
   public limitText = limitText
 
   @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
@@ -100,22 +101,18 @@ export class SlotSearchComponent implements OnInit {
     private readonly msgService: PortalMessageService
   ) {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
-    this.hasEditPermission = this.user.hasPermission('APP#EDIT')
     this.filteredColumns = this.columns.filter((a) => a.active === true)
     this.searchCriteria = new FormGroup<SlotSearchCriteria>({
       slotName: new FormControl<string | null>(null),
       productName: new FormControl<string | null>(null)
     })
-    this.filterStateItems = [
-      { label: 'operator', value: 100 },
-      { label: 'undeployed', value: 10 },
-      { label: 'deprecated', value: 1 }
-    ]
   }
 
   ngOnInit(): void {
+    this.initGlobalFilter()
     this.prepareDialogTranslations()
     this.prepareActionButtons()
+    this.prepareStateValues()
     this.declareDataSources()
     this.loadData()
   }
@@ -175,8 +172,7 @@ export class SlotSearchComponent implements OnInit {
         slots.forEach((s) => {
           slot = {
             ...s,
-            productDisplayName: this.getProductDisplayName(s.productName, ps),
-            stateValue: this.calculateFeatureValue(s)
+            productDisplayName: this.getProductDisplayName(s.productName, ps)
           }
           sd.push(slot)
           if (slot.productDisplayName && !this.filterProductItems.includes(slot.productDisplayName))
@@ -184,13 +180,12 @@ export class SlotSearchComponent implements OnInit {
         })
         sd.sort(this.sortSlots)
         this.filterProductItems.sort(sortByLocale)
+        this.resultData$.next(sd)
+        this.filteredData$.next(sd)
         return sd
       }),
       finalize(() => (this.loading = false))
     )
-  }
-  private calculateFeatureValue(slot: Slot): number {
-    return (slot.operator ? 100 : 0) + (slot.undeployed ? 10 : 0) + (slot.deprecated ? 1 : 0)
   }
   private prepareFilterSlotNames(ss: Slot[] | undefined) {
     this.filterSlotNameItems = []
@@ -215,6 +210,19 @@ export class SlotSearchComponent implements OnInit {
   /**
    * DIALOG
    */
+  private prepareStateValues(): void {
+    this.stateFilterValues$ = this.translate
+      .get(['INTERNAL.OPERATOR', 'INTERNAL.UNDEPLOYED', 'INTERNAL.DEPRECATED'])
+      .pipe(
+        map((data) => {
+          return [
+            { label: data['INTERNAL.OPERATOR'], value: 'operator', icon: 'pi-cog' },
+            { label: data['INTERNAL.UNDEPLOYED'], value: 'undeployed', icon: 'pi-ban' },
+            { label: data['INTERNAL.DEPRECATED'], value: 'deprecated', icon: 'pi-exclamation-circle' }
+          ] as SlotState[]
+        })
+      )
+  }
   private prepareDialogTranslations(): void {
     this.dataViewControlsTranslations$ = this.translate
       .get([
@@ -296,9 +304,6 @@ export class SlotSearchComponent implements OnInit {
   /**
    * UI EVENTS
    */
-  public onFilterChange(event: any): void {
-    this.dataTable?.filterGlobal(event, 'contains')
-  }
   public onSearch() {
     this.declareDataSources()
     this.loadData()
@@ -341,47 +346,96 @@ export class SlotSearchComponent implements OnInit {
   public onClick(ev: MouseEvent) {
     ev.stopPropagation()
   }
-
-  public onFilterItemChangeSlotName(ev: any) {
-    this.filterSlotNameValue = ev.value
-    this.dataTable?.filter(this.filterSlotNameValue, 'name', 'equals')
+  public toggleStateFilter(ev: MouseEvent, stateFilterOptions: any) {
+    ev.stopPropagation()
+    this.statefilterPanelVisible ? stateFilterOptions.hide() : stateFilterOptions.show()
   }
-  public onFilterItemChangeProduct(ev: any) {
-    this.filterProductValue = ev.value
-    this.dataTable?.filter(this.filterProductValue, 'productDisplayName', 'equals')
+  // trigger the use of global table filter
+  public onFilterChange(filter: any): void {
+    this.filterData = filter
+    this.resultData$.next(this.resultData$.value)
   }
-  public onFilterItemChangeState(ev: any) {
-    this.filterStateValue = ev.value
-    this.dataTable?.filter(this.filterStateValue, 'state', 'equals')
+  private initGlobalFilter() {
+    this.resultData$
+      .pipe(
+        map((slots) => {
+          if (typeof this.filterData === 'string' && this.filterData.trim()) {
+            return this.stringFilter(this.filterData, slots)
+          } else if (typeof this.filterData === 'object' && this.filterData.length > 0) {
+            return this.objectFilter(this.filterData, slots)
+          } else {
+            return slots
+          }
+        })
+      )
+      .subscribe({
+        next: (filteredData) => {
+          this.filteredData$.next(filteredData)
+        }
+      })
+  }
+  // this is the normal text filter
+  private stringFilter(filter: string, slots: SlotData[]): SlotData[] {
+    const lowerCaseFilter = filter.toLowerCase()
+    return slots.filter((slot: SlotData) => {
+      return ['name', 'appId', 'productDisplayName'].some((key: string) => {
+        const value = slot[key as keyof SlotData]
+        return value?.toString().toLowerCase().includes(lowerCaseFilter)
+      })
+    })
+  }
+  // used here for filtereing different slot states (displayed in one column)
+  private objectFilter(filter: string[], slots: SlotData[]): SlotData[] {
+    return slots.filter(
+      (slot: SlotData) =>
+        (slot.operator === true && filter.includes('operator')) ||
+        (slot.undeployed === true && filter.includes('undeployed')) ||
+        (slot.deprecated === true && filter.includes('deprecated'))
+    )
   }
 
   /**
    * SORT
    */
+  public onSortStates(ev: MouseEvent, icon: HTMLSpanElement) {
+    ev.stopPropagation()
+    this.dataTable?.clear()
+    switch (icon.className) {
+      case 'pi pi-fw pi-sort-amount-down':
+        icon.className = 'pi pi-fw pi-sort-amount-up-alt'
+        this.dataTable?._value.sort((a, b) => this.compareStates(a, b))
+        break
+      case 'pi pi-fw pi-sort-amount-up-alt':
+        icon.className = 'pi pi-fw pi-sort-amount-down'
+        this.dataTable?._value.sort((a, b) => this.compareStates(b, a))
+        break
+    }
+  }
+  private compareStates(a: SlotData, b: SlotData): number {
+    const op = (a.operator === true ? 1 : 0) - (b.operator === true ? 1 : 0)
+    const du = (a.undeployed === true ? 1 : 0) - (b.undeployed === true ? 1 : 0)
+    const de = (a.deprecated === true ? 1 : 0) - (b.deprecated === true ? 1 : 0)
+    return op !== 0 ? op : du !== 0 ? du : de !== 0 ? de : 0
+  }
+
   public onSortProducts(ev: MouseEvent, icon: HTMLSpanElement) {
     ev.stopPropagation()
     this.dataTable?.clear()
     switch (icon.className) {
       case 'pi pi-fw pi-sort-amount-down':
         icon.className = 'pi pi-fw pi-sort-amount-up-alt'
-        this.dataTable?._value.sort(this.sortRowByProductAsc)
+        this.dataTable?._value.sort((a, b) => this.compareProducts(a, b))
         break
       case 'pi pi-fw pi-sort-amount-up-alt':
         icon.className = 'pi pi-fw pi-sort-amount-down'
-        this.dataTable?._value.sort(this.sortByProductDesc)
+        this.dataTable?._value.sort((a, b) => this.compareProducts(b, a))
         break
     }
   }
-  private sortRowByProductAsc(a: SlotData, b: SlotData): number {
+  private compareProducts(a: SlotData, b: SlotData): number {
     return (
       a.productDisplayName.toUpperCase().localeCompare(b.productDisplayName.toUpperCase()) ||
       a.appId?.localeCompare(b.appId)
-    )
-  }
-  private sortByProductDesc(a: SlotData, b: SlotData): number {
-    return (
-      b.productDisplayName.toUpperCase().localeCompare(a.productDisplayName.toUpperCase()) ||
-      b.appId?.localeCompare(a.appId)
     )
   }
 }

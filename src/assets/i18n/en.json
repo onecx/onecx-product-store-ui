@@ -184,6 +184,8 @@
     "MODIFICATION_DATE": "Changed on",
     "MODIFICATION_USER": "Changed by",
     "OPERATOR": "Created by automation",
+    "DEPRECATED": "Outdated",
+    "UNDEPLOYED": "Undeployed",
     "TOOLTIPS": {
       "CREATION_DATE": "Timestamp of the creation",
       "CREATION_USER": "Name of the user of the creation",
@@ -407,8 +409,10 @@
     "UNDEPLOYED_SEARCH": "This Slot is no longer usable. Further use leads to error messages.",
     "NOT_DEFINED": "This functionality is not available at the moment.",
     "SORT": {
+      "NAME": "Sorting by Slot name",
       "APP_ID": "Sorting by App IDs",
-      "PRODUCT": "Sorting by Application und App IDs"
+      "PRODUCT": "Sorting by Application und App IDs",
+      "STATE": "Sorting by Slot state"
     }
   },
   "VALIDATION": {
