@@ -112,41 +112,55 @@
               [class]="col.css"
               [attr.aria-label]="'SLOT.NAME' | translate"
             >
-              <span class="p-float-label inline-block">
+              <section #slotNameHeader class="flex flex-row flex-nowrap gap-0 align-items-center">
+                <div [pTooltip]="'SLOT.TOOLTIPS.NAME' | translate">{{ 'SLOT.NAME' | translate }}</div>
+                <button
+                  pbutton
+                  type="button"
+                  id="ps_slot_search_table_header_sort_slot_name"
+                  class="ml-1 p-button p-button-rounded p-button-text p-button-icon-only"
+                  (click)="onSortSlotNames($event, sortIconSlotName)"
+                  [attr.aria-label]="'SLOT.SORT.NAME' | translate"
+                  [pTooltip]="'SLOT.SORT.NAME' | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  <span #sortIconSlotName class="pi pi-sort-amount-up-alt"></span>
+                </button>
+                <button
+                  pbutton
+                  type="button"
+                  id="ps_slot_search_table_header_slot_name_filter_action"
+                  class="p-button p-button-rounded p-button-text p-button-icon-only"
+                  (click)="toggleFilterSlotName($event, slotNameFilterOptions, filterIconSlotName)"
+                  [attr.aria-label]="'SLOT.FILTER.NAME' | translate"
+                  [pTooltip]="'SLOT.FILTER.NAME' | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  <span #filterIconSlotName class="pi pi-filter"></span>
+                </button>
+                <!-- This is hidden: only the overlay is shown on click -->
                 <p-dropdown
+                  #slotNameFilterOptions
                   id="ps_slot_search_table_header_filter_slot_name"
-                  styleClass="w-full clear-icon-used"
-                  [appendTo]="'body'"
-                  [showClear]="true"
+                  styleClass="w-full hidden"
+                  [appendTo]="slotNameHeader"
                   [options]="filterSlotNameItems"
                   [(ngModel)]="filterSlotNameValue"
                   (onClick)="onClick($event)"
-                  (onChange)="dataTable.filter($event.value, 'name', 'equals')"
+                  (onChange)="onFilterChange($event.value, filterIconSlotName, true)"
+                  (onShow)="filterPanelSlotNameVisible = true"
+                  (onHide)="filterPanelSlotNameVisible = false"
                   [emptyMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
                   [pTooltip]="'SLOT.TOOLTIPS.NAME' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 ></p-dropdown>
-                <label for="ps_slot_search_table_header_filter_slot_name" aria-hidden="true">
-                  {{ col.translationPrefix + '.' + col.header | translate }}
-                </label>
-              </span>
-              <button
-                pbutton
-                type="button"
-                id="ps_slot_search_table_header_sort_slot_name"
-                class="ml-1 p-button p-button-rounded p-button-text p-button-icon-only"
-                (click)="onSortStates($event, sortIconSlot)"
-                [attr.aria-label]="'SLOT.SORT.NAME' | translate"
-                [pTooltip]="'SLOT.SORT.NAME' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              >
-                <span #sortIconSlot class="pi pi-sort-amount-up-alt"></span>
-              </button>
+              </section>
             </th>
             <th *ngIf="col.field === 'state'" id="ps_slot_search_table_header_state" [class]="col.css">
-              <section #stateFilter class="flex flex-row flex-nowrap gap-0 align-items-center">
+              <section #stateHeader class="flex flex-row flex-nowrap gap-0 align-items-center">
                 <div>{{ 'SLOT.STATE' | translate }}</div>
                 <button
                   pbutton
@@ -166,7 +180,7 @@
                   type="button"
                   id="ps_slot_search_table_header_state_filter_action"
                   class="p-button p-button-rounded p-button-text p-button-icon-only"
-                  (click)="toggleStateFilter($event, stateFilterOptions)"
+                  (click)="toggleFilterSlotState($event, stateFilterOptions)"
                   [attr.aria-label]="'SLOT.FILTER.STATE' | translate"
                   [pTooltip]="'SLOT.FILTER.STATE' | translate"
                   tooltipPosition="top"
@@ -179,7 +193,7 @@
                   #stateFilterOptions
                   id="ps_slot_search_table_header_filter_state"
                   styleClass="w-full hidden"
-                  [appendTo]="stateFilter"
+                  [appendTo]="stateHeader"
                   [showClear]="true"
                   [maxSelectedLabels]="1"
                   [showToggleAll]="false"
@@ -188,8 +202,8 @@
                   optionLabel="label"
                   optionValue="value"
                   (onChange)="onFilterChange($event.value, filterIconState)"
-                  (onPanelShow)="statefilterPanelVisible = true"
-                  (onPanelHide)="statefilterPanelVisible = false"
+                  (onPanelShow)="filterPanelSlotStateVisible = true"
+                  (onPanelHide)="filterPanelSlotStateVisible = false"
                   [ngModel]="statefilterValue"
                 >
                   <ng-template let-state pTemplate="item">
@@ -288,10 +302,8 @@
               <p-button
                 *ocxIfPermission="'SLOT#VIEW'"
                 type="button"
-                pRipple
                 [id]="'ps_slot_search_table_row_' + i + '_action_view'"
                 [text]="true"
-                [plain]="true"
                 [rounded]="true"
                 [icon]="'pi pi-eye'"
                 (onClick)="onSlotDetail('VIEW', $event, rowData)"
@@ -304,10 +316,8 @@
             <p-button
               *ocxIfPermission="'SLOT#EDIT'"
               type="button"
-              pRipple
               [id]="'ps_slot_search_table_row_' + i + '_action_edit'"
               [text]="true"
-              [plain]="true"
               [rounded]="true"
               [icon]="'pi pi-pencil'"
               (onClick)="onSlotDetail('EDIT', $event, rowData)"
@@ -319,10 +329,8 @@
             <p-button
               *ocxIfPermission="'SLOT#CREATE'"
               type="button"
-              pRipple
               [id]="'ps_slot_search_table_row_' + i + '_action_copy'"
               [text]="true"
-              [plain]="true"
               [rounded]="true"
               [icon]="'pi pi-copy'"
               (onClick)="onSlotDetail('CREATE', $event, rowData)"
@@ -334,10 +342,8 @@
             <p-button
               *ocxIfPermission="'SLOT#DELETE'"
               type="button"
-              pRipple
               [id]="'ps_slot_search_table_row_' + i + '_action_delete'"
               [text]="true"
-              [plain]="true"
               [rounded]="true"
               severity="danger"
               [icon]="'pi pi-trash'"
@@ -381,7 +387,7 @@
                   tooltipEvent="hover"
                 ></span>
                 <span
-                  class="p-2 danger-action-text pi pi-ban"
+                  class="p-2 pi pi-ban danger-action-text"
                   [ngClass]="{ hidden: !rowData['undeployed'] }"
                   [attr.aria-label]="'SLOT.UNDEPLOYED_SEARCH' | translate"
                   [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
@@ -389,7 +395,7 @@
                   tooltipEvent="hover"
                 ></span>
                 <span
-                  class="p-2 danger-action-text pi pi-exclamation-circle"
+                  class="p-2 pi pi-exclamation-circle danger-action-text"
                   [ngClass]="{
                     invisible: !rowData['deprecated'],
                     hidden: rowData['undeployed']

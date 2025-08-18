@@ -409,6 +409,7 @@
     "UNDEPLOYED_SEARCH": "Dieser Slot ist nicht länger nutzbar. Eine weitere Nutzung führt zu Fehlermeldungen.",
     "NOT_DEFINED": "Diese Funktionalität ist derzeit nicht vefügbar.",
     "FILTER": {
+      "NAME": "Filtern nach Slotname",
       "STATE": "Filtern nach Slotzustand"
     },
     "SORT": {

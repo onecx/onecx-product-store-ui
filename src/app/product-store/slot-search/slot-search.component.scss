@@ -34,6 +34,10 @@
       }
     }
   }
+  .p-dropdown-panel,
+  .p-multiselect-panel {
+    position: fixed !important;
+  }
   .p-dropdown {
     &.clear-icon-used .p-inputtext {
       padding-right: 2rem;
