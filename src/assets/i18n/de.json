@@ -410,6 +410,7 @@
     "NOT_DEFINED": "Diese Funktionalität ist derzeit nicht vefügbar.",
     "FILTER": {
       "NAME": "Filtern nach Slotname",
+      "PRODUCT": "Filtern nach Applikationen",
       "STATE": "Filtern nach Slotzustand"
     },
     "SORT": {

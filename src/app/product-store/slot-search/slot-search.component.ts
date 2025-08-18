@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core'
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { FormControl, FormGroup } from '@angular/forms'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, of, Observable, tap } from 'rxjs'
@@ -57,11 +57,17 @@ export class SlotSearchComponent implements OnInit {
   public filterSlotNameItems: string[] = []
   public filterSlotNameValue: string | undefined = undefined
   public filterStateItems: SlotState[] = []
-  public statefilterValue: SlotState[] = []
-  public stateFilterValues$: Observable<SlotState[]> | undefined
+  public filterStateValue: SlotState[] = []
+  public filterStateValues$: Observable<SlotState[]> | undefined
   public filterPanelSlotStateVisible = false
   public filterPanelSlotNameVisible = false
+  public filterPanelProductVisible = false
   public limitText = limitText
+
+  // filter icons
+  @ViewChild('headerFilterIconSlotName', { static: false }) headerFilterIconSlotName: ElementRef | undefined
+  @ViewChild('headerFilterIconSlotState', { static: false }) headerFilterIconSlotState: ElementRef | undefined
+  @ViewChild('headerFilterIconProduct', { static: false }) headerFilterIconProduct: ElementRef | undefined
 
   @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
   public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
@@ -163,6 +169,7 @@ export class SlotSearchComponent implements OnInit {
     this.filterData = ''
     this.filterPanelSlotNameVisible = false
     this.filterPanelSlotStateVisible = false
+    this.filterPanelProductVisible = false
     this.dataTable?.clear()
   }
 
@@ -173,7 +180,6 @@ export class SlotSearchComponent implements OnInit {
     this.slotData$ = combineLatest([this.products$, this.slots$]).pipe(
       map(([ps, slots]) => {
         const sd: SlotData[] = []
-        this.prepareFilterSlotNames(slots)
         this.filterProductItems = []
         let slot: SlotData
         slots.forEach((s) => {
@@ -182,11 +188,8 @@ export class SlotSearchComponent implements OnInit {
             productDisplayName: this.getProductDisplayName(s.productName, ps)
           }
           sd.push(slot)
-          if (slot.productDisplayName && !this.filterProductItems.includes(slot.productDisplayName))
-            this.filterProductItems.push(slot.productDisplayName)
         })
         sd.sort(this.sortSlots)
-        this.filterProductItems.sort(sortByLocale)
         this.resultData$.next(sd)
         this.filteredData$.next(sd)
         return sd
@@ -194,19 +197,7 @@ export class SlotSearchComponent implements OnInit {
       finalize(() => (this.loading = false))
     )
   }
-  private prepareFilterSlotNames(ss: Slot[] | undefined) {
-    this.filterSlotNameItems = []
-    ss?.forEach((s) => {
-      if (s.name && !this.filterSlotNameItems.includes(s.name)) this.filterSlotNameItems.push(s.name)
-    })
-    this.filterSlotNameItems.sort(sortByLocale)
-  }
-
-  private getProductDisplayName(name: string, pas: ProductAbstract[]): string {
-    const pf = pas.find((p) => p.name === name)
-    return pf?.displayName ?? name
-  }
-  public sortSlots(a: SlotData, b: SlotData): number {
+  private sortSlots(a: SlotData, b: SlotData): number {
     return (
       a.productName.toUpperCase().localeCompare(b.productName.toUpperCase()) ||
       a.appId.toUpperCase().localeCompare(b.appId.toUpperCase()) ||
@@ -214,11 +205,16 @@ export class SlotSearchComponent implements OnInit {
     )
   }
 
+  private getProductDisplayName(name: string, pas: ProductAbstract[]): string {
+    const pf = pas.find((p) => p.name === name)
+    return pf?.displayName ?? name
+  }
+
   /**
    * DIALOG
    */
   private prepareStateValues(): void {
-    this.stateFilterValues$ = this.translate
+    this.filterStateValues$ = this.translate
       .get(['INTERNAL.OPERATOR', 'INTERNAL.UNDEPLOYED', 'INTERNAL.DEPRECATED'])
       .pipe(
         map((data) => {
@@ -351,19 +347,22 @@ export class SlotSearchComponent implements OnInit {
   /**
    * FILTER
    */
-  public onClick(ev: MouseEvent) {
-    ev.stopPropagation()
+  private prepareFilterSlotNames(ss: SlotData[] | undefined) {
+    this.filterSlotNameItems = []
+    ss?.forEach((s) => {
+      if (s.name && !this.filterSlotNameItems.includes(s.name)) this.filterSlotNameItems.push(s.name)
+    })
+    this.filterSlotNameItems.sort(sortByLocale)
   }
-  public toggleFilterSlotState(ev: MouseEvent, filterOptions: any) {
-    ev.stopPropagation()
-    this.filterPanelSlotStateVisible ? filterOptions.hide() : filterOptions.show()
+  private prepareFilterProductNames(ss: SlotData[] | undefined) {
+    this.filterProductItems = []
+    ss?.forEach((s) => {
+      if (s.productDisplayName && !this.filterProductItems.includes(s.productDisplayName))
+        this.filterProductItems.push(s.productDisplayName)
+    })
+    this.filterProductItems.sort(sortByLocale)
   }
-  public toggleFilterSlotName(ev: MouseEvent, filterOptions: any, icon?: HTMLElement) {
-    ev.stopPropagation()
-    // reset filtering?
-    if (icon?.className && icon.className === 'pi pi-filter-slash') this.onFilterChange('', icon)
-    this.filterPanelSlotNameVisible ? filterOptions.hide() : filterOptions.show()
-  }
+
   // trigger the use of global table filter and switch icon
   public onFilterChange(filter: any, icon?: HTMLElement, showClear?: boolean): void {
     this.filterData = filter
@@ -388,6 +387,8 @@ export class SlotSearchComponent implements OnInit {
       )
       .subscribe({
         next: (filteredData) => {
+          this.prepareFilterSlotNames(filteredData)
+          this.prepareFilterProductNames(filteredData)
           this.filteredData$.next(filteredData)
         }
       })
@@ -410,6 +411,40 @@ export class SlotSearchComponent implements OnInit {
         (slot.undeployed === true && filter.includes('undeployed')) ||
         (slot.deprecated === true && filter.includes('deprecated'))
     )
+  }
+
+  /**
+   * FILTER UI Actions
+   */
+  public onClick(ev: MouseEvent) {
+    ev.stopPropagation()
+  }
+  public onToggleFilterSlotState(ev: MouseEvent, filterOptions: any) {
+    ev.stopPropagation()
+    this.filterPanelSlotStateVisible ? filterOptions.hide() : filterOptions.show()
+  }
+  public onToggleFilterSlotName(ev: MouseEvent, filterOptions: any, icon?: HTMLElement) {
+    ev.stopPropagation()
+    // reset filtering?
+    if (icon?.className && icon.className === 'pi pi-filter-slash') this.onFilterChange('', icon)
+    this.filterPanelSlotNameVisible ? filterOptions.hide() : filterOptions.show()
+  }
+  public onToggleFilterProduct(ev: MouseEvent, filterOptions: any, icon?: HTMLElement) {
+    ev.stopPropagation()
+    // reset filtering?
+    if (icon?.className && icon.className === 'pi pi-filter-slash') this.onFilterChange('', icon)
+    this.filterPanelProductVisible ? filterOptions.hide() : filterOptions.show()
+  }
+  public onResetFilterIcons(val: string, icons: string[]) {
+    if (val) {
+      this.resetFilters()
+      if (icons?.includes('slotName') && this.headerFilterIconSlotName)
+        this.headerFilterIconSlotName.nativeElement.className = 'pi pi-filter'
+      if (icons?.includes('slotState') && this.headerFilterIconSlotState)
+        this.headerFilterIconSlotState.nativeElement.className = 'pi pi-filter'
+      if (icons?.includes('product') && this.headerFilterIconProduct)
+        this.headerFilterIconProduct.nativeElement.className = 'pi pi-filter'
+    }
   }
 
   /**

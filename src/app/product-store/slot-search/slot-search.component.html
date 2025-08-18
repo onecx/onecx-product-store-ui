@@ -112,44 +112,44 @@
               [class]="col.css"
               [attr.aria-label]="'SLOT.NAME' | translate"
             >
-              <section #slotNameHeader class="flex flex-row flex-nowrap gap-0 align-items-center">
+              <section #headerSectionSlotName class="flex flex-row flex-nowrap gap-0 align-items-center">
                 <div [pTooltip]="'SLOT.TOOLTIPS.NAME' | translate">{{ 'SLOT.NAME' | translate }}</div>
                 <button
                   pbutton
                   type="button"
-                  id="ps_slot_search_table_header_sort_slot_name"
+                  id="ps_slot_search_table_header_slot_name_action_sort"
                   class="ml-1 p-button p-button-rounded p-button-text p-button-icon-only"
-                  (click)="onSortSlotNames($event, sortIconSlotName)"
+                  (click)="onSortSlotNames($event, headerSortIconSlotName)"
                   [attr.aria-label]="'SLOT.SORT.NAME' | translate"
                   [pTooltip]="'SLOT.SORT.NAME' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
-                  <span #sortIconSlotName class="pi pi-sort-amount-up-alt"></span>
+                  <span #headerSortIconSlotName class="pi pi-sort-amount-up-alt"></span>
                 </button>
                 <button
                   pbutton
                   type="button"
                   id="ps_slot_search_table_header_slot_name_filter_action"
                   class="p-button p-button-rounded p-button-text p-button-icon-only"
-                  (click)="toggleFilterSlotName($event, slotNameFilterOptions, filterIconSlotName)"
+                  (click)="onToggleFilterSlotName($event, headerFilterOptionsSlotName, headerFilterIconSlotName)"
                   [attr.aria-label]="'SLOT.FILTER.NAME' | translate"
                   [pTooltip]="'SLOT.FILTER.NAME' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
-                  <span #filterIconSlotName class="pi pi-filter"></span>
+                  <span #headerFilterIconSlotName class="pi pi-filter"></span>
                 </button>
                 <!-- This is hidden: only the overlay is shown on click -->
                 <p-dropdown
-                  #slotNameFilterOptions
-                  id="ps_slot_search_table_header_filter_slot_name"
+                  #headerFilterOptionsSlotName
+                  id="ps_slot_search_table_header_slot_name_filter"
                   styleClass="w-full hidden"
-                  [appendTo]="slotNameHeader"
+                  [appendTo]="headerSectionSlotName"
                   [options]="filterSlotNameItems"
                   [(ngModel)]="filterSlotNameValue"
                   (onClick)="onClick($event)"
-                  (onChange)="onFilterChange($event.value, filterIconSlotName, true)"
+                  (onChange)="onFilterChange($event.value, headerFilterIconSlotName, true); onResetFilterIcons($event.value, ['slotState', 'product'])"
                   (onShow)="filterPanelSlotNameVisible = true"
                   (onHide)="filterPanelSlotNameVisible = false"
                   [emptyMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
@@ -160,51 +160,51 @@
               </section>
             </th>
             <th *ngIf="col.field === 'state'" id="ps_slot_search_table_header_state" [class]="col.css">
-              <section #stateHeader class="flex flex-row flex-nowrap gap-0 align-items-center">
+              <section #headerSectionSlotState class="flex flex-row flex-nowrap gap-0 align-items-center">
                 <div>{{ 'SLOT.STATE' | translate }}</div>
                 <button
                   pbutton
                   type="button"
-                  id="ps_slot_search_table_header_state_sort"
+                  id="ps_slot_search_table_header_state_action_sort"
                   class="p-button p-button-rounded p-button-text p-button-icon-only"
-                  (click)="onSortStates($event, sortIconState)"
+                  (click)="onSortStates($event, headerSortIconSlotState)"
                   [attr.aria-label]="'SLOT.SORT.STATE' | translate"
                   [pTooltip]="'SLOT.SORT.STATE' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
-                  <span #sortIconState class="pi pi-sort-amount-up-alt"></span>
+                  <span #headerSortIconSlotState class="pi pi-sort-amount-up-alt"></span>
                 </button>
                 <button
                   pbutton
                   type="button"
-                  id="ps_slot_search_table_header_state_filter_action"
+                  id="ps_slot_search_table_header_state_action_filter"
                   class="p-button p-button-rounded p-button-text p-button-icon-only"
-                  (click)="toggleFilterSlotState($event, stateFilterOptions)"
+                  (click)="onToggleFilterSlotState($event, stateFilterOptions)"
                   [attr.aria-label]="'SLOT.FILTER.STATE' | translate"
                   [pTooltip]="'SLOT.FILTER.STATE' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
-                  <span #filterIconState class="pi pi-filter"></span>
+                  <span #headerFilterIconSlotState class="pi pi-filter"></span>
                 </button>
                 <!-- This is hidden: only the overlay is shown on click -->
                 <p-multiSelect
                   #stateFilterOptions
                   id="ps_slot_search_table_header_filter_state"
                   styleClass="w-full hidden"
-                  [appendTo]="stateHeader"
+                  [appendTo]="headerSectionSlotState"
                   [showClear]="true"
                   [maxSelectedLabels]="1"
                   [showToggleAll]="false"
                   [showHeader]="false"
-                  [options]="(stateFilterValues$ | async) ?? []"
+                  [options]="(filterStateValues$ | async) ?? []"
                   optionLabel="label"
                   optionValue="value"
-                  (onChange)="onFilterChange($event.value, filterIconState)"
+                  (onChange)="onFilterChange($event.value, headerFilterIconSlotState);onResetFilterIcons($event.value, ['slotName', 'product'])"
                   (onPanelShow)="filterPanelSlotStateVisible = true"
                   (onPanelHide)="filterPanelSlotStateVisible = false"
-                  [ngModel]="statefilterValue"
+                  [ngModel]="filterStateValue"
                 >
                   <ng-template let-state pTemplate="item">
                     <div class="ml-2 flex flex-row flex-nowrap align-items-center column-gap-2">
@@ -245,42 +245,55 @@
           </th>
           <th id="ps_slot_search_table_header_col_product_name" [class]="'white-space-nowrap'">
             <section
+              #headerSectionProduct
               class="flex flex-row align-items-center column-gap-1"
               [attr.aria-label]="'SLOT.PRODUCT_NAME' | translate"
             >
-              <span class="p-float-label inline-block">
-                <p-dropdown
-                  id="ps_slot_search_table_header_filter_product_name"
-                  styleClass="w-full clear-icon-used"
-                  [appendTo]="'body'"
-                  [showClear]="true"
-                  [options]="filterProductItems"
-                  [(ngModel)]="filterProductValue"
-                  (onClick)="onClick($event)"
-                  (onChange)="dataTable.filter($event.value, 'productDisplayName', 'equals')"
-                  [emptyMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
-                  [attr.aria-label]="'SLOT.PRODUCT_NAME' | translate"
-                  [pTooltip]="'SLOT.TOOLTIPS.PRODUCT_NAME' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                ></p-dropdown>
-                <label for="ps_slot_search_table_header_filter_product_name" aria-hidden="true">
-                  {{ 'SLOT.PRODUCT_NAME' | translate }}
-                </label>
-              </span>
+              <div>{{ 'SLOT.PRODUCT_NAME' | translate }}</div>
               <button
                 pbutton
                 type="button"
-                id="ps_slot_search_table_header_sort_product_name"
+                id="ps_slot_search_table_header_product_action_sort"
                 class="ml-1 p-button p-button-rounded p-button-text p-button-icon-only"
-                (click)="onSortProducts($event, sortIconProduct)"
+                (click)="onSortProducts($event, headerSortIconProduct)"
                 [attr.aria-label]="'SLOT.SORT.PRODUCT' | translate"
                 [pTooltip]="'SLOT.SORT.PRODUCT' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               >
-                <span #sortIconProduct class="pi pi-sort-amount-up-alt"></span>
+                <span #headerSortIconProduct class="pi pi-sort-amount-up-alt"></span>
               </button>
+              <button
+                pbutton
+                type="button"
+                id="ps_slot_search_table_header_product_action_filter"
+                class="p-button p-button-rounded p-button-text p-button-icon-only"
+                (click)="onToggleFilterProduct($event, headerFilterOptionsProduct, headerFilterIconProduct)"
+                [attr.aria-label]="'SLOT.FILTER.PRODUCT' | translate"
+                [pTooltip]="'SLOT.FILTER.PRODUCT' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+                <span #headerFilterIconProduct class="pi pi-filter"></span>
+              </button>
+              <!-- This is hidden: only the overlay is shown on click -->
+              <p-dropdown
+                #headerFilterOptionsProduct
+                id="ps_slot_search_table_header_filter_product"
+                styleClass="w-full hidden"
+                [appendTo]="headerSectionProduct"
+                [options]="filterProductItems"
+                [(ngModel)]="filterProductValue"
+                (onClick)="onClick($event)"
+                (onChange)="onFilterChange($event.value, headerFilterIconProduct, true); onResetFilterIcons($event.value, ['slotName', 'slotState'])"
+                (onShow)="filterPanelProductVisible = true"
+                (onHide)="filterPanelProductVisible = false"
+                [emptyMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
+                [attr.aria-label]="'SLOT.PRODUCT_NAME' | translate"
+                [pTooltip]="'SLOT.TOOLTIPS.PRODUCT_NAME' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              ></p-dropdown>
             </section>
           </th>
         </tr>

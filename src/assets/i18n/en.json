@@ -410,6 +410,7 @@
     "NOT_DEFINED": "This functionality is not available at the moment.",
     "FILTER": {
       "NAME": "Filtering for Slot name",
+      "PRODUCT": "Filtering for Applications",
       "STATE": "Filtering for Slot state"
     },
     "SORT": {
