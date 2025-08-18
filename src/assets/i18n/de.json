@@ -408,6 +408,9 @@
     "DEPRECATED_SEARCH": "Dieser Slot ist als veraltet markiert. Er kann derzeit weiter verwendet werden wird aber in Zukunft nicht mehr zur Verfügung stehen.",
     "UNDEPLOYED_SEARCH": "Dieser Slot ist nicht länger nutzbar. Eine weitere Nutzung führt zu Fehlermeldungen.",
     "NOT_DEFINED": "Diese Funktionalität ist derzeit nicht vefügbar.",
+    "FILTER": {
+      "STATE": "Filtern nach Slotzustand"
+    },
     "SORT": {
       "NAME": "Sortierung nach Slotname",
       "APP_ID": "Sortierung nach App IDs",

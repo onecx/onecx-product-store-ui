@@ -351,9 +351,11 @@ export class SlotSearchComponent implements OnInit {
     this.statefilterPanelVisible ? stateFilterOptions.hide() : stateFilterOptions.show()
   }
   // trigger the use of global table filter
-  public onFilterChange(filter: any): void {
+  public onFilterChange(filter: any, icon?: HTMLElement): void {
     this.filterData = filter
     this.resultData$.next(this.resultData$.value)
+    if (typeof filter === 'object' && icon?.className)
+      icon.className = filter.length === 0 ? 'pi pi-filter' : 'pi pi-filter-fill'
   }
   private initGlobalFilter() {
     this.resultData$
@@ -397,7 +399,7 @@ export class SlotSearchComponent implements OnInit {
   /**
    * SORT
    */
-  public onSortStates(ev: MouseEvent, icon: HTMLSpanElement) {
+  public onSortStates(ev: MouseEvent, icon: HTMLElement) {
     ev.stopPropagation()
     this.dataTable?.clear()
     switch (icon.className) {
