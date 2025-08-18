@@ -425,19 +425,16 @@ export class SlotSearchComponent implements OnInit {
   }
   public onToggleFilterSlotName(ev: MouseEvent, filterOptions: any, icon?: HTMLElement) {
     ev.stopPropagation()
-    // reset filtering?
     if (icon?.className && icon.className === 'pi pi-filter-slash') this.onFilterChange('', icon)
     this.filterPanelSlotNameVisible ? filterOptions.hide() : filterOptions.show()
   }
   public onToggleFilterProduct(ev: MouseEvent, filterOptions: any, icon?: HTMLElement) {
     ev.stopPropagation()
-    // reset filtering?
     if (icon?.className && icon.className === 'pi pi-filter-slash') this.onFilterChange('', icon)
     this.filterPanelProductVisible ? filterOptions.hide() : filterOptions.show()
   }
   public onResetFilterIcons(val: string, icons: string[]) {
     if (val) {
-      this.resetFilters()
       if (icons?.includes('slotName') && this.headerFilterIconSlotName)
         this.headerFilterIconSlotName.nativeElement.className = 'pi pi-filter'
       if (icons?.includes('slotState') && this.headerFilterIconSlotState)

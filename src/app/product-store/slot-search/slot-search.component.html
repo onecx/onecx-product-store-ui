@@ -149,7 +149,10 @@
                   [options]="filterSlotNameItems"
                   [(ngModel)]="filterSlotNameValue"
                   (onClick)="onClick($event)"
-                  (onChange)="onFilterChange($event.value, headerFilterIconSlotName, true); onResetFilterIcons($event.value, ['slotState', 'product'])"
+                  (onChange)="
+                    onFilterChange($event.value, headerFilterIconSlotName, true);
+                    onResetFilterIcons($event.value, ['slotState', 'product'])
+                  "
                   (onShow)="filterPanelSlotNameVisible = true"
                   (onHide)="filterPanelSlotNameVisible = false"
                   [emptyMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
@@ -201,7 +204,10 @@
                   [options]="(filterStateValues$ | async) ?? []"
                   optionLabel="label"
                   optionValue="value"
-                  (onChange)="onFilterChange($event.value, headerFilterIconSlotState);onResetFilterIcons($event.value, ['slotName', 'product'])"
+                  (onChange)="
+                    onFilterChange($event.value, headerFilterIconSlotState);
+                    onResetFilterIcons($event.value, ['slotName', 'product'])
+                  "
                   (onPanelShow)="filterPanelSlotStateVisible = true"
                   (onPanelHide)="filterPanelSlotStateVisible = false"
                   [ngModel]="filterStateValue"
@@ -285,7 +291,10 @@
                 [options]="filterProductItems"
                 [(ngModel)]="filterProductValue"
                 (onClick)="onClick($event)"
-                (onChange)="onFilterChange($event.value, headerFilterIconProduct, true); onResetFilterIcons($event.value, ['slotName', 'slotState'])"
+                (onChange)="
+                  onFilterChange($event.value, headerFilterIconProduct, true);
+                  onResetFilterIcons($event.value, ['slotName', 'slotState'])
+                "
                 (onShow)="filterPanelProductVisible = true"
                 (onHide)="filterPanelProductVisible = false"
                 [emptyMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
