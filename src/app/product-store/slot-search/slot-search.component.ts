@@ -92,7 +92,7 @@ export class SlotSearchComponent implements OnInit {
     {
       field: 'description',
       header: 'DESCRIPTION',
-      active: true,
+      active: false,
       limit: 100,
       css: 'min-w-20rem',
       translationPrefix: 'SLOT'
