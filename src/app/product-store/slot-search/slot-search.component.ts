@@ -13,7 +13,6 @@ import {
   ProductAbstract,
   ProductSearchCriteria,
   Slot,
-  SlotPageResult,
   SlotsAPIService
 } from 'src/app/shared/generated'
 import { limitText, sortByLocale } from 'src/app/shared/utils'
@@ -153,10 +152,10 @@ export class SlotSearchComponent implements OnInit {
         }
       })
       .pipe(
-        tap((data: SlotPageResult) => {
+        tap((data) => {
           if (data?.totalElements === 0) this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.NOT_FOUND' })
         }),
-        map((data: SlotPageResult) => data.stream ?? []),
+        map((data) => data.stream ?? []),
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.SLOTS'
           console.error('searchSlots', err)
@@ -363,12 +362,13 @@ export class SlotSearchComponent implements OnInit {
     this.filterProductItems.sort(sortByLocale)
   }
 
-  // trigger the use of global table filter and switch icon
+  // trigger the use of global table filter and switch the icon
+  // on simple string filter: if filter is active then icon switched to filter-slash
   public onFilterChange(filter: any, icon?: HTMLElement, showClear?: boolean): void {
     this.filterData = filter
     this.resultData$.next(this.resultData$.value)
     if (typeof filter === 'string' && icon?.className)
-      icon.className = !filter ? 'pi pi-filter' : 'pi pi-filter-' + (showClear ? 'slash' : 'fill')
+      icon.className = filter === '' ? 'pi pi-filter' : 'pi pi-filter-' + (showClear ? 'slash' : 'fill')
     if (typeof filter === 'object' && icon?.className)
       icon.className = filter.length === 0 ? 'pi pi-filter' : 'pi pi-filter-fill'
   }
@@ -433,13 +433,13 @@ export class SlotSearchComponent implements OnInit {
     if (icon?.className && icon.className === 'pi pi-filter-slash') this.onFilterChange('', icon)
     this.filterPanelProductVisible ? filterOptions.hide() : filterOptions.show()
   }
-  public onResetFilterIcons(val: string, icons: string[]) {
+  public onResetFilterIcons(val: string, fields: string[]) {
     if (val) {
-      if (icons?.includes('slotName') && this.headerFilterIconSlotName)
+      if (fields?.includes('slotName') && this.headerFilterIconSlotName)
         this.headerFilterIconSlotName.nativeElement.className = 'pi pi-filter'
-      if (icons?.includes('slotState') && this.headerFilterIconSlotState)
+      if (fields?.includes('slotState') && this.headerFilterIconSlotState)
         this.headerFilterIconSlotState.nativeElement.className = 'pi pi-filter'
-      if (icons?.includes('product') && this.headerFilterIconProduct)
+      if (fields?.includes('product') && this.headerFilterIconProduct)
         this.headerFilterIconProduct.nativeElement.className = 'pi pi-filter'
     }
   }
@@ -447,58 +447,44 @@ export class SlotSearchComponent implements OnInit {
   /**
    * SORT
    */
-  public onSortStates(ev: MouseEvent, icon: HTMLElement) {
+  public onSortColumn(ev: MouseEvent, field: string, icon: HTMLElement) {
     ev.stopPropagation()
     this.dataTable?.clear()
     switch (icon.className) {
       case 'pi pi-sort-amount-down':
         icon.className = 'pi pi-sort-amount-up-alt'
-        this.dataTable?._value.sort((a, b) => this.compareStates(a, b))
+        this.dataTable?._value.sort((a, b) => this.compareValues(field, a, b))
         break
       case 'pi pi-sort-amount-up-alt':
         icon.className = 'pi pi-sort-amount-down'
-        this.dataTable?._value.sort((a, b) => this.compareStates(b, a))
+        this.dataTable?._value.sort((a, b) => this.compareValues(field, b, a))
         break
     }
   }
-  private compareStates(a: SlotData, b: SlotData): number {
+  private compareValues(field: string, a: SlotData, b: SlotData): number {
+    let ret = 0
+    switch (field) {
+      case 'slotState':
+        ret = this.compareSlotStates(a, b)
+        break
+      case 'slotName':
+        ret = this.compareSlotNames(a, b)
+        break
+      case 'product':
+        ret = this.compareProducts(a, b)
+        break
+    }
+    return ret
+  }
+
+  private compareSlotStates(a: SlotData, b: SlotData): number {
     const op = (a.operator === true ? 1 : 0) - (b.operator === true ? 1 : 0)
-    const du = (a.undeployed === true ? 1 : 0) - (b.undeployed === true ? 1 : 0)
+    const ud = (a.undeployed === true ? 1 : 0) - (b.undeployed === true ? 1 : 0)
     const de = (a.deprecated === true ? 1 : 0) - (b.deprecated === true ? 1 : 0)
-    return op !== 0 ? op : du !== 0 ? du : de !== 0 ? de : 0
+    return op !== 0 ? op : ud !== 0 ? ud : de !== 0 ? de : 0
   }
-
-  public onSortSlotNames(ev: MouseEvent, icon: HTMLSpanElement) {
-    ev.stopPropagation()
-    this.dataTable?.clear()
-    switch (icon.className) {
-      case 'pi pi-sort-amount-down':
-        icon.className = 'pi pi-sort-amount-up-alt'
-        this.dataTable?._value.sort((a, b) => this.compareslotNames(a, b))
-        break
-      case 'pi pi-sort-amount-up-alt':
-        icon.className = 'pi pi-sort-amount-down'
-        this.dataTable?._value.sort((a, b) => this.compareslotNames(b, a))
-        break
-    }
-  }
-  private compareslotNames(a: SlotData, b: SlotData): number {
+  private compareSlotNames(a: SlotData, b: SlotData): number {
     return a.name.toUpperCase().localeCompare(b.name.toUpperCase()) || a.appId?.localeCompare(b.appId)
-  }
-
-  public onSortProducts(ev: MouseEvent, icon: HTMLSpanElement) {
-    ev.stopPropagation()
-    this.dataTable?.clear()
-    switch (icon.className) {
-      case 'pi pi-sort-amount-down':
-        icon.className = 'pi pi-sort-amount-up-alt'
-        this.dataTable?._value.sort((a, b) => this.compareProducts(a, b))
-        break
-      case 'pi pi-sort-amount-up-alt':
-        icon.className = 'pi pi-sort-amount-down'
-        this.dataTable?._value.sort((a, b) => this.compareProducts(b, a))
-        break
-    }
   }
   private compareProducts(a: SlotData, b: SlotData): number {
     return (
