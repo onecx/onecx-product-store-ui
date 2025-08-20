@@ -211,6 +211,14 @@
   }
 }
 
+@mixin correct-multiselect {
+  :host ::ng-deep {
+    .p-multiselect-label-container {
+      margin-right: 0.6rem;
+    }
+  }
+}
+
 @mixin correct-data-view-header-for-tabpanel {
   :host ::ng-deep {
     .p-dataview .p-dataview-header,
@@ -381,6 +389,45 @@
   }
 }
 
+@mixin correct-ocx-interactive-data-view {
+  :host ::ng-deep {
+    ocx-interactive-data-view {
+      > div {
+        padding: 0 0 0.5rem 0 !important;
+        &.surface-border {
+          border-bottom: var(--table-header-border) !important;
+        }
+      }
+      .icon-button-header-wrapper button.sortButton {
+        padding: 0.5rem !important;
+        border-radius: 50%;
+        border-color: transparent;
+        &:hover {
+          background: rgba(var(--primary-color-rgb), 0.04);
+        }
+      }
+      .p-multiselect-label-container {
+        margin-right: 0 !important;
+      }
+      .p-multiselect {
+        .p-multiselect-label-container:focus {
+          background: rgba(var(--primary-color-rgb), 0.04);
+        }
+        background-color: transparent;
+        .p-multiselect-label.p-placeholder {
+          padding: 0.5rem !important;
+          border-radius: 50%;
+          border-color: transparent;
+          &:hover,
+          &:focus {
+            background: rgba(var(--primary-color-rgb), 0.04);
+          }
+        }
+      }
+    }
+  }
+}
+
 // ZEBRA rows
 @mixin dataview-list-zebra-rows {
   :host ::ng-deep {
@@ -413,6 +460,13 @@
 @mixin dropdown-zebra-rows {
   :host ::ng-deep {
     .p-dropdown-panel .p-dropdown-items *:nth-child(even) .p-dropdown-item {
+      background-color: var(--table-body-row-even-bg);
+    }
+  }
+}
+@mixin multiselect-zebra-rows {
+  :host ::ng-deep {
+    .p-multiselect-panel .p-multiselect-items *:nth-child(even) .p-multiselect-item {
       background-color: var(--table-body-row-even-bg);
     }
   }

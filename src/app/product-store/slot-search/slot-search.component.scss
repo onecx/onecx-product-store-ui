@@ -1,28 +1,25 @@
 @import '/src/app/_ps-mixins.scss';
 
-@include card-badges;
+@include invisible;
 @include danger-action;
 @include displaying-text-responsive;
 @include dropdown-zebra-rows;
+@include multiselect-zebra-rows;
+@include correct-multiselect;
 @include table-zebra-rows;
 @include table-inline-buttons;
 @include table-responsive-columns;
 @include dialog-footer-buttons;
 
 :host ::ng-deep {
-  .card-badge-left {
-    &.badge-2 {
-      top: 33px;
-    }
-  }
-
   .p-datatable {
     .p-datatable-thead > tr:nth-child(1) > th {
       border-bottom-width: 2px;
     }
     .p-datatable-thead > tr > th,
     .p-datatable-tbody > tr > td {
-      padding: 0.5rem;
+      padding: 0 0.5rem;
+      height: 3rem;
     }
     .p-datatable-tbody {
       tr td.bg-inherit {
@@ -38,8 +35,15 @@
       padding: 0.6rem;
     }
   }
+  .p-multiselect .p-multiselect-label {
+    padding: 0.6rem;
+  }
+  .p-overlay.p-component {
+    top: 3rem !important;
+    left: unset !important;
+  }
 
-  /* hide unusable stuff */
+  /* hide unusable stuff from interactive-data-view*/
   ocx-column-group-selection,
   ocx-data-view-controls div div button {
     display: none;
@@ -48,18 +52,17 @@
     justify-content: center !important;
   }
 
+  .bookmark-link:hover {
+    background: var(--tabview-header-hover-bg);
+    border-color: var(--tabview-header-hover-border-color);
+    color: var(--text-secondary-color);
+  }
   .max-height-for-2-lines {
     max-height: 2.5rem;
   }
   .text-ellipsis-2-lines {
     @include displaying-text-ellipsis(2);
   }
-  .bookmark-link:hover {
-    background: var(--tabview-header-hover-bg);
-    border-color: var(--tabview-header-hover-border-color);
-    color: var(--text-secondary-color);
-  }
-
   .min-w-20rem {
     min-width: 20rem;
   }

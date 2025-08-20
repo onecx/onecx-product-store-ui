@@ -184,6 +184,8 @@
     "MODIFICATION_DATE": "Geändert am",
     "MODIFICATION_USER": "Geändert von",
     "OPERATOR": "Automatisiert erstellt",
+    "DEPRECATED": "Veraltet",
+    "UNDEPLOYED": "Unverfügbar",
     "TOOLTIPS": {
       "CREATION_DATE": "Zeitpunkt der Erstellung",
       "CREATION_USER": "Name des Benutzers der Erstellung",
@@ -406,9 +408,16 @@
     "DEPRECATED_SEARCH": "Dieser Slot ist als veraltet markiert. Er kann derzeit weiter verwendet werden wird aber in Zukunft nicht mehr zur Verfügung stehen.",
     "UNDEPLOYED_SEARCH": "Dieser Slot ist nicht länger nutzbar. Eine weitere Nutzung führt zu Fehlermeldungen.",
     "NOT_DEFINED": "Diese Funktionalität ist derzeit nicht vefügbar.",
+    "FILTER": {
+      "NAME": "Filtern nach Slotname",
+      "PRODUCT": "Filtern nach Applikationen",
+      "STATE": "Filtern nach Slotzustand"
+    },
     "SORT": {
+      "NAME": "Sortierung nach Slotname",
       "APP_ID": "Sortierung nach App IDs",
-      "PRODUCT": "Sortierung nach Applikation und App IDs"
+      "PRODUCT": "Sortierung nach Applikation und App IDs",
+      "STATE": "Sortierung nach Slotzustand"
     }
   },
   "VALIDATION": {
