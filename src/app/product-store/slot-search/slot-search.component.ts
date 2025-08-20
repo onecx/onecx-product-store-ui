@@ -169,6 +169,7 @@ export class SlotSearchComponent implements OnInit {
     this.filterPanelSlotNameVisible = false
     this.filterPanelSlotStateVisible = false
     this.filterPanelProductVisible = false
+    this.onResetFilterIcons('not empty', ['slotName', 'slotState', 'product'])
     this.dataTable?.clear()
   }
 
@@ -362,16 +363,19 @@ export class SlotSearchComponent implements OnInit {
     this.filterProductItems.sort(sortByLocale)
   }
 
-  // trigger the use of global table filter and switch the icon
+  // triggered by the use of global table filter => switching filter icons
   // on simple string filter: if filter is active then icon switched to filter-slash
-  public onFilterChange(filter: any, icon?: HTMLElement, showClear?: boolean): void {
-    this.filterData = filter
+  public onFilterChange(val: any, icon?: HTMLElement, showClear?: boolean): void {
+    this.filterData = val
     this.resultData$.next(this.resultData$.value)
-    if (typeof filter === 'string' && icon?.className)
-      icon.className = filter === '' ? 'pi pi-filter' : 'pi pi-filter-' + (showClear ? 'slash' : 'fill')
-    if (typeof filter === 'object' && icon?.className)
-      icon.className = filter.length === 0 ? 'pi pi-filter' : 'pi pi-filter-fill'
+    if (typeof val === 'string' && icon?.className)
+      icon.className = val === '' ? 'pi pi-filter' : 'pi pi-filter-' + (showClear ? 'slash' : 'fill')
+    if (typeof val === 'object' && icon?.className)
+      icon.className = val.length === 0 ? 'pi pi-filter' : 'pi pi-filter-fill'
+    // on reset of the global filter: clear all column filter
+    if (typeof val === 'string' && !icon) this.onResetFilterIcons('not empty', ['slotName', 'slotState', 'product'])
   }
+
   private initGlobalFilter() {
     this.resultData$
       .pipe(
@@ -449,18 +453,20 @@ export class SlotSearchComponent implements OnInit {
    */
   public onSortColumn(ev: MouseEvent, field: string, icon: HTMLElement) {
     ev.stopPropagation()
+    const className = { up: 'pi pi-sort-amount-up-alt', down: 'pi pi-sort-amount-down' }
     this.dataTable?.clear()
     switch (icon.className) {
-      case 'pi pi-sort-amount-down':
-        icon.className = 'pi pi-sort-amount-up-alt'
+      case className.down:
+        icon.className = className.up
         this.dataTable?._value.sort((a, b) => this.compareValues(field, a, b))
         break
-      case 'pi pi-sort-amount-up-alt':
-        icon.className = 'pi pi-sort-amount-down'
+      case className.up:
+        icon.className = className.down
         this.dataTable?._value.sort((a, b) => this.compareValues(field, b, a))
         break
     }
   }
+
   private compareValues(field: string, a: SlotData, b: SlotData): number {
     let ret = 0
     switch (field) {
