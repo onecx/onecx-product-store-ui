@@ -27,23 +27,13 @@
       }
     }
   }
-  .p-dropdown {
-    &.clear-icon-used .p-inputtext {
-      padding-right: 2rem;
-    }
-    .p-inputtext {
-      padding: 0.6rem;
-    }
-  }
-  .p-multiselect .p-multiselect-label {
-    padding: 0.6rem;
-  }
+  /* fix positioning of overlays used for column filtering */
   .p-overlay.p-component {
     top: 3rem !important;
     left: unset !important;
   }
 
-  /* hide unusable stuff from interactive-data-view*/
+  /* hide unusable stuff from interactive-data-view */
   ocx-column-group-selection,
   ocx-data-view-controls div div button {
     display: none;
