@@ -368,8 +368,9 @@ export class SlotSearchComponent implements OnInit {
   public onFilterChange(val: any, icon?: HTMLElement, showClear?: boolean): void {
     this.filterData = val
     this.resultData$.next(this.resultData$.value)
+    const iconSuffix = showClear ? 'slash' : 'fill'
     if (typeof val === 'string' && icon?.className)
-      icon.className = val === '' ? 'pi pi-filter' : 'pi pi-filter-' + (showClear ? 'slash' : 'fill')
+      icon.className = val === '' ? 'pi pi-filter' : 'pi pi-filter-' + iconSuffix
     if (typeof val === 'object' && icon?.className)
       icon.className = val.length === 0 ? 'pi pi-filter' : 'pi pi-filter-fill'
     // on reset of the global filter: clear all column filter
@@ -462,6 +463,7 @@ export class SlotSearchComponent implements OnInit {
         break
       case className.up:
         icon.className = className.down
+        // @ts-ignore
         this.dataTable?._value.sort((a, b) => this.compareValues(field, b, a))
         break
     }
@@ -487,7 +489,8 @@ export class SlotSearchComponent implements OnInit {
     const op = (a.operator === true ? 1 : 0) - (b.operator === true ? 1 : 0)
     const ud = (a.undeployed === true ? 1 : 0) - (b.undeployed === true ? 1 : 0)
     const de = (a.deprecated === true ? 1 : 0) - (b.deprecated === true ? 1 : 0)
-    return op !== 0 ? op : ud !== 0 ? ud : de !== 0 ? de : 0
+    // @ts-ignore
+    return op !== 0 ? op : ud !== 0 ? ud : de
   }
   private compareSlotNames(a: SlotData, b: SlotData): number {
     return a.name.toUpperCase().localeCompare(b.name.toUpperCase()) || a.appId?.localeCompare(b.appId)
