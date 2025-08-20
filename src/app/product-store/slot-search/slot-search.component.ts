@@ -463,8 +463,7 @@ export class SlotSearchComponent implements OnInit {
         break
       case className.up:
         icon.className = className.down
-        // @ts-ignore
-        this.dataTable?._value.sort((a, b) => this.compareValues(field, b, a))
+        this.dataTable?._value.sort((c, d) => this.compareValues(field, d, c))
         break
     }
   }
@@ -487,10 +486,10 @@ export class SlotSearchComponent implements OnInit {
 
   private compareSlotStates(a: SlotData, b: SlotData): number {
     const op = (a.operator === true ? 1 : 0) - (b.operator === true ? 1 : 0)
+    if (op !== 0) return op
     const ud = (a.undeployed === true ? 1 : 0) - (b.undeployed === true ? 1 : 0)
-    const de = (a.deprecated === true ? 1 : 0) - (b.deprecated === true ? 1 : 0)
-    // @ts-ignore
-    return op !== 0 ? op : ud !== 0 ? ud : de
+    if (ud !== 0) return ud
+    return (a.deprecated === true ? 1 : 0) - (b.deprecated === true ? 1 : 0)
   }
   private compareSlotNames(a: SlotData, b: SlotData): number {
     return a.name.toUpperCase().localeCompare(b.name.toUpperCase()) || a.appId?.localeCompare(b.appId)
