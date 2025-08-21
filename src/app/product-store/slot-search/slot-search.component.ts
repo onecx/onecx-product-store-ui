@@ -440,10 +440,12 @@ export class SlotSearchComponent implements OnInit {
   }
   public onResetFilterIcons(val: string, fields: string[]) {
     if (val) {
+      if (fields?.includes('slotState') && this.headerFilterIconSlotState) {
+        this.headerFilterIconSlotState.nativeElement.className = 'pi pi-filter'
+        this.filterStateValue = []
+      }
       if (fields?.includes('slotName') && this.headerFilterIconSlotName)
         this.headerFilterIconSlotName.nativeElement.className = 'pi pi-filter'
-      if (fields?.includes('slotState') && this.headerFilterIconSlotState)
-        this.headerFilterIconSlotState.nativeElement.className = 'pi pi-filter'
       if (fields?.includes('product') && this.headerFilterIconProduct)
         this.headerFilterIconProduct.nativeElement.className = 'pi pi-filter'
     }
