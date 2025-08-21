@@ -120,7 +120,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
         mfeAndMsSearchCriteria: {
           appName: this.appSearchCriteriaGroup.controls['appName'].value,
           productName: this.appSearchCriteriaGroup.controls['productName'].value,
-          pageSize: 100
+          pageSize: 1000
         }
       })
       .pipe(
@@ -138,7 +138,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
         mfeAndMsSearchCriteria: {
           appName: this.appSearchCriteriaGroup.controls['appName'].value,
           productName: this.appSearchCriteriaGroup.controls['productName'].value,
-          pageSize: 100
+          pageSize: 1000
         }
       })
       .pipe(

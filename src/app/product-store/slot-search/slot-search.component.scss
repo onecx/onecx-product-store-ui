@@ -27,6 +27,10 @@
       }
     }
   }
+  .p-dropdown-panel,
+  .p-multiselect-panel {
+    position: fixed;
+  }
   /* fix positioning of overlays used for column filtering */
   .p-overlay.p-component {
     top: 3rem !important;
