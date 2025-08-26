@@ -108,7 +108,8 @@
             { label: 'PRODUCT.DISPLAY_NAME' | translate, value: 'displayName' },
             { label: 'PRODUCT.PROVIDER' | translate, value: 'provider' },
             { label: 'PRODUCT.CLASSIFICATIONS' | translate, value: 'classifications' },
-            { label: 'PRODUCT.UNDEPLOYED' | translate, value: 'undeployed' }
+            { label: 'PRODUCT.UNDEPLOYED' | translate, value: 'undeployed' },
+            { label: 'INTERNAL.MULTITENANCY' | translate, value: 'multitenancy' }
           ]"
           [defaultSortOption]="sortField"
           [defaultSortDirection]="false"
@@ -195,16 +196,26 @@
               role="link"
             >
               <!-- BADGES -->
-              <span
+              <div
+                *ngIf="!product?.multitenancy"
+                [id]="'ps_product_search_data_grid_row_' + i + '_multitenancy'"
+                class="card-badge-left badge-1 p-2 pi pi-android text-xl"
+                [attr.aria-label]="'INTERNAL.TOOLTIPS.MULTITENANCY_SEARCH' | translate"
+                [pTooltip]="'INTERNAL.TOOLTIPS.MULTITENANCY_SEARCH' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+                role="note"
+              ></div>
+              <div
                 *ngIf="product?.undeployed"
                 [id]="'ps_product_search_data_grid_row_' + i + '_undeployed'"
-                class="card-badge-right badge-1 p-2 pi pi-ban danger-action-text font-bold text-xl"
+                class="card-badge-right badge-1 p-2 pi pi-ban danger-action-text text-xl"
                 [attr.aria-label]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
                 [pTooltip]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
                 role="note"
-              ></span>
+              ></div>
               <!-- CONTENT -->
               <div
                 [id]="'ps_product_search_data_grid_row_' + i + '_product_display_name'"

@@ -21,6 +21,7 @@ export interface CreateProductRequest {
     iconName?: string;
     classifications?: Array<string>;
     undeployed?: boolean;
+    multitenancy?: boolean;
     provider?: string;
 }
 

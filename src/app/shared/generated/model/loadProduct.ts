@@ -22,6 +22,7 @@ export interface LoadProduct {
     basePath?: string;
     version?: string;
     undeployed?: boolean;
+    multitenancy?: boolean;
     microfrontends?: Array<MfeAbstract>;
     microservices?: Array<MicroserviceAbstract>;
     slots?: Array<SlotAbstract>;

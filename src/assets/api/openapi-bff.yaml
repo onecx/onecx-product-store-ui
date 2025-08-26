@@ -862,6 +862,8 @@ components:
           type: string
         undeployed:
           type: boolean
+        multitenancy:
+          type: boolean
         microfrontends:
           type: array
           items:
@@ -1047,6 +1049,8 @@ components:
             type: string
         undeployed:
           type: boolean
+        multitenancy:
+          type: boolean
         provider:
           type: string
     UpdateProductRequest:
@@ -1076,6 +1080,8 @@ components:
           items:
             type: string
         undeployed:
+          type: boolean
+        multitenancy:
           type: boolean
         provider:
           type: string
@@ -1139,6 +1145,8 @@ components:
             type: string
         undeployed:
           type: boolean
+        multitenancy:
+          type: boolean
         provider:
           type: string
     ProductAbstract:
@@ -1172,6 +1180,8 @@ components:
           items:
             type: string
         undeployed:
+          type: boolean
+        multitenancy:
           type: boolean
         provider:
           type: string

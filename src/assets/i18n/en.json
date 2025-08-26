@@ -186,11 +186,14 @@
     "OPERATOR": "Created by automation",
     "DEPRECATED": "Outdated",
     "UNDEPLOYED": "Undeployed",
+    "MULTITENANCY": "Multi-tenancy",
     "TOOLTIPS": {
       "CREATION_DATE": "Timestamp of the creation",
       "CREATION_USER": "Name of the user of the creation",
       "MODIFICATION_DATE": "Timestamp of the last change",
-      "MODIFICATION_USER": "Name of the user of the last change"
+      "MODIFICATION_USER": "Name of the user of the last change",
+      "MULTITENANCY": "If set, this application is NOT multi-tenant capable.",
+      "MULTITENANCY_SEARCH": "This application is NOT multi-tenant capable."
     }
   },
   "IMAGE": {
