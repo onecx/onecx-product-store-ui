@@ -28,6 +28,7 @@ export interface Product {
     iconName?: string;
     classifications?: Array<string>;
     undeployed?: boolean;
+    multitenancy?: boolean;
     provider?: string;
 }
 

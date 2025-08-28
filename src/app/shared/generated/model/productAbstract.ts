@@ -42,6 +42,7 @@ export interface ProductAbstract {
      */
     classifications?: Array<string>;
     undeployed?: boolean;
+    multitenancy?: boolean;
     provider?: string;
     applications?: Array<ApplicationAbstract>;
 }

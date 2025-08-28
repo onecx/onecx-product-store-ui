@@ -87,7 +87,6 @@
           id="ps_product_detail_form_field_provider"
           styleClass="w-full"
           inputStyleClass="pt-3 pb-2 text-responsive"
-          appendTo="body"
           [dropdown]="true"
           [showClear]="true"
           formControlName="provider"
@@ -106,7 +105,6 @@
           [styleClass]="'w-full' + (changeMode === 'VIEW' ? ' hide-item-decoration' : '')"
           [inputStyleClass]="changeMode === 'VIEW' ? 'hidden' : ''"
           [panelStyleClass]="'w-full'"
-          appendTo="body"
           [dropdown]="true"
           [multiple]="true"
           formControlName="classifications"
@@ -125,11 +123,11 @@
           styleClass="w-full min-w-min input-field-correction"
           formControlName="iconName"
           [options]="iconItems"
+          [showClear]="true"
           [ariaLabel]="'PRODUCT.ICON_NAME' | translate"
           [pTooltip]="'PRODUCT.TOOLTIPS.ICON_NAME' | translate"
           tooltipPosition="top"
           tooltipEvent="hover"
-          [showClear]="true"
         >
           <ng-template let-ico pTemplate="selectedItem">
             <div class="flex">
@@ -185,7 +183,7 @@
         tooltipEvent="hover"
       ></button>
       <div class="flex-grow-1">
-        <span class="relative p-float-label">
+        <span class="p-float-label">
           <input
             pInputText
             type="text"

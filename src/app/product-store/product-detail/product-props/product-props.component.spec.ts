@@ -7,9 +7,17 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 import { PortalMessageService } from '@onecx/angular-integration-interface'
 
 import { Product, ProductCriteria, ProductsAPIService, ImagesInternalAPIService } from 'src/app/shared/generated'
-import { ProductPropertyComponent, ProductDetailForm, productNameValidator } from './product-props.component'
+import { ProductPropertyComponent, ProductPropsForm, productNameValidator } from './product-props.component'
 
-const mockForm = new FormGroup<ProductDetailForm>({
+const productProps: Product = {
+  id: 'id',
+  name: 'name',
+  displayName: 'Product Name',
+  basePath: 'basePath',
+  version: 'version'
+}
+
+const propsForm = new FormGroup<ProductPropsForm>({
   id: new FormControl<string | null>(null), // Assuming ID might not be needed or can be null for new entries
   name: new FormControl<string | null>(null, [
     Validators.required,
@@ -31,19 +39,20 @@ const mockForm = new FormGroup<ProductDetailForm>({
   classifications: new FormControl<string[] | null>(null, [Validators.maxLength(255)]) // Assuming this validation makes sense for your use case
 })
 
+const product: Product = {
+  id: 'id',
+  name: 'name',
+  basePath: 'basePath',
+  displayName: 'displayName'
+}
+const criteria: ProductCriteria = {
+  providers: ['team'],
+  classifications: ['test']
+}
+
 describe('ProductPropertyComponent', () => {
   let component: ProductPropertyComponent
   let fixture: ComponentFixture<ProductPropertyComponent>
-  const product: Product = {
-    id: 'id',
-    name: 'name',
-    basePath: 'basePath',
-    displayName: 'displayName'
-  }
-  const criteria: ProductCriteria = {
-    providers: ['team'],
-    classifications: ['test']
-  }
   const productApiSpy = {
     createProduct: jasmine.createSpy('createProduct').and.returnValue(of({})),
     updateProduct: jasmine.createSpy('updateProduct').and.returnValue(of({})),
@@ -110,118 +119,83 @@ describe('ProductPropertyComponent', () => {
     })
   })
 
-  describe('on init', () => {
-    it('should disable name form control in edit mode ', () => {
-      imageApiSpy.getImage.and.returnValue(of({}))
-      component.formGroup = mockForm
-      component.formGroup.controls['name'].setValue('name')
-      component.changeMode = 'EDIT'
+  describe('search criteria', () => {
+    it('should init successfully', (done) => {
+      productApiSpy.getProductSearchCriteria.and.returnValue(of(criteria))
+      component.changeMode = 'CREATE'
 
-      component.ngOnInit()
+      component.ngOnChanges()
 
-      expect(component.formGroup.controls['name'].disabled).toBeTrue()
+      component.criteria$.subscribe({
+        next: (result) => {
+          expect(result.providers).toEqual(criteria.providers)
+          expect(result.classifications).toEqual(criteria.classifications)
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should init failed', (done) => {
+      const errorResponse = { status: 401, statusText: 'Not authorized' }
+      productApiSpy.getProductSearchCriteria.and.returnValue(throwError(() => errorResponse))
+      component.changeMode = 'CREATE'
+      spyOn(console, 'error')
+
+      component.ngOnChanges()
+
+      component.criteria$.subscribe({
+        next: (result) => {
+          expect(result.providers?.length).toBe(0)
+          expect(result.classifications?.length).toEqual(0)
+          done()
+        },
+        error: done.fail
+      })
+      expect(console.error).toHaveBeenCalledWith('getProductSearchCriteria', errorResponse)
     })
   })
 
-  describe('on changes', () => {
-    describe('search criteria', () => {
-      it('should init successfully', (done) => {
-        productApiSpy.getProductSearchCriteria.and.returnValue(of(criteria))
-
-        component.ngOnChanges()
-
-        component.criteria$.subscribe({
-          next: (result) => {
-            expect(result.providers).toEqual(criteria.providers)
-            expect(result.classifications).toEqual(criteria.classifications)
-            done()
-          },
-          error: done.fail
-        })
-      })
-
-      it('should init failed', (done) => {
-        const errorResponse = { status: 401, statusText: 'Not authorized' }
-        productApiSpy.getProductSearchCriteria.and.returnValue(throwError(() => errorResponse))
-        spyOn(console, 'error')
-
-        component.ngOnChanges()
-
-        component.criteria$.subscribe({
-          next: (result) => {
-            expect(result.providers).toEqual([])
-            expect(result.classifications).toEqual([])
-            done()
-          },
-          error: done.fail
-        })
-        expect(console.error).toHaveBeenCalledWith('getProductSearchCriteria', errorResponse)
-      })
-    })
-
-    describe('init image URL', () => {
-      it('should patchValue in formGroup with product - no image URL', () => {
-        const p = { ...product, imageUrl: undefined }
-        component.product = p
-        component.changeMode = 'VIEW'
-        spyOn(component.formGroup, 'patchValue')
-
-        component.ngOnChanges()
-
-        expect(component.formGroup.patchValue).toHaveBeenCalledWith(p)
-        expect(component.formGroup.disabled).toBeTrue()
-        expect(component.product.name).toEqual(p.name)
-        expect(component.fetchingImageUrl).toEqual('basepath/images/name/logo')
-      })
-
-      it('should patchValue in formGroup with product - empty image URL', () => {
-        const p = { ...product, imageUrl: '' }
-        component.product = p
-        component.changeMode = 'VIEW'
-
-        component.ngOnChanges()
-
-        expect(component.fetchingImageUrl).toEqual('basepath/images/name/logo')
-      })
-
-      it('should patchValue in formGroup with product - with image URL', () => {
-        const p = { ...product, imageUrl: 'https://host/assets/images/logo.svg' }
-        component.product = p
-        component.changeMode = 'VIEW'
-
-        component.ngOnChanges()
-
-        expect(component.fetchingImageUrl).toEqual(p.imageUrl)
-      })
-    })
-
-    it('should set product.id to undefined onChanges if product and changeMode is COPY', () => {
-      const product = {
-        id: 'id',
-        name: 'name',
-        basePath: 'path'
-      }
-      component.product = product
+  describe('init image URL', () => {
+    it('should patchValue in formGroup with product - no image URL', () => {
+      const p = { ...product, imageUrl: undefined }
+      component.product = p
+      component.changeMode = 'VIEW'
       spyOn(component.formGroup, 'patchValue')
-      component.changeMode = 'COPY'
 
       component.ngOnChanges()
 
-      expect(component.productId).toBeUndefined()
+      expect(component.formGroup.patchValue).toHaveBeenCalledWith(p)
+      expect(component.formGroup.disabled).toBeTrue()
+      expect(component.product.name).toEqual(p.name)
+      expect(component.fetchingImageUrl).toEqual('basepath/images/name/logo')
     })
 
-    it('should reset formGroup onChanges if no product', () => {
-      spyOn(component.formGroup, 'reset')
+    it('should patchValue in formGroup with product - empty image URL', () => {
+      const p = { ...product, imageUrl: '' }
+      component.product = p
+      component.changeMode = 'VIEW'
 
       component.ngOnChanges()
 
-      expect(component.formGroup.reset).toHaveBeenCalled()
+      expect(component.fetchingImageUrl).toEqual('basepath/images/name/logo')
+    })
+
+    it('should patchValue in formGroup with product - with image URL', () => {
+      const p = { ...product, imageUrl: 'https://host/assets/images/logo.svg' }
+      component.product = p
+      component.changeMode = 'VIEW'
+
+      component.ngOnChanges()
+
+      expect(component.fetchingImageUrl).toEqual(p.imageUrl)
     })
   })
 
+  /*
   it('should call createProduct onSave in new mode', () => {
     productApiSpy.createProduct.and.returnValue(of({}))
-    const formGroup = new FormGroup<ProductDetailForm>({
+    const formGroup = new FormGroup<ProductPropsForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
       version: new FormControl<string | null>('version'),
@@ -233,7 +207,7 @@ describe('ProductPropertyComponent', () => {
       iconName: new FormControl<string | null>('icon'),
       classifications: new FormControl<string[] | null>(null)
     })
-    component.formGroup = formGroup as FormGroup<ProductDetailForm>
+    component.formGroup = formGroup as FormGroup<ProductPropsForm>
     component.changeMode = 'CREATE'
 
     component.onSave()
@@ -244,7 +218,7 @@ describe('ProductPropertyComponent', () => {
 
   it('should call updateProduct onSave in edit mode', () => {
     productApiSpy.updateProduct.and.returnValue(of({}))
-    const formGroup = new FormGroup<ProductDetailForm>({
+    const formGroup = new FormGroup<ProductPropsForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
       version: new FormControl<string | null>('version'),
@@ -257,7 +231,7 @@ describe('ProductPropertyComponent', () => {
       iconName: new FormControl<string | null>('icon'),
       classifications: new FormControl<string[] | null>(null)
     })
-    component.formGroup = formGroup as FormGroup<ProductDetailForm>
+    component.formGroup = formGroup as FormGroup<ProductPropsForm>
     component.changeMode = 'EDIT'
 
     component.onSave()
@@ -268,7 +242,7 @@ describe('ProductPropertyComponent', () => {
 
   it('should display error if updateProduct fails', () => {
     productApiSpy.updateProduct.and.returnValue(throwError(() => new Error()))
-    const formGroup = new FormGroup<ProductDetailForm>({
+    const formGroup = new FormGroup<ProductPropsForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
       version: new FormControl<string | null>('version'),
@@ -281,7 +255,7 @@ describe('ProductPropertyComponent', () => {
       iconName: new FormControl<string | null>('icon'),
       classifications: new FormControl<string[] | null>(null)
     })
-    component.formGroup = formGroup as FormGroup<ProductDetailForm>
+    component.formGroup = formGroup as FormGroup<ProductPropsForm>
     component.formGroup.controls['name'].setValue('')
     component.changeMode = 'EDIT'
 
@@ -310,7 +284,7 @@ describe('ProductPropertyComponent', () => {
       }
     }
     productApiSpy.updateProduct.and.returnValue(throwError(() => error))
-    const formGroup = new FormGroup<ProductDetailForm>({
+    const formGroup = new FormGroup<ProductPropsForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
       version: new FormControl<string | null>('version'),
@@ -323,7 +297,7 @@ describe('ProductPropertyComponent', () => {
       iconName: new FormControl<string | null>('icon'),
       classifications: new FormControl<string[] | null>(null)
     })
-    component.formGroup = formGroup as FormGroup<ProductDetailForm>
+    component.formGroup = formGroup as FormGroup<ProductPropsForm>
     component.changeMode = 'EDIT'
     component.formGroup.controls['name'].setValue('')
 
@@ -353,7 +327,7 @@ describe('ProductPropertyComponent', () => {
       }
     }
     productApiSpy.updateProduct.and.returnValue(throwError(() => error))
-    const formGroup = new FormGroup<ProductDetailForm>({
+    const formGroup = new FormGroup<ProductPropsForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
       version: new FormControl<string | null>('version'),
@@ -366,7 +340,7 @@ describe('ProductPropertyComponent', () => {
       iconName: new FormControl<string | null>('icon'),
       classifications: new FormControl<string[] | null>(null)
     })
-    component.formGroup = formGroup as FormGroup<ProductDetailForm>
+    component.formGroup = formGroup as FormGroup<ProductPropsForm>
     component.changeMode = 'EDIT'
     component.formGroup.controls['basePath'].setValue('')
 
@@ -378,121 +352,146 @@ describe('ProductPropertyComponent', () => {
       detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT.BASEPATH'
     })
   })
+*/
 
-  it('should display error and set focus to first invalid field if form is invalid', () => {
-    component.formGroup.controls['name'].setValue('')
+  describe('form', () => {
+    it('should fill form correctly - VIEW mode', () => {
+      component.product = productProps
+      component.changeMode = 'VIEW'
 
-    const focusSpy = jasmine.createSpy('focus')
-    spyOn((component as any).elements.nativeElement, 'querySelector').and.returnValue({ focus: focusSpy })
+      component.ngOnChanges()
 
-    component.onSave()
-
-    expect(component.formGroup.valid).toBeFalse()
-    expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'VALIDATION.FORM_INVALID' })
-    expect(focusSpy).toHaveBeenCalled()
-  })
-
-  it('should display error if createProduct fails', () => {
-    productApiSpy.createProduct.and.returnValue(throwError(() => new Error()))
-    const formGroup = new FormGroup<ProductDetailForm>({
-      id: new FormControl<string | null>('id'),
-      name: new FormControl<string | null>('name'),
-      version: new FormControl<string | null>('version'),
-      description: new FormControl<string | null>(null),
-      provider: new FormControl<string | null>(null, [Validators.maxLength(255)]),
-
-      imageUrl: new FormControl<string | null>(null),
-      basePath: new FormControl<string | null>('path'),
-      displayName: new FormControl<string | null>('display'),
-      iconName: new FormControl<string | null>('icon'),
-      classifications: new FormControl<string[] | null>(null)
+      expect(component.formGroup.enabled).toBeFalse()
     })
-    component.formGroup = formGroup as FormGroup<ProductDetailForm>
-    component.changeMode = 'CREATE'
 
-    component.onSave()
+    it('should fill form correctly - EDIT mode', () => {
+      component.product = productProps
+      component.changeMode = 'EDIT'
 
-    expect(component.formGroup.valid).toBeTrue()
-    expect(msgServiceSpy.error).toHaveBeenCalledWith({
-      summaryKey: 'ACTIONS.CREATE.PRODUCT.NOK'
+      component.ngOnChanges()
+
+      const form: any = component.onSave()
+
+      expect(form.name).toBeUndefined() // on edit mode
+      expect(form.displayName).toBe(productProps.displayName)
+      expect(component.formGroup.controls['name'].disabled).toBeTrue()
+      expect(component.formGroup.enabled).toBeTrue()
+      expect(component.formGroup.valid).toBeTrue()
     })
-  })
 
-  it('should display error onSave if formGroup invalid', () => {
-    const formGroup = new FormGroup<ProductDetailForm>({
-      id: new FormControl<string | null>(null, Validators.required),
-      name: new FormControl<string | null>('name'),
-      version: new FormControl<string | null>('version'),
-      description: new FormControl<string | null>(null),
-      provider: new FormControl<string | null>(null, [Validators.maxLength(255)]),
+    it('should enable clean form - CREATE mode', () => {
+      component.product = undefined
+      component.changeMode = 'CREATE'
 
-      imageUrl: new FormControl<string | null>(null),
-      basePath: new FormControl<string | null>('path'),
-      displayName: new FormControl<string | null>('display'),
-      iconName: new FormControl<string | null>('icon'),
-      classifications: new FormControl<string[] | null>(null)
+      component.ngOnChanges()
+
+      expect(component.formGroup.enabled).toBeTrue()
+      expect(component.formGroup.valid).toBeFalse()
     })
-    component.formGroup = formGroup as FormGroup<ProductDetailForm>
 
-    component.onSave()
+    it('should set product.id to undefined onChanges if product and changeMode is COPY', () => {
+      const product = {
+        id: 'id',
+        name: 'name',
+        basePath: 'path'
+      }
+      component.product = product
+      spyOn(component.formGroup, 'patchValue')
+      component.changeMode = 'COPY'
 
-    expect(component.formGroup.valid).toBeFalse()
-    expect(msgServiceSpy.error).toHaveBeenCalledWith({
-      summaryKey: 'VALIDATION.FORM_INVALID'
+      component.ngOnChanges()
+
+      expect(component.productId).toBeUndefined()
+    })
+
+    it('should reset formGroup onChanges if no product', () => {
+      spyOn(component.formGroup, 'reset')
+
+      component.ngOnChanges()
+
+      expect(component.formGroup.reset).toHaveBeenCalled()
     })
   })
 
-  it('should not upload a file if productName is empty', () => {
-    const event = { target: { files: ['file'] } }
-    component.formGroup.controls['name'].setValue('')
+  describe('save', () => {
+    it('should display error onSave if formGroup invalid', () => {
+      component.formGroup = propsForm
 
-    component.onFileUpload(event as any)
+      const form = component.onSave()
 
-    expect(msgServiceSpy.error).toHaveBeenCalledWith({
-      summaryKey: 'IMAGE.CONSTRAINT_FAILED',
-      detailKey: 'IMAGE.CONSTRAINT_NAME'
+      expect(form).toBeUndefined()
+      expect(component.formGroup.valid).toBeFalse()
+      expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'VALIDATION.FORM_INVALID' })
+    })
+
+    it('should display error and set focus to first invalid field if form is invalid', () => {
+      component.product = undefined
+      component.changeMode = 'CREATE'
+      const focusSpy = jasmine.createSpy('focus')
+      spyOn((component as any).elements.nativeElement, 'querySelector').and.returnValue({ focus: focusSpy })
+
+      component.ngOnChanges()
+      component.onSave()
+
+      expect(component.formGroup.valid).toBeFalse()
+      expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'VALIDATION.FORM_INVALID' })
+      expect(focusSpy).toHaveBeenCalled()
     })
   })
 
-  it('should not upload a file if productName is null', () => {
-    const event = { target: { files: ['file'] } }
-    component.formGroup.controls['name'].setValue(null)
+  describe('file', () => {
+    it('should not upload a file if productName is empty', () => {
+      const event = { target: { files: ['file'] } }
+      component.formGroup.controls['name'].setValue('')
 
-    component.onFileUpload(event as any)
+      component.onFileUpload(event as any)
 
-    expect(msgServiceSpy.error).toHaveBeenCalledWith({
-      summaryKey: 'IMAGE.CONSTRAINT_FAILED',
-      detailKey: 'IMAGE.CONSTRAINT_NAME'
+      expect(msgServiceSpy.error).toHaveBeenCalledWith({
+        summaryKey: 'IMAGE.CONSTRAINT_FAILED',
+        detailKey: 'IMAGE.CONSTRAINT_NAME'
+      })
     })
-  })
 
-  it('should not upload a file that is too large', () => {
-    const largeBlob = new Blob(['a'.repeat(200001)], { type: 'image/png' })
-    const largeFile = new File([largeBlob], 'test.png', { type: 'image/png' })
-    const event = { target: { files: [largeFile] } }
-    component.formGroup.controls['name'].setValue('name')
+    it('should not upload a file if productName is null', () => {
+      const event = { target: { files: ['file'] } }
+      component.formGroup.controls['name'].setValue(null)
 
-    component.onFileUpload(event as any)
+      component.onFileUpload(event as any)
 
-    expect(component.formGroup.valid).toBeFalse()
-    expect(msgServiceSpy.error).toHaveBeenCalledWith({
-      summaryKey: 'IMAGE.CONSTRAINT_FAILED',
-      detailKey: 'IMAGE.CONSTRAINT_SIZE'
+      expect(msgServiceSpy.error).toHaveBeenCalledWith({
+        summaryKey: 'IMAGE.CONSTRAINT_FAILED',
+        detailKey: 'IMAGE.CONSTRAINT_NAME'
+      })
     })
-  })
 
-  it('should not upload a file of wrong file type', () => {
-    const blob = new Blob(['a'.repeat(10)], { type: 'txt' })
-    const file = new File([blob], 'test.txt', { type: 'txt' })
-    const event = { target: { files: [file] } }
-    component.formGroup.controls['name'].setValue('name')
+    it('should not upload a file that is too large', () => {
+      const largeBlob = new Blob(['a'.repeat(200001)], { type: 'image/png' })
+      const largeFile = new File([largeBlob], 'test.png', { type: 'image/png' })
+      const event = { target: { files: [largeFile] } }
+      component.formGroup.controls['name'].setValue('name')
 
-    component.onFileUpload(event as any)
+      component.onFileUpload(event as any)
 
-    expect(component.formGroup.valid).toBeFalse()
-    expect(msgServiceSpy.error).toHaveBeenCalledWith({
-      summaryKey: 'IMAGE.CONSTRAINT_FAILED',
-      detailKey: 'IMAGE.CONSTRAINT_FILE_TYPE'
+      expect(component.formGroup.valid).toBeFalse()
+      expect(msgServiceSpy.error).toHaveBeenCalledWith({
+        summaryKey: 'IMAGE.CONSTRAINT_FAILED',
+        detailKey: 'IMAGE.CONSTRAINT_SIZE'
+      })
+    })
+
+    it('should not upload a file of wrong file type', () => {
+      const blob = new Blob(['a'.repeat(10)], { type: 'txt' })
+      const file = new File([blob], 'test.txt', { type: 'txt' })
+      const event = { target: { files: [file] } }
+      component.formGroup.controls['name'].setValue('name')
+
+      component.onFileUpload(event as any)
+
+      expect(component.formGroup.valid).toBeFalse()
+      expect(msgServiceSpy.error).toHaveBeenCalledWith({
+        summaryKey: 'IMAGE.CONSTRAINT_FAILED',
+        detailKey: 'IMAGE.CONSTRAINT_FILE_TYPE'
+      })
     })
   })
 
