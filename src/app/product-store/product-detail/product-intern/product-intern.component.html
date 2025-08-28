@@ -1,12 +1,11 @@
 <div class="mt-2 mb-1 mx-2 surface-section flex flex-column row-gap-4">
   <!-- row 1 -->
-  <div class="mx-3 flex flex-row flex-wrap column-gap-6 row-gap-3">
+  <form [formGroup]="formGroup" class="mx-3 flex flex-row flex-wrap column-gap-6 row-gap-3">
     <p-checkbox
       inputId="ps_product_detail_intern_operator"
       styleClass="cursor-auto"
-      [(ngModel)]="operator"
+      formControlName="operator"
       [binary]="true"
-      [disabled]="true"
       [label]="'INTERNAL.OPERATOR' | translate"
       [ariaLabel]="'INTERNAL.OPERATOR' | translate"
       [pTooltip]="'PRODUCT.TOOLTIPS.OPERATOR' | translate"
@@ -16,16 +15,26 @@
     <p-checkbox
       inputId="ps_product_detail_intern_undeployed"
       styleClass="cursor-auto"
-      [(ngModel)]="undeployed"
+      formControlName="undeployed"
       [binary]="true"
-      [disabled]="true"
       [label]="'PRODUCT.UNDEPLOYED' | translate"
       [ariaLabel]="'PRODUCT.UNDEPLOYED' | translate"
       [pTooltip]="'PRODUCT.TOOLTIPS.UNDEPLOYED' | translate"
       tooltipPosition="top"
       tooltipEvent="hover"
     ></p-checkbox>
-  </div>
+    <p-checkbox
+      inputId="ps_product_detail_intern_multitenancy"
+      styleClass="cursor-auto"
+      formControlName="multitenancy"
+      [binary]="true"
+      [label]="'INTERNAL.MULTITENANCY' | translate"
+      [ariaLabel]="'INTERNAL.MULTITENANCY' | translate"
+      [pTooltip]="'INTERNAL.TOOLTIPS.MULTITENANCY' | translate"
+      tooltipPosition="top"
+      tooltipEvent="hover"
+    ></p-checkbox>
+  </form>
 
   <!-- row 2 -->
   <div class="flex flex-row flex-wrap gap-4">

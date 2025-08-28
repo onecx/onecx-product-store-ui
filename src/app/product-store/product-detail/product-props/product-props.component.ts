@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core'
+import { Component, ElementRef, EventEmitter, Input, OnChanges, Output } from '@angular/core'
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms'
 import { SelectItem } from 'primeng/api'
 import { map, of, Observable, catchError } from 'rxjs'
@@ -6,19 +6,17 @@ import { map, of, Observable, catchError } from 'rxjs'
 import { PortalMessageService } from '@onecx/angular-integration-interface'
 
 import {
-  CreateProductRequest,
   ImagesInternalAPIService,
   Product,
   ProductCriteria,
   ProductsAPIService,
-  RefType,
-  UpdateProductRequest
+  RefType
 } from 'src/app/shared/generated'
 import { IconService } from 'src/app/shared/iconservice'
 import { bffImageUrl, dropDownSortItemsByLabel, convertToUniqueStringArray, sortByLocale } from 'src/app/shared/utils'
 import { ChangeMode } from '../product-detail.component'
 
-export interface ProductDetailForm {
+export interface ProductPropsForm {
   id: FormControl<string | null>
   name: FormControl<string | null>
   version: FormControl<string | null>
@@ -43,17 +41,13 @@ export function productNameValidator(): ValidatorFn {
   selector: 'app-product-props',
   templateUrl: './product-props.component.html'
 })
-export class ProductPropertyComponent implements OnChanges, OnInit {
-  @Input() product: Product | undefined
-  @Input() dateFormat = 'medium'
+export class ProductPropertyComponent implements OnChanges {
+  @Input() product: Product | undefined = undefined
   @Input() changeMode: ChangeMode = 'VIEW'
-  @Output() productCreated = new EventEmitter<Product>()
-  @Output() productChanged = new EventEmitter<Product>()
-  @Output() changeModeChange = new EventEmitter<ChangeMode>()
   @Output() currentLogoUrl = new EventEmitter<string>()
 
-  public criteria$!: Observable<ProductCriteria>
-  public formGroup: FormGroup<ProductDetailForm>
+  public criteria$: Observable<ProductCriteria> = of({})
+  public formGroup: FormGroup<ProductPropsForm>
   public productId: string | undefined
   public productName: string | null | undefined
   public fetchingImageUrl: string | undefined
@@ -70,7 +64,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
     private readonly imageApi: ImagesInternalAPIService,
     private readonly msgService: PortalMessageService
   ) {
-    this.formGroup = new FormGroup<ProductDetailForm>({
+    this.formGroup = new FormGroup<ProductPropsForm>({
       id: new FormControl(null),
       name: new FormControl(null, [
         Validators.required,
@@ -91,14 +85,7 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
     this.iconItems.sort(dropDownSortItemsByLabel)
   }
 
-  public ngOnInit(): void {
-    if (this.changeMode === 'EDIT') {
-      this.formGroup.controls['name'].disable()
-    }
-  }
-
   public ngOnChanges(): void {
-    this.getCriteria()
     if (this.product) {
       this.formGroup.patchValue({ ...this.product })
       this.productId = this.changeMode !== 'COPY' ? this.product.id : undefined
@@ -110,86 +97,38 @@ export class ProductPropertyComponent implements OnChanges, OnInit {
       this.fetchingImageUrl = undefined
     }
     this.currentLogoUrl.emit(this.fetchingImageUrl)
-    // mode
-    this.changeMode !== 'VIEW' ? this.formGroup.enable() : this.formGroup.disable()
-    this.changeMode = this.changeMode === 'COPY' ? 'CREATE' : this.changeMode
-    this.changeModeChange.emit(this.changeMode)
+    // mode & form
+    this.formGroup.disable()
+    if (this.changeMode !== 'VIEW') {
+      this.getCriteria()
+      this.formGroup.enable()
+    }
+    if (this.changeMode === 'EDIT') this.formGroup.controls['name'].disable()
   }
 
-  /** CREATE/UPDATE product
+  /** SAVE product - triggered by detail page action
    */
-  public onSave() {
+  public onSave(): Partial<Product> | undefined {
+    let props: Partial<Product> | undefined = undefined
     if (this.formGroup.valid) {
-      this.changeMode === 'EDIT' ? this.updateProduct() : this.createProduct()
+      props = {
+        name: this.formGroup.value['name'] ?? undefined, // on create only (enabled form control)
+        version: this.formGroup.value['version']!,
+        description: this.formGroup.value['description'] ?? undefined,
+        displayName: this.formGroup.value['displayName']!,
+        provider: this.formGroup.value['provider'] ?? undefined,
+        basePath: this.formGroup.value['basePath']!,
+        iconName: this.formGroup.value['iconName'] ?? undefined,
+        imageUrl: this.formGroup.controls['imageUrl'].value ?? undefined,
+        classifications: convertToUniqueStringArray(this.formGroup.value['classifications'])
+      }
     } else {
       this.msgService.error({ summaryKey: 'VALIDATION.FORM_INVALID' })
       // set focus to first invalid field
       const invalidControl = this.elements.nativeElement.querySelector('input.ng-invalid')
       if (invalidControl) invalidControl.focus()
     }
-  }
-
-  private createProduct() {
-    this.productApi
-      .createProduct({
-        createProductRequest: {
-          name: this.formGroup.value['name'],
-          version: this.formGroup.value['version'],
-          description: this.formGroup.value['description'],
-          displayName: this.formGroup.value['displayName'],
-          provider: this.formGroup.value['provider'],
-          basePath: this.formGroup.value['basePath'],
-          iconName: this.formGroup.value['iconName'],
-          imageUrl: this.formGroup.controls['imageUrl'].value,
-          classifications: convertToUniqueStringArray(this.formGroup.value['classifications'])
-        } as CreateProductRequest
-      })
-      .subscribe({
-        next: (data) => {
-          this.msgService.success({ summaryKey: 'ACTIONS.CREATE.PRODUCT.OK' })
-          this.productCreated.emit({ ...data, classifications: data.classifications?.sort(sortByLocale) })
-        },
-        error: (err) => this.displaySaveError(err)
-      })
-  }
-
-  private updateProduct() {
-    this.productApi
-      .updateProduct({
-        id: this.productId!,
-        updateProductRequest: {
-          name: this.productName,
-          modificationCount: this.product?.modificationCount,
-          version: this.formGroup.value['version'],
-          description: this.formGroup.value['description'],
-          provider: this.formGroup.value['provider'],
-          imageUrl: this.formGroup.controls['imageUrl'].value,
-          basePath: this.formGroup.value['basePath'],
-          displayName: this.formGroup.value['displayName'],
-          iconName: this.formGroup.value['iconName'],
-          classifications: convertToUniqueStringArray(this.formGroup.value['classifications'])
-        } as UpdateProductRequest
-      })
-      .subscribe({
-        next: (data) => {
-          this.msgService.success({ summaryKey: 'ACTIONS.EDIT.PRODUCT.OK' })
-          this.productChanged.emit({ ...data, classifications: data.classifications?.sort(sortByLocale) })
-        },
-        error: (err) => this.displaySaveError(err)
-      })
-  }
-
-  private displaySaveError(err: any) {
-    if (err.error?.errorCode === 'PERSIST_ENTITY_FAILED') {
-      this.msgService.error({
-        summaryKey: 'ACTIONS.' + this.changeMode + '.PRODUCT.NOK',
-        detailKey:
-          'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT.' +
-          (err.error?.detail.indexOf('ui_product_base_path') > 0 ? 'BASEPATH' : 'NAME')
-      })
-    } else {
-      this.msgService.error({ summaryKey: 'ACTIONS.' + this.changeMode + '.PRODUCT.NOK' })
-    }
+    return props
   }
 
   /** File Handling

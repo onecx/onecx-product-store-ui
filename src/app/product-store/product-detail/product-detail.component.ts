@@ -7,9 +7,17 @@ import { TranslateService } from '@ngx-translate/core'
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 import { Action } from '@onecx/angular-accelerator'
 
-import { ImagesInternalAPIService, Product, ProductsAPIService, RefType } from 'src/app/shared/generated'
+import {
+  CreateProductRequest,
+  ImagesInternalAPIService,
+  Product,
+  ProductsAPIService,
+  RefType,
+  UpdateProductRequest
+} from 'src/app/shared/generated'
 import { bffImageUrl, sortByLocale } from 'src/app/shared/utils'
 import { ProductPropertyComponent } from './product-props/product-props.component'
+import { ProductInternComponent } from './product-intern/product-intern.component'
 
 export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
 
@@ -18,23 +26,27 @@ export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
   styleUrls: ['./product-detail.component.scss']
 })
 export class ProductDetailComponent implements OnInit {
+  // dialog
   public exceptionKey: string | undefined
   public loading = false
   public actions$: Observable<Action[]> | undefined
-  public uriFragment = this.route.snapshot.fragment // #fragment to address a certain TAB
-  public productName: string | null = null
-  public product$!: Observable<Product>
-  public item4Delete: Product | undefined
-  public product_for_apps: Product | undefined
   public changeMode: ChangeMode = 'VIEW'
   public dateFormat = 'medium'
+  public uriFragment = this.route.snapshot.fragment // #fragment to address a certain TAB
+  public productName: string | null = null
+  public productId: string | undefined
   public headerImageUrl?: string
   public productDeleteVisible = false
   public productDeleteMessage = ''
   public selectedTabIndex = 0
   public currentLogoUrl: string | undefined = undefined
+  // data
+  public product$: Observable<Product | undefined> = of(undefined)
+  public item4Delete: Product | undefined
+  public product_for_apps: Product | undefined
 
   @ViewChild(ProductPropertyComponent, { static: false }) productPropsComponent!: ProductPropertyComponent
+  @ViewChild(ProductInternComponent, { static: false }) productInternComponent!: ProductInternComponent
 
   constructor(
     private readonly router: Router,
@@ -46,7 +58,7 @@ export class ProductDetailComponent implements OnInit {
     private readonly msgService: PortalMessageService,
     private readonly translate: TranslateService
   ) {
-    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'medium'
+    this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.productName = this.route.snapshot.paramMap.get('name')
   }
 
@@ -58,7 +70,7 @@ export class ProductDetailComponent implements OnInit {
     } else {
       this.changeMode = 'CREATE'
       this.product$ = of({} as Product)
-      this.preparePageAction()
+      this.preparePageAction() // neutral
     }
   }
 
@@ -79,11 +91,13 @@ export class ProductDetailComponent implements OnInit {
     if (this.selectedTabIndex === 1) this.product_for_apps = product // lazy load
   }
 
+  /** READ */
   public getProduct(): void {
     this.loading = true
     this.product$ = this.productApi.getProductByName({ name: this.productName! }).pipe(
       map((data: Product) => {
         this.preparePageAction(data)
+        this.productId = data.id
         this.currentLogoUrl = this.getLogoUrl(data)
         this.goToTab(data)
         return { ...data, classifications: data.classifications?.sort(sortByLocale) }
@@ -134,10 +148,7 @@ export class ProductDetailComponent implements OnInit {
               show: 'always',
               conditional: true,
               showCondition:
-                this.selectedTabIndex === 0 &&
-                this.changeMode === 'VIEW' &&
-                product !== undefined &&
-                !product.undeployed,
+                [0, 3].includes(this.selectedTabIndex) && this.changeMode === 'VIEW' && product !== undefined,
               permission: 'PRODUCT#EDIT'
             },
             {
@@ -152,7 +163,7 @@ export class ProductDetailComponent implements OnInit {
             {
               label: data['ACTIONS.SAVE'],
               title: data['ACTIONS.TOOLTIPS.SAVE'],
-              actionCallback: () => this.onSave(),
+              actionCallback: () => this.onSaveProduct(),
               icon: 'pi pi-save',
               show: 'always',
               conditional: true,
@@ -184,44 +195,89 @@ export class ProductDetailComponent implements OnInit {
       )
   }
 
-  public close(): void {
+  public onClose() {
     this.location.back()
   }
-  public onClose() {
-    this.close()
-  }
 
-  public onCopy(item: any): void {
+  /** CHANGE entry action */
+  public onCopy(product: any): void {
     this.changeMode = 'COPY'
-    this.preparePageAction(item)
+    this.preparePageAction(product)
   }
   public onEdit() {
     this.changeMode = 'EDIT'
     this.getProduct()
   }
-  public onCancel(item: any) {
+
+  /** CHANGE leave action */
+  public onCancel(product?: Product) {
     if (this.changeMode === 'EDIT') {
       this.changeMode = 'VIEW'
-      this.productPropsComponent.ngOnChanges()
-      this.preparePageAction(item)
+      this.preparePageAction(product)
     }
-    if (this.changeMode === 'COPY') this.close()
-    if (this.changeMode === 'CREATE') this.close()
+    if (['COPY', 'CREATE'].includes(this.changeMode)) this.onClose()
   }
-  public onSave() {
-    this.productPropsComponent.onSave()
+  public onSaveProduct() {
+    const internals = this.productInternComponent.onSave()
+    const props = this.productPropsComponent.onSave()
+    if (props && internals)
+      this.changeMode === 'EDIT' ? this.updateProduct(props, internals) : this.createProduct(props, internals)
   }
 
-  public onRouteToCreatedProduct(product: any) {
-    this.changeMode = 'VIEW'
-    this.router.navigate(['../', product?.name], { relativeTo: this.route })
+  /** CHANGE execute */
+  private updateProduct(props: Partial<Product>, internals: Partial<Product>) {
+    if (this.productId)
+      this.productApi
+        .updateProduct({
+          id: this.productId,
+          // props does not contain the name because it is not changable
+          updateProductRequest: { ...props, ...internals, name: this.productName } as UpdateProductRequest
+        })
+        .subscribe({
+          next: (data) => {
+            this.msgService.success({ summaryKey: 'ACTIONS.EDIT.PRODUCT.OK' })
+            this.onChange(data)
+          },
+          error: (err) => this.displaySaveError(err)
+        })
+  }
+  private createProduct(props: Partial<Product>, internals: Partial<Product>) {
+    this.changeMode = 'CREATE'
+    this.productApi
+      .createProduct({
+        createProductRequest: { ...props, ...internals } as CreateProductRequest
+      })
+      .subscribe({
+        next: (data) => {
+          this.msgService.success({ summaryKey: 'ACTIONS.CREATE.PRODUCT.OK' })
+          this.router.navigate(['../', data?.name], { relativeTo: this.route })
+          this.onChange(data)
+        },
+        error: (err) => this.displaySaveError(err)
+      })
+  }
+
+  private displaySaveError(err: any) {
+    if (err.error?.errorCode === 'PERSIST_ENTITY_FAILED') {
+      this.msgService.error({
+        summaryKey: 'ACTIONS.' + this.changeMode + '.PRODUCT.NOK',
+        detailKey:
+          'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT.' +
+          (err.error?.detail.indexOf('ui_product_base_path') > 0 ? 'BASEPATH' : 'NAME')
+      })
+    } else {
+      this.msgService.error({ summaryKey: 'ACTIONS.' + this.changeMode + '.PRODUCT.NOK' })
+    }
   }
 
   public onChange(product?: Product) {
     this.changeMode = 'VIEW'
     this.preparePageAction(product)
     // update observable with response data
-    this.product$ = new Observable((sub) => sub.next(product as Product))
+    if (product) this.product$ = new Observable((sub) => sub.next(product as Product))
+    else {
+      this.product$ = of(undefined)
+    }
   }
 
   public onDelete(product?: Product): void {
@@ -232,22 +288,15 @@ export class ProductDetailComponent implements OnInit {
     if (this.item4Delete?.id) {
       this.productApi.deleteProduct({ id: this.item4Delete?.id }).subscribe({
         next: () => {
-          this.productDeleteVisible = false
-          this.item4Delete = undefined
           this.msgService.success({ summaryKey: 'ACTIONS.DELETE.PRODUCT.OK' })
-          this.close()
+          this.router.navigate(['../'], { relativeTo: this.route })
         },
         error: () => this.msgService.error({ summaryKey: 'ACTIONS.DELETE.PRODUCT.NOK' })
       })
     }
   }
 
-  // called by props component (this is the master of this url)
-  public onUpdateLogoUrl(url: string) {
-    this.currentLogoUrl = url
-  }
-
-  public getLogoUrl(product: Product): string {
+  private getLogoUrl(product: Product): string {
     if (product?.imageUrl) return product?.imageUrl
     else return bffImageUrl(this.imageApi.configuration.basePath, product?.name, RefType.Logo)
   }

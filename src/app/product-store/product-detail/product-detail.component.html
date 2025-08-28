@@ -41,9 +41,7 @@
         <app-product-props
           [product]="product"
           [changeMode]="changeMode"
-          (productCreated)="onRouteToCreatedProduct($event)"
-          (productChanged)="onChange($event)"
-          (currentLogoUrl)="onUpdateLogoUrl($event)"
+          (currentLogoUrl)="currentLogoUrl = $event"
         ></app-product-props>
       </p-tabPanel>
 
@@ -77,14 +75,18 @@
 
       <p-tabPanel
         id="ps_product_detail_panel_intern"
-        [disabled]="changeMode !== 'VIEW'"
+        [disabled]="['CREATE', 'COPY'].includes(changeMode)"
         [header]="'DIALOG.TABS.INTERN' | translate"
         [attr.aria-label]="'DIALOG.TABS.INTERN' | translate"
         [tooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate"
         tooltipPosition="top"
         tooltipEvent="hover"
       >
-        <app-product-intern [product]="product" [dateFormat]="dateFormat"></app-product-intern>
+        <app-product-intern
+          [product]="product"
+          [editMode]="changeMode === 'EDIT'"
+          [dateFormat]="dateFormat"
+        ></app-product-intern>
       </p-tabPanel>
     </p-tabView>
   </ocx-page-content>

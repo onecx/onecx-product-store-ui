@@ -7,17 +7,17 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 import { Product } from 'src/app/shared/generated'
 import { ProductInternComponent } from './product-intern.component'
 
-const prodAndWsUndeployed: Product = {
+const productProps: Product = {
   id: 'id',
   name: 'name',
+  displayName: 'Product Name',
   basePath: 'basePath',
-  undeployed: true
+  version: 'version'
 }
-
-const prodAndWsDeployed: Product = {
-  id: 'id',
-  name: 'name',
-  basePath: 'basePath'
+const productInternals: Partial<Product> = {
+  operator: true,
+  undeployed: true,
+  multitenancy: false
 }
 
 describe('ProductInternComponent', () => {
@@ -48,13 +48,59 @@ describe('ProductInternComponent', () => {
     expect(component).toBeTruthy()
   })
 
-  it('should set undeployed according to the input product undeployed attribute', () => {
-    component.product = prodAndWsUndeployed
-    component.ngOnChanges()
-    expect(component.undeployed).toBeTrue()
+  describe('form', () => {
+    it('should fill form only on view mode', () => {
+      component.product = { ...productProps, ...productInternals }
+      component.editMode = false
 
-    component.product = prodAndWsDeployed
-    component.ngOnChanges()
-    expect(component.undeployed).toBeFalse()
+      component.ngOnChanges()
+
+      expect(component.formGroup.value).toEqual(productInternals)
+      expect(component.formGroup.controls['undeployed'].disabled).toBeTrue()
+    })
+
+    it('should fill form only on edit mode', () => {
+      component.product = { ...productProps, ...productInternals }
+      component.editMode = true
+
+      component.ngOnChanges()
+
+      expect(component.formGroup.value).toEqual({ undeployed: true })
+      expect(component.formGroup.controls['undeployed'].enabled).toBeTrue()
+    })
+
+    it('should reset form without a product', () => {
+      component.product = undefined
+      component.editMode = false
+      spyOn(component.formGroup, 'reset')
+
+      component.ngOnChanges()
+
+      expect(component.formGroup.reset).toHaveBeenCalled()
+    })
+  })
+
+  describe('save', () => {
+    it('should display error onSave if formGroup invalid', () => {
+      component.product = { ...productProps }
+      component.editMode = true
+
+      component.ngOnChanges()
+      const form = component.onSave()
+
+      expect(form).toEqual({})
+      expect(component.formGroup.get('undeployed')?.value).toBeUndefined()
+    })
+
+    it('should fill form correctly - EDIT mode', () => {
+      component.product = { ...productProps, ...productInternals }
+      component.editMode = true
+
+      component.ngOnChanges()
+      const form = component.onSave()
+
+      expect(form).toEqual({ undeployed: true })
+      expect(component.formGroup.get('undeployed')?.value).toBeTrue()
+    })
   })
 })
