@@ -11,19 +11,35 @@ import { ConfigurationService, PortalMessageService, UserService } from '@onecx/
 
 import { ProductDetailComponent } from './product-detail.component'
 import { ProductPropertyComponent } from './product-props/product-props.component'
+import { ProductInternComponent } from './product-intern/product-intern.component'
 import { Product, ProductsAPIService } from 'src/app/shared/generated'
 
-const product: Product = {
+const productProps: Product = {
   id: 'id',
   name: 'name',
-  basePath: 'path',
+  displayName: 'Product Name',
+  basePath: 'basePath',
   imageUrl: 'imageUrl',
-  undeployed: true
+  version: 'version'
 }
+const productInternals: Partial<Product> = {
+  operator: true,
+  undeployed: true,
+  multitenancy: false
+}
+const product: Product = { ...productProps, ...productInternals }
 
 class MockProductPropertyComponent {
-  onSave = jasmine.createSpy('onSave')
-  ngOnChanges = jasmine.createSpy('ngOnChanges')
+  public onSave(): Partial<Product> {
+    return productProps
+  }
+  public ngOnChanges(): void {}
+}
+class MockProductInternComponent {
+  public onSave(): Partial<Product> {
+    return productInternals
+  }
+  public ngOnChanges(): void {}
 }
 
 describe('ProductDetailComponent', () => {
@@ -31,11 +47,15 @@ describe('ProductDetailComponent', () => {
   let fixture: ComponentFixture<ProductDetailComponent>
   let router: Router
   const mockPropsComponent = new MockProductPropertyComponent()
+  const mockInternComponent = new MockProductInternComponent()
 
-  const apiServiceSpy = {
-    getProductByName: jasmine.createSpy('getProductByName').and.returnValue(of({})),
-    deleteProduct: jasmine.createSpy('deleteProduct').and.returnValue(of({}))
+  const productApiSpy = {
+    createProduct: jasmine.createSpy('createProduct').and.returnValue(of({})),
+    updateProduct: jasmine.createSpy('updateProduct').and.returnValue(of({})),
+    deleteProduct: jasmine.createSpy('deleteProduct').and.returnValue(of({})),
+    getProductByName: jasmine.createSpy('getProductByName').and.returnValue(of({}))
   }
+  const locationSpy = jasmine.createSpyObj<Location>('Location', ['back'])
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error'])
   const configServiceSpy = {
     getProperty: jasmine.createSpy('getProperty').and.returnValue('123'),
@@ -52,10 +72,9 @@ describe('ProductDetailComponent', () => {
       getValue: jasmine.createSpy('getValue').and.returnValue('en')
     },
     hasPermission: jasmine.createSpy('hasPermission').and.callFake((permission) => {
-      return ['APP#CREATE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
+      return ['PRODUCT#CREATE', 'PRODUCT#EDIT', 'PRODUCT#VIEW'].includes(permission)
     })
   }
-  const locationSpy = jasmine.createSpyObj<Location>('Location', ['back'])
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -70,7 +89,7 @@ describe('ProductDetailComponent', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         provideRouter([{ path: '', component: ProductDetailComponent }]),
-        { provide: ProductsAPIService, useValue: apiServiceSpy },
+        { provide: ProductsAPIService, useValue: productApiSpy },
         { provide: PortalMessageService, useValue: msgServiceSpy },
         { provide: ConfigurationService, useValue: configServiceSpy },
         { provide: UserService, useValue: mockUserService },
@@ -90,8 +109,10 @@ describe('ProductDetailComponent', () => {
   afterEach(() => {
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
-    apiServiceSpy.getProductByName.calls.reset()
-    apiServiceSpy.deleteProduct.calls.reset()
+    productApiSpy.getProductByName.calls.reset()
+    productApiSpy.createProduct.calls.reset()
+    productApiSpy.updateProduct.calls.reset()
+    productApiSpy.deleteProduct.calls.reset()
   })
 
   it('should create', () => {
@@ -115,24 +136,24 @@ describe('ProductDetailComponent', () => {
       expect(component.changeMode).toEqual('CREATE')
     })
 
-    it('should get product onInit - successful found', (done) => {
-      const product = { id: 'id', name: 'name', basePath: 'path' }
-      apiServiceSpy.getProductByName.and.returnValue(of(product))
-      component.productName = 'name'
+    it('should get product onInit - successful: found', (done) => {
+      productApiSpy.getProductByName.and.returnValue(of(product))
+      component.productName = product.name
+
       component.ngOnInit()
 
       component.product$.subscribe({
-        next: (result) => {
-          expect(result?.id).toBe('id')
+        next: (data) => {
+          expect(data?.id).toBe(product.id)
           done()
         },
         error: done.fail
       })
     })
 
-    it('should get product onInit - not found', (done) => {
+    it('should get product onInit - failed: not found', (done) => {
       const errorResponse = { status: 404, statusText: 'Not Found' }
-      apiServiceSpy.getProductByName.and.returnValue(throwError(() => errorResponse))
+      productApiSpy.getProductByName.and.returnValue(throwError(() => errorResponse))
       component.productName = 'unknown'
       spyOn(console, 'error')
 
@@ -150,38 +171,93 @@ describe('ProductDetailComponent', () => {
     })
   })
 
-  /*
-  it('should behave correctly onCreate', () => {
-    const routerSpy = spyOn(router, 'navigate')
-
-    component.onRouteToCreatedProduct(product)
-
-    expect(routerSpy).toHaveBeenCalledWith(['../', product.name], jasmine.any(Object))
-  })
-*/
-  it('should behave correctly onChange if change false', (done) => {
-    spyOn(component, 'preparePageAction')
-
-    component.onChange(product)
-
-    component.product$.subscribe({
-      next: (result) => {
-        expect(result?.id).toBe('id')
-        done()
-      },
-      error: done.fail
+  describe('changes', () => {
+    beforeEach(() => {
+      component.productPropsComponent = mockPropsComponent as unknown as ProductPropertyComponent
+      component.productInternComponent = mockInternComponent as unknown as ProductInternComponent
+      component.productName = product.name
+      component.productId = product.id
     })
 
-    expect(component.preparePageAction).toHaveBeenCalled()
-  })
-
-  xdescribe('saving', () => {
-    it('should behave correctly onSave', () => {
-      component.productPropsComponent = mockPropsComponent as unknown as ProductPropertyComponent
+    it('should save edited product - successful', () => {
+      productApiSpy.updateProduct.and.returnValue(of(product))
+      component.changeMode = 'EDIT'
 
       component.onSaveProduct()
 
-      expect(component.productPropsComponent.onSave).toHaveBeenCalled()
+      expect(component.changeMode).toEqual('VIEW')
+      expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.EDIT.PRODUCT.OK' })
+    })
+
+    it('should save edited product - failed', () => {
+      const errorResponse = { status: 400, statusText: 'Failed' }
+      productApiSpy.updateProduct.and.returnValue(throwError(() => errorResponse))
+      component.changeMode = 'EDIT'
+
+      component.onSaveProduct()
+
+      expect(component.changeMode).toEqual('EDIT')
+      expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.EDIT.PRODUCT.NOK' })
+    })
+
+    it('should save created product - successful', () => {
+      productApiSpy.createProduct.and.returnValue(of({ ...product, id: undefined }))
+      component.changeMode = 'CREATE'
+      const routerSpy = spyOn(router, 'navigate')
+
+      component.onSaveProduct()
+      component.product$.subscribe()
+
+      expect(component.changeMode).toEqual('VIEW')
+      expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.PRODUCT.OK' })
+      expect(routerSpy).toHaveBeenCalledWith(['../', product.name], jasmine.any(Object))
+    })
+
+    it('should save created product - failed', () => {
+      const errorResponse = { status: 400, statusText: 'Failed' }
+      productApiSpy.createProduct.and.returnValue(throwError(() => errorResponse))
+      component.changeMode = 'CREATE'
+
+      component.onSaveProduct()
+
+      expect(component.changeMode).toEqual('CREATE')
+      expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.PRODUCT.NOK' })
+    })
+
+    it('should save created product - failed: existing name', () => {
+      const errorResponse = {
+        status: 400,
+        statusText: 'Failed',
+        error: { errorCode: 'PERSIST_ENTITY_FAILED', detail: ' ...ui_product_name...' }
+      }
+      productApiSpy.createProduct.and.returnValue(throwError(() => errorResponse))
+      component.changeMode = 'CREATE'
+
+      component.onSaveProduct()
+
+      expect(component.changeMode).toEqual('CREATE')
+      expect(msgServiceSpy.error).toHaveBeenCalledWith({
+        summaryKey: 'ACTIONS.CREATE.PRODUCT.NOK',
+        detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT.NAME'
+      })
+    })
+
+    it('should save created product - failed: existing basepath', () => {
+      const errorResponse = {
+        status: 400,
+        statusText: 'Failed',
+        error: { errorCode: 'PERSIST_ENTITY_FAILED', detail: ' ...ui_product_base_path...' }
+      }
+      productApiSpy.createProduct.and.returnValue(throwError(() => errorResponse))
+      component.changeMode = 'CREATE'
+
+      component.onSaveProduct()
+
+      expect(component.changeMode).toEqual('CREATE')
+      expect(msgServiceSpy.error).toHaveBeenCalledWith({
+        summaryKey: 'ACTIONS.CREATE.PRODUCT.NOK',
+        detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT.BASEPATH'
+      })
     })
   })
 
@@ -193,7 +269,7 @@ describe('ProductDetailComponent', () => {
     })
 
     it('should delete a product', () => {
-      apiServiceSpy.deleteProduct
+      productApiSpy.deleteProduct
       component.item4Delete = product
       const routerSpy = spyOn(router, 'navigate')
 
@@ -204,7 +280,7 @@ describe('ProductDetailComponent', () => {
     })
 
     it('should display error message when delete fails', () => {
-      apiServiceSpy.deleteProduct.and.returnValue(throwError(() => new Error()))
+      productApiSpy.deleteProduct.and.returnValue(throwError(() => new Error()))
       component.item4Delete = product
 
       component.onDeleteConfirmation()
@@ -213,12 +289,14 @@ describe('ProductDetailComponent', () => {
     })
   })
 
-  it('should call this.user.lang$ from the constructor and set this.dateFormat to default format if user.lang$ is de', () => {
-    mockUserService.lang$.getValue.and.returnValue('de')
-    fixture = TestBed.createComponent(ProductDetailComponent)
-    component = fixture.componentInstance
-    fixture.detectChanges()
-    expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm:ss')
+  describe('language', () => {
+    it('should call this.user.lang$ from the constructor and set this.dateFormat to default format if user.lang$ is de', () => {
+      mockUserService.lang$.getValue.and.returnValue('de')
+      fixture = TestBed.createComponent(ProductDetailComponent)
+      component = fixture.componentInstance
+      fixture.detectChanges()
+      expect(component.dateFormat).toEqual('dd.MM.yyyy HH:mm:ss')
+    })
   })
 
   describe('UI actions', () => {
@@ -293,17 +371,21 @@ describe('ProductDetailComponent', () => {
       expect(component.changeMode).toEqual('COPY')
     })
 
-    it('should behave correctly onEdit', () => {
-      spyOn(component, 'getProduct')
+    it('should behave correctly onEdit - no image URL', () => {
+      productApiSpy.getProductByName.and.returnValue(of({ ...product, imageUrl: undefined }))
+      component.productName = product.name
+
+      component.ngOnInit()
+
+      component.product$.subscribe()
 
       component.onEdit()
 
       expect(component.changeMode).toEqual('EDIT')
-      expect(component.getProduct).toHaveBeenCalled()
+      expect(component.productId).toBe(product.id)
     })
 
     it('should behave correctly onCancel in edit mode', () => {
-      //component.productPropsComponent = mockPropsComponent as unknown as ProductPropertyComponent
       component.changeMode = 'EDIT'
 
       component.onCancel(product)

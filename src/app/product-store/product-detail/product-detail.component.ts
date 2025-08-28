@@ -92,7 +92,7 @@ export class ProductDetailComponent implements OnInit {
   }
 
   /** READ */
-  public getProduct(): void {
+  private getProduct(): void {
     this.loading = true
     this.product$ = this.productApi.getProductByName({ name: this.productName! }).pipe(
       map((data: Product) => {
@@ -236,7 +236,7 @@ export class ProductDetailComponent implements OnInit {
         .subscribe({
           next: (data) => {
             this.msgService.success({ summaryKey: 'ACTIONS.EDIT.PRODUCT.OK' })
-            this.onChange(data)
+            this.cleanupAfterDataChanged(data)
           },
           error: (err) => this.displaySaveError(err)
         })
@@ -251,7 +251,7 @@ export class ProductDetailComponent implements OnInit {
         next: (data) => {
           this.msgService.success({ summaryKey: 'ACTIONS.CREATE.PRODUCT.OK' })
           this.router.navigate(['../', data?.name], { relativeTo: this.route })
-          this.onChange(data)
+          this.cleanupAfterDataChanged(data)
         },
         error: (err) => this.displaySaveError(err)
       })
@@ -270,14 +270,11 @@ export class ProductDetailComponent implements OnInit {
     }
   }
 
-  public onChange(product?: Product) {
+  private cleanupAfterDataChanged(product: Product) {
     this.changeMode = 'VIEW'
     this.preparePageAction(product)
     // update observable with response data
-    if (product) this.product$ = new Observable((sub) => sub.next(product as Product))
-    else {
-      this.product$ = of(undefined)
-    }
+    this.product$ = new Observable((sub) => sub.next(product as Product))
   }
 
   public onDelete(product?: Product): void {
