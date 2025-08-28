@@ -274,7 +274,7 @@ export class ProductDetailComponent implements OnInit {
     this.changeMode = 'VIEW'
     this.preparePageAction(product)
     // update observable with response data
-    this.product$ = new Observable((sub) => sub.next(product as Product))
+    this.product$ = new Observable((sub) => sub.next(product))
   }
 
   public onDelete(product?: Product): void {
