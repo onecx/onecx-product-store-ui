@@ -89,7 +89,7 @@
     "@openapitools/openapi-generator-cli": "^2.18.4",
     "@schematics/angular": "^18.2.12",
     "@svgr/webpack": "^8.1.0",
-    "@types/jasmine": "~5.1.4",
+    "@types/jasmine": "~5.1.11",
     "@types/node": "~22.14.0",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
