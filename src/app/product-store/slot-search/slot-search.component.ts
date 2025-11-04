@@ -15,7 +15,7 @@ import {
   Slot,
   SlotsAPIService
 } from 'src/app/shared/generated'
-import { limitText, sortByLocale } from 'src/app/shared/utils'
+import { Utils } from 'src/app/shared/utils'
 import { ChangeMode } from '../product-detail/product-detail.component'
 
 export interface SlotSearchCriteria {
@@ -61,7 +61,6 @@ export class SlotSearchComponent implements OnInit {
   public filterPanelSlotStateVisible = false
   public filterPanelSlotNameVisible = false
   public filterPanelProductVisible = false
-  public limitText = limitText
 
   // filter icons
   @ViewChild('headerFilterIconSlotName', { static: false }) headerFilterIconSlotName: ElementRef | undefined
@@ -352,7 +351,7 @@ export class SlotSearchComponent implements OnInit {
     ss?.forEach((s) => {
       if (s.name && !this.filterSlotNameItems.includes(s.name)) this.filterSlotNameItems.push(s.name)
     })
-    this.filterSlotNameItems.sort(sortByLocale)
+    this.filterSlotNameItems.sort(Utils.sortByLocale)
   }
   private prepareFilterProductNames(ss: SlotData[] | undefined) {
     this.filterProductItems = []
@@ -360,7 +359,7 @@ export class SlotSearchComponent implements OnInit {
       if (s.productDisplayName && !this.filterProductItems.includes(s.productDisplayName))
         this.filterProductItems.push(s.productDisplayName)
     })
-    this.filterProductItems.sort(sortByLocale)
+    this.filterProductItems.sort(Utils.sortByLocale)
   }
 
   // triggered by the use of global table filter => switching filter icons

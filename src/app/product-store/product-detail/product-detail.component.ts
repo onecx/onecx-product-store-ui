@@ -15,7 +15,7 @@ import {
   RefType,
   UpdateProductRequest
 } from 'src/app/shared/generated'
-import { bffImageUrl, sortByLocale } from 'src/app/shared/utils'
+import { Utils } from 'src/app/shared/utils'
 import { ProductPropertyComponent } from './product-props/product-props.component'
 import { ProductInternComponent } from './product-intern/product-intern.component'
 
@@ -100,7 +100,7 @@ export class ProductDetailComponent implements OnInit {
         this.productId = data.id
         this.currentLogoUrl = this.getLogoUrl(data)
         this.goToTab(data)
-        return { ...data, classifications: data.classifications?.sort(sortByLocale) }
+        return { ...data, classifications: data.classifications?.sort(Utils.sortByLocale) }
       }),
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCT'
@@ -295,6 +295,6 @@ export class ProductDetailComponent implements OnInit {
 
   private getLogoUrl(product: Product): string {
     if (product?.imageUrl) return product?.imageUrl
-    else return bffImageUrl(this.imageApi.configuration.basePath, product?.name, RefType.Logo)
+    else return Utils.bffImageUrl(this.imageApi.configuration.basePath, product?.name, RefType.Logo)
   }
 }

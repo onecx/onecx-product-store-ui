@@ -24,7 +24,7 @@ import {
   ProductSearchCriteria
 } from 'src/app/shared/generated'
 import { SharedModule } from 'src/app/shared/shared.module'
-import { bffImageUrl, prepareUrlPath, sortByDisplayName } from 'src/app/shared/utils'
+import { Utils } from 'src/app/shared/utils'
 import { environment } from 'src/environments/environment'
 
 type DataType = 'logo' | 'products' | 'product'
@@ -89,7 +89,7 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
       basePath: Location.joinWithSlash(remoteComponentConfig.baseUrl, environment.apiPrefix)
     })
     if (environment.DEFAULT_LOGO_PATH)
-      this.defaultImageUrl = prepareUrlPath(remoteComponentConfig.baseUrl, environment.DEFAULT_LOGO_PATH)
+      this.defaultImageUrl = Utils.prepareUrlPath(remoteComponentConfig.baseUrl, environment.DEFAULT_LOGO_PATH)
   }
 
   /**
@@ -119,10 +119,10 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
         response.stream?.forEach((p) => {
           products.push({
             ...p,
-            imageUrl: p.imageUrl ?? bffImageUrl(this.productApi.configuration.basePath, p.name, RefType.Logo)
+            imageUrl: p.imageUrl ?? Utils.bffImageUrl(this.productApi.configuration.basePath, p.name, RefType.Logo)
           })
         })
-        return products.sort(sortByDisplayName)
+        return products.sort(Utils.sortByDisplayName)
       }),
       catchError((err) => {
         console.error('onecx-product-data.searchProducts', err)
@@ -155,7 +155,7 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
         if (p !== undefined) {
           px = {
             ...p,
-            imageUrl: p.imageUrl ?? bffImageUrl(this.productApi.configuration.basePath, p.name, RefType.Logo)
+            imageUrl: p.imageUrl ?? Utils.bffImageUrl(this.productApi.configuration.basePath, p.name, RefType.Logo)
           }
         }
         return px
@@ -195,8 +195,8 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
       this.log('getImageUrl => ' + this.imageUrl)
       return this.imageUrl
     } else if (['url', 'image'].includes(prioType)) {
-      this.log('getImageUrl => ' + bffImageUrl(this.productApi.configuration.basePath, productName, RefType.Logo))
-      return bffImageUrl(this.productApi.configuration.basePath, productName, RefType.Logo)
+      this.log('getImageUrl => ' + Utils.bffImageUrl(this.productApi.configuration.basePath, productName, RefType.Logo))
+      return Utils.bffImageUrl(this.productApi.configuration.basePath, productName, RefType.Logo)
     } else if (['url', 'image', 'default'].includes(prioType) && this.useDefaultLogo && this.defaultImageUrl !== '') {
       // if user wants to have the default (as asset)
       return this.defaultImageUrl

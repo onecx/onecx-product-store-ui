@@ -1,7 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
-import { BehaviorSubject, Observable } from 'rxjs'
+import { BehaviorSubject, Observable, of } from 'rxjs'
 
 import { SlotService } from '@onecx/angular-remote-components'
+import { WorkspaceService } from '@onecx/angular-integration-interface'
+
+import { Utils } from 'src/app/shared/utils'
 
 export type Workspace = {
   name: string
@@ -33,8 +36,12 @@ export class ProductUseComponent implements OnInit {
   public slotEmitter = new EventEmitter<Workspace[]>()
   public workspaceData$ = new BehaviorSubject<Workspace[] | undefined>(undefined)
   public isComponentDefined$: Observable<boolean> | undefined
+  public workspaceEndpointExist = false
 
-  constructor(private readonly slotService: SlotService) {
+  constructor(
+    private readonly slotService: SlotService,
+    private readonly workspaceService: WorkspaceService
+  ) {
     this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.slotName)
   }
 
@@ -43,5 +50,20 @@ export class ProductUseComponent implements OnInit {
       this.workspaceData$.next(res)
       if (res.length > 0) this.used.emit(true)
     })
+    // check endpoint exists
+    this.workspaceEndpointExist = Utils.doesEndpointExist(
+      this.workspaceService,
+      'onecx-workspace',
+      'onecx-workspace-ui',
+      'workspace-detail'
+    )
+  }
+
+  public getWorkspaceEndpointUrl$(name?: string): Observable<string | undefined> {
+    if (this.workspaceEndpointExist && name)
+      return this.workspaceService.getUrl('onecx-workspace', 'onecx-workspace-ui', 'workspace-detail', {
+        'workspace-name': name
+      })
+    return of(undefined)
   }
 }

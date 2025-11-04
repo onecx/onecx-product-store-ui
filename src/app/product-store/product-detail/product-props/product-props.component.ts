@@ -12,8 +12,8 @@ import {
   ProductsAPIService,
   RefType
 } from 'src/app/shared/generated'
+import { Utils } from 'src/app/shared/utils'
 import { IconService } from 'src/app/shared/iconservice'
-import { bffImageUrl, dropDownSortItemsByLabel, convertToUniqueStringArray, sortByLocale } from 'src/app/shared/utils'
 import { ChangeMode } from '../product-detail.component'
 
 export interface ProductPropsForm {
@@ -82,7 +82,7 @@ export class ProductPropertyComponent implements OnChanges {
       classifications: new FormControl(null, [Validators.maxLength(255)])
     })
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
-    this.iconItems.sort(dropDownSortItemsByLabel)
+    this.iconItems.sort(Utils.dropDownSortItemsByLabel)
   }
 
   public ngOnChanges(): void {
@@ -120,7 +120,7 @@ export class ProductPropertyComponent implements OnChanges {
         basePath: this.formGroup.value['basePath']!,
         iconName: this.formGroup.value['iconName'] ?? undefined,
         imageUrl: this.formGroup.controls['imageUrl'].value ?? undefined,
-        classifications: convertToUniqueStringArray(this.formGroup.value['classifications'])
+        classifications: Utils.convertToUniqueStringArray(this.formGroup.value['classifications'])
       }
     } else {
       this.msgService.error({ summaryKey: 'VALIDATION.FORM_INVALID' })
@@ -210,7 +210,9 @@ export class ProductPropertyComponent implements OnChanges {
   }
   private prepareImageUrl(name?: string): void {
     this.onImageLoadError = false // reset!
-    this.fetchingImageUrl = name ? bffImageUrl(this.imageApi.configuration.basePath, name, RefType.Logo) : undefined
+    this.fetchingImageUrl = name
+      ? Utils.bffImageUrl(this.imageApi.configuration.basePath, name, RefType.Logo)
+      : undefined
   }
 
   // changes on external log URL field: user enters text (change) or paste something
@@ -229,8 +231,8 @@ export class ProductPropertyComponent implements OnChanges {
   private getCriteria(): void {
     this.criteria$ = this.productApi.getProductSearchCriteria().pipe(
       map((data: ProductCriteria) => ({
-        providers: data.providers?.sort(sortByLocale),
-        classifications: data.classifications?.sort(sortByLocale)
+        providers: data.providers?.sort(Utils.sortByLocale),
+        classifications: data.classifications?.sort(Utils.sortByLocale)
       })),
       catchError((err) => {
         console.error('getProductSearchCriteria', err)
@@ -249,7 +251,7 @@ export class ProductPropertyComponent implements OnChanges {
     }
     const query = event.query.toLowerCase()
     this.providerFiltered = providers.filter((p) => p.toLowerCase().includes(query))
-    this.providerFiltered.sort(sortByLocale)
+    this.providerFiltered.sort(Utils.sortByLocale)
   }
   public filterClasses(event: { query: string }, classifications?: string[]) {
     if (!classifications) {
@@ -260,6 +262,6 @@ export class ProductPropertyComponent implements OnChanges {
     const filtered = classifications.filter((p) => p.toLowerCase().includes(query))
     // in case not found then add this to the list (to be a new item)
     this.classesFiltered = filtered.length > 0 ? filtered : [event.query]
-    this.classesFiltered.sort(sortByLocale)
+    this.classesFiltered.sort(Utils.sortByLocale)
   }
 }

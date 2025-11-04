@@ -18,7 +18,6 @@ import {
   MicroservicePageResult,
   MicroservicesAPIService
 } from 'src/app/shared/generated'
-import { limitText } from 'src/app/shared/utils'
 
 export interface AppSearchCriteria {
   appName: FormControl<string | null>
@@ -64,7 +63,6 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public hasCreatePermission = false
   public hasEditPermission = false
   public hasDeletePermission = false
-  public limitText = limitText
 
   @ViewChild(DataView) dv: DataView | undefined
   public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined

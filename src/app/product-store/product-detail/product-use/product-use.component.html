@@ -13,7 +13,24 @@
     <ng-template #productUsed>
       {{ 'PRODUCT.WORKSPACES_USING_PRODUCT.USED' | translate }}
       <ul class="ml-0 mt-2">
-        <li *ngFor="let w of workspaces" class="mb-1">{{ w.displayName }}</li>
+        <li *ngFor="let w of workspaces" class="mb-1">
+          @if (workspaceEndpointExist) {
+            <a
+              tabindex="0"
+              id="ws_detail_props_item_theme_link"
+              class="max-w-15rem md:max-w-20rem lg:max-w-30rem xl:max-w-full cursor-pointer font-italic text-primary text-responsive"
+              [routerLink]="[getWorkspaceEndpointUrl$(w.name) | async]"
+              [attr.aria-label]="'ACTIONS.NAVIGATION.LINKS.GOTO.WORKSPACE' | translate"
+              [pTooltip]="'ACTIONS.NAVIGATION.LINKS.GOTO.WORKSPACE' | translate"
+              tooltipPosition="right"
+              tooltipEvent="hover"
+            >
+              {{ w.displayName }}
+            </a>
+          } @else {
+            {{ w.displayName }}
+          }
+        </li>
       </ul>
     </ng-template>
   </div>

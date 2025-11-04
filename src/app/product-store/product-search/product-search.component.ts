@@ -16,7 +16,7 @@ import {
   ProductSearchCriteria,
   RefType
 } from 'src/app/shared/generated'
-import { bffImageUrl } from 'src/app/shared/utils'
+import { Utils } from 'src/app/shared/utils'
 
 export interface ProductSearchCriteriaControls {
   name: FormControl<string | null>
@@ -118,7 +118,6 @@ export class ProductSearchComponent implements OnInit {
         'PRODUCT.DISPLAY_NAME',
         'PRODUCT.CLASSIFICATIONS',
         'PRODUCT.PROVIDER',
-        'PRODUCT.DESCRIPTION',
         'PRODUCT.VERSION',
         'DIALOG.DATAVIEW.VIEW_MODE_GRID',
         'DIALOG.DATAVIEW.VIEW_MODE_LIST',
@@ -141,8 +140,6 @@ export class ProductSearchComponent implements OnInit {
               data['PRODUCT.PROVIDER'] +
               ', ' +
               data['PRODUCT.CLASSIFICATIONS'] +
-              ', ' +
-              data['PRODUCT.DESCRIPTION'] +
               ', ' +
               data['PRODUCT.VERSION'],
             viewModeToggleTooltips: {
@@ -250,6 +247,6 @@ export class ProductSearchComponent implements OnInit {
   public getLogoUrl(product: ProductAbstract | undefined): string | undefined {
     if (!product) return undefined
     if (product.imageUrl && product.imageUrl != '') return product.imageUrl
-    return bffImageUrl(this.imageApi.configuration.basePath, product.name, RefType.Logo)
+    return Utils.bffImageUrl(this.imageApi.configuration.basePath, product.name, RefType.Logo)
   }
 }
