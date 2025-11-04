@@ -37,12 +37,26 @@ describe('ProductUseComponent', () => {
     fixture = TestBed.createComponent(ProductUseComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
-    component.slotEmitter.emit([{ name: 'name' } as Workspace])
-    workspaceServiceSpy.doesUrlExistFor.and.returnValue(of(true))
   })
 
   it('should create', () => {
     expect(component).toBeTruthy()
+  })
+
+  describe('on changes', () => {
+    beforeEach(() => {
+      component.productName = 'product'
+      workspaceServiceSpy.doesUrlExistFor.and.returnValue(of(true))
+      component.ngOnChanges()
+    })
+
+    it('should emit true', () => {
+      component.slotEmitter.emit([{ name: 'name' } as Workspace])
+    })
+
+    it('should emit false', () => {
+      component.slotEmitter.emit([])
+    })
   })
 
   describe('getWorkspaceEndpointUrl', () => {
