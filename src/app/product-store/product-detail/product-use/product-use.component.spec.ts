@@ -3,12 +3,17 @@ import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { TranslateTestingModule } from 'ngx-translate-testing'
+import { of, throwError } from 'rxjs'
+
+import { WorkspaceService } from '@onecx/angular-integration-interface'
 
 import { ProductUseComponent, Workspace } from './product-use.component'
 
 describe('ProductUseComponent', () => {
   let component: ProductUseComponent
   let fixture: ComponentFixture<ProductUseComponent>
+
+  const workspaceServiceSpy = jasmine.createSpyObj<WorkspaceService>('WorkspaceService', ['doesUrlExistFor', 'getUrl'])
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -20,7 +25,11 @@ describe('ProductUseComponent', () => {
         }).withDefaultLanguage('en')
       ],
       schemas: [NO_ERRORS_SCHEMA],
-      providers: [provideHttpClientTesting(), provideHttpClient()]
+      providers: [
+        provideHttpClientTesting(),
+        provideHttpClient(),
+        { provide: WorkspaceService, useValue: workspaceServiceSpy }
+      ]
     }).compileComponents()
   }))
 
@@ -28,10 +37,66 @@ describe('ProductUseComponent', () => {
     fixture = TestBed.createComponent(ProductUseComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
-    component.slotEmitter.emit([{ name: 'name' } as Workspace])
   })
 
   it('should create', () => {
     expect(component).toBeTruthy()
+  })
+
+  describe('on changes', () => {
+    beforeEach(() => {
+      component.productName = 'product'
+      workspaceServiceSpy.doesUrlExistFor.and.returnValue(of(true))
+      component.ngOnChanges()
+    })
+
+    it('should emit true', () => {
+      component.slotEmitter.emit([{ name: 'name' } as Workspace])
+    })
+
+    it('should emit false', () => {
+      component.slotEmitter.emit([])
+    })
+  })
+
+  describe('getWorkspaceEndpointUrl', () => {
+    beforeEach(() => {
+      component.productName = 'product'
+    })
+
+    it('should workspaceEndpointExist - exist', (done) => {
+      component.workspaceEndpointExist = true
+      workspaceServiceSpy.getUrl.and.returnValue(of('/url'))
+
+      const eu$ = component.getWorkspaceEndpointUrl$('name')
+
+      eu$.subscribe({
+        next: (data) => {
+          if (data) {
+            expect(data).toBe('/url')
+          }
+          done()
+        },
+        error: done.fail
+      })
+    })
+
+    it('should workspaceEndpointExist - not exist', (done) => {
+      component.workspaceEndpointExist = false
+      const errorResponse = { status: 400, statusText: 'Error on check endpoint' }
+      workspaceServiceSpy.getUrl.and.returnValue(throwError(() => errorResponse))
+
+      const eu$ = component.getWorkspaceEndpointUrl$('name')
+
+      eu$.subscribe({
+        next: (data) => {
+          if (data) {
+            expect(data).toBeFalse()
+          }
+          done()
+        },
+        error: done.fail
+      })
+    })
   })
 })

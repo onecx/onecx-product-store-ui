@@ -9,7 +9,7 @@ import { Table } from 'primeng/table'
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 
 import { IconService } from 'src/app/shared/iconservice'
-import { dropDownSortItemsByLabel, convertToUniqueStringArray } from 'src/app/shared/utils'
+import { Utils } from 'src/app/shared/utils'
 import {
   CreateMicrofrontendRequest,
   CreateMicroserviceRequest,
@@ -101,7 +101,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
     this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
     this.hasEditPermission = this.user.hasPermission('APP#EDIT')
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
-    this.iconItems.sort(dropDownSortItemsByLabel)
+    this.iconItems.sort(Utils.dropDownSortItemsByLabel)
 
     this.formGroupMfe = new FormGroup<MfeForm>({
       appId: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
@@ -323,7 +323,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
       undeployed: this.changeMode === 'EDIT' ? this.mfe?.undeployed : undefined
     }
     if (this.mfe) {
-      this.mfe.classifications = convertToUniqueStringArray(this.formGroupMfe.controls['classifications'].value)
+      this.mfe.classifications = Utils.convertToUniqueStringArray(this.formGroupMfe.controls['classifications'].value)
       this.mfe.endpoints = this.endpoints.filter((endpoint) => !(endpoint.name === '' && endpoint.path === ''))
     }
     this.changeMode === 'CREATE' ? this.createMfe() : this.updateMfe()

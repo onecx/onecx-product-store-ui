@@ -104,7 +104,8 @@
       "DETAILS.TOOLTIP": "Anzeige Details",
       "NEW.TOOLTIP": "Erstelle neuen Eintrag",
       "LINKS": {
-        "GOTO.PRODUCT": "Details der Applikation anzeigen"
+        "GOTO.PRODUCT": "Details der Applikation anzeigen",
+        "GOTO.WORKSPACE": "Zum Workspace wechseln"
       }
     },
     "TABLE": {

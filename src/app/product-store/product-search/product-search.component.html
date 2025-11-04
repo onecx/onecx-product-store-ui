@@ -70,14 +70,14 @@
       *ngIf="loading"
       id="ps_product_search_loading_message"
       severity="info"
-      styleClass="m-3 p-2"
+      styleClass="m-3"
       [text]="'ACTIONS.LOADING' | translate"
     ></p-message>
     <p-message
       *ngIf="!loading && exceptionKey"
       id="ps_product_search_error_message"
       severity="error"
-      styleClass="m-3 p-2"
+      styleClass="m-3"
       [text]="exceptionKey | translate"
     ></p-message>
 
@@ -91,7 +91,7 @@
       [rows]="viewMode === 'grid' ? 100 : 20"
       [layout]="viewMode"
       [emptyMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
-      filterBy="name,displayName,classes,version,provider,description"
+      filterBy="name,displayName,classes,version,provider"
       [sortField]="sortField"
       [sortOrder]="sortOrder"
       [showCurrentPageReport]="true"
@@ -199,7 +199,7 @@
               <div
                 *ngIf="!product?.multitenancy"
                 [id]="'ps_product_search_data_grid_row_' + i + '_multitenancy'"
-                class="card-badge-left badge-1 p-2 pi pi-android text-xl"
+                class="card-badge-left badge-1 p-2 pi pi-user-minus text-xl"
                 [attr.aria-label]="'INTERNAL.TOOLTIPS.MULTITENANCY_SEARCH' | translate"
                 [pTooltip]="'INTERNAL.TOOLTIPS.MULTITENANCY_SEARCH' | translate"
                 tooltipPosition="top"

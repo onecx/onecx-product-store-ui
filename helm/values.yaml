@@ -17,8 +17,8 @@ app:
           note: "OneCX Product Store UI module auto import via MF operator"
           type: MODULE
           technology: WEBCOMPONENTMODULE
-          remoteName: onecx-product-store
-          tagName: ocx-product-store-component
+          remoteName: "onecx-product-store"
+          tagName: "ocx-product-store-component"
           endpoints:
             - name: product-detail
               path: /{product-name}
@@ -37,29 +37,21 @@ app:
           technology: WEBCOMPONENTMODULE
           remoteName: onecx-product-store
           tagName: ocx-product-data-component
-        product-infos:
-          exposedModule: "./OneCXProductInfosComponent"
-          description: "Provide Product informations"
-          type: COMPONENT
-          technology: WEBCOMPONENTMODULE
-          remoteName: onecx-product-store
-          tagName: ocx-product-infos-component
-          deprecated: true
     # Microservice
     microservice:
       spec:
-        name: OneCX Product Store UI
-        description: OneCX Product Store Frontend
+        name: "OneCX Product Store UI"
+        description: "OneCX Product Store Frontend"
     # Slot
     slot:
       enabled: true
       specs:
         onecx-workspace-data:
-          name: 'onecx-workspace-data'
-          description: 'Get Workspaces using a given Product'
+          name: "onecx-workspace-data"
+          description: "Get Workspaces using a given Product"
         onecx-product-list-workspaces-using-product:
-          name: 'onecx-product-list-workspaces-using-product'
-          description: 'List Workspaces using a given Product'
+          name: "onecx-product-list-workspaces-using-product"
+          description: "List Workspaces using a given Product"
           deprecated: true
     # Permission
     permission:

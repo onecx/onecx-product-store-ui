@@ -1,30 +1,22 @@
 import { SelectItem } from 'primeng/api'
+import { of, throwError } from 'rxjs'
 
-import {
-  limitText,
-  dropDownSortItemsByLabel,
-  dropDownGetLabelByValue,
-  sortByLocale,
-  sortByDisplayName,
-  convertToUniqueStringArray,
-  prepareUrl,
-  prepareUrlPath
-} from './utils'
+import { Utils } from './utils'
 
 describe('utils', () => {
   describe('limitText', () => {
     it('should limit text if text too long', () => {
-      const result = limitText('textData', 4)
+      const result = Utils.limitText('textData', 4)
       expect(result).toBe('text...')
     })
 
     it('should limit text if text too long', () => {
-      const result = limitText('textData', 10)
+      const result = Utils.limitText('textData', 10)
       expect(result).toBe('textData')
     })
 
     it('return empty string if no text', () => {
-      const result = limitText('', 4)
+      const result = Utils.limitText('', 4)
       expect(result).toBe('')
     })
   })
@@ -36,7 +28,7 @@ describe('utils', () => {
         { label: 'label1', value: 1 }
       ]
 
-      const sortedItems = items.sort(dropDownSortItemsByLabel)
+      const sortedItems = items.sort(Utils.dropDownSortItemsByLabel)
 
       expect(sortedItems[0].label).toEqual('label1')
     })
@@ -47,7 +39,7 @@ describe('utils', () => {
         { label: 'label1', value: 2 }
       ]
 
-      const sortedItems = items.sort(dropDownSortItemsByLabel)
+      const sortedItems = items.sort(Utils.dropDownSortItemsByLabel)
 
       expect(sortedItems[0].label).toEqual(undefined)
     })
@@ -60,7 +52,7 @@ describe('utils', () => {
         { label: 'label1', value: 1 }
       ]
 
-      const result = dropDownGetLabelByValue(items, '1')
+      const result = Utils.dropDownGetLabelByValue(items, '1')
 
       expect(result).toEqual('label1')
     })
@@ -70,7 +62,7 @@ describe('utils', () => {
     it('should sort strings based on locale', () => {
       const strings: string[] = ['str2', 'str1']
 
-      const sortedStrings = strings.sort(sortByLocale)
+      const sortedStrings = strings.sort(Utils.sortByLocale)
 
       expect(sortedStrings[0]).toEqual('str1')
     })
@@ -80,43 +72,43 @@ describe('utils', () => {
     it('should return negative value when first product name comes before second alphabetically', () => {
       const itemA = { id: 'a', name: 'name', displayName: 'Admin' }
       const itemB = { id: 'b', name: 'name', displayName: 'User' }
-      expect(sortByDisplayName(itemA, itemB)).toBeLessThan(0)
+      expect(Utils.sortByDisplayName(itemA, itemB)).toBeLessThan(0)
     })
 
     it('should return positive value when first product name comes after second alphabetically', () => {
       const itemA = { id: 'a', name: 'name', displayName: 'User' }
       const itemB = { id: 'b', name: 'name', displayName: 'Admin' }
-      expect(sortByDisplayName(itemA, itemB)).toBeGreaterThan(0)
+      expect(Utils.sortByDisplayName(itemA, itemB)).toBeGreaterThan(0)
     })
 
     it('should return zero when product names are the same', () => {
       const itemA = { id: 'a', name: 'name', displayName: 'Admin' }
       const itemB = { id: 'b', name: 'name', displayName: 'Admin' }
-      expect(sortByDisplayName(itemA, itemB)).toBe(0)
+      expect(Utils.sortByDisplayName(itemA, itemB)).toBe(0)
     })
 
     it('should be case-insensitive', () => {
       const itemA = { id: 'a', name: 'name', displayName: 'admin' }
       const itemB = { id: 'b', name: 'name', displayName: 'Admin' }
-      expect(sortByDisplayName(itemA, itemB)).toBe(0)
+      expect(Utils.sortByDisplayName(itemA, itemB)).toBe(0)
     })
 
     it('should handle undefined names', () => {
       const itemA = { id: 'a', name: 'name', displayName: undefined }
       const itemB = { id: 'b', name: 'name', displayName: 'Admin' }
-      expect(sortByDisplayName(itemA, itemB)).toBeLessThan(0)
+      expect(Utils.sortByDisplayName(itemA, itemB)).toBeLessThan(0)
     })
 
     it('should handle empty string names', () => {
       const itemA = { id: 'a', name: 'name', displayName: '' }
       const itemB = { id: 'b', name: 'name', displayName: 'Admin' }
-      expect(sortByDisplayName(itemA, itemB)).toBeLessThan(0)
+      expect(Utils.sortByDisplayName(itemA, itemB)).toBeLessThan(0)
     })
 
     it('should handle both names being undefined', () => {
       const itemA = { id: 'a', name: 'name', displayName: undefined }
       const itemB = { id: 'b', name: 'name', displayName: undefined }
-      expect(sortByDisplayName(itemA, itemB)).toBe(0)
+      expect(Utils.sortByDisplayName(itemA, itemB)).toBe(0)
     })
   })
 
@@ -124,7 +116,7 @@ describe('utils', () => {
     it('should convert a comma-separated string to array with unique items', () => {
       const s = ['c', 'b', 'a']
 
-      const sortedArray = convertToUniqueStringArray(s) ?? []
+      const sortedArray = Utils.convertToUniqueStringArray(s) ?? []
 
       expect(sortedArray[0]).toEqual('a')
     })
@@ -134,7 +126,7 @@ describe('utils', () => {
     it('should prepare internal url', () => {
       const url = 'url'
 
-      const preparedUrl = prepareUrl(url) ?? ''
+      const preparedUrl = Utils.prepareUrl(url) ?? ''
 
       expect(preparedUrl).toEqual('bff/url')
     })
@@ -144,7 +136,7 @@ describe('utils', () => {
     it('should prepare external url', () => {
       const url = 'http://url'
 
-      const preparedUrl = prepareUrl(url) ?? ''
+      const preparedUrl = Utils.prepareUrl(url) ?? ''
 
       expect(preparedUrl).toEqual(url)
     })
@@ -155,17 +147,58 @@ describe('utils', () => {
       const url = 'http://url'
       const path = 'path'
 
-      let urlPath = prepareUrlPath(url, path)
+      let urlPath = Utils.prepareUrlPath(url, path)
 
       expect(urlPath).toEqual(url + '/' + path)
 
-      urlPath = prepareUrlPath(url)
+      urlPath = Utils.prepareUrlPath(url)
 
       expect(urlPath).toEqual(urlPath)
 
-      urlPath = prepareUrlPath()
+      urlPath = Utils.prepareUrlPath()
 
       expect(urlPath).toEqual('')
+    })
+  })
+
+  describe('doesEndpointExist', () => {
+    let workspaceServiceMock: any
+    const productName = 'testProduct'
+    const appId = 'testApp'
+    const endpointName = 'testEndpoint'
+
+    beforeEach(() => {
+      workspaceServiceMock = {
+        doesUrlExistFor: jasmine.createSpy('doesUrlExistFor')
+      }
+      spyOn(console, 'error')
+    })
+
+    it('should endpoint exist', () => {
+      workspaceServiceMock.doesUrlExistFor.and.returnValue(of(true))
+
+      const exist = Utils.doesEndpointExist(workspaceServiceMock, productName, appId, endpointName)
+
+      expect(exist).toBeTrue()
+    })
+
+    it('should endpoint NOT exist', () => {
+      workspaceServiceMock.doesUrlExistFor.and.returnValue(of(false))
+
+      const exist = Utils.doesEndpointExist(workspaceServiceMock, productName, appId, endpointName)
+
+      expect(exist).toBeFalse()
+      expect(console.error).toHaveBeenCalled()
+    })
+
+    it('should get endpoint failed', () => {
+      const errorResponse = { status: 403, statusText: 'No permissions' }
+      workspaceServiceMock.doesUrlExistFor.and.returnValue(throwError(() => errorResponse))
+
+      const exist = Utils.doesEndpointExist(workspaceServiceMock, productName, appId, endpointName)
+
+      expect(exist).toBeFalse()
+      expect(console.error).toHaveBeenCalledWith('doesUrlExistFor', errorResponse)
     })
   })
 })

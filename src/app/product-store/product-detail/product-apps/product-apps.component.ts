@@ -14,7 +14,7 @@ import {
   Slot,
   SlotPageItem
 } from 'src/app/shared/generated'
-import { dropDownSortItemsByLabel } from 'src/app/shared/utils'
+import { Utils } from 'src/app/shared/utils'
 import { IconService } from 'src/app/shared/iconservice'
 
 import { ChangeMode } from '../../product-detail/product-detail.component'
@@ -61,7 +61,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
     this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
     this.hasDeletePermission = this.user.hasPermission('APP#DELETE')
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
-    this.iconItems.sort(dropDownSortItemsByLabel)
+    this.iconItems.sort(Utils.dropDownSortItemsByLabel)
   }
 
   public ngOnChanges(): void {
