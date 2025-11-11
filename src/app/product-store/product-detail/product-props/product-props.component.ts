@@ -88,7 +88,7 @@ export class ProductPropertyComponent implements OnChanges {
   public ngOnChanges(): void {
     if (this.product) {
       this.formGroup.patchValue({ ...this.product })
-      this.productId = this.changeMode !== 'COPY' ? this.product.id : undefined
+      if (this.changeMode === 'COPY') this.productId = undefined
       this.productName = this.product.name // business key => manage the change!
       this.fetchingImageUrl = this.product.imageUrl
       if (!this.fetchingImageUrl || this.fetchingImageUrl === '') this.prepareImageUrl(this.product.name)
@@ -150,13 +150,13 @@ export class ProductPropertyComponent implements OnChanges {
             summaryKey: 'IMAGE.CONSTRAINT_FAILED',
             detailKey: 'IMAGE.CONSTRAINT_SIZE'
           })
-        } else if (!/^.*.(jpg|jpeg|png)$/.exec(files[0].name)) {
+        } else if (/^.*.(jpg|jpeg|png)$/.exec(files[0].name)) {
+          this.saveImage(workspaceName, files) // store image
+        } else {
           this.msgService.error({
             summaryKey: 'IMAGE.CONSTRAINT_FAILED',
             detailKey: 'IMAGE.CONSTRAINT_FILE_TYPE'
           })
-        } else {
-          this.saveImage(workspaceName, files) // store image
         }
       }
     } else {

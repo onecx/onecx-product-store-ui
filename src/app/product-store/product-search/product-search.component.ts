@@ -80,12 +80,12 @@ export class ProductSearchComponent implements OnInit {
     this.products$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
       map((data: ProductPageResult) => {
         const products: ProductAbstractExtended[] = []
-        data.stream?.forEach((p) => {
-          products.push({ ...p, classes: p.classifications?.join(', ') })
-          p.classifications?.forEach((c) => {
-            if (!this.quickFilterItems.includes(c)) this.quickFilterItems.push(c)
-          })
-        })
+        if (data.stream)
+          for (const p of data.stream) {
+            products.push({ ...p, classes: p.classifications?.join(', ') })
+            if (p.classifications)
+              for (const c of p.classifications) if (!this.quickFilterItems.includes(c)) this.quickFilterItems.push(c)
+          }
         return products.sort(this.sortProductsByDisplayName)
       }),
       catchError((err) => {
