@@ -156,15 +156,21 @@ export class EndpointSearchComponent implements OnInit {
         if (mfes?.length > 0) {
           for (const mfe of mfes)
             if (mfe.endpoints)
-              for (const [i, ep] of mfe.endpoints.entries())
+              for (const [i, ep] of mfe.endpoints.entries()) {
                 eps.push({
-                  ...mfe,
+                  id: mfe.id,
                   unique_id: mfe.id + '_' + i,
+                  appId: mfe.appId,
+                  appName: mfe.appName,
+                  productName: mfe.productName,
                   productDisplayName: this.getProductDisplayName(mfe.productName, ps),
+                  exposedModule: mfe.exposedModule,
+                  remoteBaseUrl: mfe.remoteBaseUrl,
+                  type: mfe.type,
                   endpoint_name: ep.name,
                   endpoint_path: ep.path
                 })
-
+              }
           eps.sort(this.sortMfes)
         }
         return eps
