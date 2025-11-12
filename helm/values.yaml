@@ -49,10 +49,6 @@ app:
         onecx-workspace-data:
           name: "onecx-workspace-data"
           description: "Get Workspaces using a given Product"
-        onecx-product-list-workspaces-using-product:
-          name: "onecx-product-list-workspaces-using-product"
-          description: "List Workspaces using a given Product"
-          deprecated: true
     # Permission
     permission:
       enabled: true

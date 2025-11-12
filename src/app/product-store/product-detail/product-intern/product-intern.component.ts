@@ -38,9 +38,9 @@ export class ProductInternComponent implements OnChanges {
   }
 
   private setFormData(): void {
-    Object.keys(this.formGroup.controls).forEach((element) => {
-      this.formGroup.controls[element as keyof ProductInternForm].setValue((this.product as any)[element])
-    })
+    for (const key of Object.keys(this.formGroup.controls)) {
+      this.formGroup.controls[key as keyof ProductInternForm].setValue((this.product as any)[key])
+    }
   }
 
   public onSave(): Partial<Product> {

@@ -116,12 +116,12 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
     this.products$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
       map((response) => {
         const products: ProductAbstract[] = []
-        response.stream?.forEach((p) => {
-          products.push({
-            ...p,
-            imageUrl: p.imageUrl ?? Utils.bffImageUrl(this.productApi.configuration.basePath, p.name, RefType.Logo)
-          })
-        })
+        if (response.stream)
+          for (const p of response.stream)
+            products.push({
+              ...p,
+              imageUrl: p.imageUrl ?? Utils.bffImageUrl(this.productApi.configuration.basePath, p.name, RefType.Logo)
+            })
         return products.sort(Utils.sortByDisplayName)
       }),
       catchError((err) => {

@@ -181,13 +181,13 @@ export class SlotSearchComponent implements OnInit {
         const sd: SlotData[] = []
         this.filterProductItems = []
         let slot: SlotData
-        slots.forEach((s) => {
+        for (const s of slots) {
           slot = {
             ...s,
             productDisplayName: this.getProductDisplayName(s.productName, ps)
           }
           sd.push(slot)
-        })
+        }
         sd.sort(this.sortSlots)
         this.resultData$.next(sd)
         this.filteredData$.next(sd)
@@ -348,17 +348,17 @@ export class SlotSearchComponent implements OnInit {
    */
   private prepareFilterSlotNames(ss: SlotData[] | undefined) {
     this.filterSlotNameItems = []
-    ss?.forEach((s) => {
-      if (s.name && !this.filterSlotNameItems.includes(s.name)) this.filterSlotNameItems.push(s.name)
-    })
+    if (ss)
+      for (const s of ss)
+        if (s.name && !this.filterSlotNameItems.includes(s.name)) this.filterSlotNameItems.push(s.name)
     this.filterSlotNameItems.sort(Utils.sortByLocale)
   }
   private prepareFilterProductNames(ss: SlotData[] | undefined) {
     this.filterProductItems = []
-    ss?.forEach((s) => {
-      if (s.productDisplayName && !this.filterProductItems.includes(s.productDisplayName))
-        this.filterProductItems.push(s.productDisplayName)
-    })
+    if (ss)
+      for (const s of ss)
+        if (s.productDisplayName && !this.filterProductItems.includes(s.productDisplayName))
+          this.filterProductItems.push(s.productDisplayName)
     this.filterProductItems.sort(Utils.sortByLocale)
   }
 

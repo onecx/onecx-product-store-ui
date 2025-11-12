@@ -142,8 +142,8 @@ export class EndpointSearchComponent implements OnInit {
   }
 
   private getProductDisplayName(name: string, pas: ProductAbstract[]): string {
-    const pf = pas.filter((p) => p.name === name)
-    return pf[0] ? pf[0].displayName! : ''
+    const pf = pas.find((p) => p.name === name)
+    return pf?.displayName ?? ''
   }
 
   // complete refresh: getting meta data and trigger search
@@ -154,23 +154,23 @@ export class EndpointSearchComponent implements OnInit {
       map(([ps, mfes]) => {
         const eps: MfeEndpoint[] = []
         if (mfes?.length > 0) {
-          mfes.forEach((mfe) => {
-            mfe.endpoints?.forEach((ep, i) => {
-              eps.push({
-                id: mfe.id,
-                unique_id: mfe.id + '_' + i,
-                appId: mfe.appId,
-                appName: mfe.appName,
-                productName: mfe.productName,
-                productDisplayName: this.getProductDisplayName(mfe.productName, ps),
-                exposedModule: mfe.exposedModule,
-                remoteBaseUrl: mfe.remoteBaseUrl,
-                type: mfe.type,
-                endpoint_name: ep.name,
-                endpoint_path: ep.path
-              })
-            })
-          })
+          for (const mfe of mfes)
+            if (mfe.endpoints)
+              for (const [i, ep] of mfe.endpoints.entries()) {
+                eps.push({
+                  id: mfe.id,
+                  unique_id: mfe.id + '_' + i,
+                  appId: mfe.appId,
+                  appName: mfe.appName,
+                  productName: mfe.productName,
+                  productDisplayName: this.getProductDisplayName(mfe.productName, ps),
+                  exposedModule: mfe.exposedModule,
+                  remoteBaseUrl: mfe.remoteBaseUrl,
+                  type: mfe.type,
+                  endpoint_name: ep.name,
+                  endpoint_path: ep.path
+                })
+              }
           eps.sort(this.sortMfes)
         }
         return eps

@@ -42,10 +42,7 @@ const Utils = {
   convertToUniqueStringArray(unsorted?: string[] | null): string[] | undefined {
     if (!unsorted || unsorted === null || unsorted?.length === 0) return undefined
     const ar: Array<string> = []
-    unsorted
-      .toString()
-      .split(',')
-      .forEach((a) => ar?.push(a.trim()))
+    for (const s of unsorted.toString().split(',')) ar?.push(s.trim())
     return ar.sort(this.sortByLocale)
   },
 
@@ -65,7 +62,7 @@ const Utils = {
     else return ''
   },
   bffImageUrl(basePath: string | undefined, name: string | undefined, refType: RefType): string {
-    return !name ? '' : basePath + '/images/' + name + '/' + refType
+    return name ? basePath + '/images/' + name + '/' + refType : ''
   },
 
   /**
