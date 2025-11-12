@@ -37,9 +37,8 @@ export class SlotInternComponent implements OnChanges {
   }
 
   private setFormData(): void {
-    Object.keys(this.slotForm.controls).forEach((key) => {
+    for (const key of Object.keys(this.slotForm.controls))
       if (this.slot && (this.slot as any)[key] !== null) this.slotForm.controls[key].setValue((this.slot as any)[key])
-    })
   }
 
   public onChangeUndeployed(ev: any) {
