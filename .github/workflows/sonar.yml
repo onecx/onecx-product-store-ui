@@ -2,6 +2,10 @@ name: Run Sonar
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 15 * * SUN"   # 16:00 CET
+    - cron: "0 14 * * SUN"   # 16:00 CEST
+
 
 jobs:
   sonar:
