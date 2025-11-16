@@ -6,7 +6,6 @@ on:
     - cron: "0 15 * * SUN"   # 16:00 CET
     - cron: "0 14 * * SUN"   # 16:00 CEST
 
-
 jobs:
   sonar:
     uses: onecx/ci-angular/.github/workflows/angular-sonar-main.yml@v1
