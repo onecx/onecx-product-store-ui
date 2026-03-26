@@ -67,14 +67,14 @@
 
   <ocx-page-content *ngIf="products$ | async as products">
     <p-message
-      *ngIf="loading"
+      *ngIf="loading && !exceptionKey"
       id="ps_product_search_loading_message"
       severity="info"
       styleClass="m-3"
       [text]="'ACTIONS.LOADING' | translate"
     ></p-message>
     <p-message
-      *ngIf="!loading && exceptionKey"
+      *ngIf="exceptionKey"
       id="ps_product_search_error_message"
       severity="error"
       styleClass="m-3"
@@ -124,8 +124,11 @@
 
       <!-- LIST -->
       <ng-template let-products pTemplate="listItem">
-        <div class="mx-3 my-1 p-grid p-nogutter grid grid-nogutter">
-          <div *ngFor="let product of products; index as i" class="col-12 md:col-6">
+        <section
+          class="mx-3 my-1 p-grid p-nogutter grid grid-nogutter"
+          [attr.aria-label]="'DIALOG.SEARCH.RESULTS' | translate"
+        >
+          <article *ngFor="let product of products; index as i" class="col-12 md:col-6">
             <div
               [id]="'ps_product_search_data_list_row_' + i"
               class="flex flex-row flex-nowrap justify-content-start align-items-center column-gap-3 py-1 px-1 sm:px-2 hover:bg-gray-200 cursor-pointer"
@@ -134,7 +137,7 @@
               <div class="p-0 col-3 text-center">
                 <app-image-container
                   [id]="'ps_product_search_data_list_row_' + i + '_image'"
-                  styleClass="h-4rem sm:h-5rem max-h-4rem sm:max-h-5rem max-w-4rem sm:max-w-6rem"
+                  styleClass="max-h-3rem sm:max-h-4rem max-w-4rem sm:max-w-6rem border-round-sm"
                   [imageUrl]="getLogoUrl(product)"
                 ></app-image-container>
               </div>
@@ -149,7 +152,7 @@
                   {{ product.displayName }}
                 </div>
                 <div
-                  class="text-xs sm:text-sm text-responsive"
+                  class="hidden sm:block text-xs sm:text-sm text-responsive"
                   [id]="'ps_product_search_data_list_row_' + i + '_classifications'"
                 >
                   {{ product.classes }}
@@ -175,8 +178,8 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </article>
+        </section>
       </ng-template>
 
       <!-- GRID -->
@@ -230,19 +233,19 @@
                 {{ product.displayName }}
               </div>
               <div
-                class="h-4rem sm:h-6rem md:h-7rem lg:h-9rem flex justify-content-center align-items-center"
+                class="h-3rem sm:h-4rem md:h-7rem lg:h-9rem flex justify-content-center align-items-center"
                 aria-hidden="true"
               >
                 <app-image-container
                   [id]="'ps_product_search_data_grid_row_' + i + '_image'"
-                  styleClass="max-h-4rem sm:max-h-6rem md:max-h-7rem lg:max-h-9rem max-w-6rem sm:max-w-10rem md:max-w-11rem lg:max-w-13rem xl:max-w-14rem"
+                  styleClass="max-h-3rem sm:max-h-4rem md:max-h-7rem lg:max-h-9rem max-w-6rem sm:max-w-10rem md:max-w-11rem lg:max-w-13rem xl:max-w-14rem"
                   [imageUrl]="getLogoUrl(product)"
                 ></app-image-container>
               </div>
-              <div class="h-3rem sm:h-4rem flex flex-column justify-content-between text-center">
+              <div class="h-2rem sm:h-3rem md:h-4rem flex flex-column justify-content-between text-center">
                 <div
                   [id]="'ps_product_search_data_grid_row_' + i + '_classification'"
-                  class="text-xs sm:text-sm md:text-base text-responsive"
+                  class="hidden sm:block text-xs sm:text-sm md:text-base text-responsive"
                   [attr.aria-label]="'PRODUCT.CLASSIFICATIONS' | translate"
                   [pTooltip]="'PRODUCT.CLASSIFICATIONS' | translate"
                   tooltipPosition="top"

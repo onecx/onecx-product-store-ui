@@ -30,10 +30,10 @@
         top: 70px;
       }
     }
-    .p-dataview-list .p-dataview-content .p-grid > div {
+    .p-dataview-list .p-dataview-content .p-grid > article {
       &:nth-child(4n + 1),
       &:nth-child(4n + 2) {
-        background-color: #f8f9fa;
+        background-color: var(--table-body-row-even-bg);
       }
       &:nth-child(4n + 1),
       &:nth-child(4n + 3) {
@@ -53,9 +53,9 @@
         top: 55px;
       }
     }
-    .p-dataview-list .p-dataview-content .p-grid > div {
+    .p-dataview-list .p-dataview-content .p-grid > article {
       &:nth-child(odd) {
-        background-color: #f8f9fa;
+        background-color: var(--table-body-row-even-bg);
       }
     }
   }
