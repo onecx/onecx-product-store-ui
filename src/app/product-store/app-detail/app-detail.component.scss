@@ -9,6 +9,7 @@
 @include table-vertical-lines;
 @include dialog-footer-buttons;
 @include dialog-modal-dialog-content;
+@include tabview-fix-color-selected-tab;
 
 :host ::ng-deep {
   /**

@@ -11,17 +11,17 @@
 
   <ocx-page-content>
     <p-message
-      *ngIf="loading"
+      *ngIf="loading && !exceptionKey"
       id="ps_product_detail_loading_message"
       severity="info"
-      styleClass="m-3 p-2"
+      styleClass="m-3"
       [text]="'ACTIONS.LOADING' | translate"
     ></p-message>
     <p-message
-      *ngIf="!loading && exceptionKey"
+      *ngIf="exceptionKey"
       id="ps_product_detail_error_message"
       severity="error"
-      styleClass="m-3 p-2"
+      styleClass="m-3"
       [text]="exceptionKey | translate"
     ></p-message>
 
