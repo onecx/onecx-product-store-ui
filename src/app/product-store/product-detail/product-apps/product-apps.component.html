@@ -3,14 +3,13 @@
     *ngIf="!hasComponents"
     id="ps_product_apps_no_data"
     severity="info"
-    styleClass="p-2"
     [text]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
   ></p-message>
   <p-fieldset
     *ngIf="details.microfrontends && details.microfrontends.length > 0"
     [toggleable]="false"
     [collapsed]="false"
-    styleClass="surface-100 py-0 mt-1 mb-3 mx-1"
+    styleClass="surface-50 py-0 mt-1 mb-3 mx-1"
   >
     <ng-template pTemplate="header">
       <span [pTooltip]="'DIALOG.COMPONENTS.TOOLTIPS.MFE' | translate" tooltipPosition="top" tooltipEvent="hover">
@@ -123,7 +122,7 @@
     *ngIf="details.slots && details.slots.length > 0"
     [toggleable]="false"
     [collapsed]="false"
-    styleClass="surface-100 py-0 mt-1 mb-3 mx-1"
+    styleClass="surface-50 py-0 mt-1 mb-3 mx-1"
   >
     <ng-template pTemplate="header">
       <span [pTooltip]="'DIALOG.COMPONENTS.TOOLTIPS.SLOT' | translate" tooltipPosition="top" tooltipEvent="hover">
@@ -200,7 +199,7 @@
     *ngIf="details.microservices && details.microservices.length > 0"
     [toggleable]="false"
     [collapsed]="false"
-    styleClass="surface-100 py-0"
+    styleClass="surface-50 py-0"
   >
     <ng-template pTemplate="header">
       <span [pTooltip]="'DIALOG.COMPONENTS.TOOLTIPS.MS' | translate" tooltipPosition="top" tooltipEvent="hover">

@@ -262,10 +262,10 @@ export class AppDetailComponent implements OnInit, OnChanges {
       endpoints,
       ...o
     }) => o)(mfe)
-    this.formGroupMfe.setValue(formMfe) // assign
+    this.formGroupMfe.patchValue(formMfe) // assign
   }
   public fillFormMs(ms: Microservice): void {
-    this.formGroupMs.setValue({
+    this.formGroupMs.patchValue({
       appId: ms['appId'],
       appName: ms['appName'],
       appVersion: ms['appVersion'],
