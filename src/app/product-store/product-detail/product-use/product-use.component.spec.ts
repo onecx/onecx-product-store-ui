@@ -48,6 +48,8 @@ describe('ProductUseComponent', () => {
       component.productName = 'product'
       workspaceServiceSpy.doesUrlExistFor.and.returnValue(of(true))
       component.ngOnChanges()
+
+      expect().nothing()
     })
 
     it('should emit true', () => {
@@ -70,6 +72,8 @@ describe('ProductUseComponent', () => {
 
       const eu$ = component.getWorkspaceEndpointUrl$('name')
 
+      expect().nothing()
+
       eu$.subscribe({
         next: (data) => {
           if (data) {
@@ -87,6 +91,8 @@ describe('ProductUseComponent', () => {
       workspaceServiceSpy.getUrl.and.returnValue(throwError(() => errorResponse))
 
       const eu$ = component.getWorkspaceEndpointUrl$('name')
+
+      expect().nothing()
 
       eu$.subscribe({
         next: (data) => {

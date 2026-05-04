@@ -295,6 +295,7 @@ describe('OneCXProductDataComponent', () => {
       component.logPrefix = 'get image url'
       component.productName = product1.name
       component.dataType = 'logo'
+      spyOn(console, 'info')
 
       component.ngOnChanges()
       component.onImageLoad()
@@ -317,6 +318,7 @@ describe('OneCXProductDataComponent', () => {
         component.productName = product1.name
         component.imageUrl = 'http://image/url'
         component.dataType = 'logo'
+        spyOn(console, 'info')
 
         component.onImageLoadError(component.imageUrl)
 
@@ -329,6 +331,7 @@ describe('OneCXProductDataComponent', () => {
         component.logPrefix = 'default logo'
         component.productName = product1.name
         component.dataType = 'logo'
+        spyOn(console, 'info')
 
         component.onImageLoadError('base_url/bff/images/product1/logo')
 

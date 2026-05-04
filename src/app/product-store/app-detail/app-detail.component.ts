@@ -35,6 +35,7 @@ export interface MfeForm {
   appVersion: FormControl<string | null>
   productName: FormControl<string | null>
   description: FormControl<string | null>
+  shareScope: FormControl<string | null>
   technology: FormControl<string | null>
   type: FormControl<string | null>
   remoteBaseUrl: FormControl<string | null>
@@ -109,6 +110,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
       appVersion: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
       productName: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
       description: new FormControl(null, [Validators.maxLength(255)]),
+      shareScope: new FormControl(null, [Validators.maxLength(255)]),
       technology: new FormControl(null),
       type: new FormControl(null),
       remoteBaseUrl: new FormControl(null, [Validators.maxLength(255)]),
