@@ -2,17 +2,21 @@
 openapi: 3.0.3
 info:
   title: onecx-product-store-bff
-  description: Backend-For-Frontend (BFF) service for onecx product store. With this API you can manage applications (technical microfrontend(s)) and product(s) as logical abstraction. A Product is a versioned cover for a collection of applications (versioned) to be used within workspaces. Microfrontends (applications) which have reference to exposed/registered modules
+  description: Backend-For-Frontend (BFF) service for onecx product store. This API provides endpoints to manage applications (technical microfrontend(s)) and product(s) as logical abstraction. A Product is a versioned cover for a collection of applications (versioned) to be used within workspaces. Microfrontends (applications) which have reference to exposed/registered modules
   version: 1.0.0
-  contact:
-    email: 'tkit_dev@1000kit.org'
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
 servers:
   - url: 'http://onecx-product-store-bff:8080'
 tags:
-  - name: Microfrontends
+  - name: microfrontends
+    description: Managing Microfrontends
+  - name: microservices
+    description: Managing Microservices
+  - name: products
+    description: Managing Products
+  - name: slots
+    description: Managing Slots
+  - name: imagesInternal
+    description: Managing Product Images
 paths:
   /microfrontends:
     post:
@@ -21,8 +25,8 @@ paths:
           microfrontend:
             - write
       tags:
-        - Microfrontends
-      description: Create microfrontend
+        - microfrontends
+      description: Create a new microfrontend
       operationId: createMicrofrontend
       requestBody:
         required: true
@@ -32,7 +36,7 @@ paths:
               $ref: '#/components/schemas/CreateMicrofrontendRequest'
       responses:
         '201':
-          description: New microfrontend created
+          description: Microfrontend created successfully
           headers:
             Location:
               required: true
@@ -56,7 +60,7 @@ paths:
           microfrontend:
             - read
       tags:
-        - Microfrontends
+        - microfrontends
       description: Search for microfrontend(s) by search criteria
       operationId: searchMicrofrontends
       requestBody:
@@ -67,7 +71,7 @@ paths:
               $ref: '#/components/schemas/MfeAndMsSearchCriteria'
       responses:
         '200':
-          description: Corresponding microfrontends
+          description: Microfrontend search results retrieved successfully
           content:
             application/json:
               schema:
@@ -85,8 +89,8 @@ paths:
           microfrontend:
             - read
       tags:
-        - Microfrontends
-      description: Return microfrontend by ID
+        - microfrontends
+      description: Get a microfrontend by its id
       operationId: getMicrofrontend
       parameters:
         - name: id
@@ -96,21 +100,21 @@ paths:
             type: string
       responses:
         '200':
-          description: OK
+          description: Microfrontend retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Microfrontend'
         '404':
-          description: Not Found
+          description: Microfrontend not Found
     put:
       x-onecx:
         permissions:
           microfrontend:
             - write
       tags:
-        - Microfrontends
-      description: Update microfrontend by ID
+        - microfrontends
+      description: Update a microfrontend by its id
       operationId: updateMicrofrontend
       parameters:
         - name: id
@@ -126,7 +130,7 @@ paths:
               $ref: '#/components/schemas/UpdateMicrofrontendRequest'
       responses:
         '204':
-          description: Microfrontend updated
+          description: Microfrontend updated successfully
         '400':
           description: Bad Request
           content:
@@ -141,8 +145,8 @@ paths:
           microfrontend:
             - delete
       tags:
-        - Microfrontends
-      description: Delete microfrontend by ID
+        - microfrontends
+      description: Delete a microfrontend by its id
       operationId: deleteMicrofrontend
       parameters:
         - name: id
@@ -152,7 +156,7 @@ paths:
             type: string
       responses:
         '204':
-          description: No Content
+          description: Microfrontend deleted successfully
         '400':
           description: Bad Request
           content:
@@ -166,8 +170,8 @@ paths:
           product:
             - write
       tags:
-        - Products
-      description: Create new product
+        - products
+      description: Create a new product
       operationId: createProduct
       requestBody:
         required: true
@@ -177,7 +181,7 @@ paths:
               $ref: '#/components/schemas/CreateProductRequest'
       responses:
         '201':
-          description: New product created
+          description: Product created successfully
           headers:
             Location:
               required: true
@@ -201,7 +205,7 @@ paths:
           product:
             - read
       tags:
-        - Products
+        - products
       description: Search for products by search criteria
       operationId: searchProducts
       requestBody:
@@ -212,7 +216,7 @@ paths:
               $ref: '#/components/schemas/ProductSearchCriteria'
       responses:
         '200':
-          description: Corresponding products (by search criteria)
+          description: Product search results retrieved successfully
           content:
             application/json:
               schema:
@@ -230,8 +234,8 @@ paths:
           product:
             - read
       tags:
-        - Products
-      description: load products by criteria
+        - products
+      description: Load products with all information by criteria
       operationId: loadProductsByCriteria
       requestBody:
         content:
@@ -240,7 +244,7 @@ paths:
               $ref: '#/components/schemas/ProductLoadSearchCriteria'
       responses:
         '200':
-          description: Page result matching given criteria
+          description: Product search results retrieved successfully
           content:
             application/json:
               schema:
@@ -254,8 +258,8 @@ paths:
           product:
             - read
       tags:
-        - Products
-      description: Return product by ID
+        - products
+      description: Get a product by its id
       operationId: getProduct
       parameters:
         - name: id
@@ -265,7 +269,7 @@ paths:
             type: string
       responses:
         '200':
-          description: OK
+          description: Product retrieved successfully
           content:
             application/json:
               schema:
@@ -277,7 +281,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         '404':
-          description: Not Found
+          description: Product not Found
           content:
             application/json:
               schema:
@@ -288,8 +292,8 @@ paths:
           product:
             - write
       tags:
-        - Products
-      description: Update product by ID
+        - products
+      description: Update a product by its id
       operationId: updateProduct
       parameters:
         - name: id
@@ -305,7 +309,7 @@ paths:
               $ref: '#/components/schemas/UpdateProductRequest'
       responses:
         '200':
-          description: Product updated
+          description: Product updated successfully
           content:
             application/json:
               schema:
@@ -328,8 +332,8 @@ paths:
           product:
             - delete
       tags:
-        - Products
-      description: Delete product by ID
+        - products
+      description: Delete a product by its id
       operationId: deleteProduct
       parameters:
         - name: id
@@ -339,7 +343,7 @@ paths:
             type: string
       responses:
         '204':
-          description: No Content
+          description: Product deleted successfully
         '400':
           description: Bad Request
           content:
@@ -353,8 +357,8 @@ paths:
           product:
             - read
       tags:
-        - Products
-      description: Return product by (unique) name
+        - products
+      description: Get a product by its (unique) name
       operationId: getProductByName
       parameters:
         - name: name
@@ -364,7 +368,7 @@ paths:
             type: string
       responses:
         '200':
-          description: OK
+          description: Product retrieved successfully
           content:
             application/json:
               schema:
@@ -376,7 +380,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         '404':
-          description: Not Found
+          description: Product not Found
           content:
             application/json:
               schema:
@@ -388,8 +392,8 @@ paths:
           product:
             - read
       tags:
-        - Products
-      description: Return product by (unique) name
+        - products
+      description: Get a product with all information by its (unique) name as criteria
       operationId: getProductDetailsByCriteria
       requestBody:
         required: true
@@ -399,7 +403,7 @@ paths:
               $ref: '#/components/schemas/ProductDetailsCriteria'
       responses:
         '200':
-          description: OK
+          description: Product retrieved successfully
           content:
             application/json:
               schema:
@@ -411,7 +415,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         '404':
-          description: Not Found
+          description: Product not Found
           content:
             application/json:
               schema:
@@ -423,18 +427,18 @@ paths:
           product:
             - read
       tags:
-        - Products
-      description: return products search criteria
+        - products
+      description: Get all possible search criteria for the product search
       operationId: getProductSearchCriteria
       responses:
         '200':
-          description: OK
+          description: Criteria retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProductCriteria'
         '400':
-          description: Internal Server Error
+          description: Bad request
           content:
             application/json:
               schema:
@@ -446,8 +450,8 @@ paths:
           microservice:
             - write
       tags:
-        - Microservices
-      description: Create microservice
+        - microservices
+      description: Create a new microservice
       operationId: createMicroservice
       requestBody:
         required: true
@@ -457,7 +461,7 @@ paths:
               $ref: '#/components/schemas/CreateMicroserviceRequest'
       responses:
         '201':
-          description: New microservice created
+          description: Microservice created successfully
           headers:
             Location:
               required: true
@@ -481,7 +485,7 @@ paths:
           microservice:
             - read
       tags:
-        - Microservices
+        - microservices
       description: Search for microservices by search criteria
       operationId: searchMicroservice
       requestBody:
@@ -492,7 +496,7 @@ paths:
               $ref: '#/components/schemas/MfeAndMsSearchCriteria'
       responses:
         '200':
-          description: Corresponding micro-services
+          description: Microservice search results retrieved successfully
           content:
             application/json:
               schema:
@@ -510,8 +514,8 @@ paths:
           - read
     get:
       tags:
-        - Microservices
-      description: Return microservices by ID
+        - microservices
+      description: Get a microservice by its id
       operationId: getMicroservice
       parameters:
         - name: id
@@ -521,21 +525,21 @@ paths:
             type: string
       responses:
         '200':
-          description: OK
+          description: Microservice retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Microservice'
         '404':
-          description: Not found
+          description: Microservice not found
     put:
       x-onecx:
         permissions:
           microservice:
             - write
       tags:
-        - Microservices
-      description: Update microservice by ID
+        - microservices
+      description: Update a microservice by its id
       operationId: updateMicroservice
       parameters:
         - name: id
@@ -551,7 +555,7 @@ paths:
               $ref: '#/components/schemas/UpdateMicroserviceRequest'
       responses:
         '204':
-          description: microservice updated
+          description: Microservice updated successfully
         '400':
           description: Bad request
           content:
@@ -559,7 +563,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         '404':
-          description: microservice not found
+          description: Microservice not found
     delete:
       x-onecx:
         permissions:
@@ -567,7 +571,7 @@ paths:
             - delete
       tags:
         - Microservices
-      description: Delete microservice by ID
+      description: Delete a microservice by its id
       operationId: deleteMicroservice
       parameters:
         - name: id
@@ -577,9 +581,9 @@ paths:
             type: string
       responses:
         '204':
-          description: No Content
+          description: Microservice deleted successfully
         '400':
-          description: Internal Server Error
+          description: Bad request
           content:
             application/json:
               schema:
@@ -592,7 +596,7 @@ paths:
             - write
       tags:
         - imagesInternal
-      description: Upload Images
+      description: Upload an images by its reference id and type
       parameters:
         - name: refId
           in: path
@@ -614,7 +618,7 @@ paths:
               format: binary
       responses:
         '201':
-          description: CREATED
+          description: Image uploaded successfully
           content:
             application/json:
               schema:
@@ -628,7 +632,7 @@ paths:
             - read
       tags:
         - imagesInternal
-      description: Get Image by id
+      description: Get an image by its reference id and type
       operationId: getImage
       parameters:
         - name: refId
@@ -643,7 +647,7 @@ paths:
             $ref: '#/components/schemas/RefType'
       responses:
         '200':
-          description: OK
+          description: Image retrieved successfully
           content:
             image/*:
               schema:
@@ -662,7 +666,7 @@ paths:
             - delete
       tags:
         - imagesInternal
-      description: delete Image
+      description: Delete an Image by its reference id and type
       operationId: deleteImage
       parameters:
         - name: refId
@@ -677,7 +681,7 @@ paths:
             $ref: '#/components/schemas/RefType'
       responses:
         '204':
-          description: No content
+          description: Image deleted successfully
   /slots:
     post:
       x-onecx:
@@ -686,7 +690,7 @@ paths:
             - write
       tags:
         - slots
-      description: Create slot
+      description: Create a new slot
       operationId: createSlot
       requestBody:
         required: true
@@ -696,7 +700,7 @@ paths:
               $ref: '#/components/schemas/CreateSlotRequest'
       responses:
         '201':
-          description: New slot created
+          description: Slot created successfully
           headers:
             Location:
               required: true
@@ -731,7 +735,7 @@ paths:
               $ref: '#/components/schemas/SlotSearchCriteria'
       responses:
         '200':
-          description: Corresponding slots
+          description: Slot search results retrieved successfully
           content:
             application/json:
               schema:
@@ -750,7 +754,7 @@ paths:
             - read
       tags:
         - slots
-      description: Return slot by ID
+      description: Get a slot by its id
       operationId: getSlot
       parameters:
         - name: id
@@ -760,13 +764,13 @@ paths:
             type: string
       responses:
         '200':
-          description: OK
+          description: Slot retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Slot'
         '404':
-          description: Not found
+          description: Slot not found
     put:
       x-onecx:
         permissions:
@@ -774,7 +778,7 @@ paths:
             - write
       tags:
         - slots
-      description: Update slot by ID
+      description: Update a slot by its id
       operationId: updateSlot
       parameters:
         - name: id
@@ -790,7 +794,7 @@ paths:
               $ref: '#/components/schemas/UpdateSlotRequest'
       responses:
         '204':
-          description: Slot updated
+          description: Slot updated successfully
         '400':
           description: Bad request
           content:
@@ -806,7 +810,7 @@ paths:
             - delete
       tags:
         - slots
-      description: Delete slot by ID
+      description: Delete a slot by its id
       operationId: deleteSlot
       parameters:
         - name: id
@@ -816,9 +820,9 @@ paths:
             type: string
       responses:
         '204':
-          description: No Content
+          description: Slot deleted successfully
         '400':
-          description: Internal Server Error
+          description: Bad request
           content:
             application/json:
               schema:
@@ -1299,6 +1303,8 @@ components:
           type: boolean
         undeployed:
           type: boolean
+        shareScope:
+          type: string
         type:
           $ref: '#/components/schemas/MicrofrontendType'
         classifications:
@@ -1382,6 +1388,8 @@ components:
           type: boolean
         undeployed:
           type: boolean
+        shareScope:
+          type: string
         type:
           $ref: '#/components/schemas/MicrofrontendType'
         endpoints:
@@ -1445,6 +1453,8 @@ components:
           type: boolean
         undeployed:
           type: boolean
+        shareScope:
+          type: string
         type:
           $ref: '#/components/schemas/MicrofrontendType'
         endpoints:
@@ -1521,6 +1531,8 @@ components:
           type: string
         deprecated:
           type: boolean
+        shareScope:
+          type: string
         undeployed:
           type: boolean
         type:
