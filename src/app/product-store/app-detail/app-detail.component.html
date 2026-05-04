@@ -193,6 +193,24 @@
             />
             <label for="ps_app_detail_form_mfe_field_description"> {{ 'APP.DESCRIPTION' | translate }} </label>
           </span>
+
+          <!-- row 6 -->
+          <span class="p-float-label" controlErrorAnchor>
+            <textarea
+              class="w-full"
+              pInputTextarea
+              autoresize="true"
+              rows="2"
+              id="ps_app_detail_form_mfe_field_share_scope"
+              maxlength="255"
+              formControlName="shareScope"
+              [attr.aria-label]="'APP.SHARE_SCOPE' | translate"
+              [pTooltip]="'APP.TOOLTIPS.SHARE_SCOPE' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            ></textarea>
+            <label for="ps_app_detail_form_mfe_field_share_scope"> {{ 'APP.SHARE_SCOPE' | translate }} </label>
+          </span>
         </div>
       </form>
 

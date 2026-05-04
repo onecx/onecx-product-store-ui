@@ -12,10 +12,9 @@
   },
   "scripts": {
     "build": "ng build",
-    "check": "ng lint --cache=true && npx prettier -c --cache .",
     "clean": "npm cache clean --force && ng cache clean && rm -rf *.log dist reports .angular .eslintcache ./node_modules/.cache/prettier/.prettier-cache",
-    "lint": "ng lint --cache=true",
-    "format": "ng lint --fix",
+    "lint": "ng lint --cache=true && npx prettier -c --cache .",
+    "format": "ng lint --fix && npx prettier --write .",
     "eslint": "eslint --quiet --ext .js,.ts src",
     "browser": "npx browserslist",
     "prepare": "husky || true",

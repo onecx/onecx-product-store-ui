@@ -333,7 +333,7 @@ describe('SlotSearchComponent', () => {
       })
 
       it('should display slot search error', (done) => {
-        const errorResponse = { status: 402, statusText: 'Not authorized' }
+        const errorResponse = { status: 401, statusText: 'Not authorized' }
         apiSlotsServiceSpy.searchSlots.and.returnValue(throwError(() => errorResponse))
         spyOn(console, 'error')
 
@@ -342,11 +342,13 @@ describe('SlotSearchComponent', () => {
         component.slotData$.subscribe({
           next: (result) => {
             expect(result.length).toBe(0)
-            expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.SLOTS')
-            expect(console.error).toHaveBeenCalledWith('searchSlots', errorResponse)
             done()
           },
-          error: done.fail
+          error: (error) => {
+            expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.SLOTS')
+            expect(console.error).toHaveBeenCalledWith('searchSlots', errorResponse)
+            done.fail(error)
+          }
         })
       })
     })
