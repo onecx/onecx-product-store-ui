@@ -84,7 +84,7 @@ export class SlotSearchComponent implements OnInit {
       field: 'state',
       header: 'STATE',
       active: true,
-      css: 'text-center',
+      css: 'flex flex-row flex-nowrap justify-content-center border-left-1',
       translationPrefix: 'SLOT'
     },
     {
