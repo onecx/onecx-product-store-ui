@@ -333,7 +333,7 @@ describe('SlotSearchComponent', () => {
       })
 
       it('should display slot search error', (done) => {
-        const errorResponse = { status: 401, statusText: 'Not authorized' }
+        const errorResponse = { status: 401, statusText: 'Not authorized for slot search' }
         apiSlotsServiceSpy.searchSlots.and.returnValue(throwError(() => errorResponse))
         spyOn(console, 'error')
 

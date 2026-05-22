@@ -54,10 +54,14 @@ describe('ProductUseComponent', () => {
 
     it('should emit true', () => {
       component.slotEmitter.emit([{ name: 'name' } as Workspace])
+
+      expect(component.workspaceData$.getValue()).toEqual([{ name: 'name' } as Workspace])
     })
 
     it('should emit false', () => {
       component.slotEmitter.emit([])
+
+      expect(component.workspaceData$.getValue()).toEqual([])
     })
   })
 

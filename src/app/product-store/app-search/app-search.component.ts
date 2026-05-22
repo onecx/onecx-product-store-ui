@@ -125,7 +125,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
           console.error('searchMicrofrontends', err)
-          return of({} as MicrofrontendPageResult)
+          return of({})
         }),
         finalize(() => (this.searchInProgress = false))
       )
@@ -143,7 +143,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
           console.error('searchMicroservice', err)
-          return of({} as MicroservicePageResult)
+          return of({})
         }),
         finalize(() => (this.searchInProgress = false))
       )
@@ -359,7 +359,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   }
   public onAppCreate(type: AppType) {
     this.changeMode = 'CREATE'
-    this.app = { appType: type } as AppAbstract
+    this.app = { appType: type }
     this.displayDetailDialog = true
   }
   public onAppDelete(ev: any, app: AppAbstract) {

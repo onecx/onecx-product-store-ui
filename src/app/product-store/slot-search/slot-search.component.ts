@@ -324,7 +324,7 @@ export class SlotSearchComponent implements OnInit {
 
   public onSlotDetail(mode: ChangeMode, ev: MouseEvent, data: SlotData) {
     ev.stopPropagation()
-    this.item4Detail = { ...data } as Slot
+    this.item4Detail = { ...data }
     this.changeMode = mode
     this.displaySlotDetailDialog = true
   }
