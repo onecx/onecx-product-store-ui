@@ -21,8 +21,6 @@ import { ChangeMode } from '../../product-detail/product-detail.component'
 import { AppAbstract } from '../../app-search/app-search.component'
 import { SlotData } from '../../slot-search/slot-search.component'
 
-//export type SlotData = SlotPageItem & { productDisplayName: string }
-
 export enum AppType {
   MS = 'MS',
   MFE = 'MFE'
