@@ -438,7 +438,7 @@ describe('SlotSearchComponent', () => {
     it('should call deletion dialog', () => {
       const event = { stopPropagation: jasmine.createSpy() }
 
-      component.onSlotDelete(event as any, slots[0])
+      component.onSlotDelete(event as any, slots[0] as SlotData)
 
       expect(event.stopPropagation).toHaveBeenCalled()
       expect(component.displaySlotDeleteDialog).toBeTrue()

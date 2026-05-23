@@ -45,7 +45,7 @@ export class SlotSearchComponent implements OnInit {
   public slots$: Observable<Slot[]> = of([])
   public slotData$: Observable<SlotData[]> = of([])
   public item4Detail: Slot | undefined
-  public item4Delete: Slot | undefined
+  public item4Delete: SlotData | undefined
   public filteredData$ = new BehaviorSubject<SlotData[]>([])
   public resultData$ = new BehaviorSubject<SlotData[]>([])
 
@@ -333,7 +333,7 @@ export class SlotSearchComponent implements OnInit {
     if (changed) this.onSearch()
   }
 
-  public onSlotDelete(ev: any, slot: Slot) {
+  public onSlotDelete(ev: any, slot: SlotData) {
     ev.stopPropagation()
     this.item4Delete = { ...slot }
     this.displaySlotDeleteDialog = true

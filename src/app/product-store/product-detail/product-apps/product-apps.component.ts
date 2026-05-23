@@ -19,6 +19,9 @@ import { IconService } from 'src/app/shared/iconservice'
 
 import { ChangeMode } from '../../product-detail/product-detail.component'
 import { AppAbstract } from '../../app-search/app-search.component'
+import { SlotData } from '../../slot-search/slot-search.component'
+
+//export type SlotData = SlotPageItem & { productDisplayName: string }
 
 export enum AppType {
   MS = 'MS',
@@ -43,6 +46,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   public productDetails$!: Observable<ProductDetails>
   public app: AppAbstract | undefined
   public slot: Slot | undefined
+  public slotForDeletion: SlotData | undefined
   public iconItems: SelectItem[] = [{ label: '', value: null }]
   public displayDetailDialog = false
   public displayDeleteDialog = false
@@ -158,7 +162,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
 
   public onSlotDelete(ev: any, slot: Slot) {
     ev.stopPropagation()
-    this.slot = slot
+    this.slotForDeletion = slot as SlotData
     this.displaySlotDeleteDialog = true
   }
   public slotDeleted(deleted: boolean) {
@@ -167,7 +171,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   }
   public onSlotDetail(ev: any, slot: Slot) {
     ev.stopPropagation()
-    this.slot = { ...slot }
+    this.slotForDeletion = { ...slot } as SlotData
     this.displaySlotDetailDialog = true
   }
 }

@@ -9,6 +9,7 @@ import { PortalMessageService } from '@onecx/angular-integration-interface'
 
 import { Slot, SlotsAPIService } from 'src/app/shared/generated'
 import { SlotDeleteComponent } from './slot-delete.component'
+import { SlotData } from '../slot-search/slot-search.component'
 
 describe('SlotDeleteComponent', () => {
   let component: SlotDeleteComponent
@@ -68,7 +69,7 @@ describe('SlotDeleteComponent', () => {
 
   it('should delete slot onConfirmDeletion', () => {
     spyOn(component.slotDeleted, 'emit')
-    component.slot = slot
+    component.slot = slot as SlotData
 
     component.onConfirmDeletion()
 
@@ -78,7 +79,7 @@ describe('SlotDeleteComponent', () => {
 
   it('should display error if api call fails onConfirmDeletion: mfe', () => {
     apiSlotServiceSpy.deleteSlot.and.returnValue(throwError(() => new Error()))
-    component.slot = slot
+    component.slot = slot as SlotData
 
     component.onConfirmDeletion()
 

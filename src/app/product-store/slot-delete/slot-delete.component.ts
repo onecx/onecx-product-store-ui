@@ -3,6 +3,7 @@ import { TranslateService } from '@ngx-translate/core'
 
 import { PortalMessageService } from '@onecx/angular-integration-interface'
 import { Slot, SlotsAPIService } from 'src/app/shared/generated'
+import { SlotData } from '../slot-search/slot-search.component'
 
 @Component({
   selector: 'app-slot-delete',
@@ -10,7 +11,7 @@ import { Slot, SlotsAPIService } from 'src/app/shared/generated'
   styleUrls: ['./slot-delete.component.scss']
 })
 export class SlotDeleteComponent {
-  @Input() slot: Slot | undefined
+  @Input() slot: SlotData | undefined
   @Input() displayDialog = false
   @Output() slotDeleted = new EventEmitter<boolean>()
 
