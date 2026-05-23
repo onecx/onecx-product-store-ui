@@ -162,7 +162,7 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
       }),
       catchError((err) => {
         console.error('onecx-product-data.searchProducts', err)
-        return of({} as ProductAbstract)
+        return of(undefined)
       })
     )
     this.product$.subscribe(this.product)

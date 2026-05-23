@@ -69,7 +69,7 @@ export class ProductDetailComponent implements OnInit {
       this.getProduct()
     } else {
       this.changeMode = 'CREATE'
-      this.product$ = of({} as Product)
+      this.product$ = of(undefined)
       this.preparePageAction() // neutral
     }
   }
@@ -105,7 +105,7 @@ export class ProductDetailComponent implements OnInit {
       catchError((err) => {
         this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCT'
         console.error('getProductByName', err)
-        return of({} as Product)
+        return of(undefined)
       }),
       finalize(() => (this.loading = false))
     )

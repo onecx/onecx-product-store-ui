@@ -19,6 +19,7 @@ import {
 
 import { AppAbstract } from '../../app-search/app-search.component'
 import { AppType, ProductAppsComponent } from './product-apps.component'
+import { SlotData } from '../../slot-search/slot-search.component'
 
 describe('ProductAppsComponent', () => {
   let component: ProductAppsComponent
@@ -331,7 +332,7 @@ describe('ProductAppsComponent', () => {
       component.onSlotDelete(event, slot)
 
       expect(event.stopPropagation).toHaveBeenCalled()
-      expect(component.slot).toEqual(slot)
+      expect(component.slotForDeletion).toEqual(slot as SlotData)
       expect(component.displaySlotDeleteDialog).toBe(true)
     })
   })

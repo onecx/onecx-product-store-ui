@@ -161,7 +161,7 @@ describe('ProductDetailComponent', () => {
 
       component.product$.subscribe({
         next: (result) => {
-          expect(result).toEqual({} as Product)
+          expect(result).toBeUndefined()
           expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PRODUCT')
           expect(console.error).toHaveBeenCalledWith('getProductByName', errorResponse)
           done()

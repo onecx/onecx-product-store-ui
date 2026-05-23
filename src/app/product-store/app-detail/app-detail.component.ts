@@ -13,7 +13,6 @@ import { Utils } from 'src/app/shared/utils'
 import {
   CreateMicrofrontendRequest,
   CreateMicroserviceRequest,
-  GetMicrofrontendRequestParams,
   GetMicroserviceRequestParams,
   MicrofrontendsAPIService,
   MicroservicesAPIService,
@@ -187,7 +186,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
     this.loading = true
     if (this.appAbstract?.id)
       this.mfeApi
-        .getMicrofrontend({ id: this.appAbstract.id } as GetMicrofrontendRequestParams)
+        .getMicrofrontend({ id: this.appAbstract.id })
         .pipe(
           map((data: Microfrontend) => this.getMfeData(data)),
           finalize(() => (this.loading = false))
