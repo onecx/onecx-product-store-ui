@@ -67,7 +67,7 @@ export class SlotDetailComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-    if (this.displayDialog) {
+    if (this.displayDialog && this.slot) {
       this.selectedTabIndex = 0
       this.dialogTitleKey = undefined
       this.formGroupSlot.reset()

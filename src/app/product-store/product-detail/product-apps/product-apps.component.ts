@@ -44,6 +44,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   public productDetails$!: Observable<ProductDetails>
   public app: AppAbstract | undefined
   public slot: Slot | undefined
+  public slotForDetail: SlotData | undefined
   public slotForDeletion: SlotData | undefined
   public iconItems: SelectItem[] = [{ label: '', value: null }]
   public displayDetailDialog = false
@@ -160,7 +161,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
 
   public onSlotDelete(ev: any, slot: Slot) {
     ev.stopPropagation()
-    this.slotForDeletion = slot as SlotData
+    this.slotForDeletion = { ...slot } as SlotData
     this.displaySlotDeleteDialog = true
   }
   public slotDeleted(deleted: boolean) {
@@ -169,7 +170,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   }
   public onSlotDetail(ev: any, slot: Slot) {
     ev.stopPropagation()
-    this.slotForDeletion = { ...slot } as SlotData
+    this.slotForDetail = { ...slot } as SlotData
     this.displaySlotDetailDialog = true
   }
 }
