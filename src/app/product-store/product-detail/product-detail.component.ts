@@ -69,7 +69,7 @@ export class ProductDetailComponent implements OnInit {
       this.getProduct()
     } else {
       this.changeMode = 'CREATE'
-      this.product$ = of(undefined)
+      this.product$ = of({} as Product) // initialize with empty product
       this.preparePageAction() // neutral
     }
   }
