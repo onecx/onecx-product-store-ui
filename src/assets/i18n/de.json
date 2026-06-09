@@ -187,13 +187,13 @@
     "OPERATOR": "Automatisiert erstellt",
     "DEPRECATED": "Veraltet",
     "UNDEPLOYED": "Unverfügbar",
-    "MULTITENANCY": "Mandatenfähigkeit",
+    "MULTITENANCY": "Keine Mandatenfähigkeit",
     "TOOLTIPS": {
       "CREATION_DATE": "Zeitpunkt der Erstellung",
       "CREATION_USER": "Name des Benutzers der Erstellung",
       "MODIFICATION_DATE": "Zeitpunkt der letzten Änderung",
       "MODIFICATION_USER": "Name des Benutzers der letzten Änderung",
-      "MULTITENANCY": "Wenn gesetzt, dann ist diese Applikation NICHT mandantenfähig.",
+      "MULTITENANCY": "Wenn gesetzt, dann ist diese Applikation mandantenfähig. Das ist keine Aussage ob diese Applikation mandantenfähig läuft.",
       "MULTITENANCY_SEARCH": "Diese Applikation ist NICHT mandantenfähig."
     }
   },
