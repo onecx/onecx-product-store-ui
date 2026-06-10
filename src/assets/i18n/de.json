@@ -187,7 +187,7 @@
     "OPERATOR": "Automatisiert erstellt",
     "DEPRECATED": "Veraltet",
     "UNDEPLOYED": "Unverfügbar",
-    "MULTITENANCY": "Keine Mandatenfähigkeit",
+    "MULTITENANCY": "Mandatenfähigkeit",
     "TOOLTIPS": {
       "CREATION_DATE": "Zeitpunkt der Erstellung",
       "CREATION_USER": "Name des Benutzers der Erstellung",
