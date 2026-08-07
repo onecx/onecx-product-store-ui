@@ -45,7 +45,7 @@
           [ariaLabel]="'ACTIONS.SEARCH.APP.FILTER.LABEL' | translate"
           [pTooltip]="'ACTIONS.SEARCH.APP.FILTER.TOOLTIP' | translate"
         >
-          <ng-template let-item pTemplate
+          <ng-template let-item pTemplate="item"
             ><span
               [id]="'ps_app_search_criteria_app_type_' + item.value"
               [pTooltip]="item.label | translate"
@@ -90,7 +90,7 @@
       [pageSizes]="viewMode === 'grid' ? [20, 40, 100] : [10, 40, 100]"
       [pageSize]="viewMode === 'grid' ? 20 : 10"
       [emptyResultsMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
-      [disableFilterView]="false"
+      [disableFilterView]="true"
       [filters]="interactiveFilters"
       [clientSideFiltering]="true"
       [clientSideSorting]="true"
@@ -115,7 +115,7 @@
               tooltipPosition="top"
               tooltipEvent="hover"
             >
-              <ng-template let-item pTemplate>
+              <ng-template let-item pTemplate="item">
                 <span
                   [id]="'ps_app_search_quick_filter_' + item.value"
                   [pTooltip]="item.label | translate"
@@ -136,6 +136,38 @@
               <span> {{ 'ACTIONS.SEARCH.APP.QUICK_FILTER.' + quickFilterValue | translate }}</span>
             </div>
           </div>
+          <p-inputgroup class="w-auto tm-filter-group">
+            <p-inputgroup-addon>
+              <i class="pi pi-filter"></i>
+            </p-inputgroup-addon>
+            <p-floatlabel>
+              <input
+                #filterInput
+                id="tm_search_filter"
+                type="text"
+                class="tm-filter-input"
+                pInputText
+                [value]="filter ?? ''"
+                [tooltipPosition]="'bottom'"
+                [pTooltip]="'SEARCH.FILTER.TOOLTIP' | translate"
+                tooltipEvent="hover"
+                (input)="onFilterChange(filterInput.value)"
+              />
+              <label for="tm_search_filter" aria-hidden="true"> {{ 'SEARCH.FILTER.LABEL' | translate }}</label>
+            </p-floatlabel>
+            <p-button
+              id="tm_search_filter_clear"
+              icon="pi pi-filter-slash"
+              styleClass="tm-filter-clear"
+              [disabled]="!filter"
+              [ariaLabel]="'SEARCH.FILTER.CLEAR' | translate"
+              [pTooltip]="'SEARCH.FILTER.CLEAR' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+              (click)="onFilterChange('')"
+              (keydown.enter)="onFilterChange('')"
+            />
+          </p-inputgroup>
         </div>
       </ng-template>
 
