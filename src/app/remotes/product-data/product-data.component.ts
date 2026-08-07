@@ -1,20 +1,16 @@
-import { Component, EventEmitter, Inject, Input, OnChanges } from '@angular/core'
+import { Component, EventEmitter, Input, OnChanges } from '@angular/core'
 import { CommonModule, Location } from '@angular/common'
-import { HttpClient } from '@angular/common/http'
 import { UntilDestroy } from '@ngneat/until-destroy'
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
-import { BehaviorSubject, catchError, map, Observable, of, ReplaySubject } from 'rxjs'
+import { TranslateModule } from '@ngx-translate/core'
+import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs'
 
 import {
   AngularRemoteComponentsModule,
-  BASE_URL,
-  RemoteComponentConfig,
   ocxRemoteComponent,
-  ocxRemoteWebcomponent,
-  provideTranslateServiceForRoot
+  ocxRemoteWebcomponent
 } from '@onecx/angular-remote-components'
-import { createRemoteComponentTranslateLoader } from '@onecx/angular-accelerator'
-import { PortalCoreModule } from '@onecx/portal-integration-angular'
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
+import { RemoteComponentConfig } from '@onecx/angular-utils'
 
 import {
   Configuration,
@@ -33,21 +29,7 @@ type DataType = 'logo' | 'products' | 'product'
   selector: 'app-product-data',
   templateUrl: './product-data.component.html',
   standalone: true,
-  imports: [AngularRemoteComponentsModule, CommonModule, PortalCoreModule, TranslateModule, SharedModule],
-  providers: [
-    {
-      provide: BASE_URL,
-      useValue: new ReplaySubject<string>(1)
-    },
-    provideTranslateServiceForRoot({
-      isolate: true,
-      loader: {
-        provide: TranslateLoader,
-        useFactory: createRemoteComponentTranslateLoader,
-        deps: [HttpClient, BASE_URL]
-      }
-    })
-  ]
+  imports: [AngularAcceleratorModule, AngularRemoteComponentsModule, CommonModule, TranslateModule, SharedModule]
 })
 @UntilDestroy()
 export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteWebcomponent, OnChanges {
@@ -78,13 +60,9 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
   public imageUrl$ = new BehaviorSubject<string | undefined>(undefined)
   public defaultImageUrl: string | undefined = undefined
 
-  constructor(
-    @Inject(BASE_URL) private readonly baseUrl: ReplaySubject<string>,
-    private readonly productApi: ProductsAPIService
-  ) {}
+  constructor(private readonly productApi: ProductsAPIService) {}
 
   ocxInitRemoteComponent(remoteComponentConfig: RemoteComponentConfig) {
-    this.baseUrl.next(remoteComponentConfig.baseUrl)
     this.productApi.configuration = new Configuration({
       basePath: Location.joinWithSlash(remoteComponentConfig.baseUrl, environment.apiPrefix)
     })

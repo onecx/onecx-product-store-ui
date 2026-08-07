@@ -7,6 +7,7 @@ import { SlotData } from '../slot-search/slot-search.component'
 
 @Component({
   selector: 'app-slot-delete',
+  standalone: false,
   templateUrl: './slot-delete.component.html',
   styleUrls: ['./slot-delete.component.scss']
 })

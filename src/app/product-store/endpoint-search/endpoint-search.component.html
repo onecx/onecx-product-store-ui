@@ -8,7 +8,7 @@
     [actions]="(actions$ | async) ?? []"
   >
     <div id="ps_endpoint_search_criteria" [formGroup]="searchCriteria" class="flex flex-row flex-wrap gap-3">
-      <span class="p-float-label">
+      <p-float-label>
         <input
           id="ps_endpoint_search_criteria_product_name"
           pInputText
@@ -23,11 +23,11 @@
           tooltipEvent="hover"
         />
         <label for="ps_endpoint_search_criteria_product_name">{{ 'APP.PRODUCT_NAME' | translate }}</label>
-      </span>
+      </p-float-label>
     </div>
   </ocx-search-header>
 
-  <ocx-page-content *ngIf="endpoints$ | async as endpoints">
+  <ocx-content *ngIf="endpoints$ | async as endpoints">
     <p-message
       *ngIf="loading"
       id="ps_endpoint_search_loading_message"
@@ -43,104 +43,32 @@
       [text]="exceptionKey | translate"
     ></p-message>
 
-    <p-table
+    <ocx-interactive-data-view
       *ngIf="!(loading || exceptionKey)"
-      #dataTable
       id="ps_endpoint_search_table"
-      styleClass="mx-3 mb-2"
-      [value]="endpoints"
-      [columns]="filteredColumns"
-      dataKey="id"
-      [globalFilterFields]="['productDisplayName', 'appName', 'endpoint_name']"
-      [reorderableColumns]="false"
-      [scrollable]="true"
-      scrollHeight="590px"
-      sortField="productName"
-      [sortOrder]="1"
-      groupRowsBy="productName"
-      rowGroupMode="rowspan"
-      [rows]="10"
-      [rowsPerPageOptions]="[10, 30, 100]"
-      [paginator]="true"
-      paginatorPosition="bottom"
-      [alwaysShowPaginator]="true"
-      [showCurrentPageReport]="true"
-      currentPageReportTemplate="{first} - {last} {{ 'ACTIONS.SEARCH.OF' | translate }} {totalRecords}"
+      [data]="$any(endpoints)"
+      [supportedViewLayouts]="['table']"
+      [layout]="'table'"
+      [columns]="interactiveColumns"
+      [listGridPaginator]="false"
+      [tablePaginator]="true"
+      [pageSize]="10"
+      [pageSizes]="[10, 30, 100]"
+      [emptyResultsMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
+      [disableFilterView]="true"
+      [clientSideFiltering]="true"
+      [clientSideSorting]="true"
+      [filters]="interactiveFilters"
+      [sortField]="interactiveSortField"
+      [sortDirection]="interactiveSortDirection"
+      [actionColumnPosition]="'left'"
+      (filtered)="onInteractiveFiltersChange($event)"
+      (sorted)="onInteractiveSorted($event)"
+      (dataViewLayoutChange)="onLayoutChange($event)"
     >
-      <ng-template pTemplate="caption">
-        <ocx-data-view-controls
-          [supportedViews]="['table']"
-          [enableFiltering]="true"
-          [enableSorting]="false"
-          [columnDefinitions]="columns"
-          (columnsChange)="onColumnsChange($event)"
-          (filterChange)="onFilterChange($event)"
-          [translations]="(dataViewControlsTranslations$ | async) ?? {}"
-        ></ocx-data-view-controls>
-      </ng-template>
-
-      <ng-template pTemplate="emptymessage">
+      <ng-template pTemplate="item" let-rowData let-i="index">
         <tr>
-          <td id="ps_endpoint_search_table_emptymessage" colspan="16">{{ 'ACTIONS.SEARCH.NO_DATA' | translate }}</td>
-        </tr>
-      </ng-template>
-
-      <ng-template pTemplate="header" let-columns>
-        <tr>
-          <th
-            id="ps_endpoint_search_table_header_col_product_name"
-            [class]="'white-space-nowrap border-right-1'"
-            pFrozenColumn
-            [pSortableColumn]="'productName'"
-            [attr.aria-label]="'ENDPOINT.PRODUCT_NAME' | translate"
-            [pTooltip]="'ENDPOINT.TOOLTIPS.PRODUCT_NAME' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          >
-            {{ 'ENDPOINT.PRODUCT_NAME' | translate }}
-            <p-sortIcon field="productName"></p-sortIcon>
-          </th>
-          <th
-            id="ps_endpoint_search_table_header_col_app_name"
-            [class]="'white-space-nowrap'"
-            [attr.aria-label]="'ENDPOINT.APP_NAME' | translate"
-            [pTooltip]="'ENDPOINT.TOOLTIPS.APP_NAME' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          >
-            {{ 'ENDPOINT.APP_NAME' | translate }}
-          </th>
-          <th
-            *ngFor="let col of columns"
-            [id]="'ps_endpoint_search_table_header_col_' + col.field"
-            [class]="'white-space-nowrap'"
-            [attr.aria-label]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
-            [pTooltip]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          >
-            <span>{{ col.translationPrefix + '.' + col.header | translate }}</span>
-            <p-columnFilter *ngIf="col.hasFilter" type="text" [field]="col.field" display="menu"></p-columnFilter>
-          </th>
-        </tr>
-      </ng-template>
-
-      <ng-template
-        pTemplate="body"
-        let-columns="columns"
-        let-i="rowIndex"
-        let-rowData
-        let-rowgroup="rowgroup"
-        let-rowspan="rowspan"
-      >
-        <tr>
-          <td
-            *ngIf="rowgroup"
-            [attr.rowspan]="rowspan"
-            [id]="'ps_endpoint_search_table_row_product_name'"
-            class="bg-inherit white-space-nowrap border-right-1"
-            pFrozenColumn
-          >
+          <td [id]="'ps_endpoint_search_table_row_product_name'" class="bg-inherit white-space-nowrap border-right-1">
             {{ rowData['productDisplayName'] }}
           </td>
 
@@ -160,17 +88,16 @@
               {{ rowData['appName'] }}
             </a>
           </td>
-          <td
-            *ngFor="let col of columns"
-            [id]="'ps_endpoint_search_table_row_' + i + '_' + col.field"
-            [ngClass]="{ 'border-right-1': col.field === 'appName' }"
-          >
-            <div class="text-ellipsis-2-lines">{{ rowData[col.field] }}</div>
+          <td [id]="'ps_endpoint_search_table_row_' + i + '_endpoint_name'">
+            <div class="text-ellipsis-2-lines">{{ rowData['endpoint_name'] }}</div>
+          </td>
+          <td [id]="'ps_endpoint_search_table_row_' + i + '_endpoint_path'">
+            <div class="text-ellipsis-2-lines">{{ rowData['endpoint_path'] }}</div>
           </td>
         </tr>
       </ng-template>
-    </p-table>
-  </ocx-page-content>
+    </ocx-interactive-data-view>
+  </ocx-content>
 </ocx-portal-page>
 
 <app-app-detail

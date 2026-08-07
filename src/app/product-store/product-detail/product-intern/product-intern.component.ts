@@ -11,6 +11,7 @@ export interface ProductInternForm {
 
 @Component({
   selector: 'app-product-intern',
+  standalone: false,
   templateUrl: './product-intern.component.html'
 })
 export class ProductInternComponent implements OnChanges {

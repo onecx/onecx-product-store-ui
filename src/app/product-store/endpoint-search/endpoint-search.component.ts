@@ -1,12 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { FormControl, FormGroup } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 import { catchError, combineLatest, finalize, map, Observable, of, tap } from 'rxjs'
-import { Table } from 'primeng/table'
 
 import { PortalMessageService } from '@onecx/angular-integration-interface'
-import { Action, Column, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+import { Action, ColumnType, DataSortDirection, DataTableColumn, Filter, Sort } from '@onecx/angular-accelerator'
 
 import {
   MicrofrontendAbstract,
@@ -28,9 +27,16 @@ export type MfeEndpoint = MicrofrontendAbstract & {
   endpoint_name: string
   endpoint_path: string
 }
+export interface Column {
+  field: string
+  header: string
+  active: boolean
+  translationPrefix?: string
+}
 
 @Component({
   selector: 'app-endpoint-search',
+  standalone: false,
   templateUrl: './endpoint-search.component.html',
   styleUrls: ['./endpoint-search.component.scss']
 })
@@ -42,9 +48,33 @@ export class EndpointSearchComponent implements OnInit {
   public actions$: Observable<Action[]> | undefined
   public filteredColumns: Column[] = []
   public displayAppDetailDialog = false
-
-  @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
-  public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
+  public interactiveFilters: Filter[] = []
+  public interactiveSortField = 'productDisplayName'
+  public interactiveSortDirection: DataSortDirection = DataSortDirection.ASCENDING
+  public interactiveColumns: DataTableColumn[] = [
+    {
+      id: 'productDisplayName',
+      nameKey: 'ENDPOINT.PRODUCT_NAME',
+      columnType: ColumnType.STRING,
+      sortable: true,
+      filterable: true
+    },
+    { id: 'appName', nameKey: 'ENDPOINT.APP_NAME', columnType: ColumnType.STRING, sortable: true, filterable: true },
+    {
+      id: 'endpoint_name',
+      nameKey: 'ENDPOINT.NAME.SEARCH',
+      columnType: ColumnType.STRING,
+      sortable: true,
+      filterable: true
+    },
+    {
+      id: 'endpoint_path',
+      nameKey: 'ENDPOINT.PATH',
+      columnType: ColumnType.STRING,
+      sortable: true,
+      filterable: true
+    }
+  ]
 
   // data
   public searchCriteria!: FormGroup<ProductSearchCriteriaControls>
@@ -82,7 +112,6 @@ export class EndpointSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.prepareDialogTranslations()
     this.preparePageActions()
     this.declareDataSources()
     this.loadData()
@@ -179,47 +208,6 @@ export class EndpointSearchComponent implements OnInit {
     )
   }
 
-  /**
-   * DIALOG
-   */
-  private prepareDialogTranslations(): void {
-    this.dataViewControlsTranslations$ = this.translate
-      .get([
-        'ENDPOINT.APP_NAME',
-        'ENDPOINT.PRODUCT_NAME',
-        'ENDPOINT.NAME',
-        'DIALOG.DATAVIEW.VIEW_MODE_TABLE',
-        'DIALOG.DATAVIEW.FILTER',
-        'DIALOG.DATAVIEW.FILTER_OF',
-        'DIALOG.DATAVIEW.SORT_BY',
-        'DIALOG.DATAVIEW.SORT_DIRECTION_ASC',
-        'DIALOG.DATAVIEW.SORT_DIRECTION_DESC'
-      ])
-      .pipe(
-        map((data) => {
-          return {
-            sortDropdownPlaceholder: data['DIALOG.DATAVIEW.SORT_BY'],
-            filterInputPlaceholder: data['DIALOG.DATAVIEW.FILTER'],
-            filterInputTooltip:
-              data['DIALOG.DATAVIEW.FILTER_OF'] +
-              data['ENDPOINT.PRODUCT_NAME'] +
-              ', ' +
-              data['ENDPOINT.APP_NAME'] +
-              ', ' +
-              data['ENDPOINT.NAME'],
-            viewModeToggleTooltips: {
-              table: data['DIALOG.DATAVIEW.VIEW_MODE_TABLE']
-            },
-            sortOrderTooltips: {
-              ascending: data['DIALOG.DATAVIEW.SORT_DIRECTION_ASC'],
-              descending: data['DIALOG.DATAVIEW.SORT_DIRECTION_DESC']
-            },
-            sortDropdownTooltip: data['DIALOG.DATAVIEW.SORT_BY']
-          } as DataViewControlTranslations
-        })
-      )
-  }
-
   private preparePageActions(): void {
     this.actions$ = this.translate
       .get([
@@ -269,7 +257,17 @@ export class EndpointSearchComponent implements OnInit {
     this.filteredColumns = activeIds.map((id) => this.columns.find((col) => col.field === id)) as Column[]
   }
   public onFilterChange(event: string): void {
-    this.dataTable?.filterGlobal(event, 'contains')
+    this.interactiveFilters = [{ columnId: 'global', value: event }]
+  }
+  public onInteractiveFiltersChange(filters: Filter[]): void {
+    this.interactiveFilters = filters
+  }
+  public onInteractiveSorted(sort: Sort): void {
+    this.interactiveSortField = sort.sortColumn
+    this.interactiveSortDirection = sort.sortDirection
+  }
+  public onLayoutChange(viewMode: 'grid' | 'list' | 'table'): void {
+    // Layout change handler for interactive data view - table-only component
   }
   public onSearch() {
     this.declareDataSources()

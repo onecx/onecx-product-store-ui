@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core'
 import { Table } from 'primeng/table'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
-import { Action, Column, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+import { Action, ColumnType, DataSortDirection, DataTableColumn, Filter, Sort } from '@onecx/angular-accelerator'
 
 import {
   ProductsAPIService,
@@ -24,9 +24,20 @@ export interface SlotSearchCriteria {
 }
 export type SlotData = Slot & { productDisplayName: string }
 export type SlotState = { label: string; value: string; icon: string }
-export type ExtendedColumn = Column & { sort?: boolean; css?: string; limit?: number; hasFilter?: boolean }
+export interface Column {
+  field: string
+  header: string
+  active: boolean
+  translationPrefix?: string
+  sort?: boolean
+  css?: string
+  limit?: number
+  hasFilter?: boolean
+}
+export type ExtendedColumn = Column
 
 @Component({
+  standalone: false,
   templateUrl: './slot-search.component.html',
   styleUrls: ['./slot-search.component.scss']
 })
@@ -39,6 +50,21 @@ export class SlotSearchComponent implements OnInit {
   public displaySlotDetailDialog = false
   public displaySlotDeleteDialog = false
   public changeMode: ChangeMode = 'VIEW'
+  public interactiveFilters: Filter[] = []
+  public interactiveSortField = 'productDisplayName'
+  public interactiveSortDirection: DataSortDirection = DataSortDirection.ASCENDING
+  public interactiveColumns: DataTableColumn[] = [
+    { id: 'name', nameKey: 'SLOT.NAME', columnType: ColumnType.STRING, sortable: true, filterable: true },
+    { id: 'description', nameKey: 'SLOT.DESCRIPTION', columnType: ColumnType.STRING, sortable: true, filterable: true },
+    { id: 'appId', nameKey: 'SLOT.APP_ID', columnType: ColumnType.STRING, sortable: true, filterable: true },
+    {
+      id: 'productDisplayName',
+      nameKey: 'SLOT.PRODUCT_NAME',
+      columnType: ColumnType.STRING,
+      sortable: true,
+      filterable: true
+    }
+  ]
   // data
   public searchCriteria: FormGroup<SlotSearchCriteria>
   public products$: Observable<ProductAbstract[]> = of([])
@@ -68,7 +94,6 @@ export class SlotSearchComponent implements OnInit {
   @ViewChild('headerFilterIconProduct', { static: false }) headerFilterIconProduct: ElementRef | undefined
 
   @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
-  public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
 
   public columns: ExtendedColumn[] = [
     {
@@ -96,6 +121,7 @@ export class SlotSearchComponent implements OnInit {
       translationPrefix: 'SLOT'
     }
   ]
+
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
@@ -115,7 +141,6 @@ export class SlotSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.initGlobalFilter()
-    this.prepareDialogTranslations()
     this.prepareActionButtons()
     this.prepareStateValues()
     this.declareDataSources()
@@ -225,41 +250,6 @@ export class SlotSearchComponent implements OnInit {
         })
       )
   }
-  private prepareDialogTranslations(): void {
-    this.dataViewControlsTranslations$ = this.translate
-      .get([
-        'SLOT.NAME',
-        'SLOT.PRODUCT_NAME',
-        'SLOT.APP_ID',
-        'DIALOG.DATAVIEW.VIEW_MODE_GRID',
-        'DIALOG.DATAVIEW.FILTER',
-        'DIALOG.DATAVIEW.FILTER_OF',
-        'DIALOG.DATAVIEW.SORT_BY',
-        'DIALOG.DATAVIEW.SORT_DIRECTION_ASC',
-        'DIALOG.DATAVIEW.SORT_DIRECTION_DESC'
-      ])
-      .pipe(
-        map((data) => {
-          return {
-            sortDropdownPlaceholder: data['DIALOG.DATAVIEW.SORT_BY'],
-            filterInputPlaceholder: data['DIALOG.DATAVIEW.FILTER'],
-            filterInputTooltip:
-              data['DIALOG.DATAVIEW.FILTER_OF'] +
-              data['SLOT.PRODUCT_NAME'] +
-              ', ' +
-              data['SLOT.APP_ID'] +
-              ', ' +
-              data['SLOT.NAME'],
-            viewModeToggleTooltips: { grid: data['DIALOG.DATAVIEW.VIEW_MODE_GRID'] },
-            sortOrderTooltips: {
-              ascending: data['DIALOG.DATAVIEW.SORT_DIRECTION_ASC'],
-              descending: data['DIALOG.DATAVIEW.SORT_DIRECTION_DESC']
-            },
-            sortDropdownTooltip: data['DIALOG.DATAVIEW.SORT_BY']
-          } as DataViewControlTranslations
-        })
-      )
-  }
 
   private prepareActionButtons(): void {
     this.actions$ = this.translate
@@ -310,6 +300,16 @@ export class SlotSearchComponent implements OnInit {
     this.declareDataSources()
     this.resetFilters()
     this.loadData()
+  }
+  public onInteractiveFiltersChange(filters: Filter[]): void {
+    this.interactiveFilters = filters
+  }
+  public onInteractiveSorted(sort: Sort): void {
+    this.interactiveSortField = sort.sortColumn
+    this.interactiveSortDirection = sort.sortDirection
+  }
+  public onLayoutChange(viewMode: 'grid' | 'list' | 'table'): void {
+    // Layout change handler for interactive data view - table-only component
   }
   public onSearchReset() {
     this.searchCriteria.reset()

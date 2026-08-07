@@ -57,6 +57,7 @@ export interface MsForm {
 
 @Component({
   selector: 'app-app-detail',
+  standalone: false,
   templateUrl: './app-detail.component.html',
   styleUrls: ['./app-detail.component.scss']
 })
@@ -98,8 +99,6 @@ export class AppDetailComponent implements OnInit, OnChanges {
     private readonly msgService: PortalMessageService,
     private readonly translate: TranslateService
   ) {
-    this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
-    this.hasEditPermission = this.user.hasPermission('APP#EDIT')
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
     this.iconItems.sort(Utils.dropDownSortItemsByLabel)
 
@@ -132,8 +131,15 @@ export class AppDetailComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    void this.initPermissions()
     if (this.hasEditPermission && this.changeMode === 'VIEW') this.changeMode = 'EDIT'
     this.getDropdownTranslations()
+  }
+
+  private async initPermissions(): Promise<void> {
+    this.hasCreatePermission = await this.user.hasPermission('APP#CREATE')
+    this.hasEditPermission = await this.user.hasPermission('APP#EDIT')
+    if (this.hasEditPermission && this.changeMode === 'VIEW') this.changeMode = 'EDIT'
   }
 
   ngOnChanges() {

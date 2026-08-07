@@ -5,11 +5,16 @@ import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { of, throwError } from 'rxjs'
-import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { PortalMessageService } from '@onecx/angular-integration-interface'
-import { Column } from '@onecx/portal-integration-angular'
+
+interface Column {
+  field: string
+  header: string
+  active: boolean
+  translationPrefix?: string
+}
 
 import {
   MicrofrontendAbstract,
@@ -192,26 +197,6 @@ describe('EndpointSearchComponent', () => {
       component.ngOnInit()
       expect(component.filteredColumns[0]).toEqual(component.columns[0])
     })
-
-    it('dataview translations', (done) => {
-      const translationData = {
-        'DIALOG.DATAVIEW.SORT_BY': 'sortBy'
-      }
-      const translateService = TestBed.inject(TranslateService)
-      spyOn(translateService, 'get').and.returnValue(of(translationData))
-
-      component.ngOnInit()
-
-      component.dataViewControlsTranslations$?.subscribe({
-        next: (data) => {
-          if (data) {
-            expect(data.sortDropdownTooltip).toEqual('sortBy')
-          }
-          done()
-        },
-        error: done.fail
-      })
-    })
   })
 
   describe('search', () => {
@@ -322,7 +307,7 @@ describe('EndpointSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const action = actions[0]
-          action.actionCallback()
+          action.actionCallback?.()
           expect(routerSpy.navigate).toHaveBeenCalledWith(['..'], { relativeTo: routeMock })
         })
       }
@@ -334,7 +319,7 @@ describe('EndpointSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const action = actions[1]
-          action.actionCallback()
+          action.actionCallback?.()
           expect(routerSpy.navigate).toHaveBeenCalledWith(['../apps'], { relativeTo: routeMock })
         })
       }
@@ -346,7 +331,7 @@ describe('EndpointSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const action = actions[2]
-          action.actionCallback()
+          action.actionCallback?.()
           expect(routerSpy.navigate).toHaveBeenCalledWith(['../slots'], { relativeTo: routeMock })
         })
       }
@@ -355,22 +340,19 @@ describe('EndpointSearchComponent', () => {
 
   describe('filter columns', () => {
     it('should update the columns that are seen in data', () => {
-      const columns: Column[] = [{ field: 'productName', header: 'PRODUCT_NAME' }]
+      const columns: Column[] = [{ field: 'productName', header: 'PRODUCT_NAME', active: true }]
       const expectedColumn = { field: 'productName', header: 'PRODUCT_NAME' }
       component.columns = columns
 
       component.onColumnsChange(['productName'])
 
-      expect(component.filteredColumns).not.toContain(columns[1])
       expect(component.filteredColumns).toEqual([jasmine.objectContaining(expectedColumn)])
     })
 
     it('should apply a filter to the result table', () => {
-      component.dataTable = jasmine.createSpyObj('dataTable', ['filterGlobal'])
-
       component.onFilterChange('test')
 
-      expect(component.dataTable?.filterGlobal).toHaveBeenCalledWith('test', 'contains')
+      expect(component.interactiveFilters).toEqual([{ columnId: 'global', value: 'test' }])
     })
   })
 

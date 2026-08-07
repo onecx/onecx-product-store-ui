@@ -281,6 +281,13 @@
       }
     }
   },
+  "SEARCH": {
+    "FILTER": {
+      "LABEL": "Filter",
+      "TOOLTIP": "Ergebnisse filtern",
+      "CLEAR": "Filter löschen"
+    }
+  },
   "APP": {
     "APP_ID": "App ID",
     "APP_NAME": "Name",

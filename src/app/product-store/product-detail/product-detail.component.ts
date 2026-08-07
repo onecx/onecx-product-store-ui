@@ -22,6 +22,7 @@ import { ProductInternComponent } from './product-intern/product-intern.componen
 export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
 
 @Component({
+  standalone: false,
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.scss']
 })

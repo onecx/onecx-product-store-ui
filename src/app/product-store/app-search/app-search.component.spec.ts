@@ -5,7 +5,6 @@ import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { of, throwError } from 'rxjs'
-import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { UserService } from '@onecx/angular-integration-interface'
@@ -73,7 +72,7 @@ describe('AppSearchComponent', () => {
     lang$: {
       getValue: jasmine.createSpy('getValue').and.returnValue('de')
     },
-    hasPermission: jasmine.createSpy('hasPermission').and.callFake((permission) => {
+    hasPermission: jasmine.createSpy('hasPermission').and.callFake(async (permission) => {
       return ['APP#CREATE', 'APP#DELETE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
     })
   }
@@ -104,6 +103,7 @@ describe('AppSearchComponent', () => {
     fixture = TestBed.createComponent(AppSearchComponent)
     component = fixture.componentInstance
     fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
+    component.hasEditPermission = true
   })
 
   afterEach(() => {
@@ -116,26 +116,6 @@ describe('AppSearchComponent', () => {
     it('should create', () => {
       expect(component).toBeTruthy()
     })
-
-    it('dataview translations', (done) => {
-      const translationData = {
-        'DIALOG.DATAVIEW.SORT_BY': 'sortBy'
-      }
-      const translateService = TestBed.inject(TranslateService)
-      spyOn(translateService, 'get').and.returnValue(of(translationData))
-
-      component.ngOnInit()
-
-      component.dataViewControlsTranslations$?.subscribe({
-        next: (data) => {
-          if (data) {
-            expect(data.sortDropdownTooltip).toEqual('sortBy')
-          }
-          done()
-        },
-        error: done.fail
-      })
-    })
   })
 
   describe('page actions', () => {
@@ -145,7 +125,7 @@ describe('AppSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const action = actions[0]
-          action.actionCallback()
+          action.actionCallback?.()
           expect(routerSpy.navigate).toHaveBeenCalledWith(['..'], { relativeTo: routeMock })
         })
       }
@@ -157,7 +137,7 @@ describe('AppSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const action = actions[1]
-          action.actionCallback()
+          action.actionCallback?.()
           expect(routerSpy.navigate).toHaveBeenCalledWith(['../endpoints'], { relativeTo: routeMock })
         })
       }
@@ -169,7 +149,7 @@ describe('AppSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const action = actions[2]
-          action.actionCallback()
+          action.actionCallback?.()
           expect(routerSpy.navigate).toHaveBeenCalledWith(['../slots'], { relativeTo: routeMock })
         })
       }
@@ -183,7 +163,7 @@ describe('AppSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const action = actions[3]
-          action.actionCallback()
+          action.actionCallback?.()
           expect(component.onAppCreate).toHaveBeenCalledWith('MFE')
         })
       }
@@ -197,7 +177,7 @@ describe('AppSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const action = actions[4]
-          action.actionCallback()
+          action.actionCallback?.()
           expect(component.onAppCreate).toHaveBeenCalledWith('MS')
         })
       }

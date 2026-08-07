@@ -39,10 +39,10 @@
 
   /* hide unusable stuff from interactive-data-view */
   ocx-column-group-selection,
-  ocx-data-view-controls div div button {
+  ocx-interactive-data-view div div button {
     display: none;
   }
-  ocx-data-view-controls div {
+  ocx-interactive-data-view div {
     justify-content: center !important;
   }
 

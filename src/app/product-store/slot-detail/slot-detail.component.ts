@@ -23,6 +23,7 @@ export interface SlotForm {
 
 @Component({
   selector: 'app-slot-detail',
+  standalone: false,
   templateUrl: './slot-detail.component.html',
   styleUrls: ['./slot-detail.component.scss']
 })
@@ -51,9 +52,6 @@ export class SlotDetailComponent implements OnInit, OnChanges {
     private readonly msgService: PortalMessageService,
     private readonly translate: TranslateService
   ) {
-    this.hasCreatePermission = this.user.hasPermission('SLOT#CREATE')
-    this.hasEditPermission = this.user.hasPermission('SLOT#EDIT')
-
     this.formGroupSlot = new FormGroup<SlotForm>({
       name: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
       appId: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
@@ -63,6 +61,13 @@ export class SlotDetailComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    void this.initPermissions()
+    if (this.hasEditPermission && this.changeMode !== 'CREATE') this.changeMode = 'EDIT'
+  }
+
+  private async initPermissions(): Promise<void> {
+    this.hasCreatePermission = await this.user.hasPermission('SLOT#CREATE')
+    this.hasEditPermission = await this.user.hasPermission('SLOT#EDIT')
     if (this.hasEditPermission && this.changeMode !== 'CREATE') this.changeMode = 'EDIT'
   }
 

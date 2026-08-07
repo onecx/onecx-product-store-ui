@@ -7,40 +7,46 @@
   <div class="flex flex-column row-gap-4">
     <!-- row 1 -->
     <form [formGroup]="slotForm" class="mx-3 flex flex-row flex-wrap column-gap-6 row-gap-3">
-      <p-checkbox
-        type="text"
-        inputId="ps_slot_detail_form_field_operator"
-        formControlName="operator"
-        [binary]="true"
-        [label]="'INTERNAL.OPERATOR' | translate"
-        [ariaLabel]="'INTERNAL.OPERATOR' | translate"
-        [pTooltip]="'SLOT.TOOLTIPS.OPERATOR' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-      ></p-checkbox>
-      <p-checkbox
-        type="text"
-        inputId="ps_slot_detail_form_field_undeployed"
-        formControlName="undeployed"
-        [binary]="true"
-        (onChange)="onChangeUndeployed($event)"
-        [label]="'APP.UNDEPLOYED' | translate"
-        [ariaLabel]="'APP.UNDEPLOYED' | translate"
-        [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-      ></p-checkbox>
-      <p-checkbox
-        type="text"
-        inputId="ps_slot_detail_form_field_deprecated"
-        formControlName="deprecated"
-        [binary]="true"
-        [label]="'APP.DEPRECATED' | translate"
-        [ariaLabel]="'APP.DEPRECATED' | translate"
-        [pTooltip]="'SLOT.DEPRECATED_SEARCH' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-      ></p-checkbox>
+      <div class="flex align-items-center gap-2">
+        <p-checkbox
+          type="text"
+          inputId="ps_slot_detail_form_field_operator"
+          formControlName="operator"
+          [binary]="true"
+          [ariaLabel]="'INTERNAL.OPERATOR' | translate"
+          [pTooltip]="'SLOT.TOOLTIPS.OPERATOR' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        ></p-checkbox>
+        <label for="ps_slot_detail_form_field_operator">{{ 'INTERNAL.OPERATOR' | translate }}</label>
+      </div>
+      <div class="flex align-items-center gap-2">
+        <p-checkbox
+          type="text"
+          inputId="ps_slot_detail_form_field_undeployed"
+          formControlName="undeployed"
+          [binary]="true"
+          (onChange)="onChangeUndeployed($event)"
+          [ariaLabel]="'APP.UNDEPLOYED' | translate"
+          [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        ></p-checkbox>
+        <label for="ps_slot_detail_form_field_undeployed">{{ 'APP.UNDEPLOYED' | translate }}</label>
+      </div>
+      <div class="flex align-items-center gap-2">
+        <p-checkbox
+          type="text"
+          inputId="ps_slot_detail_form_field_deprecated"
+          formControlName="deprecated"
+          [binary]="true"
+          [ariaLabel]="'APP.DEPRECATED' | translate"
+          [pTooltip]="'SLOT.DEPRECATED_SEARCH' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        ></p-checkbox>
+        <label for="ps_slot_detail_form_field_deprecated">{{ 'APP.DEPRECATED' | translate }}</label>
+      </div>
     </form>
 
     <!-- row 2 -->

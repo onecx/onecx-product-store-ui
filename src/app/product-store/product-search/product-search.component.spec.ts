@@ -4,8 +4,6 @@ import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { provideRouter, Router } from '@angular/router'
 import { of, throwError } from 'rxjs'
-import { DataViewModule } from 'primeng/dataview'
-import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import {
@@ -44,7 +42,6 @@ describe('ProductSearchComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ProductSearchComponent],
       imports: [
-        DataViewModule,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
@@ -70,26 +67,6 @@ describe('ProductSearchComponent', () => {
   describe('initialize', () => {
     it('should create', () => {
       expect(component).toBeTruthy()
-    })
-
-    it('dataview translations', (done) => {
-      const translationData = {
-        'DIALOG.DATAVIEW.SORT_BY': 'sortBy'
-      }
-      const translateService = TestBed.inject(TranslateService)
-      spyOn(translateService, 'get').and.returnValue(of(translationData))
-
-      component.ngOnInit()
-
-      component.dataViewControlsTranslations$?.subscribe({
-        next: (data) => {
-          if (data) {
-            expect(data.sortDropdownTooltip).toEqual('sortBy')
-          }
-          done()
-        },
-        error: done.fail
-      })
     })
   })
 

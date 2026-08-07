@@ -10,6 +10,11 @@
 @include search-criteria-select-button-slim;
 
 :host ::ng-deep {
+  .app-search-top-center {
+    gap: 0;
+    justify-content: center;
+  }
+
   .h-05rem {
     height: 0.5rem;
   }

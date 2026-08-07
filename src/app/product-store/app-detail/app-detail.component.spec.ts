@@ -137,7 +137,7 @@ describe('AppDetailComponent', () => {
     lang$: {
       getValue: jasmine.createSpy('getValue').and.returnValue('en')
     },
-    hasPermission: jasmine.createSpy('hasPermission').and.callFake((permission: string) => {
+    hasPermission: jasmine.createSpy('hasPermission').and.callFake(async (permission: string) => {
       return ['APP#CREATE', 'APP#DELETE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
     })
   }
@@ -169,6 +169,8 @@ describe('AppDetailComponent', () => {
     component = fixture.componentInstance
     component.displayDialog = true
     fixture.detectChanges()
+    component.hasCreatePermission = true
+    component.hasEditPermission = true
   })
 
   afterEach(() => {

@@ -6,7 +6,6 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { BehaviorSubject, of, throwError } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
-import { DataViewModule } from 'primeng/dataview'
 import { Table } from 'primeng/table'
 
 import { UserService } from '@onecx/angular-integration-interface'
@@ -107,7 +106,6 @@ describe('SlotSearchComponent', () => {
     TestBed.configureTestingModule({
       declarations: [SlotSearchComponent],
       imports: [
-        DataViewModule,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
@@ -167,25 +165,6 @@ describe('SlotSearchComponent', () => {
         error: done.fail
       })
     })
-    it('dataview translations', (done) => {
-      const translationData = {
-        'DIALOG.DATAVIEW.SORT_BY': 'sortBy'
-      }
-      const translateService = TestBed.inject(TranslateService)
-      spyOn(translateService, 'get').and.returnValue(of(translationData))
-
-      component.ngOnInit()
-
-      component.dataViewControlsTranslations$?.subscribe({
-        next: (data) => {
-          if (data) {
-            expect(data.sortDropdownTooltip).toEqual('sortBy')
-          }
-          done()
-        },
-        error: done.fail
-      })
-    })
   })
 
   describe('page actions', () => {
@@ -195,7 +174,7 @@ describe('SlotSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const firstAction = actions[0]
-          firstAction.actionCallback()
+          firstAction.actionCallback?.()
           expect(routerSpy.navigate).toHaveBeenCalledWith(['..'], { relativeTo: routeMock })
         })
       }
@@ -207,7 +186,7 @@ describe('SlotSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const firstAction = actions[1]
-          firstAction.actionCallback()
+          firstAction.actionCallback?.()
           expect(routerSpy.navigate).toHaveBeenCalledWith(['../endpoints'], { relativeTo: routeMock })
         })
       }
@@ -219,7 +198,7 @@ describe('SlotSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const firstAction = actions[2]
-          firstAction.actionCallback()
+          firstAction.actionCallback?.()
           expect(routerSpy.navigate).toHaveBeenCalledWith(['../apps'], { relativeTo: routeMock })
         })
       }

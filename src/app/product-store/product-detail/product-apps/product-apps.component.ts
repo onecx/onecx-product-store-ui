@@ -28,6 +28,7 @@ export enum AppType {
 
 @Component({
   selector: 'app-product-apps',
+  standalone: false,
   templateUrl: './product-apps.component.html',
   styleUrls: ['./product-apps.component.scss']
 })
@@ -61,14 +62,21 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
     private readonly productApi: ProductsAPIService
   ) {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
-    this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
-    this.hasDeletePermission = this.user.hasPermission('APP#DELETE')
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
     this.iconItems.sort(Utils.dropDownSortItemsByLabel)
   }
 
   public ngOnChanges(): void {
     if (this.product) this.getProductDetails()
+  }
+
+  public ngOnInit(): void {
+    void this.initPermissions()
+  }
+
+  private async initPermissions(): Promise<void> {
+    this.hasCreatePermission = await this.user.hasPermission('APP#CREATE')
+    this.hasDeletePermission = await this.user.hasPermission('APP#DELETE')
   }
 
   public ngOnDestroy(): void {

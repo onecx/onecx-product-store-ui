@@ -1,13 +1,20 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core'
+import { Component, OnInit, OnDestroy } from '@angular/core'
 import { FormControl, FormGroup } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 import { SelectItem } from 'primeng/api'
-import { DataView } from 'primeng/dataview'
 import { combineLatest, finalize, map, of, Observable, Subject, catchError } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
-import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+import {
+  Action,
+  ColumnType,
+  DataSortDirection,
+  DataTableColumn,
+  Filter,
+  FilterType,
+  Sort
+} from '@onecx/angular-accelerator'
 import { ChangeMode } from '../product-detail/product-detail.component'
 
 import {
@@ -30,6 +37,7 @@ export type AppFilterType = 'ALL' | AppType
 export type AppAbstract = Microservice & { appType: AppType; appTypeKey?: string; mfeType?: MicrofrontendType }
 
 @Component({
+  standalone: false,
   templateUrl: './app-search.component.html',
   styleUrls: ['./app-search.component.scss']
 })
@@ -55,6 +63,9 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public filterValueDefault = 'appId,appName,appType,appVersion,productName,classifications'
   public filterBy = this.filterValueDefault
   public filter: string | undefined
+  public tableFilter = ''
+  public interactiveFilters: Filter[] = []
+  public sortDirection: DataSortDirection = DataSortDirection.ASCENDING
   public sortField = 'appId'
   public sortOrder = 1
   public searchInProgress = false
@@ -63,9 +74,20 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public hasCreatePermission = false
   public hasEditPermission = false
   public hasDeletePermission = false
-
-  @ViewChild(DataView) dv: DataView | undefined
-  public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
+  public dataViewColumns: DataTableColumn[] = [
+    { id: 'appId', nameKey: 'APP.APP_ID', columnType: ColumnType.STRING, sortable: true, filterable: true },
+    { id: 'appType', nameKey: 'APP.APP_TYPE', columnType: ColumnType.STRING, sortable: true, filterable: true },
+    { id: 'productName', nameKey: 'APP.PRODUCT_NAME', columnType: ColumnType.STRING, sortable: true, filterable: true },
+    {
+      id: 'classifications',
+      nameKey: 'APP.CLASSIFICATIONS',
+      columnType: ColumnType.STRING,
+      sortable: false,
+      filterable: true
+    },
+    { id: 'undeployed', nameKey: 'APP.UNDEPLOYED', columnType: ColumnType.STRING, filterType: FilterType.EQUALS },
+    { id: 'deprecated', nameKey: 'APP.DEPRECATED', columnType: ColumnType.STRING, filterType: FilterType.EQUALS }
+  ]
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -76,9 +98,6 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     private readonly translate: TranslateService
   ) {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
-    this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
-    this.hasDeletePermission = this.user.hasPermission('APP#DELETE')
-    this.hasEditPermission = this.user.hasPermission('APP#EDIT')
     // search criteria
     this.appTypeItems = [
       { label: 'ACTIONS.SEARCH.APP.QUICK_FILTER.ALL', value: 'ALL' },
@@ -100,9 +119,15 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.prepareDialogTranslations()
+    void this.initPermissions()
     this.preparePageActions()
     this.searchApps()
+  }
+
+  private async initPermissions(): Promise<void> {
+    this.hasCreatePermission = await this.user.hasPermission('APP#CREATE')
+    this.hasDeletePermission = await this.user.hasPermission('APP#DELETE')
+    this.hasEditPermission = await this.user.hasPermission('APP#EDIT')
   }
   public ngOnDestroy(): void {
     this.destroy$.next(undefined)
@@ -266,42 +291,11 @@ export class AppSearchComponent implements OnInit, OnDestroy {
       )
   }
 
-  public prepareDialogTranslations(): void {
-    this.dataViewControlsTranslations$ = this.translate
-      .get([
-        'APP.APP_ID',
-        'APP.APP_TYPE',
-        'APP.APP_VERSION',
-        'APP.CLASSIFICATIONS',
-        'APP.PRODUCT_NAME',
-        'DIALOG.DATAVIEW.FILTER_OF',
-        'DIALOG.DATAVIEW.SORT_BY'
-      ])
-      .pipe(
-        map((data) => {
-          return {
-            filterInputTooltip:
-              data['DIALOG.DATAVIEW.FILTER_OF'] +
-              data['APP.APP_ID'] +
-              ', ' +
-              data['APP.APP_TYPE'] +
-              ', ' +
-              data['APP.APP_VERSION'] +
-              ', ' +
-              data['APP.CLASSIFICATIONS'] +
-              ', ' +
-              data['APP.PRODUCT_NAME'],
-            sortDropdownTooltip: data['DIALOG.DATAVIEW.SORT_BY']
-          } as DataViewControlTranslations
-        })
-      )
-  }
-
   /**
    * UI EVENTS
    */
-  public onLayoutChange(viewMode: 'grid' | 'list'): void {
-    this.viewMode = viewMode
+  public onLayoutChange(viewMode: 'grid' | 'list' | 'table'): void {
+    if (viewMode !== 'table') this.viewMode = viewMode
   }
 
   public onAppTypeFilterChange(ev: any): void {
@@ -315,24 +309,54 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     if (ev.value === 'ALL') {
       this.filterBy = this.filterValueDefault
       this.filterValue = ''
-      this.dv?.filter(this.filterValue, 'contains')
+      this.interactiveFilters = this.interactiveFilters.filter((f) => f.columnId !== 'appType')
     } else {
       this.filterBy = 'appType'
       if (ev.value) {
         this.filterValue = ev.value
-        this.dv?.filter(ev.value, 'equals')
+        this.interactiveFilters = [
+          ...this.interactiveFilters.filter((f) => f.columnId !== 'appType'),
+          {
+            columnId: 'appType',
+            value: ev.value,
+            filterType: FilterType.EQUALS
+          }
+        ]
       }
     }
   }
   public onFilterChange(filter: string): void {
     this.filter = filter
-    this.dv?.filter(filter, 'contains')
+  }
+  public onGlobalFilter(filterValue: string): void {
+    this.tableFilter = filterValue
+    const globalFilter = { columnId: 'global', value: filterValue }
+    if (!filterValue) {
+      this.interactiveFilters = this.interactiveFilters.filter((f) => f.columnId !== 'global')
+      return
+    }
+    this.interactiveFilters = [...this.interactiveFilters.filter((f) => f.columnId !== 'global'), globalFilter]
+  }
+  public onClearGlobalFilter(filterInput: HTMLInputElement): void {
+    filterInput.value = ''
+    this.onGlobalFilter('')
   }
   public onSortChange(field: string): void {
     this.sortField = field
   }
   public onSortDirChange(asc: boolean): void {
     this.sortOrder = asc ? -1 : 1
+    this.sortDirection = asc ? DataSortDirection.DESCENDING : DataSortDirection.ASCENDING
+  }
+  public onInteractiveFiltersChange(filters: Filter[]): void {
+    this.interactiveFilters = filters
+    const globalFilter = filters.find((filter) => filter.columnId === 'global')
+    this.tableFilter = (globalFilter?.value as string) ?? ''
+  }
+  public onInteractiveSorted(sort: Sort): void {
+    this.sortField = sort.sortColumn
+    this.sortDirection = sort.sortDirection
+    this.sortOrder = sort.sortDirection === DataSortDirection.DESCENDING ? -1 : 1
   }
   public onSearch() {
     this.searchApps()

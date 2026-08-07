@@ -39,6 +39,7 @@ export function productNameValidator(): ValidatorFn {
 
 @Component({
   selector: 'app-product-props',
+  standalone: false,
   templateUrl: './product-props.component.html'
 })
 export class ProductPropertyComponent implements OnChanges {
