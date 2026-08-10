@@ -375,9 +375,6 @@ export class SlotSearchComponent implements OnInit, OnDestroy {
     ev.stopPropagation()
     this.openSlotDetail(mode, data)
   }
-  public onSlotView(data: unknown) {
-    this.openSlotDetail('VIEW', data as SlotData)
-  }
   public onSlotEdit(data: unknown) {
     this.openSlotDetail('EDIT', data as SlotData)
   }
