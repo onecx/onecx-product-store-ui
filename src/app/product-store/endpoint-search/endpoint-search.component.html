@@ -27,7 +27,7 @@
     </div>
   </ocx-search-header>
 
-  <ocx-content *ngIf="endpoints$ | async as endpoints">
+  <ocx-content>
     <p-message
       *ngIf="loading"
       id="ps_endpoint_search_loading_message"
@@ -44,12 +44,12 @@
     ></p-message>
 
     <ocx-interactive-data-view
-      *ngIf="!(loading || exceptionKey)"
       id="ps_endpoint_search_table"
-      [data]="$any(endpoints)"
+      [data]="$any((filteredData$ | async) ?? [])"
       [supportedViewLayouts]="['table']"
       [layout]="'table'"
       [columns]="interactiveColumns"
+      [displayedColumnKeys]="interactiveDisplayedColumnKeys"
       [listGridPaginator]="false"
       [tablePaginator]="true"
       [pageSize]="10"
@@ -66,35 +66,39 @@
       (sorted)="onInteractiveSorted($event)"
       (dataViewLayoutChange)="onLayoutChange($event)"
     >
-      <ng-template pTemplate="item" let-rowData let-i="index">
-        <tr>
-          <td [id]="'ps_endpoint_search_table_row_product_name'" class="bg-inherit white-space-nowrap border-right-1">
-            {{ rowData['productDisplayName'] }}
-          </td>
-
-          <td [id]="'ps_endpoint_search_table_row_app_name'">
-            <a
-              tabindex="0"
-              class="p-2 bookmark-link font-italic text-primary cursor-pointer"
-              [id]="'ps_endpoint_search_table_row_' + i + '_app_name'"
-              (click)="onAppDetail($event, rowData)"
-              (keydown.enter)="onAppDetail($event, rowData)"
-              (keydown.space)="onAppDetail($event, rowData)"
-              [attr.aria-label]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
-              [pTooltip]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
-              tooltipPosition="top"
+      <ng-template #topCenter>
+        <p-inputgroup class="w-auto tm-filter-group">
+          <p-inputgroup-addon>
+            <i class="pi pi-filter"></i>
+          </p-inputgroup-addon>
+          <p-floatlabel>
+            <input
+              #filterInput
+              id="tm_search_filter"
+              type="text"
+              class="tm-filter-input"
+              pInputText
+              [value]="tableFilter"
+              [tooltipPosition]="'bottom'"
+              [pTooltip]="'SEARCH.FILTER.TOOLTIP' | translate"
               tooltipEvent="hover"
-            >
-              {{ rowData['appName'] }}
-            </a>
-          </td>
-          <td [id]="'ps_endpoint_search_table_row_' + i + '_endpoint_name'">
-            <div class="text-ellipsis-2-lines">{{ rowData['endpoint_name'] }}</div>
-          </td>
-          <td [id]="'ps_endpoint_search_table_row_' + i + '_endpoint_path'">
-            <div class="text-ellipsis-2-lines">{{ rowData['endpoint_path'] }}</div>
-          </td>
-        </tr>
+              (input)="onFilterChange(filterInput.value)"
+            />
+            <label for="tm_search_filter" aria-hidden="true"> {{ 'SEARCH.FILTER.LABEL' | translate }}</label>
+          </p-floatlabel>
+          <p-button
+            id="tm_search_filter_clear"
+            icon="pi pi-filter-slash"
+            styleClass="tm-filter-clear"
+            [disabled]="!tableFilter"
+            [ariaLabel]="'SEARCH.FILTER.CLEAR' | translate"
+            [pTooltip]="'SEARCH.FILTER.CLEAR' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+            (click)="onFilterChange('')"
+            (keydown.enter)="onFilterChange('')"
+          />
+        </p-inputgroup>
       </ng-template>
     </ocx-interactive-data-view>
   </ocx-content>

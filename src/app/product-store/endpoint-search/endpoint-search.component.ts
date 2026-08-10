@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnDestroy, OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { FormControl, FormGroup } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
-import { catchError, combineLatest, finalize, map, Observable, of, tap } from 'rxjs'
+import { BehaviorSubject, catchError, combineLatest, finalize, map, Observable, of, Subscription, tap } from 'rxjs'
 
 import { PortalMessageService } from '@onecx/angular-integration-interface'
 import { Action, ColumnType, DataSortDirection, DataTableColumn, Filter, Sort } from '@onecx/angular-accelerator'
@@ -40,7 +40,7 @@ export interface Column {
   templateUrl: './endpoint-search.component.html',
   styleUrls: ['./endpoint-search.component.scss']
 })
-export class EndpointSearchComponent implements OnInit {
+export class EndpointSearchComponent implements OnInit, OnDestroy {
   // dialog
   public loading = false
   public exceptionKey: string | undefined = undefined
@@ -48,6 +48,8 @@ export class EndpointSearchComponent implements OnInit {
   public actions$: Observable<Action[]> | undefined
   public filteredColumns: Column[] = []
   public displayAppDetailDialog = false
+  public tableFilter = ''
+  public displayedColumnKeys: string[] = []
   public interactiveFilters: Filter[] = []
   public interactiveSortField = 'productDisplayName'
   public interactiveSortDirection: DataSortDirection = DataSortDirection.ASCENDING
@@ -56,25 +58,21 @@ export class EndpointSearchComponent implements OnInit {
       id: 'productDisplayName',
       nameKey: 'ENDPOINT.PRODUCT_NAME',
       columnType: ColumnType.STRING,
-      sortable: true,
-      filterable: true
+      sortable: true
     },
-    { id: 'appName', nameKey: 'ENDPOINT.APP_NAME', columnType: ColumnType.STRING, sortable: true, filterable: true },
+    { id: 'appName', nameKey: 'ENDPOINT.APP_NAME', columnType: ColumnType.STRING },
     {
       id: 'endpoint_name',
       nameKey: 'ENDPOINT.NAME.SEARCH',
-      columnType: ColumnType.STRING,
-      sortable: true,
-      filterable: true
+      columnType: ColumnType.STRING
     },
     {
       id: 'endpoint_path',
       nameKey: 'ENDPOINT.PATH',
-      columnType: ColumnType.STRING,
-      sortable: true,
-      filterable: true
+      columnType: ColumnType.STRING
     }
   ]
+  public interactiveDisplayedColumnKeys: string[] = this.interactiveColumns.map((column) => column.id)
 
   // data
   public searchCriteria!: FormGroup<ProductSearchCriteriaControls>
@@ -82,6 +80,10 @@ export class EndpointSearchComponent implements OnInit {
   public mfes$: Observable<MicrofrontendAbstract[]> = of([])
   public products$: Observable<ProductAbstract[]> = of([])
   public mfeItem4Detail: AppAbstract | undefined = undefined
+  public filteredData$ = new BehaviorSubject<MfeEndpoint[]>([])
+  public resultData$ = new BehaviorSubject<MfeEndpoint[]>([])
+  private endpointsSubscription?: Subscription
+  private filterData = ''
 
   public columns: Column[] = [
     {
@@ -112,9 +114,14 @@ export class EndpointSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.initGlobalFilter()
     this.preparePageActions()
     this.declareDataSources()
     this.loadData()
+  }
+
+  ngOnDestroy(): void {
+    this.endpointsSubscription?.unsubscribe()
   }
 
   /****************************************************************************
@@ -129,7 +136,7 @@ export class EndpointSearchComponent implements OnInit {
     this.products$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
       map((data) => data.stream ?? []),
       catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+        this.exceptionKey = this.getHttpExceptionKey(err, 'PRODUCTS')
         console.error('searchProducts', err)
         return of([])
       })
@@ -152,7 +159,7 @@ export class EndpointSearchComponent implements OnInit {
         }),
         map((data) => data.stream ?? []),
         catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.MFES'
+          this.exceptionKey = this.getHttpExceptionKey(err, 'MFES')
           console.error('searchMicrofrontends', err)
           return of([])
         }),
@@ -162,17 +169,25 @@ export class EndpointSearchComponent implements OnInit {
 
   public sortMfes(a: MfeEndpoint, b: MfeEndpoint): number {
     return (
-      a.productName.toUpperCase().localeCompare(b.productName.toUpperCase()) ||
-      (a.exposedModule ? a.exposedModule.toUpperCase() : '').localeCompare(
-        b.exposedModule ? b.exposedModule.toUpperCase() : ''
-      ) ||
-      a.endpoint_name.toUpperCase().localeCompare(b.endpoint_name.toUpperCase())
+      this.upperValue(a.productName).localeCompare(this.upperValue(b.productName)) ||
+      this.upperValue(a.exposedModule).localeCompare(this.upperValue(b.exposedModule)) ||
+      this.upperValue(a.endpoint_name).localeCompare(this.upperValue(b.endpoint_name))
     )
+  }
+
+  private upperValue(value: string | null | undefined): string {
+    return (value ?? '').toUpperCase()
   }
 
   private getProductDisplayName(name: string, pas: ProductAbstract[]): string {
     const pf = pas.find((p) => p.name === name)
     return pf?.displayName ?? ''
+  }
+
+  private getHttpExceptionKey(err: unknown, domain: 'PRODUCTS' | 'MFES'): string {
+    const maybeStatus = (err as { status?: number })?.status
+    const status = typeof maybeStatus === 'number' ? maybeStatus : 0
+    return `EXCEPTIONS.HTTP_STATUS_${status}.${domain}`
   }
 
   // complete refresh: getting meta data and trigger search
@@ -187,7 +202,7 @@ export class EndpointSearchComponent implements OnInit {
             if (mfe.endpoints)
               for (const [i, ep] of mfe.endpoints.entries()) {
                 eps.push({
-                  id: mfe.id,
+                  id: mfe.id + '_' + i,
                   unique_id: mfe.id + '_' + i,
                   appId: mfe.appId,
                   appName: mfe.appName,
@@ -200,12 +215,29 @@ export class EndpointSearchComponent implements OnInit {
                   endpoint_path: ep.path
                 })
               }
-          eps.sort(this.sortMfes)
+          eps.sort((a, b) => this.sortMfes(a, b))
         }
         return eps
       }),
+      catchError((err) => {
+        this.exceptionKey = this.exceptionKey ?? this.getHttpExceptionKey(err, 'MFES')
+        console.error('loadData endpoints', err)
+        return of([])
+      }),
       finalize(() => (this.loading = false))
     )
+
+    this.endpointsSubscription?.unsubscribe()
+    this.endpointsSubscription = this.endpoints$.subscribe({
+      next: (eps) => {
+        this.resultData$.next(eps)
+        this.filteredData$.next(eps)
+      },
+      error: (err) => {
+        this.exceptionKey = this.exceptionKey ?? 'EXCEPTIONS.HTTP_STATUS_0.MFES'
+        console.error('loadData endpoints subscription', err)
+      }
+    })
   }
 
   private preparePageActions(): void {
@@ -257,7 +289,9 @@ export class EndpointSearchComponent implements OnInit {
     this.filteredColumns = activeIds.map((id) => this.columns.find((col) => col.field === id)) as Column[]
   }
   public onFilterChange(event: string): void {
-    this.interactiveFilters = [{ columnId: 'global', value: event }]
+    this.tableFilter = event
+    this.filterData = event
+    this.resultData$.next(this.resultData$.value)
   }
   public onInteractiveFiltersChange(filters: Filter[]): void {
     this.interactiveFilters = filters
@@ -275,6 +309,7 @@ export class EndpointSearchComponent implements OnInit {
   }
   public onCriteriaReset() {
     this.searchCriteria.reset()
+    this.onFilterChange('')
   }
   public onAppDetail(ev: Event, data: MfeEndpoint) {
     ev.stopPropagation()
@@ -285,5 +320,43 @@ export class EndpointSearchComponent implements OnInit {
     this.displayAppDetailDialog = false
     this.mfeItem4Detail = undefined
     if (changed) this.loadData()
+  }
+
+  private initGlobalFilter(): void {
+    this.resultData$
+      .pipe(map((endpoints) => (this.filterData.trim() ? this.stringFilter(this.filterData, endpoints) : endpoints)))
+      .subscribe({
+        next: (filteredData) => {
+          this.filteredData$.next(filteredData)
+        }
+      })
+  }
+
+  private stringFilter(filter: string, endpoints: MfeEndpoint[]): MfeEndpoint[] {
+    const lowerCaseFilter = filter.toLowerCase()
+    return endpoints.filter((endpoint) => {
+      return ['productDisplayName', 'appName', 'endpoint_name', 'endpoint_path'].some((key: string) => {
+        const value = endpoint[key as keyof MfeEndpoint]
+        const searchableText = this.toSearchableText(value)
+        if (!searchableText) return false
+        return searchableText.toLowerCase().includes(lowerCaseFilter)
+      })
+    })
+  }
+
+  private toSearchableText(value: unknown): string | undefined {
+    if (value == null) return undefined
+    if (typeof value === 'string') return value
+    if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') {
+      return value.toString()
+    }
+    if (value instanceof Date) return value.toISOString()
+    if (Array.isArray(value)) {
+      const normalizedValues = value
+        .map((entry) => this.toSearchableText(entry))
+        .filter((entry): entry is string => entry != null && entry !== '')
+      return normalizedValues.length ? normalizedValues.join(' ') : undefined
+    }
+    return undefined
   }
 }

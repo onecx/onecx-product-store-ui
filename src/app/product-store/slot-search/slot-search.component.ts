@@ -1,12 +1,20 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core'
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { FormControl, FormGroup } from '@angular/forms'
-import { BehaviorSubject, catchError, combineLatest, finalize, map, of, Observable, tap } from 'rxjs'
+import { BehaviorSubject, catchError, combineLatest, finalize, map, Observable, of, Subscription, tap } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 import { Table } from 'primeng/table'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
-import { Action, ColumnType, DataSortDirection, DataTableColumn, Filter, Sort } from '@onecx/angular-accelerator'
+import {
+  Action,
+  ColumnType,
+  DataAction,
+  DataSortDirection,
+  DataTableColumn,
+  Filter,
+  Sort
+} from '@onecx/angular-accelerator'
 
 import {
   ProductsAPIService,
@@ -41,7 +49,7 @@ export type ExtendedColumn = Column
   templateUrl: './slot-search.component.html',
   styleUrls: ['./slot-search.component.scss']
 })
-export class SlotSearchComponent implements OnInit {
+export class SlotSearchComponent implements OnInit, OnDestroy {
   // dialog
   public loading = false
   public exceptionKey: string | undefined = undefined
@@ -65,6 +73,16 @@ export class SlotSearchComponent implements OnInit {
       filterable: true
     }
   ]
+  public interactiveDisplayedColumnKeys: string[] = this.interactiveColumns.map((column) => column.id)
+  public interactiveActions: DataAction[] = [
+    {
+      id: 'copy-slot',
+      labelKey: 'ACTIONS.COPY.LABEL',
+      permission: 'SLOT#CREATE',
+      icon: 'pi pi-copy',
+      callback: (data: unknown) => this.onSlotCreate(data)
+    }
+  ]
   // data
   public searchCriteria: FormGroup<SlotSearchCriteria>
   public products$: Observable<ProductAbstract[]> = of([])
@@ -74,6 +92,8 @@ export class SlotSearchComponent implements OnInit {
   public item4Delete: SlotData | undefined
   public filteredData$ = new BehaviorSubject<SlotData[]>([])
   public resultData$ = new BehaviorSubject<SlotData[]>([])
+  public filter = ''
+  private slotDataSubscription?: Subscription
 
   private filterData: any = ''
   public filteredColumns: ExtendedColumn[] = []
@@ -147,6 +167,10 @@ export class SlotSearchComponent implements OnInit {
     this.loadData()
   }
 
+  ngOnDestroy(): void {
+    this.slotDataSubscription?.unsubscribe()
+  }
+
   /****************************************************************************
    *  SEARCHING
    */
@@ -161,7 +185,7 @@ export class SlotSearchComponent implements OnInit {
     this.products$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
       map((data) => data.stream ?? []),
       catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+        this.exceptionKey = this.getHttpExceptionKey(err, 'PRODUCTS')
         console.error('searchProducts', err)
         return of([])
       })
@@ -181,7 +205,7 @@ export class SlotSearchComponent implements OnInit {
         }),
         map((data) => data.stream ?? []),
         catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.SLOTS'
+          this.exceptionKey = this.getHttpExceptionKey(err, 'SLOTS')
           console.error('searchSlots', err)
           return of([])
         }),
@@ -190,6 +214,8 @@ export class SlotSearchComponent implements OnInit {
   }
   public resetFilters() {
     this.filterData = ''
+    this.filter = ''
+    this.interactiveFilters = []
     this.filterPanelSlotNameVisible = false
     this.filterPanelSlotStateVisible = false
     this.filterPanelProductVisible = false
@@ -213,20 +239,40 @@ export class SlotSearchComponent implements OnInit {
           }
           sd.push(slot)
         }
-        sd.sort(this.sortSlots)
-        this.resultData$.next(sd)
-        this.filteredData$.next(sd)
+        sd.sort((a, b) => this.sortSlots(a, b))
         return sd
       }),
       finalize(() => (this.loading = false))
     )
+
+    this.slotDataSubscription?.unsubscribe()
+    this.slotDataSubscription = this.slotData$.subscribe({
+      next: (sd) => {
+        this.resultData$.next(sd)
+        this.filteredData$.next(sd)
+      },
+      error: (err) => {
+        this.exceptionKey = this.exceptionKey ?? 'EXCEPTIONS.HTTP_STATUS_0.SLOTS'
+        console.error('loadData', err)
+      }
+    })
   }
   private sortSlots(a: SlotData, b: SlotData): number {
     return (
-      a.productName.toUpperCase().localeCompare(b.productName.toUpperCase()) ||
-      a.appId.toUpperCase().localeCompare(b.appId.toUpperCase()) ||
-      a.name.toUpperCase().localeCompare(b.name.toUpperCase())
+      this.upperValue(a.productName).localeCompare(this.upperValue(b.productName)) ||
+      this.upperValue(a.appId).localeCompare(this.upperValue(b.appId)) ||
+      this.upperValue(a.name).localeCompare(this.upperValue(b.name))
     )
+  }
+
+  private upperValue(value: string | null | undefined): string {
+    return (value ?? '').toUpperCase()
+  }
+
+  private getHttpExceptionKey(err: unknown, domain: 'PRODUCTS' | 'SLOTS'): string {
+    const maybeStatus = (err as { status?: number })?.status
+    const status = typeof maybeStatus === 'number' ? maybeStatus : 0
+    return `EXCEPTIONS.HTTP_STATUS_${status}.${domain}`
   }
 
   private getProductDisplayName(name: string, pas: ProductAbstract[]): string {
@@ -303,6 +349,8 @@ export class SlotSearchComponent implements OnInit {
   }
   public onInteractiveFiltersChange(filters: Filter[]): void {
     this.interactiveFilters = filters
+    const globalFilter = filters.find((f) => f.columnId === 'global')
+    if (typeof globalFilter?.value === 'string') this.filter = globalFilter.value
   }
   public onInteractiveSorted(sort: Sort): void {
     this.interactiveSortField = sort.sortColumn
@@ -313,6 +361,7 @@ export class SlotSearchComponent implements OnInit {
   }
   public onSearchReset() {
     this.searchCriteria.reset()
+    this.onFilterChange('')
   }
   public onBack() {
     this.router.navigate(['../'], { relativeTo: this.route })
@@ -324,6 +373,18 @@ export class SlotSearchComponent implements OnInit {
 
   public onSlotDetail(mode: ChangeMode, ev: MouseEvent, data: SlotData) {
     ev.stopPropagation()
+    this.openSlotDetail(mode, data)
+  }
+  public onSlotView(data: unknown) {
+    this.openSlotDetail('VIEW', data as SlotData)
+  }
+  public onSlotEdit(data: unknown) {
+    this.openSlotDetail('EDIT', data as SlotData)
+  }
+  public onSlotCreate(data: unknown) {
+    this.openSlotDetail('CREATE', data as SlotData)
+  }
+  private openSlotDetail(mode: ChangeMode, data: SlotData) {
     this.item4Detail = { ...data }
     this.changeMode = mode
     this.displaySlotDetailDialog = true
@@ -335,6 +396,12 @@ export class SlotSearchComponent implements OnInit {
 
   public onSlotDelete(ev: any, slot: SlotData) {
     ev.stopPropagation()
+    this.openSlotDelete(slot)
+  }
+  public onSlotDeleteAction(slot: unknown) {
+    this.openSlotDelete(slot as SlotData)
+  }
+  private openSlotDelete(slot: SlotData) {
     this.item4Delete = { ...slot }
     this.displaySlotDeleteDialog = true
   }
@@ -365,15 +432,26 @@ export class SlotSearchComponent implements OnInit {
   // triggered by the use of global table filter => switching filter icons
   // on simple string filter: if filter is active then icon switched to filter-slash
   public onFilterChange(val: any, icon?: HTMLElement, showClear?: boolean): void {
+    if (typeof val === 'string') {
+      this.filter = val
+    }
     this.filterData = val
     this.resultData$.next(this.resultData$.value)
-    const iconSuffix = showClear ? 'slash' : 'fill'
-    if (typeof val === 'string' && icon?.className)
-      icon.className = val === '' ? 'pi pi-filter' : 'pi pi-filter-' + iconSuffix
-    if (typeof val === 'object' && icon?.className)
-      icon.className = val.length === 0 ? 'pi pi-filter' : 'pi pi-filter-fill'
-    // on reset of the global filter: clear all column filter
+    this.updateFilterIcon(val, icon, showClear)
+    // on reset of the global filter: clear all column filter icons
     if (typeof val === 'string' && !icon) this.onResetFilterIcons('not empty', ['slotName', 'slotState', 'product'])
+  }
+
+  private updateFilterIcon(val: any, icon?: HTMLElement, showClear?: boolean): void {
+    if (!icon?.className) return
+    if (typeof val === 'string') {
+      const iconSuffix = showClear ? 'slash' : 'fill'
+      icon.className = val === '' ? 'pi pi-filter' : 'pi pi-filter-' + iconSuffix
+      return
+    }
+    if (typeof val === 'object') {
+      icon.className = val.length === 0 ? 'pi pi-filter' : 'pi pi-filter-fill'
+    }
   }
 
   private initGlobalFilter() {
@@ -401,7 +479,7 @@ export class SlotSearchComponent implements OnInit {
   private stringFilter(filter: string, slots: SlotData[]): SlotData[] {
     const lowerCaseFilter = filter.toLowerCase()
     return slots.filter((slot: SlotData) => {
-      return ['name', 'appId', 'productDisplayName'].some((key: string) => {
+      return ['name', 'description', 'appId', 'productDisplayName'].some((key: string) => {
         const value = slot[key as keyof SlotData]
         return value?.toString().toLowerCase().includes(lowerCaseFilter)
       })
@@ -493,12 +571,14 @@ export class SlotSearchComponent implements OnInit {
     return (a.deprecated === true ? 1 : 0) - (b.deprecated === true ? 1 : 0)
   }
   private compareSlotNames(a: SlotData, b: SlotData): number {
-    return a.name.toUpperCase().localeCompare(b.name.toUpperCase()) || a.appId?.localeCompare(b.appId)
+    return (
+      this.upperValue(a.name).localeCompare(this.upperValue(b.name)) || (a.appId ?? '').localeCompare(b.appId ?? '')
+    )
   }
   private compareProducts(a: SlotData, b: SlotData): number {
     return (
-      a.productDisplayName.toUpperCase().localeCompare(b.productDisplayName.toUpperCase()) ||
-      a.appId?.localeCompare(b.appId)
+      this.upperValue(a.productDisplayName).localeCompare(this.upperValue(b.productDisplayName)) ||
+      (a.appId ?? '').localeCompare(b.appId ?? '')
     )
   }
 }
