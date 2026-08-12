@@ -120,6 +120,35 @@
           />
         </p-inputgroup>
       </ng-template>
+
+      <ng-template pTemplate="stateIdTableCell" let-rowObject="rowObject" let-column="column">
+        <div class="slot-state-icons inline-flex flex-nowrap align-items-center justify-content-center column-gap-2">
+          <span
+            class="pi pi-cog"
+            [ngClass]="{ hidden: !rowObject['operator'] }"
+            [attr.aria-label]="'SLOT.OPERATOR_SEARCH' | translate"
+            [pTooltip]="'SLOT.OPERATOR_SEARCH' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          ></span>
+          <span
+            class="pi pi-ban danger-action-text"
+            [ngClass]="{ hidden: !rowObject['undeployed'] }"
+            [attr.aria-label]="'SLOT.UNDEPLOYED_SEARCH' | translate"
+            [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          ></span>
+          <span
+            class="pi pi-exclamation-circle danger-action-text"
+            [ngClass]="{ hidden: !rowObject['deprecated'] || rowObject['undeployed'] }"
+            [attr.aria-label]="'SLOT.DEPRECATED_SEARCH' | translate"
+            [pTooltip]="'SLOT.DEPRECATED_SEARCH' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          ></span>
+        </div>
+      </ng-template>
     </ocx-interactive-data-view>
   </ocx-content>
 </ocx-portal-page>

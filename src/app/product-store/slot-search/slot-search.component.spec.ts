@@ -72,11 +72,11 @@ const slots: Slot[] = [
   }
 ]
 const slotData: SlotData[] = [
-  { ...slots[0], productDisplayName: products[0].displayName ?? '' },
-  { ...slots[1], productDisplayName: products[1].displayName ?? '' },
-  { ...slots[2], productDisplayName: products[0].displayName ?? '' },
-  { ...slots[3], productDisplayName: products[1].displayName ?? '' },
-  { ...slots[4], productDisplayName: products[1].displayName ?? '' }
+  { ...slots[0], productDisplayName: products[0].displayName ?? '', state: 'undeployed' },
+  { ...slots[1], productDisplayName: products[1].displayName ?? '', state: 'operator' },
+  { ...slots[2], productDisplayName: products[0].displayName ?? '', state: 'deprecated' },
+  { ...slots[3], productDisplayName: products[1].displayName ?? '', state: 'operator' },
+  { ...slots[4], productDisplayName: products[1].displayName ?? '', state: 'operator' }
 ]
 
 describe('SlotSearchComponent', () => {

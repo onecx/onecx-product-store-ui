@@ -30,7 +30,7 @@ export interface SlotSearchCriteria {
   slotName: FormControl<string | null>
   productName: FormControl<string | null>
 }
-export type SlotData = Slot & { productDisplayName: string }
+export type SlotData = Slot & { productDisplayName: string; state: string }
 export type SlotState = { label: string; value: string; icon: string }
 export interface Column {
   field: string
@@ -63,7 +63,14 @@ export class SlotSearchComponent implements OnInit, OnDestroy {
   public interactiveSortDirection: DataSortDirection = DataSortDirection.ASCENDING
   public interactiveColumns: DataTableColumn[] = [
     { id: 'name', nameKey: 'SLOT.NAME', columnType: ColumnType.STRING, sortable: true, filterable: true },
-    { id: 'description', nameKey: 'SLOT.DESCRIPTION', columnType: ColumnType.STRING, sortable: true, filterable: true },
+    {
+      id: 'state',
+      nameKey: 'SLOT.STATE',
+      tooltipKey: 'SLOT.TOOLTIPS.STATE',
+      columnType: ColumnType.STRING,
+      sortable: true,
+      filterable: true
+    },
     { id: 'appId', nameKey: 'SLOT.APP_ID', columnType: ColumnType.STRING, sortable: true, filterable: true },
     {
       id: 'productDisplayName',
@@ -235,7 +242,8 @@ export class SlotSearchComponent implements OnInit, OnDestroy {
         for (const s of slots) {
           slot = {
             ...s,
-            productDisplayName: this.getProductDisplayName(s.productName, ps)
+            productDisplayName: this.getProductDisplayName(s.productName, ps),
+            state: this.getSlotState(s)
           }
           sd.push(slot)
         }
@@ -278,6 +286,13 @@ export class SlotSearchComponent implements OnInit, OnDestroy {
   private getProductDisplayName(name: string, pas: ProductAbstract[]): string {
     const pf = pas.find((p) => p.name === name)
     return pf?.displayName ?? name
+  }
+
+  private getSlotState(slot: Slot): string {
+    if (slot.operator) return 'operator'
+    if (slot.undeployed) return 'undeployed'
+    if (slot.deprecated) return 'deprecated'
+    return ''
   }
 
   /**
@@ -476,7 +491,7 @@ export class SlotSearchComponent implements OnInit, OnDestroy {
   private stringFilter(filter: string, slots: SlotData[]): SlotData[] {
     const lowerCaseFilter = filter.toLowerCase()
     return slots.filter((slot: SlotData) => {
-      return ['name', 'description', 'appId', 'productDisplayName'].some((key: string) => {
+      return ['name', 'state', 'appId', 'productDisplayName'].some((key: string) => {
         const value = slot[key as keyof SlotData]
         return value?.toString().toLowerCase().includes(lowerCaseFilter)
       })
