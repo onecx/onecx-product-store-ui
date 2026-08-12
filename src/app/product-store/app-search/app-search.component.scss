@@ -10,9 +10,36 @@
 @include search-criteria-select-button-slim;
 
 :host ::ng-deep {
-  .app-search-top-center {
-    gap: 0;
+  ocx-search-header [aria-label='Search Criteria'] #ps_app_search_criteria_app_name,
+  ocx-search-header [aria-label='Search Criteria'] #ps_app_search_criteria_product_name {
+    height: 3rem;
+  }
+
+  ocx-interactive-data-view
+    #interactiveDataViewHeader
+    > div.flex.flex-wrap.justify-content-between.align-items-center.py-1.gap-2
+    > div:nth-child(2) {
+    flex: 1 1 0;
+    display: flex;
     justify-content: center;
+  }
+
+  .app-search-top-center {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    column-gap: 1rem;
+    align-items: center;
+  }
+
+  .app-search-quick-filter {
+    justify-self: start;
+  }
+
+  .tm-filter-clear {
+    border-left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
   }
 
   .h-05rem {
@@ -23,5 +50,55 @@
     &.badge-2 {
       top: 39px;
     }
+  }
+
+  .p-dataview-grid .p-dataview-content .grid {
+    gap: 0 !important;
+  }
+  .p-dataview-grid .p-dataview-content .grid .card {
+    box-shadow:
+      0 2px 1px -1px rgba(0, 0, 0, 0.2),
+      0 1px 1px 0 rgba(0, 0, 0, 0.14),
+      0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .app-search-top-center {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .tm-filter-group {
+    display: inline-flex;
+    align-items: stretch;
+    flex-wrap: nowrap;
+  }
+
+  .tm-filter-float {
+    display: inline-flex;
+    align-items: stretch;
+  }
+
+  .tm-filter-group .p-inputgroupaddon,
+  .tm-filter-input,
+  .tm-filter-group .tm-filter-clear {
+    height: 2.5rem;
+  }
+
+  .tm-filter-group .p-inputgroupaddon,
+  .tm-filter-group .tm-filter-clear {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tm-filter-input {
+    min-width: 14rem;
+  }
+
+  .tm-filter-clear .pi {
+    line-height: 1;
   }
 }

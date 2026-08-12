@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { FormControl, FormGroup } from '@angular/forms'
-import { finalize, map, of, Observable, catchError } from 'rxjs'
+import { BehaviorSubject, finalize, map, of, Observable, catchError } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 
 import { Action, ColumnType, DataSortDirection, DataTableColumn, Filter, Sort } from '@onecx/angular-accelerator'
@@ -39,6 +39,8 @@ export class ProductSearchComponent implements OnInit {
   // data
   public products$!: Observable<ProductAbstractExtended[]>
   public criteria$!: Observable<ProductCriteria>
+  public filteredData$ = new BehaviorSubject<ProductAbstractExtended[]>([])
+  public resultData$ = new BehaviorSubject<ProductAbstractExtended[]>([])
   public searchCriteria!: FormGroup<ProductSearchCriteriaControls>
   public filter: string | undefined
   public interactiveFilters: Filter[] = []
@@ -46,6 +48,7 @@ export class ProductSearchComponent implements OnInit {
   public sortField = 'displayName'
   public sortOrder = 1
   public quickFilterItems: string[] = []
+  private filterData = ''
   public dataViewColumns: DataTableColumn[] = [
     {
       id: 'displayName',
@@ -66,6 +69,7 @@ export class ProductSearchComponent implements OnInit {
     { id: 'undeployed', nameKey: 'PRODUCT.UNDEPLOYED', columnType: ColumnType.STRING, filterable: true },
     { id: 'multitenancy', nameKey: 'INTERNAL.MULTITENANCY', columnType: ColumnType.STRING, filterable: true }
   ]
+  public displayedColumnKeys: string[] = this.dataViewColumns.map((column) => column.id)
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -83,8 +87,27 @@ export class ProductSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.preparePageActions()
+    this.initGlobalFilter()
     this.searchProducts()
     this.getCriteria()
+  }
+
+  private initGlobalFilter(): void {
+    this.resultData$
+      .pipe(map((products) => (this.filterData.trim() ? this.stringFilter(this.filterData, products) : products)))
+      .subscribe({
+        next: (filteredData) => this.filteredData$.next(filteredData)
+      })
+  }
+
+  private stringFilter(filter: string, products: ProductAbstractExtended[]): ProductAbstractExtended[] {
+    const lowerCaseFilter = filter.toLowerCase()
+    return products.filter((product) => {
+      return ['displayName', 'name', 'provider', 'classes', 'version'].some((key: string) => {
+        const value = product[key as keyof ProductAbstractExtended]
+        return value?.toString().toLowerCase().includes(lowerCaseFilter)
+      })
+    })
   }
 
   private searchProducts(): void {
@@ -113,6 +136,9 @@ export class ProductSearchComponent implements OnInit {
       }),
       finalize(() => (this.loading = false))
     )
+    this.products$.subscribe({
+      next: (products) => this.resultData$.next(products)
+    })
   }
   public sortProductsByDisplayName(a: ProductAbstract, b: ProductAbstract): number {
     return (a.displayName as string).toUpperCase().localeCompare((b.displayName as string).toUpperCase())
@@ -190,6 +216,8 @@ export class ProductSearchComponent implements OnInit {
   }
   public onFilterChange(filter: string): void {
     this.filter = filter
+    this.filterData = filter
+    this.resultData$.next(this.resultData$.value)
   }
   public onSortChange(field: string): void {
     this.sortField = field

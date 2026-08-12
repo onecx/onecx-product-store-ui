@@ -27,6 +27,12 @@
       0 1px 1px 0 rgba(0, 0, 0, 0.14),
       0 1px 3px 0 rgba(0, 0, 0, 0.12);
   }
+
+  .tm-filter-clear {
+    border-left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
 }
 
 @media screen and (min-width: 768px) {
@@ -97,12 +103,6 @@
 
   .tm-filter-input {
     min-width: 14rem;
-  }
-
-  .tm-filter-clear {
-    border-left: 0;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
   }
 
   .tm-filter-clear .pi {

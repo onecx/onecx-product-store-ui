@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
 import { SelectItem } from 'primeng/api'
-import { combineLatest, finalize, map, of, Observable, Subject, catchError } from 'rxjs'
+import { combineLatest, finalize, map, of, Observable, Subject, catchError, BehaviorSubject } from 'rxjs'
 
 import { UserService } from '@onecx/angular-integration-interface'
 import {
@@ -48,8 +48,11 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public actions$: Observable<Action[]> | undefined
   public dateFormat = 'medium'
   public apps$!: Observable<AppAbstract[]>
+  public filteredData$ = new BehaviorSubject<AppAbstract[]>([])
+  public resultData$ = new BehaviorSubject<AppAbstract[]>([])
   public mfes$!: Observable<MicrofrontendPageResult>
   public mss$!: Observable<MicroservicePageResult>
+  private filterData = ''
   public app: AppAbstract | undefined
   public appSearchCriteriaGroup!: FormGroup<AppSearchCriteria>
   public viewMode: 'grid' | 'list' = 'grid'
@@ -88,6 +91,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     { id: 'undeployed', nameKey: 'APP.UNDEPLOYED', columnType: ColumnType.STRING, filterType: FilterType.EQUALS },
     { id: 'deprecated', nameKey: 'APP.DEPRECATED', columnType: ColumnType.STRING, filterType: FilterType.EQUALS }
   ]
+  public displayedColumnKeys: string[] = this.dataViewColumns.map((column) => column.id)
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -121,6 +125,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     void this.initPermissions()
     this.preparePageActions()
+    this.initGlobalFilter()
     this.searchApps()
   }
 
@@ -132,6 +137,30 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.destroy$.next(undefined)
     this.destroy$.complete()
+  }
+
+  /**
+   * GLOBAL FILTER
+   */
+  private initGlobalFilter(): void {
+    this.resultData$
+      .pipe(map((apps) => (this.filterData.trim() ? this.stringFilter(this.filterData, apps) : apps)))
+      .subscribe({
+        next: (filteredApps) => this.filteredData$.next(filteredApps)
+      })
+  }
+
+  private stringFilter(filter: string, apps: AppAbstract[]): AppAbstract[] {
+    const lowerCaseFilter = filter.toLowerCase()
+    return apps.filter((app) => {
+      return ['appId', 'appName', 'appType', 'appVersion', 'productName', 'classifications'].some((key: string) => {
+        const value = app[key as keyof AppAbstract]
+        if (Array.isArray(value)) {
+          return value.some((v) => v?.toString().toLowerCase().includes(lowerCaseFilter))
+        }
+        return value?.toString().toLowerCase().includes(lowerCaseFilter)
+      })
+    })
   }
 
   /**
@@ -222,6 +251,9 @@ export class AppSearchComponent implements OnInit, OnDestroy {
         this.apps$ = this.searchMss()
         break
     }
+    this.apps$.subscribe({
+      next: (apps) => this.resultData$.next(apps)
+    })
   }
   private sortAppsByAppId(a: AppAbstract, b: AppAbstract): number {
     return (a.appId as string).toUpperCase().localeCompare((b.appId as string).toUpperCase())
@@ -327,19 +359,8 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   }
   public onFilterChange(filter: string): void {
     this.filter = filter
-  }
-  public onGlobalFilter(filterValue: string): void {
-    this.tableFilter = filterValue
-    const globalFilter = { columnId: 'global', value: filterValue }
-    if (!filterValue) {
-      this.interactiveFilters = this.interactiveFilters.filter((f) => f.columnId !== 'global')
-      return
-    }
-    this.interactiveFilters = [...this.interactiveFilters.filter((f) => f.columnId !== 'global'), globalFilter]
-  }
-  public onClearGlobalFilter(filterInput: HTMLInputElement): void {
-    filterInput.value = ''
-    this.onGlobalFilter('')
+    this.filterData = filter
+    this.resultData$.next(this.resultData$.value)
   }
   public onSortChange(field: string): void {
     this.sortField = field

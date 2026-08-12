@@ -84,10 +84,11 @@
     <ocx-interactive-data-view
       *ngIf="!loading && !exceptionKey"
       id="ps_product_search_dataview"
-      [data]="$any(products)"
+      [data]="$any((filteredData$ | async) ?? [])"
       [supportedViewLayouts]="['grid', 'list']"
       [layout]="viewMode"
       [columns]="dataViewColumns"
+      [displayedColumnKeys]="displayedColumnKeys"
       [listGridPaginator]="true"
       [tablePaginator]="false"
       [pageSizes]="viewMode === 'grid' ? [100, 1000] : [20, 50, 100]"

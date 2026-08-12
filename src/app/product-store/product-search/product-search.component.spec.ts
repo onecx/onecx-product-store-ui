@@ -68,6 +68,10 @@ describe('ProductSearchComponent', () => {
     it('should create', () => {
       expect(component).toBeTruthy()
     })
+
+    it('should expose displayedColumnKeys for all data view columns', () => {
+      expect(component.displayedColumnKeys).toEqual(component.dataViewColumns.map((column) => column.id))
+    })
   })
 
   describe('UI page actions', () => {
@@ -107,6 +111,31 @@ describe('ProductSearchComponent', () => {
       component.onFilterChange(filter)
 
       expect(component.filter).toEqual(filter)
+    })
+
+    it('should filter the product list onFilterChange', () => {
+      const filter = 'team'
+      apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product] } as ProductPageResult))
+
+      component.onSearch()
+      component.onFilterChange(filter)
+
+      component.filteredData$.subscribe((result) => {
+        expect(result.length).toBe(1)
+        expect(result[0].provider).toBe('team')
+      })
+    })
+
+    it('should clear the product list filter onFilterChange', () => {
+      const filter = 'non-existent'
+      apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product] } as ProductPageResult))
+
+      component.onSearch()
+      component.onFilterChange(filter)
+
+      component.filteredData$.subscribe((result) => {
+        expect(result.length).toBe(0)
+      })
     })
 
     it('should set correct value onSortChange', () => {

@@ -333,6 +333,37 @@ describe('AppSearchComponent', () => {
     expect(component.filter).toBe(filter)
   })
 
+  it('should filter the app list onFilterChange', () => {
+    const filter = 'prodName'
+    component.appSearchCriteriaGroup.controls['appType'].setValue('ALL')
+    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: [mfe] } as MicrofrontendPageResult))
+    apiMsServiceSpy.searchMicroservice.and.returnValue(of({ stream: [ms] } as MicroservicePageResult))
+
+    component.searchApps()
+    component.onFilterChange(filter)
+
+    component.filteredData$.subscribe((result) => {
+      expect(result.length).toBe(2)
+      result.forEach((app) => {
+        expect(app.productName).toBe('prodName')
+      })
+    })
+  })
+
+  it('should clear the app list filter onFilterChange', () => {
+    const filter = 'non-existent'
+    component.appSearchCriteriaGroup.controls['appType'].setValue('ALL')
+    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: [mfe] } as MicrofrontendPageResult))
+    apiMsServiceSpy.searchMicroservice.and.returnValue(of({ stream: [ms] } as MicroservicePageResult))
+
+    component.searchApps()
+    component.onFilterChange(filter)
+
+    component.filteredData$.subscribe((result) => {
+      expect(result.length).toBe(0)
+    })
+  })
+
   describe('onAppTypeFilterChange', () => {
     it('should set appTypeFilterValue when ev.value is provided', () => {
       const event = { value: 'testValue' }
