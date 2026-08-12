@@ -37,103 +37,111 @@
     </div>
   </ng-template>
 
-  <p-tabView #panelDetail [(activeIndex)]="selectedTabIndex">
-    <p-tabPanel [header]="'DIALOG.TABS.LOCAL' | translate" [tooltip]="'DIALOG.TABS.TOOLTIPS.LOCAL' | translate">
-      <form *ngIf="!loading" [formGroup]="formGroupSlot" errorTailor>
-        <ng-template pTemplate="header">
-          <span>{{ 'ACTIONS.' + this.changeMode + '.SLOT.HEADER' | translate }}</span>
-        </ng-template>
+  <p-tabs [value]="selectedTabIndex" (valueChange)="onTabChange($event)">
+    <p-tablist>
+      <p-tab [value]="0" [attr.aria-label]="'DIALOG.TABS.LOCAL' | translate">
+        <span [pTooltip]="'DIALOG.TABS.TOOLTIPS.LOCAL' | translate" tooltipPosition="top" tooltipEvent="hover">
+          {{ 'ACTIONS.' + this.changeMode + '.SLOT.HEADER' | translate }}
+        </span>
+      </p-tab>
 
-        <div class="flex flex-column row-gap-4">
-          <!-- row 1 -->
-          <div class="flex flex-row flex-wrap gap-4">
-            <span class="flex-grow-1 p-float-label" controlErrorAnchor>
+      <p-tab [value]="1" [disabled]="changeMode === 'CREATE'" [attr.aria-label]="'DIALOG.TABS.INTERN' | translate">
+        <span [pTooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate" tooltipPosition="top" tooltipEvent="hover">
+          {{ 'DIALOG.TABS.INTERN' | translate }}
+        </span>
+      </p-tab>
+    </p-tablist>
+
+    <p-tabpanels>
+      <p-tabpanel [value]="0">
+        <form *ngIf="!loading" [formGroup]="formGroupSlot" errorTailor>
+          <div class="flex flex-column row-gap-4">
+            <!-- row 1 -->
+            <div class="flex flex-row flex-wrap gap-4">
+              <span class="flex-grow-1 p-float-label" controlErrorAnchor>
+                <input
+                  pInputText
+                  type="text"
+                  id="ps_slot_detail_form_field_app_id"
+                  class="w-full pt-3 pb-2 text-responsive"
+                  formControlName="appId"
+                  [attr.aria-label]="'SLOT.APP_ID' | translate"
+                  [pTooltip]="'SLOT.TOOLTIPS.APP_ID' | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                />
+                <label class="ocx-required-label" for="ps_slot_detail_form_field_app_id">
+                  {{ 'SLOT.APP_ID' | translate }}
+                </label>
+              </span>
+              <span class="flex-grow-1 p-float-label" controlErrorAnchor>
+                <input
+                  pInputText
+                  type="text"
+                  id="ps_slot_detail_form_field_slot_name"
+                  class="w-full pt-3 pb-2 text-responsive"
+                  formControlName="name"
+                  [attr.aria-label]="'SLOT.NAME' | translate"
+                  [pTooltip]="'SLOT.TOOLTIPS.NAME' | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                />
+                <label class="ocx-required-label" for="ps_slot_detail_form_field_app_name">
+                  {{ 'SLOT.NAME' | translate }}
+                </label>
+              </span>
+            </div>
+
+            <!-- row 2 -->
+            <div class="flex flex-row flex-wrap gap-4">
+              <span class="flex-grow-1 p-float-label" controlErrorAnchor>
+                <input
+                  pInputText
+                  type="text"
+                  id="ps_slot_detail_form_field_product_name"
+                  class="w-full pt-3 pb-2 text-responsive"
+                  formControlName="productName"
+                  [attr.aria-label]="'SLOT.PRODUCT_NAME' | translate"
+                  [pTooltip]="'SLOT.TOOLTIPS.PRODUCT_NAME' | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                />
+                <label class="ocx-required-label" for="ps_slot_detail_form_field_product_name">
+                  {{ 'SLOT.PRODUCT_NAME' | translate }}
+                </label>
+              </span>
+            </div>
+
+            <!-- row 3 -->
+            <!-- row 4 -->
+            <!-- row 5 -->
+            <span class="p-float-label" controlErrorAnchor>
               <input
                 pInputText
                 type="text"
-                id="ps_slot_detail_form_field_app_id"
+                id="ps_slot_detail_form_field_description"
                 class="w-full pt-3 pb-2 text-responsive"
-                formControlName="appId"
-                [attr.aria-label]="'SLOT.APP_ID' | translate"
-                [pTooltip]="'SLOT.TOOLTIPS.APP_ID' | translate"
+                formControlName="description"
+                [attr.aria-label]="'SLOT.DESCRIPTION' | translate"
+                [pTooltip]="'SLOT.TOOLTIPS.DESCRIPTION' | translate"
                 tooltipPosition="top"
                 tooltipEvent="hover"
               />
-              <label class="ocx-required-label" for="ps_slot_detail_form_field_app_id">
-                {{ 'SLOT.APP_ID' | translate }}
-              </label>
-            </span>
-            <span class="flex-grow-1 p-float-label" controlErrorAnchor>
-              <input
-                pInputText
-                type="text"
-                id="ps_slot_detail_form_field_slot_name"
-                class="w-full pt-3 pb-2 text-responsive"
-                formControlName="name"
-                [attr.aria-label]="'SLOT.NAME' | translate"
-                [pTooltip]="'SLOT.TOOLTIPS.NAME' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              />
-              <label class="ocx-required-label" for="ps_slot_detail_form_field_app_name">
-                {{ 'SLOT.NAME' | translate }}
-              </label>
+              <label for="ps_slot_detail_form_field_description"> {{ 'SLOT.DESCRIPTION' | translate }} </label>
             </span>
           </div>
+        </form>
+      </p-tabpanel>
 
-          <!-- row 2 -->
-          <div class="flex flex-row flex-wrap gap-4">
-            <span class="flex-grow-1 p-float-label" controlErrorAnchor>
-              <input
-                pInputText
-                type="text"
-                id="ps_slot_detail_form_field_product_name"
-                class="w-full pt-3 pb-2 text-responsive"
-                formControlName="productName"
-                [attr.aria-label]="'SLOT.PRODUCT_NAME' | translate"
-                [pTooltip]="'SLOT.TOOLTIPS.PRODUCT_NAME' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              />
-              <label class="ocx-required-label" for="ps_slot_detail_form_field_product_name">
-                {{ 'SLOT.PRODUCT_NAME' | translate }}
-              </label>
-            </span>
-          </div>
-
-          <!-- row 3 -->
-          <!-- row 4 -->
-          <!-- row 5 -->
-          <span class="p-float-label" controlErrorAnchor>
-            <input
-              pInputText
-              type="text"
-              id="ps_slot_detail_form_field_description"
-              class="w-full pt-3 pb-2 text-responsive"
-              formControlName="description"
-              [attr.aria-label]="'SLOT.DESCRIPTION' | translate"
-              [pTooltip]="'SLOT.TOOLTIPS.DESCRIPTION' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <label for="ps_slot_detail_form_field_description"> {{ 'SLOT.DESCRIPTION' | translate }} </label>
-          </span>
-        </div>
-      </form>
-    </p-tabPanel>
-
-    <p-tabPanel
-      [disabled]="changeMode === 'CREATE'"
-      [header]="'DIALOG.TABS.INTERN' | translate"
-      [tooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate"
-    >
-      <app-slot-intern
-        [slot]="slot"
-        [changeMode]="changeMode"
-        (undeployed)="onChangeUndeployedValue($event)"
-      ></app-slot-intern>
-    </p-tabPanel>
-  </p-tabView>
+      <p-tabpanel [value]="1">
+        <app-slot-intern
+          [slot]="slot"
+          [changeMode]="changeMode"
+          (undeployed)="onChangeUndeployedValue($event)"
+        ></app-slot-intern>
+      </p-tabpanel>
+    </p-tabpanels>
+  </p-tabs>
 
   <ng-template pTemplate="footer">
     <div class="flex flex-wrap justify-content-end gap-2 mb-1">

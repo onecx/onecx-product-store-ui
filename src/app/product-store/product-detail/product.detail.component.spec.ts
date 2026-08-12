@@ -309,7 +309,7 @@ describe('ProductDetailComponent', () => {
     })
 
     it('should behave correctly onTabChange: 1', () => {
-      component.onTabChange({ index: 1 }, product)
+      component.onTabChange(1, product)
 
       expect(component.selectedTabIndex).toEqual(1)
       expect(component.product_for_apps).toEqual(product)

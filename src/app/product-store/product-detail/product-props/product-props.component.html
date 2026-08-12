@@ -3,7 +3,7 @@
     <!-- row 1 -->
     <div class="flex flex-row flex-wrap gap-4">
       <div class="flex-grow-1">
-        <p-float-label>
+        <p-float-label variant="on">
           <input
             pInputText
             type="text"
@@ -26,7 +26,7 @@
           >
         </div>
       </div>
-      <p-float-label>
+      <p-float-label variant="on">
         <input
           pInputText
           type="text"
@@ -46,7 +46,7 @@
 
     <!-- row 2 -->
     <div class="flex flex-row flex-wrap gap-4">
-      <p-float-label>
+      <p-float-label variant="on" class="flex-1">
         <input
           pInputText
           type="text"
@@ -62,7 +62,7 @@
           {{ 'PRODUCT.DISPLAY_NAME' | translate }}</label
         >
       </p-float-label>
-      <p-float-label>
+      <p-float-label variant="on" class="flex-1">
         <input
           pInputText
           type="text"
@@ -82,7 +82,7 @@
 
     <!-- row 3 -->
     <div class="flex flex-row flex-wrap gap-4 align-items-center" *ngIf="criteria$ | async as criteria">
-      <p-floatlabel class="flex-grow-1">
+      <p-floatlabel variant="on" class="flex-1">
         <p-autoComplete
           id="ps_product_detail_form_field_provider"
           styleClass="w-full"
@@ -99,7 +99,7 @@
         ></p-autoComplete>
         <label for="ps_product_detail_form_field_provider">{{ 'PRODUCT.PROVIDER' | translate }}</label>
       </p-floatlabel>
-      <p-floatlabel class="flex-grow-1 min-w-full sm:min-w-0">
+      <p-floatlabel variant="on" class="flex-1">
         <p-autoComplete
           id="ps_product_detail_form_field_classifications"
           [styleClass]="'w-full' + (changeMode === 'VIEW' ? ' hide-item-decoration' : '')"
@@ -117,7 +117,7 @@
         ></p-autoComplete>
         <label for="ps_product_detail_form_field_classifications">{{ 'PRODUCT.CLASSIFICATIONS' | translate }}</label>
       </p-floatlabel>
-      <p-floatlabel class="flex-grow-1" controlErrorAnchor>
+      <p-floatlabel variant="on" class="flex-1">
         <p-dropdown
           id="ps_product_detail_form_field_icon_name"
           styleClass="w-full min-w-min input-field-correction"
@@ -206,7 +206,7 @@
     </div>
 
     <!-- row 5 -->
-    <p-float-label>
+    <p-float-label variant="on">
       <textarea
         pInputTextarea
         class="w-full"

@@ -83,11 +83,11 @@ export class ProductDetailComponent implements OnInit {
         ['apps', 1],
         ['use', 2]
       ])
-      this.onTabChange({ index: tabMap.get(this.uriFragment) }, product)
+      this.onTabChange(tabMap.get(this.uriFragment), product)
     }
   }
-  public onTabChange($event: any, product: Product) {
-    this.selectedTabIndex = $event.index
+  public onTabChange(index: string | number | undefined, product: Product) {
+    this.selectedTabIndex = typeof index === 'number' ? index : Number(index ?? this.selectedTabIndex)
     this.preparePageAction(product)
     if (this.selectedTabIndex === 1) this.product_for_apps = product // lazy load
   }

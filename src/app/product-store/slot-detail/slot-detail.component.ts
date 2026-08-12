@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } 
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 import { finalize, map } from 'rxjs'
-import { TabView } from 'primeng/tabview'
 import { Table } from 'primeng/table'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
@@ -34,7 +33,6 @@ export class SlotDetailComponent implements OnInit, OnChanges {
   @Input() displayDialog = false
   @Output() changed = new EventEmitter<boolean>()
 
-  @ViewChild('panelDetail') panelDetail: TabView | undefined
   @ViewChild('endpointTable') endpointTable: Table | undefined
   @ViewChild(SlotInternComponent, { static: false }) appInternComponent!: SlotInternComponent
 
@@ -165,6 +163,10 @@ export class SlotDetailComponent implements OnInit, OnChanges {
 
   public onChangeUndeployedValue(val: boolean) {
     if (this.slot) this.slot.undeployed = val
+  }
+
+  public onTabChange(index: string | number) {
+    this.selectedTabIndex = typeof index === 'number' ? index : Number(index)
   }
 
   public onSave() {

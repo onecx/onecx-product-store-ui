@@ -3,7 +3,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 import { finalize, map } from 'rxjs'
 import { SelectItem } from 'primeng/api'
-import { TabView } from 'primeng/tabview'
 import { Table } from 'primeng/table'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
@@ -68,7 +67,6 @@ export class AppDetailComponent implements OnInit, OnChanges {
   @Input() displayDialog = false
   @Output() appChanged = new EventEmitter<boolean>()
 
-  @ViewChild('panelDetail') panelDetail: TabView | undefined
   @ViewChild('endpointTable') endpointTable: Table | undefined
   @ViewChild(AppInternComponent, { static: false }) appInternComponent!: AppInternComponent
 
@@ -301,6 +299,10 @@ export class AppDetailComponent implements OnInit, OnChanges {
   public onChangeUndeployedValue(val: boolean) {
     if (this.mfe) this.mfe.undeployed = val
     if (this.ms) this.ms.undeployed = val
+  }
+
+  public onTabChange(index: string | number) {
+    this.selectedTabIndex = typeof index === 'number' ? index : Number(index)
   }
 
   public onSave() {

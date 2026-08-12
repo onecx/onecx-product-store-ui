@@ -24,7 +24,7 @@ import { MultiSelectModule } from 'primeng/multiselect'
 import { SelectButtonModule } from 'primeng/selectbutton'
 import { TableModule } from 'primeng/table'
 import { TooltipModule } from 'primeng/tooltip'
-import { TabViewModule } from 'primeng/tabview'
+import { TabsModule } from 'primeng/tabs'
 import { ToastModule } from 'primeng/toast'
 
 import { AngularAcceleratorModule, PortalDialogService } from '@onecx/angular-accelerator'
@@ -59,7 +59,7 @@ import { ImageContainerComponent } from './image-container/image-container.compo
     OcxChipComponent,
     ImageContainerComponent,
     TooltipModule,
-    TabViewModule,
+    TabsModule,
     ToastModule,
     TranslateModule
   ],
@@ -87,7 +87,7 @@ import { ImageContainerComponent } from './image-container/image-container.compo
     OcxChipComponent,
     ImageContainerComponent,
     TooltipModule,
-    TabViewModule,
+    TabsModule,
     ToastModule,
     TranslateModule
   ],
