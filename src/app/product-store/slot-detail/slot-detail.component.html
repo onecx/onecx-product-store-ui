@@ -58,7 +58,7 @@
           <div class="flex flex-column row-gap-4">
             <!-- row 1 -->
             <div class="flex flex-row flex-wrap gap-4">
-              <span class="flex-grow-1 p-float-label" controlErrorAnchor>
+              <p-float-label variant="on" class="flex-grow-1" controlErrorAnchor>
                 <input
                   pInputText
                   type="text"
@@ -73,8 +73,8 @@
                 <label class="ocx-required-label" for="ps_slot_detail_form_field_app_id">
                   {{ 'SLOT.APP_ID' | translate }}
                 </label>
-              </span>
-              <span class="flex-grow-1 p-float-label" controlErrorAnchor>
+              </p-float-label>
+              <p-float-label variant="on" class="flex-grow-1" controlErrorAnchor>
                 <input
                   pInputText
                   type="text"
@@ -89,12 +89,12 @@
                 <label class="ocx-required-label" for="ps_slot_detail_form_field_app_name">
                   {{ 'SLOT.NAME' | translate }}
                 </label>
-              </span>
+              </p-float-label>
             </div>
 
             <!-- row 2 -->
             <div class="flex flex-row flex-wrap gap-4">
-              <span class="flex-grow-1 p-float-label" controlErrorAnchor>
+              <p-float-label variant="on" class="flex-grow-1" controlErrorAnchor>
                 <input
                   pInputText
                   type="text"
@@ -109,13 +109,13 @@
                 <label class="ocx-required-label" for="ps_slot_detail_form_field_product_name">
                   {{ 'SLOT.PRODUCT_NAME' | translate }}
                 </label>
-              </span>
+              </p-float-label>
             </div>
 
             <!-- row 3 -->
             <!-- row 4 -->
             <!-- row 5 -->
-            <span class="p-float-label" controlErrorAnchor>
+            <p-float-label variant="on" controlErrorAnchor>
               <input
                 pInputText
                 type="text"
@@ -128,7 +128,7 @@
                 tooltipEvent="hover"
               />
               <label for="ps_slot_detail_form_field_description"> {{ 'SLOT.DESCRIPTION' | translate }} </label>
-            </span>
+            </p-float-label>
           </div>
         </form>
       </p-tabpanel>

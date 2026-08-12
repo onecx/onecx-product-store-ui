@@ -8,7 +8,7 @@
     [actions]="(actions$ | async) ?? []"
   >
     <div id="ps_product_search_criteria" [formGroup]="searchCriteria" class="flex flex-row flex-wrap gap-3">
-      <p-floatlabel>
+      <p-float-label variant="on">
         <input
           id="ps_product_search_criteria_name"
           pInputText
@@ -21,9 +21,9 @@
           tooltipEvent="hover"
         />
         <label for="ps_product_search_criteria_name" aria-hidden="true">{{ 'PRODUCT.NAME' | translate }}</label>
-      </p-floatlabel>
+      </p-float-label>
       <ng-container *ngIf="criteria$ | async as criteria">
-        <p-floatlabel>
+        <p-float-label variant="on">
           <p-multiSelect
             id="ps_product_search_criteria_providers"
             formControlName="providers"
@@ -41,8 +41,8 @@
           <label for="ps_product_search_criteria_providers" aria-hidden="true">
             {{ 'PRODUCT.PROVIDER' | translate }}
           </label>
-        </p-floatlabel>
-        <p-floatlabel>
+        </p-float-label>
+        <p-float-label variant="on">
           <p-multiSelect
             id="ps_product_search_criteria_classifications"
             formControlName="classifications"
@@ -60,7 +60,7 @@
           <label for="ps_product_search_criteria_classifications" aria-hidden="true">
             {{ 'PRODUCT.CLASSIFICATIONS' | translate }}
           </label>
-        </p-floatlabel>
+        </p-float-label>
       </ng-container>
     </div>
   </ocx-search-header>
@@ -108,7 +108,7 @@
           <p-inputgroup-addon>
             <i class="pi pi-filter"></i>
           </p-inputgroup-addon>
-          <p-floatlabel>
+          <p-float-label variant="on">
             <input
               #filterInput
               id="tm_search_filter"
@@ -122,7 +122,7 @@
               (input)="onFilterChange(filterInput.value)"
             />
             <label for="tm_search_filter" aria-hidden="true"> {{ 'SEARCH.FILTER.LABEL' | translate }}</label>
-          </p-floatlabel>
+          </p-float-label>
           <p-button
             id="tm_search_filter_clear"
             icon="pi pi-filter-slash"

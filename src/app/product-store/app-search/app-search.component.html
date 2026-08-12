@@ -8,7 +8,7 @@
     [actions]="(actions$ | async) ?? []"
   >
     <form [formGroup]="appSearchCriteriaGroup" class="flex flex-wrap gap-3 md:px-2">
-      <p-floatlabel variant="on">
+      <p-float-label variant="on">
         <input
           pInputText
           type="text"
@@ -21,8 +21,8 @@
           tooltipEvent="hover"
         />
         <label for="ps_app_search_criteria_app_name" aria-hidden="true">{{ 'APP.CRITERIA.NAME' | translate }}</label>
-      </p-floatlabel>
-      <p-floatlabel variant="on">
+      </p-float-label>
+      <p-float-label variant="on">
         <input
           pInputText
           type="text"
@@ -35,7 +35,7 @@
           tooltipEvent="hover"
         />
         <label for="ps_app_search_criteria_product_name" aria-hidden="true">{{ 'APP.PRODUCT_NAME' | translate }}</label>
-      </p-floatlabel>
+      </p-float-label>
       <div class="slim-selectbutton search-criteria-selectbutton">
         <p-selectButton
           inputid="ps_app_search_criteria_app_type"
@@ -143,7 +143,7 @@
             <p-inputgroup-addon>
               <i class="pi pi-filter"></i>
             </p-inputgroup-addon>
-            <p-floatlabel>
+            <p-float-label variant="on">
               <input
                 #filterInput
                 id="tm_search_filter"
@@ -157,7 +157,7 @@
                 (input)="onFilterChange(filterInput.value)"
               />
               <label for="tm_search_filter" aria-hidden="true"> {{ 'SEARCH.FILTER.LABEL' | translate }}</label>
-            </p-floatlabel>
+            </p-float-label>
             <p-button
               id="tm_search_filter_clear"
               icon="pi pi-filter-slash"

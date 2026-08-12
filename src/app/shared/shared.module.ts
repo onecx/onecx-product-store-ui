@@ -23,6 +23,7 @@ import { ListboxModule } from 'primeng/listbox'
 import { MultiSelectModule } from 'primeng/multiselect'
 import { SelectButtonModule } from 'primeng/selectbutton'
 import { TableModule } from 'primeng/table'
+import { TextareaModule } from 'primeng/textarea'
 import { TooltipModule } from 'primeng/tooltip'
 import { TabsModule } from 'primeng/tabs'
 import { ToastModule } from 'primeng/toast'
@@ -56,6 +57,7 @@ import { ImageContainerComponent } from './image-container/image-container.compo
     ReactiveFormsModule,
     SelectButtonModule,
     TableModule,
+    TextareaModule,
     OcxChipComponent,
     ImageContainerComponent,
     TooltipModule,
@@ -84,6 +86,7 @@ import { ImageContainerComponent } from './image-container/image-container.compo
     ReactiveFormsModule,
     SelectButtonModule,
     TableModule,
+    TextareaModule,
     OcxChipComponent,
     ImageContainerComponent,
     TooltipModule,

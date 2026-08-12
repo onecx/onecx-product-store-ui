@@ -8,7 +8,7 @@
     [actions]="(actions$ | async) ?? []"
   >
     <div id="ps_endpoint_search_criteria" [formGroup]="searchCriteria" class="flex flex-row flex-wrap gap-3">
-      <p-float-label>
+      <p-float-label variant="on">
         <input
           id="ps_endpoint_search_criteria_product_name"
           pInputText
@@ -71,7 +71,7 @@
           <p-inputgroup-addon>
             <i class="pi pi-filter"></i>
           </p-inputgroup-addon>
-          <p-floatlabel>
+          <p-float-label variant="on">
             <input
               #filterInput
               id="tm_search_filter"
@@ -85,7 +85,7 @@
               (input)="onFilterChange(filterInput.value)"
             />
             <label for="tm_search_filter" aria-hidden="true"> {{ 'SEARCH.FILTER.LABEL' | translate }}</label>
-          </p-floatlabel>
+          </p-float-label>
           <p-button
             id="tm_search_filter_clear"
             icon="pi pi-filter-slash"
