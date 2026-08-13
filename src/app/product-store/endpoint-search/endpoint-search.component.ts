@@ -221,11 +221,6 @@ export class EndpointSearchComponent implements OnInit, OnDestroy {
         }
         return eps
       }),
-      catchError((err) => {
-        this.exceptionKey = this.exceptionKey ?? this.getHttpExceptionKey(err, 'MFES')
-        console.error('loadData endpoints', err)
-        return of([])
-      }),
       finalize(() => (this.loading = false))
     )
 

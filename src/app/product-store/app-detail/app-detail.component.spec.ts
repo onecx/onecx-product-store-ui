@@ -611,4 +611,25 @@ describe('AppDetailComponent', () => {
       expect(component.ms.undeployed).toBeTrue()
     })
   })
+
+  describe('on tab change', () => {
+    it('should set selectedTabIndex onTabChange', () => {
+      component.onTabChange(1)
+      expect(component.selectedTabIndex).toBe(1)
+
+      component.onTabChange('2')
+      expect(component.selectedTabIndex).toBe(2)
+    })
+  })
+
+  describe('on init', () => {
+    it('should switch to EDIT on ngOnInit when hasEditPermission', () => {
+      component.hasEditPermission = true
+      component.changeMode = 'VIEW'
+
+      component.ngOnInit()
+
+      expect(component.changeMode).toBe('EDIT')
+    })
+  })
 })

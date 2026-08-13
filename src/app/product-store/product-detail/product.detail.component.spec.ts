@@ -314,6 +314,20 @@ describe('ProductDetailComponent', () => {
       expect(component.selectedTabIndex).toEqual(1)
       expect(component.product_for_apps).toEqual(product)
     })
+
+    it('should behave correctly onTabChange: string index', () => {
+      component.onTabChange('1', product)
+
+      expect(component.selectedTabIndex).toEqual(1)
+    })
+
+    it('should behave correctly onTabChange: undefined index', () => {
+      component.selectedTabIndex = 2
+
+      component.onTabChange(undefined, product)
+
+      expect(component.selectedTabIndex).toEqual(2)
+    })
   })
 
   describe('action buttons', () => {

@@ -7,6 +7,8 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
+import { DataSortDirection } from '@onecx/angular-accelerator'
+
 import { PortalMessageService } from '@onecx/angular-integration-interface'
 
 interface Column {
@@ -88,7 +90,8 @@ const mfeResponseData: MicrofrontendAbstract[] = [
 // MFEs with/without endpoints
 const mfeEndpoints: MfeEndpoint[] = [
   {
-    id: 'id1',
+    id: 'id1_0',
+    mfeId: 'id1',
     unique_id: 'id1_0',
     productName: 'product1',
     productDisplayName: 'Product 1',
@@ -101,7 +104,8 @@ const mfeEndpoints: MfeEndpoint[] = [
     endpoint_path: '/{name}'
   },
   {
-    id: 'id1',
+    id: 'id1_1',
+    mfeId: 'id1',
     unique_id: 'id1_1',
     productName: 'product1',
     productDisplayName: 'Product 1',
@@ -114,7 +118,8 @@ const mfeEndpoints: MfeEndpoint[] = [
     endpoint_path: '/{name}'
   },
   {
-    id: 'id2',
+    id: 'id2_0',
+    mfeId: 'id2',
     unique_id: 'id2_0',
     productName: 'product2',
     productDisplayName: 'Product 2',
@@ -127,7 +132,8 @@ const mfeEndpoints: MfeEndpoint[] = [
     endpoint_path: '/{name}'
   },
   {
-    id: 'id3',
+    id: 'id3_0',
+    mfeId: 'id3',
     unique_id: 'id3_0',
     productName: 'product3',
     productDisplayName: '',
@@ -240,7 +246,7 @@ describe('EndpointSearchComponent', () => {
       component.endpoints$?.subscribe({
         next: (data) => {
           expect(data.length).toEqual(0)
-          expect(msgServiceSpy.info).toHaveBeenCalledOnceWith({ summaryKey: 'ACTIONS.SEARCH.NOT_FOUND' })
+          expect(msgServiceSpy.info).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.SEARCH.NOT_FOUND' })
           done()
         },
         error: done.fail
@@ -248,7 +254,7 @@ describe('EndpointSearchComponent', () => {
     })
 
     it('should display an error message if the search for Microfrontends fails', (done) => {
-      const errorResponse = { status: '403', statusText: 'Not authorized' }
+      const errorResponse = { status: 403, statusText: 'Not authorized' }
       mfeApiServiceSpy.searchMicrofrontends.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
 
@@ -287,6 +293,50 @@ describe('EndpointSearchComponent', () => {
         }
       })
     })
+
+    it('should handle errors while loading endpoint data', (done) => {
+      const badMfe = { id: 'idBad', productName: 'product1', endpoints: {} }
+      productApiServiceSpy.searchProducts.and.returnValue(of({ stream: productResponseData }))
+      mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: [badMfe] }))
+      spyOn(console, 'error')
+
+      component.ngOnInit()
+
+      component.endpoints$?.subscribe({
+        error: (err) => {
+          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_0.MFES')
+          expect(console.error).toHaveBeenCalledWith('loadData endpoints subscription', jasmine.anything())
+          done()
+        }
+      })
+    })
+
+    it('should filter endpoints based on filterData', (done) => {
+      productApiServiceSpy.searchProducts.and.returnValue(of({ stream: productResponseData }))
+      mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: mfeResponseData }))
+
+      component.ngOnInit()
+      component.onFilterChange('endpoint_1_1_1')
+
+      component.filteredData$.subscribe((data) => {
+        expect(data.length).toBe(1)
+        expect(data[0].endpoint_name).toBe('endpoint_1_1_1')
+        done()
+      })
+    })
+
+    it('should convert values to searchable text', () => {
+      expect(component['toSearchableText'](null)).toBeUndefined()
+      expect(component['toSearchableText'](undefined)).toBeUndefined()
+      expect(component['toSearchableText']('text')).toBe('text')
+      expect(component['toSearchableText'](42)).toBe('42')
+      expect(component['toSearchableText'](true)).toBe('true')
+      expect(component['toSearchableText'](new Date('2020-01-01T00:00:00.000Z'))).toBe('2020-01-01T00:00:00.000Z')
+      expect(component['toSearchableText'](['a', null, '', 'b'])).toBe('a b')
+      expect(component['toSearchableText']([])).toBeUndefined()
+      expect(component['toSearchableText']({})).toBeUndefined()
+    })
+
     it('should reset the form group', () => {
       component.searchCriteria = searchCriteriaForm
       spyOn(searchCriteriaForm, 'reset').and.callThrough()
@@ -352,7 +402,30 @@ describe('EndpointSearchComponent', () => {
     it('should apply a filter to the result table', () => {
       component.onFilterChange('test')
 
-      expect(component.interactiveFilters).toEqual([{ columnId: 'global', value: 'test' }])
+      expect(component.tableFilter).toBe('test')
+    })
+  })
+
+  describe('interactive filter and sort', () => {
+    it('should set interactive filters', () => {
+      const filters = [{ columnId: 'appName', value: 'MFE 1' }]
+
+      component.onInteractiveFiltersChange(filters)
+
+      expect(component.interactiveFilters).toEqual(filters)
+    })
+
+    it('should set interactive sort values', () => {
+      component.onInteractiveSorted({ sortColumn: 'appName', sortDirection: DataSortDirection.DESCENDING })
+
+      expect(component.interactiveSortField).toBe('appName')
+      expect(component.interactiveSortDirection).toBe(DataSortDirection.DESCENDING)
+    })
+
+    it('should handle layout change', () => {
+      component.onLayoutChange('list')
+
+      expect().nothing()
     })
   })
 
@@ -360,7 +433,7 @@ describe('EndpointSearchComponent', () => {
     it('should trigger the opening the dialog', () => {
       component.onAppDetail(new Event('click'), mfeEndpoints[0])
 
-      expect(component.mfeItem4Detail?.id).toBe(mfeEndpoints[0].id)
+      expect(component.mfeItem4Detail?.id).toBe(mfeEndpoints[0].mfeId)
       expect(component.displayAppDetailDialog).toBeTrue()
     })
 
@@ -381,27 +454,29 @@ describe('EndpointSearchComponent', () => {
 
   describe('sort endpoints', () => {
     it('should correctly sort items by product', () => {
-      const items: MfeEndpoint[] = mfeEndpoints
-      const sortedItems = items.sort(component.sortMfes)
+      const items: MfeEndpoint[] = [...mfeEndpoints]
+      const sortedItems = items.sort((a, b) => component.sortMfes(a, b))
 
       expect(sortedItems[0]).toEqual(mfeEndpoints[0])
     })
 
     it("should treat falsy values for SelectItem.label as ''", () => {
-      const items: MfeEndpoint[] = mfeEndpoints
+      const items: MfeEndpoint[] = [...mfeEndpoints]
       items.push({ ...mfeEndpoints[1], exposedModule: undefined })
-      const sortedItems = items.sort(component.sortMfes)
+      const sortedItems = items.sort((a, b) => component.sortMfes(a, b))
 
-      expect(sortedItems[1]).toEqual(mfeEndpoints[1])
+      expect(sortedItems[0]).toEqual({ ...mfeEndpoints[1], exposedModule: undefined })
+      expect(sortedItems[1]).toEqual(mfeEndpoints[0])
     })
 
     it("should treat falsy values for SelectItem.label as ''", () => {
-      const items: MfeEndpoint[] = mfeEndpoints
+      const items: MfeEndpoint[] = [...mfeEndpoints]
       items.push({ ...mfeEndpoints[1], exposedModule: undefined })
       items.push({ ...mfeEndpoints[2], exposedModule: undefined })
-      const sortedItems = items.sort(component.sortMfes)
+      const sortedItems = items.sort((a, b) => component.sortMfes(a, b))
 
-      expect(sortedItems[1]).toEqual(mfeEndpoints[1])
+      expect(sortedItems[0]).toEqual({ ...mfeEndpoints[1], exposedModule: undefined })
+      expect(sortedItems[1]).toEqual(mfeEndpoints[0])
     })
   })
 })

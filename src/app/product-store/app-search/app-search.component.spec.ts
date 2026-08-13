@@ -7,6 +7,8 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
+import { DataSortDirection, FilterType } from '@onecx/angular-accelerator'
+
 import { UserService } from '@onecx/angular-integration-interface'
 
 import {
@@ -364,6 +366,22 @@ describe('AppSearchComponent', () => {
     })
   })
 
+  it('should filter the app list by classification onFilterChange', () => {
+    const filter = 'test'
+    const mfeWithClassification = { ...mfe, classifications: ['test'] }
+    component.appSearchCriteriaGroup.controls['appType'].setValue('MFE')
+    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(
+      of({ stream: [mfeWithClassification] } as unknown as MicrofrontendPageResult)
+    )
+
+    component.searchApps()
+    component.onFilterChange(filter)
+
+    component.filteredData$.subscribe((result) => {
+      expect(result.length).toBe(1)
+    })
+  })
+
   describe('onAppTypeFilterChange', () => {
     it('should set appTypeFilterValue when ev.value is provided', () => {
       const event = { value: 'testValue' }
@@ -381,10 +399,13 @@ describe('AppSearchComponent', () => {
 
   describe('onQuickFilterChange', () => {
     it('should update filterBy and filterValue onQuickFilterChange: ALL', () => {
+      component.interactiveFilters = [{ columnId: 'someColumn', value: 'someValue' }]
+
       component.onQuickFilterChange({ value: 'ALL' })
 
       expect(component.filterBy).toBe(component.filterValueDefault)
       expect(component.filterValue).toBe('')
+      expect(component.interactiveFilters).toEqual([{ columnId: 'someColumn', value: 'someValue' }])
     })
 
     it('should update filterBy and filterValue onQuickFilterChange: other', () => {
@@ -392,6 +413,17 @@ describe('AppSearchComponent', () => {
 
       expect(component.filterValue).toBe('other')
       expect(component.filterBy).toBe('appType')
+    })
+
+    it('should update interactiveFilters onQuickFilterChange preserving other filters', () => {
+      component.interactiveFilters = [{ columnId: 'someColumn', value: 'someValue' }]
+
+      component.onQuickFilterChange({ value: 'other' })
+
+      expect(component.interactiveFilters).toEqual([
+        { columnId: 'someColumn', value: 'someValue' },
+        { columnId: 'appType', value: 'other', filterType: FilterType.EQUALS }
+      ])
     })
 
     it('should set to quickFulterVaule to the original one if there is no current value', () => {
@@ -425,6 +457,37 @@ describe('AppSearchComponent', () => {
       component.onSearchReset()
 
       expect(component.appSearchCriteriaGroup.reset).toHaveBeenCalled()
+    })
+  })
+
+  describe('onInteractiveFiltersChange', () => {
+    it('should update interactive filters and table filter', () => {
+      const filters = [{ columnId: 'global', value: 'test' }]
+
+      component.onInteractiveFiltersChange(filters)
+
+      expect(component.interactiveFilters).toEqual(filters)
+      expect(component.tableFilter).toBe('test')
+    })
+
+    it('should set empty table filter when there is no global filter', () => {
+      component.onInteractiveFiltersChange([{ columnId: 'someColumn', value: 'someValue' }])
+
+      expect(component.tableFilter).toBe('')
+    })
+  })
+
+  describe('onInteractiveSorted', () => {
+    it('should update sort values', () => {
+      component.onInteractiveSorted({ sortColumn: 'appName', sortDirection: DataSortDirection.DESCENDING })
+
+      expect(component.sortField).toBe('appName')
+      expect(component.sortDirection).toBe(DataSortDirection.DESCENDING)
+      expect(component.sortOrder).toBe(-1)
+
+      component.onInteractiveSorted({ sortColumn: 'appName', sortDirection: DataSortDirection.ASCENDING })
+
+      expect(component.sortOrder).toBe(1)
     })
   })
 

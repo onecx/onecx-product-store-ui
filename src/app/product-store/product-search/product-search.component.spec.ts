@@ -6,6 +6,8 @@ import { provideRouter, Router } from '@angular/router'
 import { of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
+import { DataSortDirection } from '@onecx/angular-accelerator'
+
 import {
   Product,
   ProductAbstract,
@@ -154,6 +156,26 @@ describe('ProductSearchComponent', () => {
       asc = false
       component.onSortDirChange(asc)
       expect(component.sortOrder).toEqual(1)
+    })
+
+    it('should set interactive filters onInteractiveFiltersChange', () => {
+      const filters = [{ columnId: 'global', value: 'test' }]
+
+      component.onInteractiveFiltersChange(filters)
+
+      expect(component.interactiveFilters).toEqual(filters)
+    })
+
+    it('should set sort values onInteractiveSorted', () => {
+      component.onInteractiveSorted({ sortColumn: 'name', sortDirection: DataSortDirection.DESCENDING })
+
+      expect(component.sortField).toBe('name')
+      expect(component.sortDirection).toBe(DataSortDirection.DESCENDING)
+      expect(component.sortOrder).toBe(-1)
+
+      component.onInteractiveSorted({ sortColumn: 'name', sortDirection: DataSortDirection.ASCENDING })
+
+      expect(component.sortOrder).toBe(1)
     })
   })
 

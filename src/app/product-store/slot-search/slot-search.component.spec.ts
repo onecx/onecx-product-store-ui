@@ -11,6 +11,8 @@ import { Table } from 'primeng/table'
 import { UserService } from '@onecx/angular-integration-interface'
 import { PortalMessageService } from '@onecx/angular-integration-interface'
 
+import { DataSortDirection } from '@onecx/angular-accelerator'
+
 import { Product, ProductsAPIService, SlotsAPIService, SlotPageResult, Slot } from 'src/app/shared/generated'
 import { SlotData, SlotSearchComponent } from './slot-search.component'
 
@@ -330,6 +332,26 @@ describe('SlotSearchComponent', () => {
           }
         })
       })
+
+      it('should handle loadData errors', () => {
+        apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: [null] }))
+        spyOn(console, 'error')
+
+        component.onSearch()
+
+        expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_0.SLOTS')
+        expect(console.error).toHaveBeenCalledWith('loadData', jasmine.anything())
+      })
+
+      it('should handle search errors without numeric status', () => {
+        apiSlotsServiceSpy.searchSlots.and.returnValue(throwError(() => new Error('error')))
+        spyOn(console, 'error')
+
+        component.onSearch()
+
+        expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_0.SLOTS')
+        expect(console.error).toHaveBeenCalledWith('searchSlots', jasmine.anything())
+      })
     })
   })
 
@@ -341,6 +363,25 @@ describe('SlotSearchComponent', () => {
     it('should get displayname', () => {
       const n = component['getProductDisplayName']('name-xyz', [products[0]])
       expect(n).toBe('name-xyz')
+    })
+    it('should return empty slot state when no state is set', () => {
+      expect(component['getSlotState']({} as Slot)).toBe('')
+    })
+    it('should upperValue handle nullish values', () => {
+      expect(component['upperValue'](null)).toBe('')
+      expect(component['upperValue'](undefined)).toBe('')
+    })
+    it('should compare slot names when appIds are missing', () => {
+      const a = { name: 'same', appId: undefined } as unknown as SlotData
+      const b = { name: 'same', appId: undefined } as unknown as SlotData
+
+      expect(component['compareSlotNames'](a, b)).toBe(0)
+    })
+    it('should compare products when appIds are missing', () => {
+      const a = { productDisplayName: 'same' } as unknown as SlotData
+      const b = { productDisplayName: 'same' } as unknown as SlotData
+
+      expect(component['compareProducts'](a, b)).toBe(0)
     })
   })
 
@@ -383,6 +424,44 @@ describe('SlotSearchComponent', () => {
 
       expect(event.stopPropagation).toHaveBeenCalled()
     })
+
+    it('should set interactive filters and global filter', () => {
+      const filters = [{ columnId: 'global', value: 'test' }]
+
+      component.onInteractiveFiltersChange(filters)
+
+      expect(component.interactiveFilters).toEqual(filters)
+      expect(component.filter).toBe('test')
+    })
+
+    it('should keep the filter if there is no global filter', () => {
+      component.filter = 'test'
+
+      component.onInteractiveFiltersChange([{ columnId: 'someColumn', value: 'someValue' }])
+
+      expect(component.filter).toBe('test')
+    })
+
+    it('should set interactive sort values', () => {
+      component.onInteractiveSorted({ sortColumn: 'slotName', sortDirection: DataSortDirection.DESCENDING })
+
+      expect(component.interactiveSortField).toBe('slotName')
+      expect(component.interactiveSortDirection).toBe(DataSortDirection.DESCENDING)
+    })
+
+    it('should handle layout change', () => {
+      component.onLayoutChange('list')
+
+      expect().nothing()
+    })
+
+    it('should call onSlotCreate from interactive action callback', () => {
+      spyOn(component, 'onSlotCreate')
+
+      component.interactiveActions[0].callback?.({ ...slots[0] })
+
+      expect(component.onSlotCreate).toHaveBeenCalledWith({ ...slots[0] })
+    })
   })
 
   describe('detail', () => {
@@ -411,6 +490,22 @@ describe('SlotSearchComponent', () => {
 
       expect().nothing()
     })
+
+    it('should open slot detail dialog in edit mode onSlotEdit', () => {
+      component.onSlotEdit({ ...slots[0] } as SlotData)
+
+      expect(component.item4Detail).toEqual({ ...slots[0] })
+      expect(component.changeMode).toBe('EDIT')
+      expect(component.displaySlotDetailDialog).toBeTrue()
+    })
+
+    it('should open slot detail dialog in create mode onSlotCreate', () => {
+      component.onSlotCreate({ ...slots[0] } as SlotData)
+
+      expect(component.item4Detail).toEqual({ ...slots[0] })
+      expect(component.changeMode).toBe('CREATE')
+      expect(component.displaySlotDetailDialog).toBeTrue()
+    })
   })
 
   describe('delete', () => {
@@ -429,6 +524,13 @@ describe('SlotSearchComponent', () => {
 
       expect(component.displaySlotDeleteDialog).toBeFalse()
       expect(component.onSearch).toHaveBeenCalled()
+    })
+
+    it('should open delete dialog onSlotDeleteAction', () => {
+      component.onSlotDeleteAction({ ...slots[0] } as SlotData)
+
+      expect(component.item4Delete).toEqual({ ...slots[0] } as SlotData)
+      expect(component.displaySlotDeleteDialog).toBeTrue()
     })
   })
 
@@ -460,7 +562,7 @@ describe('SlotSearchComponent', () => {
 
         component.filteredData$ = new BehaviorSubject(slotData)
 
-        component.ngOnInit()
+        component['initGlobalFilter']()
 
         component.filteredData$.subscribe((filteredData) => {
           expect(filteredData.length).toEqual(1)
@@ -473,7 +575,7 @@ describe('SlotSearchComponent', () => {
 
         component.filteredData$ = new BehaviorSubject(slotData)
 
-        component.ngOnInit()
+        component['initGlobalFilter']()
 
         component.filteredData$.subscribe((filteredData) => {
           expect(filteredData.length).toEqual(5)
@@ -485,7 +587,7 @@ describe('SlotSearchComponent', () => {
 
         component.filteredData$ = new BehaviorSubject(slotData)
 
-        component.ngOnInit()
+        component['initGlobalFilter']()
 
         component.filteredData$.subscribe((filteredData) => {
           expect(filteredData.length).toEqual(4)
@@ -497,7 +599,7 @@ describe('SlotSearchComponent', () => {
 
         component.filteredData$ = new BehaviorSubject(slotData)
 
-        component.ngOnInit()
+        component['initGlobalFilter']()
 
         component.filteredData$.subscribe((filteredData) => {
           expect(filteredData.length).toEqual(3)
