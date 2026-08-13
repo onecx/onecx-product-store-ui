@@ -2,6 +2,17 @@
  *  FORM - Control Improvements
  * **********************************************/
 
+// required field indicator
+@mixin required-label {
+  label.ocx-required-label {
+    &::after {
+      color: #d00;
+      content: '*';
+      margin-left: 1px;
+    }
+  }
+}
+
 // displaying text like an input field with floating label
 @mixin float-label-textbox {
   :host {
@@ -433,7 +444,7 @@
   :host ::ng-deep {
     .p-dataview-list .p-dataview-content .p-grid > div {
       &:nth-child(even) {
-        background-color: var(--table-body-row-even-bg);
+        background-color: var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02));
       }
     }
   }
@@ -443,7 +454,7 @@
     .p-dataview-list .p-dataview-content section > article {
       &:nth-child(4n + 1),
       &:nth-child(4n + 2) {
-        background-color: var(--table-body-row-even-bg);
+        background-color: var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02));
       }
     }
   }
@@ -452,7 +463,7 @@
   :host ::ng-deep {
     .p-dataview-list .p-dataview-content section > article {
       &:nth-child(even) {
-        background-color: var(--table-body-row-even-bg);
+        background-color: var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02));
       }
     }
   }
@@ -460,14 +471,14 @@
 @mixin dropdown-zebra-rows {
   :host ::ng-deep {
     .p-dropdown-panel .p-dropdown-items *:nth-child(even) .p-dropdown-item {
-      background-color: var(--table-body-row-even-bg);
+      background-color: var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02));
     }
   }
 }
 @mixin multiselect-zebra-rows {
   :host ::ng-deep {
     .p-multiselect-panel .p-multiselect-items *:nth-child(even) .p-multiselect-item {
-      background-color: var(--table-body-row-even-bg);
+      background-color: var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02));
     }
   }
 }
@@ -475,7 +486,7 @@
   :host ::ng-deep {
     .p-listbox:not(.p-disabled) .p-listbox-item:not(.p-highlight):not(.p-disabled) {
       &:nth-child(even) {
-        background-color: var(--table-body-row-even-bg);
+        background-color: var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02));
       }
     }
   }
@@ -484,7 +495,7 @@
   :host ::ng-deep {
     .p-picklist-list li {
       &:nth-child(even) {
-        background-color: var(--table-body-row-even-bg);
+        background-color: var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02));
       }
     }
   }
@@ -493,7 +504,7 @@
   :host ::ng-deep {
     /* this works only on non-frozen columns (table.p-datatable-striped does not work) */
     .p-datatable .p-datatable-tbody > tr:nth-child(even) > td:not(.p-frozen-column) {
-      background-color: var(--table-body-row-even-bg);
+      background-color: var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02));
     }
   }
 }
@@ -548,7 +559,8 @@
 
 @mixin tabview-reduce-padding {
   :host ::ng-deep {
-    .p-tabview .p-tabview-panels {
+    .p-tabview .p-tabview-panels,
+    .p-tabs .p-tabpanels {
       padding: 1.4rem 0 0 0;
     }
   }

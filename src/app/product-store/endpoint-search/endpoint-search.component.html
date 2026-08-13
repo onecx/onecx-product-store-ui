@@ -100,6 +100,22 @@
           />
         </p-inputgroup>
       </ng-template>
+      <ng-template pTemplate="appNameIdTableCell" let-rowObject="rowObject" let-column="column">
+        <a
+          tabindex="0"
+          class="p-2 bookmark-link font-italic text-primary cursor-pointer"
+          [id]="'ps_endpoint_search_table_row_' + rowObject['unique_id'] + '_app_name'"
+          (click)="onAppDetail($event, rowObject)"
+          (keydown.enter)="onAppDetail($event, rowObject)"
+          (keydown.space)="onAppDetail($event, rowObject)"
+          [attr.aria-label]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
+          [pTooltip]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        >
+          {{ rowObject['appName'] }}
+        </a>
+      </ng-template>
     </ocx-interactive-data-view>
   </ocx-content>
 </ocx-portal-page>

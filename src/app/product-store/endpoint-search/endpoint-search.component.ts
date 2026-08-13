@@ -22,6 +22,7 @@ export interface ProductSearchCriteriaControls {
 }
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 export type MfeEndpoint = MicrofrontendAbstract & {
+  mfeId: string
   unique_id: string
   productDisplayName: string
   endpoint_name: string
@@ -203,6 +204,7 @@ export class EndpointSearchComponent implements OnInit, OnDestroy {
               for (const [i, ep] of mfe.endpoints.entries()) {
                 eps.push({
                   id: mfe.id + '_' + i,
+                  mfeId: mfe.id,
                   unique_id: mfe.id + '_' + i,
                   appId: mfe.appId,
                   appName: mfe.appName,
@@ -313,7 +315,7 @@ export class EndpointSearchComponent implements OnInit, OnDestroy {
   }
   public onAppDetail(ev: Event, data: MfeEndpoint) {
     ev.stopPropagation()
-    this.mfeItem4Detail = { id: data.id, appType: 'MFE', mfeType: MicrofrontendType.Module }
+    this.mfeItem4Detail = { id: data.mfeId, appType: 'MFE', mfeType: MicrofrontendType.Module }
     this.displayAppDetailDialog = true
   }
   public onMfeChanged(changed: any) {

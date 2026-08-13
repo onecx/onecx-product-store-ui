@@ -149,6 +149,23 @@
           ></span>
         </div>
       </ng-template>
+
+      <ng-template pTemplate="productDisplayNameIdTableCell" let-rowObject="rowObject" let-column="column">
+        <a
+          tabindex="0"
+          [id]="'ps_slot_search_table_row_' + rowObject['id'] + '_goto_product'"
+          class="bookmark-link font-italic text-primary cursor-pointer"
+          (click)="onGotoProduct($event, rowObject)"
+          (keydown.enter)="onGotoProduct($event, rowObject)"
+          (keydown.space)="onGotoProduct($event, rowObject)"
+          [attr.aria-label]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
+          [pTooltip]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        >
+          {{ rowObject['productDisplayName'] }}
+        </a>
+      </ng-template>
     </ocx-interactive-data-view>
   </ocx-content>
 </ocx-portal-page>

@@ -1,3 +1,7 @@
+@import '/src/app/_ps-mixins.scss';
+
+@include required-label;
+
 :host ::ng-deep {
   .p-floatlabel-on:has(.p-select-label:not(.p-placeholder)) label,
   .p-floatlabel-on:has(textarea:not(:placeholder-shown)) label {
