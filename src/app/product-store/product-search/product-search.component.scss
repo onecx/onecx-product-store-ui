@@ -4,6 +4,7 @@
 @include correct-search-criteria;
 @include correct-select-button;
 @include displaying-text-responsive;
+@include correct-ocx-interactive-data-view;
 @include card-badges;
 @include danger-action;
 
@@ -16,6 +17,15 @@
   }
   .card-badge-left {
     left: 3px;
+  }
+  .p-dataview-grid .p-dataview-content .grid {
+    gap: 0 !important;
+  }
+  .p-dataview-grid .p-dataview-content .grid .card {
+    box-shadow:
+      0 2px 1px -1px rgba(0, 0, 0, 0.2),
+      0 1px 1px 0 rgba(0, 0, 0, 0.14),
+      0 1px 3px 0 rgba(0, 0, 0, 0.12);
   }
 }
 
@@ -33,7 +43,7 @@
     .p-dataview-list .p-dataview-content .p-grid > article {
       &:nth-child(4n + 1),
       &:nth-child(4n + 2) {
-        background-color: var(--table-body-row-even-bg);
+        background-color: var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02));
       }
       &:nth-child(4n + 1),
       &:nth-child(4n + 3) {
@@ -43,6 +53,7 @@
   }
 }
 @media screen and (max-width: 768px) {
+  @include tm-filter-group;
   :host ::ng-deep {
     .card-badge-left,
     .card-badge-right {
@@ -55,7 +66,7 @@
     }
     .p-dataview-list .p-dataview-content .p-grid > article {
       &:nth-child(odd) {
-        background-color: var(--table-body-row-even-bg);
+        background-color: var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02));
       }
     }
   }

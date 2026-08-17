@@ -5,8 +5,9 @@ import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { of, throwError } from 'rxjs'
-import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
+
+import { DataSortDirection, FilterType } from '@onecx/angular-accelerator'
 
 import { UserService } from '@onecx/angular-integration-interface'
 
@@ -73,7 +74,7 @@ describe('AppSearchComponent', () => {
     lang$: {
       getValue: jasmine.createSpy('getValue').and.returnValue('de')
     },
-    hasPermission: jasmine.createSpy('hasPermission').and.callFake((permission) => {
+    hasPermission: jasmine.createSpy('hasPermission').and.callFake(async (permission) => {
       return ['APP#CREATE', 'APP#DELETE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
     })
   }
@@ -104,6 +105,7 @@ describe('AppSearchComponent', () => {
     fixture = TestBed.createComponent(AppSearchComponent)
     component = fixture.componentInstance
     fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
+    component.hasEditPermission = true
   })
 
   afterEach(() => {
@@ -116,26 +118,6 @@ describe('AppSearchComponent', () => {
     it('should create', () => {
       expect(component).toBeTruthy()
     })
-
-    it('dataview translations', (done) => {
-      const translationData = {
-        'DIALOG.DATAVIEW.SORT_BY': 'sortBy'
-      }
-      const translateService = TestBed.inject(TranslateService)
-      spyOn(translateService, 'get').and.returnValue(of(translationData))
-
-      component.ngOnInit()
-
-      component.dataViewControlsTranslations$?.subscribe({
-        next: (data) => {
-          if (data) {
-            expect(data.sortDropdownTooltip).toEqual('sortBy')
-          }
-          done()
-        },
-        error: done.fail
-      })
-    })
   })
 
   describe('page actions', () => {
@@ -145,7 +127,7 @@ describe('AppSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const action = actions[0]
-          action.actionCallback()
+          action.actionCallback?.()
           expect(routerSpy.navigate).toHaveBeenCalledWith(['..'], { relativeTo: routeMock })
         })
       }
@@ -157,7 +139,7 @@ describe('AppSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const action = actions[1]
-          action.actionCallback()
+          action.actionCallback?.()
           expect(routerSpy.navigate).toHaveBeenCalledWith(['../endpoints'], { relativeTo: routeMock })
         })
       }
@@ -169,7 +151,7 @@ describe('AppSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const action = actions[2]
-          action.actionCallback()
+          action.actionCallback?.()
           expect(routerSpy.navigate).toHaveBeenCalledWith(['../slots'], { relativeTo: routeMock })
         })
       }
@@ -183,7 +165,7 @@ describe('AppSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const action = actions[3]
-          action.actionCallback()
+          action.actionCallback?.()
           expect(component.onAppCreate).toHaveBeenCalledWith('MFE')
         })
       }
@@ -197,7 +179,7 @@ describe('AppSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const action = actions[4]
-          action.actionCallback()
+          action.actionCallback?.()
           expect(component.onAppCreate).toHaveBeenCalledWith('MS')
         })
       }
@@ -220,7 +202,7 @@ describe('AppSearchComponent', () => {
 
     component.apps$.subscribe({
       next: (apps) => {
-        expect(apps.length).toBe(1)
+        expect(apps).toHaveSize(1)
         apps.forEach((app) => {
           expect(app.appType).toEqual('MFE')
         })
@@ -238,7 +220,7 @@ describe('AppSearchComponent', () => {
 
     component.apps$.subscribe({
       next: (apps) => {
-        expect(apps.length).toBe(0)
+        expect(apps).toHaveSize(0)
         done()
       },
       error: done.fail
@@ -253,7 +235,7 @@ describe('AppSearchComponent', () => {
 
     component.apps$.subscribe({
       next: (apps) => {
-        expect(apps.length).toBe(1)
+        expect(apps).toHaveSize(1)
         apps.forEach((app) => {
           expect(app.appType).toEqual('MS')
         })
@@ -271,7 +253,7 @@ describe('AppSearchComponent', () => {
 
     component.apps$.subscribe({
       next: (apps) => {
-        expect(apps.length).toBe(0)
+        expect(apps).toHaveSize(0)
         done()
       },
       error: done.fail
@@ -288,7 +270,7 @@ describe('AppSearchComponent', () => {
 
     component.apps$.subscribe({
       next: (result) => {
-        expect(result.length).toBe(0)
+        expect(result).toHaveSize(0)
         expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.APPS')
         expect(console.error).toHaveBeenCalledWith('searchMicrofrontends', errorResponse)
         done()
@@ -307,7 +289,7 @@ describe('AppSearchComponent', () => {
 
     component.apps$.subscribe({
       next: (result) => {
-        expect(result.length).toBe(0)
+        expect(result).toHaveSize(0)
         expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.APPS')
         expect(console.error).toHaveBeenCalledWith('searchMicroservice', errorResponse)
         done()
@@ -325,7 +307,7 @@ describe('AppSearchComponent', () => {
 
     component.apps$.subscribe({
       next: (result) => {
-        expect(result.length).toBe(2)
+        expect(result).toHaveSize(2)
         result.forEach((result, i) => {
           if (i === 0) expect(result.appType).toEqual('MFE')
           if (i === 1) expect(result.appType).toEqual('MS')
@@ -353,6 +335,53 @@ describe('AppSearchComponent', () => {
     expect(component.filter).toBe(filter)
   })
 
+  it('should filter the app list onFilterChange', () => {
+    const filter = 'prodName'
+    component.appSearchCriteriaGroup.controls['appType'].setValue('ALL')
+    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: [mfe] } as MicrofrontendPageResult))
+    apiMsServiceSpy.searchMicroservice.and.returnValue(of({ stream: [ms] } as MicroservicePageResult))
+
+    component.searchApps()
+    component.onFilterChange(filter)
+
+    component.filteredData$.subscribe((result) => {
+      expect(result).toHaveSize(2)
+      result.forEach((app) => {
+        expect(app.productName).toBe('prodName')
+      })
+    })
+  })
+
+  it('should clear the app list filter onFilterChange', () => {
+    const filter = 'non-existent'
+    component.appSearchCriteriaGroup.controls['appType'].setValue('ALL')
+    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: [mfe] } as MicrofrontendPageResult))
+    apiMsServiceSpy.searchMicroservice.and.returnValue(of({ stream: [ms] } as MicroservicePageResult))
+
+    component.searchApps()
+    component.onFilterChange(filter)
+
+    component.filteredData$.subscribe((result) => {
+      expect(result).toHaveSize(0)
+    })
+  })
+
+  it('should filter the app list by classification onFilterChange', () => {
+    const filter = 'test'
+    const mfeWithClassification = { ...mfe, classifications: ['test'] }
+    component.appSearchCriteriaGroup.controls['appType'].setValue('MFE')
+    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(
+      of({ stream: [mfeWithClassification] } as unknown as MicrofrontendPageResult)
+    )
+
+    component.searchApps()
+    component.onFilterChange(filter)
+
+    component.filteredData$.subscribe((result) => {
+      expect(result).toHaveSize(1)
+    })
+  })
+
   describe('onAppTypeFilterChange', () => {
     it('should set appTypeFilterValue when ev.value is provided', () => {
       const event = { value: 'testValue' }
@@ -370,10 +399,13 @@ describe('AppSearchComponent', () => {
 
   describe('onQuickFilterChange', () => {
     it('should update filterBy and filterValue onQuickFilterChange: ALL', () => {
+      component.interactiveFilters = [{ columnId: 'someColumn', value: 'someValue' }]
+
       component.onQuickFilterChange({ value: 'ALL' })
 
       expect(component.filterBy).toBe(component.filterValueDefault)
       expect(component.filterValue).toBe('')
+      expect(component.interactiveFilters).toEqual([{ columnId: 'someColumn', value: 'someValue' }])
     })
 
     it('should update filterBy and filterValue onQuickFilterChange: other', () => {
@@ -381,6 +413,17 @@ describe('AppSearchComponent', () => {
 
       expect(component.filterValue).toBe('other')
       expect(component.filterBy).toBe('appType')
+    })
+
+    it('should update interactiveFilters onQuickFilterChange preserving other filters', () => {
+      component.interactiveFilters = [{ columnId: 'someColumn', value: 'someValue' }]
+
+      component.onQuickFilterChange({ value: 'other' })
+
+      expect(component.interactiveFilters).toEqual([
+        { columnId: 'someColumn', value: 'someValue' },
+        { columnId: 'appType', value: 'other', filterType: FilterType.EQUALS }
+      ])
     })
 
     it('should set to quickFulterVaule to the original one if there is no current value', () => {
@@ -414,6 +457,37 @@ describe('AppSearchComponent', () => {
       component.onSearchReset()
 
       expect(component.appSearchCriteriaGroup.reset).toHaveBeenCalled()
+    })
+  })
+
+  describe('onInteractiveFiltersChange', () => {
+    it('should update interactive filters and table filter', () => {
+      const filters = [{ columnId: 'global', value: 'test' }]
+
+      component.onInteractiveFiltersChange(filters)
+
+      expect(component.interactiveFilters).toEqual(filters)
+      expect(component.tableFilter).toBe('test')
+    })
+
+    it('should set empty table filter when there is no global filter', () => {
+      component.onInteractiveFiltersChange([{ columnId: 'someColumn', value: 'someValue' }])
+
+      expect(component.tableFilter).toBe('')
+    })
+  })
+
+  describe('onInteractiveSorted', () => {
+    it('should update sort values', () => {
+      component.onInteractiveSorted({ sortColumn: 'appName', sortDirection: DataSortDirection.DESCENDING })
+
+      expect(component.sortField).toBe('appName')
+      expect(component.sortDirection).toBe(DataSortDirection.DESCENDING)
+      expect(component.sortOrder).toBe(-1)
+
+      component.onInteractiveSorted({ sortColumn: 'appName', sortDirection: DataSortDirection.ASCENDING })
+
+      expect(component.sortOrder).toBe(1)
     })
   })
 

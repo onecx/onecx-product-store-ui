@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } 
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 import { finalize, map } from 'rxjs'
-import { TabView } from 'primeng/tabview'
 import { Table } from 'primeng/table'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
@@ -23,6 +22,7 @@ export interface SlotForm {
 
 @Component({
   selector: 'app-slot-detail',
+  standalone: false,
   templateUrl: './slot-detail.component.html',
   styleUrls: ['./slot-detail.component.scss']
 })
@@ -33,7 +33,6 @@ export class SlotDetailComponent implements OnInit, OnChanges {
   @Input() displayDialog = false
   @Output() changed = new EventEmitter<boolean>()
 
-  @ViewChild('panelDetail') panelDetail: TabView | undefined
   @ViewChild('endpointTable') endpointTable: Table | undefined
   @ViewChild(SlotInternComponent, { static: false }) appInternComponent!: SlotInternComponent
 
@@ -51,9 +50,6 @@ export class SlotDetailComponent implements OnInit, OnChanges {
     private readonly msgService: PortalMessageService,
     private readonly translate: TranslateService
   ) {
-    this.hasCreatePermission = this.user.hasPermission('SLOT#CREATE')
-    this.hasEditPermission = this.user.hasPermission('SLOT#EDIT')
-
     this.formGroupSlot = new FormGroup<SlotForm>({
       name: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
       appId: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
@@ -63,6 +59,13 @@ export class SlotDetailComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    void this.initPermissions()
+    if (this.hasEditPermission && this.changeMode !== 'CREATE') this.changeMode = 'EDIT'
+  }
+
+  private async initPermissions(): Promise<void> {
+    this.hasCreatePermission = await this.user.hasPermission('SLOT#CREATE')
+    this.hasEditPermission = await this.user.hasPermission('SLOT#EDIT')
     if (this.hasEditPermission && this.changeMode !== 'CREATE') this.changeMode = 'EDIT'
   }
 
@@ -160,6 +163,10 @@ export class SlotDetailComponent implements OnInit, OnChanges {
 
   public onChangeUndeployedValue(val: boolean) {
     if (this.slot) this.slot.undeployed = val
+  }
+
+  public onTabChange(index: string | number) {
+    this.selectedTabIndex = typeof index === 'number' ? index : Number(index)
   }
 
   public onSave() {

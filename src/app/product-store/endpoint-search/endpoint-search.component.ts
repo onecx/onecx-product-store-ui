@@ -1,12 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core'
+import { Component, OnDestroy, OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { FormControl, FormGroup } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
-import { catchError, combineLatest, finalize, map, Observable, of, tap } from 'rxjs'
-import { Table } from 'primeng/table'
+import { BehaviorSubject, catchError, combineLatest, finalize, map, Observable, of, Subscription, tap } from 'rxjs'
 
 import { PortalMessageService } from '@onecx/angular-integration-interface'
-import { Action, Column, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+import { Action, ColumnType, DataSortDirection, DataTableColumn, Filter, Sort } from '@onecx/angular-accelerator'
 
 import {
   MicrofrontendAbstract,
@@ -17,24 +16,33 @@ import {
   ProductSearchCriteria
 } from 'src/app/shared/generated'
 import { AppAbstract } from '../app-search/app-search.component'
+import { Utils } from 'src/app/shared/utils'
 
 export interface ProductSearchCriteriaControls {
   name: FormControl<string | null>
 }
 export type ChangeMode = 'VIEW' | 'COPY' | 'CREATE' | 'EDIT'
 export type MfeEndpoint = MicrofrontendAbstract & {
+  mfeId: string
   unique_id: string
   productDisplayName: string
   endpoint_name: string
   endpoint_path: string
 }
+export interface Column {
+  field: string
+  header: string
+  active: boolean
+  translationPrefix?: string
+}
 
 @Component({
   selector: 'app-endpoint-search',
+  standalone: false,
   templateUrl: './endpoint-search.component.html',
   styleUrls: ['./endpoint-search.component.scss']
 })
-export class EndpointSearchComponent implements OnInit {
+export class EndpointSearchComponent implements OnInit, OnDestroy {
   // dialog
   public loading = false
   public exceptionKey: string | undefined = undefined
@@ -42,9 +50,31 @@ export class EndpointSearchComponent implements OnInit {
   public actions$: Observable<Action[]> | undefined
   public filteredColumns: Column[] = []
   public displayAppDetailDialog = false
-
-  @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
-  public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
+  public tableFilter = ''
+  public displayedColumnKeys: string[] = []
+  public interactiveFilters: Filter[] = []
+  public interactiveSortField = 'productDisplayName'
+  public interactiveSortDirection: DataSortDirection = DataSortDirection.ASCENDING
+  public interactiveColumns: DataTableColumn[] = [
+    {
+      id: 'productDisplayName',
+      nameKey: 'ENDPOINT.PRODUCT_NAME',
+      columnType: ColumnType.STRING,
+      sortable: true
+    },
+    { id: 'appName', nameKey: 'ENDPOINT.APP_NAME', columnType: ColumnType.STRING },
+    {
+      id: 'endpoint_name',
+      nameKey: 'ENDPOINT.NAME.SEARCH',
+      columnType: ColumnType.STRING
+    },
+    {
+      id: 'endpoint_path',
+      nameKey: 'ENDPOINT.PATH',
+      columnType: ColumnType.STRING
+    }
+  ]
+  public interactiveDisplayedColumnKeys: string[] = this.interactiveColumns.map((column) => column.id)
 
   // data
   public searchCriteria!: FormGroup<ProductSearchCriteriaControls>
@@ -52,6 +82,10 @@ export class EndpointSearchComponent implements OnInit {
   public mfes$: Observable<MicrofrontendAbstract[]> = of([])
   public products$: Observable<ProductAbstract[]> = of([])
   public mfeItem4Detail: AppAbstract | undefined = undefined
+  public filteredData$ = new BehaviorSubject<MfeEndpoint[]>([])
+  public resultData$ = new BehaviorSubject<MfeEndpoint[]>([])
+  private endpointsSubscription?: Subscription
+  private filterData = ''
 
   public columns: Column[] = [
     {
@@ -82,10 +116,14 @@ export class EndpointSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.prepareDialogTranslations()
+    this.initGlobalFilter()
     this.preparePageActions()
     this.declareDataSources()
     this.loadData()
+  }
+
+  ngOnDestroy(): void {
+    this.endpointsSubscription?.unsubscribe()
   }
 
   /****************************************************************************
@@ -100,7 +138,7 @@ export class EndpointSearchComponent implements OnInit {
     this.products$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
       map((data) => data.stream ?? []),
       catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+        this.exceptionKey = this.getHttpExceptionKey(err, 'PRODUCTS')
         console.error('searchProducts', err)
         return of([])
       })
@@ -123,7 +161,7 @@ export class EndpointSearchComponent implements OnInit {
         }),
         map((data) => data.stream ?? []),
         catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.MFES'
+          this.exceptionKey = this.getHttpExceptionKey(err, 'MFES')
           console.error('searchMicrofrontends', err)
           return of([])
         }),
@@ -133,17 +171,25 @@ export class EndpointSearchComponent implements OnInit {
 
   public sortMfes(a: MfeEndpoint, b: MfeEndpoint): number {
     return (
-      a.productName.toUpperCase().localeCompare(b.productName.toUpperCase()) ||
-      (a.exposedModule ? a.exposedModule.toUpperCase() : '').localeCompare(
-        b.exposedModule ? b.exposedModule.toUpperCase() : ''
-      ) ||
-      a.endpoint_name.toUpperCase().localeCompare(b.endpoint_name.toUpperCase())
+      this.upperValue(a.productName).localeCompare(this.upperValue(b.productName)) ||
+      this.upperValue(a.exposedModule).localeCompare(this.upperValue(b.exposedModule)) ||
+      this.upperValue(a.endpoint_name).localeCompare(this.upperValue(b.endpoint_name))
     )
+  }
+
+  private upperValue(value: string | null | undefined): string {
+    return (value ?? '').toUpperCase()
   }
 
   private getProductDisplayName(name: string, pas: ProductAbstract[]): string {
     const pf = pas.find((p) => p.name === name)
     return pf?.displayName ?? ''
+  }
+
+  private getHttpExceptionKey(err: unknown, domain: 'PRODUCTS' | 'MFES'): string {
+    const maybeStatus = (err as { status?: number })?.status
+    const status = typeof maybeStatus === 'number' ? maybeStatus : 0
+    return `EXCEPTIONS.HTTP_STATUS_${status}.${domain}`
   }
 
   // complete refresh: getting meta data and trigger search
@@ -158,7 +204,8 @@ export class EndpointSearchComponent implements OnInit {
             if (mfe.endpoints)
               for (const [i, ep] of mfe.endpoints.entries()) {
                 eps.push({
-                  id: mfe.id,
+                  id: mfe.id + '_' + i,
+                  mfeId: mfe.id,
                   unique_id: mfe.id + '_' + i,
                   appId: mfe.appId,
                   appName: mfe.appName,
@@ -171,53 +218,24 @@ export class EndpointSearchComponent implements OnInit {
                   endpoint_path: ep.path
                 })
               }
-          eps.sort(this.sortMfes)
+          eps.sort((a, b) => this.sortMfes(a, b))
         }
         return eps
       }),
       finalize(() => (this.loading = false))
     )
-  }
 
-  /**
-   * DIALOG
-   */
-  private prepareDialogTranslations(): void {
-    this.dataViewControlsTranslations$ = this.translate
-      .get([
-        'ENDPOINT.APP_NAME',
-        'ENDPOINT.PRODUCT_NAME',
-        'ENDPOINT.NAME',
-        'DIALOG.DATAVIEW.VIEW_MODE_TABLE',
-        'DIALOG.DATAVIEW.FILTER',
-        'DIALOG.DATAVIEW.FILTER_OF',
-        'DIALOG.DATAVIEW.SORT_BY',
-        'DIALOG.DATAVIEW.SORT_DIRECTION_ASC',
-        'DIALOG.DATAVIEW.SORT_DIRECTION_DESC'
-      ])
-      .pipe(
-        map((data) => {
-          return {
-            sortDropdownPlaceholder: data['DIALOG.DATAVIEW.SORT_BY'],
-            filterInputPlaceholder: data['DIALOG.DATAVIEW.FILTER'],
-            filterInputTooltip:
-              data['DIALOG.DATAVIEW.FILTER_OF'] +
-              data['ENDPOINT.PRODUCT_NAME'] +
-              ', ' +
-              data['ENDPOINT.APP_NAME'] +
-              ', ' +
-              data['ENDPOINT.NAME'],
-            viewModeToggleTooltips: {
-              table: data['DIALOG.DATAVIEW.VIEW_MODE_TABLE']
-            },
-            sortOrderTooltips: {
-              ascending: data['DIALOG.DATAVIEW.SORT_DIRECTION_ASC'],
-              descending: data['DIALOG.DATAVIEW.SORT_DIRECTION_DESC']
-            },
-            sortDropdownTooltip: data['DIALOG.DATAVIEW.SORT_BY']
-          } as DataViewControlTranslations
-        })
-      )
+    this.endpointsSubscription?.unsubscribe()
+    this.endpointsSubscription = this.endpoints$.subscribe({
+      next: (eps) => {
+        this.resultData$.next(eps)
+        this.filteredData$.next(eps)
+      },
+      error: (err) => {
+        this.exceptionKey = this.exceptionKey ?? 'EXCEPTIONS.HTTP_STATUS_0.MFES'
+        console.error('loadData endpoints subscription', err)
+      }
+    })
   }
 
   private preparePageActions(): void {
@@ -269,7 +287,19 @@ export class EndpointSearchComponent implements OnInit {
     this.filteredColumns = activeIds.map((id) => this.columns.find((col) => col.field === id)) as Column[]
   }
   public onFilterChange(event: string): void {
-    this.dataTable?.filterGlobal(event, 'contains')
+    this.tableFilter = event
+    this.filterData = event
+    this.resultData$.next(this.resultData$.value)
+  }
+  public onInteractiveFiltersChange(filters: Filter[]): void {
+    this.interactiveFilters = filters
+  }
+  public onInteractiveSorted(sort: Sort): void {
+    this.interactiveSortField = sort.sortColumn
+    this.interactiveSortDirection = sort.sortDirection
+  }
+  public onLayoutChange(viewMode: 'grid' | 'list' | 'table'): void {
+    // Layout change handler for interactive data view - table-only component
   }
   public onSearch() {
     this.declareDataSources()
@@ -277,15 +307,37 @@ export class EndpointSearchComponent implements OnInit {
   }
   public onCriteriaReset() {
     this.searchCriteria.reset()
+    this.onFilterChange('')
   }
   public onAppDetail(ev: Event, data: MfeEndpoint) {
     ev.stopPropagation()
-    this.mfeItem4Detail = { id: data.id, appType: 'MFE', mfeType: MicrofrontendType.Module }
+    this.mfeItem4Detail = { id: data.mfeId, appType: 'MFE', mfeType: MicrofrontendType.Module }
     this.displayAppDetailDialog = true
   }
   public onMfeChanged(changed: any) {
     this.displayAppDetailDialog = false
     this.mfeItem4Detail = undefined
     if (changed) this.loadData()
+  }
+
+  private initGlobalFilter(): void {
+    this.resultData$
+      .pipe(map((endpoints) => (this.filterData.trim() ? this.stringFilter(this.filterData, endpoints) : endpoints)))
+      .subscribe({
+        next: (filteredData) => {
+          this.filteredData$.next(filteredData)
+        }
+      })
+  }
+
+  private stringFilter(filter: string, endpoints: MfeEndpoint[]): MfeEndpoint[] {
+    const lowerCaseFilter = filter.toLowerCase()
+    return endpoints.filter((endpoint) => {
+      return ['productDisplayName', 'appName', 'endpoint_name', 'endpoint_path'].some((key: string) => {
+        const searchableText = Utils.toSearchableText(endpoint[key as keyof MfeEndpoint])
+        if (!searchableText) return false
+        return searchableText.toLowerCase().includes(lowerCaseFilter)
+      })
+    })
   }
 }

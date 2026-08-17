@@ -1,44 +1,50 @@
 <div class="mt-2 mb-1 mx-2 surface-section flex flex-column row-gap-4">
   <!-- row 1 -->
   <form [formGroup]="formGroup" class="mx-3 flex flex-row flex-wrap column-gap-6 row-gap-3">
-    <p-checkbox
-      inputId="ps_product_detail_intern_operator"
-      styleClass="cursor-auto"
-      formControlName="operator"
-      [binary]="true"
-      [label]="'INTERNAL.OPERATOR' | translate"
-      [ariaLabel]="'INTERNAL.OPERATOR' | translate"
-      [pTooltip]="'PRODUCT.TOOLTIPS.OPERATOR' | translate"
-      tooltipPosition="top"
-      tooltipEvent="hover"
-    ></p-checkbox>
-    <p-checkbox
-      inputId="ps_product_detail_intern_undeployed"
-      styleClass="cursor-auto"
-      formControlName="undeployed"
-      [binary]="true"
-      [label]="'PRODUCT.UNDEPLOYED' | translate"
-      [ariaLabel]="'PRODUCT.UNDEPLOYED' | translate"
-      [pTooltip]="'PRODUCT.TOOLTIPS.UNDEPLOYED' | translate"
-      tooltipPosition="top"
-      tooltipEvent="hover"
-    ></p-checkbox>
-    <p-checkbox
-      inputId="ps_product_detail_intern_multitenancy"
-      styleClass="cursor-auto"
-      formControlName="multitenancy"
-      [binary]="true"
-      [label]="'INTERNAL.MULTITENANCY' | translate"
-      [ariaLabel]="'INTERNAL.MULTITENANCY' | translate"
-      [pTooltip]="'INTERNAL.TOOLTIPS.MULTITENANCY' | translate"
-      tooltipPosition="top"
-      tooltipEvent="hover"
-    ></p-checkbox>
+    <div class="flex align-items-center gap-2">
+      <p-checkbox
+        inputId="ps_product_detail_intern_operator"
+        styleClass="cursor-auto"
+        formControlName="operator"
+        [binary]="true"
+        [ariaLabel]="'INTERNAL.OPERATOR' | translate"
+        [pTooltip]="'PRODUCT.TOOLTIPS.OPERATOR' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      ></p-checkbox>
+      <label for="ps_product_detail_intern_operator">{{ 'INTERNAL.OPERATOR' | translate }}</label>
+    </div>
+    <div class="flex align-items-center gap-2">
+      <p-checkbox
+        inputId="ps_product_detail_intern_undeployed"
+        styleClass="cursor-auto"
+        formControlName="undeployed"
+        [binary]="true"
+        [ariaLabel]="'PRODUCT.UNDEPLOYED' | translate"
+        [pTooltip]="'PRODUCT.TOOLTIPS.UNDEPLOYED' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      ></p-checkbox>
+      <label for="ps_product_detail_intern_undeployed">{{ 'PRODUCT.UNDEPLOYED' | translate }}</label>
+    </div>
+    <div class="flex align-items-center gap-2">
+      <p-checkbox
+        inputId="ps_product_detail_intern_multitenancy"
+        styleClass="cursor-auto"
+        formControlName="multitenancy"
+        [binary]="true"
+        [ariaLabel]="'INTERNAL.MULTITENANCY' | translate"
+        [pTooltip]="'INTERNAL.TOOLTIPS.MULTITENANCY' | translate"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+      ></p-checkbox>
+      <label for="ps_product_detail_intern_multitenancy">{{ 'INTERNAL.MULTITENANCY' | translate }}</label>
+    </div>
   </form>
 
   <!-- row 2 -->
   <div class="flex flex-row flex-wrap gap-4">
-    <span class="flex-grow-1 sm:flex-grow-0 p-float-label">
+    <p-float-label variant="on">
       <input
         pInputText
         type="text"
@@ -52,8 +58,8 @@
         tooltipEvent="hover"
       />
       <label for="ps_product_detail_intern_creationDate">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
-    </span>
-    <span class="flex-grow-1 max-w-30rem p-float-label">
+    </p-float-label>
+    <p-float-label variant="on">
       <input
         pInputText
         type="text"
@@ -67,12 +73,12 @@
         tooltipEvent="hover"
       />
       <label for="ps_product_detail_intern_creation_user">{{ 'INTERNAL.CREATION_USER' | translate }}</label>
-    </span>
+    </p-float-label>
   </div>
 
   <!-- row 3 -->
   <div class="flex flex-row flex-wrap gap-4">
-    <span class="flex-grow-1 sm:flex-grow-0 p-float-label">
+    <p-float-label variant="on">
       <input
         pInputText
         type="text"
@@ -86,8 +92,8 @@
         tooltipEvent="hover"
       />
       <label for="ps_product_detail_intern_modification_date">{{ 'INTERNAL.MODIFICATION_DATE' | translate }}</label>
-    </span>
-    <span class="flex-grow-1 max-w-30rem p-float-label">
+    </p-float-label>
+    <p-float-label variant="on">
       <input
         pInputText
         type="text"
@@ -101,6 +107,6 @@
         tooltipEvent="hover"
       />
       <label for="ps_product_detail_intern_modification_user">{{ 'INTERNAL.MODIFICATION_USER' | translate }}</label>
-    </span>
+    </p-float-label>
   </div>
 </div>

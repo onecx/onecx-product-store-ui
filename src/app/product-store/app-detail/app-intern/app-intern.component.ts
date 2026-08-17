@@ -7,6 +7,7 @@ import { ChangeMode } from '../../product-detail/product-detail.component'
 
 @Component({
   selector: 'app-app-intern',
+  standalone: false,
   templateUrl: './app-intern.component.html'
 })
 export class AppInternComponent implements OnChanges {

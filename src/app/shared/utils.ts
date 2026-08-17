@@ -66,6 +66,25 @@ const Utils = {
   },
 
   /**
+   * Filter
+   */
+  toSearchableText(value: unknown): string | undefined {
+    if (value == null) return undefined
+    if (typeof value === 'string') return value
+    if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') {
+      return value.toString()
+    }
+    if (value instanceof Date) return value.toISOString()
+    if (Array.isArray(value)) {
+      const normalizedValues = value
+        .map((entry) => Utils.toSearchableText(entry))
+        .filter((entry): entry is string => entry != null && entry !== '')
+      return normalizedValues.length ? normalizedValues.join(' ') : undefined
+    }
+    return undefined
+  },
+
+  /**
    * Endpoints
    */
   doesEndpointExist(

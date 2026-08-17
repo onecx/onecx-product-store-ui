@@ -137,7 +137,7 @@ describe('AppDetailComponent', () => {
     lang$: {
       getValue: jasmine.createSpy('getValue').and.returnValue('en')
     },
-    hasPermission: jasmine.createSpy('hasPermission').and.callFake((permission: string) => {
+    hasPermission: jasmine.createSpy('hasPermission').and.callFake(async (permission: string) => {
       return ['APP#CREATE', 'APP#DELETE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
     })
   }
@@ -169,6 +169,8 @@ describe('AppDetailComponent', () => {
     component = fixture.componentInstance
     component.displayDialog = true
     fixture.detectChanges()
+    component.hasCreatePermission = true
+    component.hasEditPermission = true
   })
 
   afterEach(() => {
@@ -590,7 +592,7 @@ describe('AppDetailComponent', () => {
 
       component.onDeleteEndpointRow(1)
 
-      expect(component.endpoints.length).toBe(1)
+      expect(component.endpoints).toHaveSize(1)
     })
   })
 
@@ -607,6 +609,27 @@ describe('AppDetailComponent', () => {
       component.onChangeUndeployedValue(true)
 
       expect(component.ms.undeployed).toBeTrue()
+    })
+  })
+
+  describe('on tab change', () => {
+    it('should set selectedTabIndex onTabChange', () => {
+      component.onTabChange(1)
+      expect(component.selectedTabIndex).toBe(1)
+
+      component.onTabChange('2')
+      expect(component.selectedTabIndex).toBe(2)
+    })
+  })
+
+  describe('on init', () => {
+    it('should switch to EDIT on ngOnInit when hasEditPermission', () => {
+      component.hasEditPermission = true
+      component.changeMode = 'VIEW'
+
+      component.ngOnInit()
+
+      expect(component.changeMode).toBe('EDIT')
     })
   })
 })

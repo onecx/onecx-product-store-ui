@@ -323,4 +323,25 @@ describe('SlotDetailComponent', () => {
       expect(component.slot.undeployed).toBeTrue()
     })
   })
+
+  describe('on tab change', () => {
+    it('should set selectedTabIndex onTabChange', () => {
+      component.onTabChange(1)
+      expect(component.selectedTabIndex).toBe(1)
+
+      component.onTabChange('2')
+      expect(component.selectedTabIndex).toBe(2)
+    })
+  })
+
+  describe('init permissions', () => {
+    it('should switch to EDIT in initPermissions when hasEditPermission', async () => {
+      ;(mockUserService.hasPermission as jasmine.Spy).and.returnValues(false, true)
+      component.changeMode = 'VIEW'
+
+      await component['initPermissions']()
+
+      expect(component.changeMode).toBe('EDIT')
+    })
+  })
 })

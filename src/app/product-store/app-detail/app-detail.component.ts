@@ -3,7 +3,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { TranslateService } from '@ngx-translate/core'
 import { finalize, map } from 'rxjs'
 import { SelectItem } from 'primeng/api'
-import { TabView } from 'primeng/tabview'
 import { Table } from 'primeng/table'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
@@ -57,6 +56,7 @@ export interface MsForm {
 
 @Component({
   selector: 'app-app-detail',
+  standalone: false,
   templateUrl: './app-detail.component.html',
   styleUrls: ['./app-detail.component.scss']
 })
@@ -67,7 +67,6 @@ export class AppDetailComponent implements OnInit, OnChanges {
   @Input() displayDialog = false
   @Output() appChanged = new EventEmitter<boolean>()
 
-  @ViewChild('panelDetail') panelDetail: TabView | undefined
   @ViewChild('endpointTable') endpointTable: Table | undefined
   @ViewChild(AppInternComponent, { static: false }) appInternComponent!: AppInternComponent
 
@@ -98,8 +97,6 @@ export class AppDetailComponent implements OnInit, OnChanges {
     private readonly msgService: PortalMessageService,
     private readonly translate: TranslateService
   ) {
-    this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
-    this.hasEditPermission = this.user.hasPermission('APP#EDIT')
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
     this.iconItems.sort(Utils.dropDownSortItemsByLabel)
 
@@ -132,8 +129,15 @@ export class AppDetailComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    void this.initPermissions()
     if (this.hasEditPermission && this.changeMode === 'VIEW') this.changeMode = 'EDIT'
     this.getDropdownTranslations()
+  }
+
+  private async initPermissions(): Promise<void> {
+    this.hasCreatePermission = await this.user.hasPermission('APP#CREATE')
+    this.hasEditPermission = await this.user.hasPermission('APP#EDIT')
+    if (this.hasEditPermission && this.changeMode === 'VIEW') this.changeMode = 'EDIT'
   }
 
   ngOnChanges() {
@@ -295,6 +299,10 @@ export class AppDetailComponent implements OnInit, OnChanges {
   public onChangeUndeployedValue(val: boolean) {
     if (this.mfe) this.mfe.undeployed = val
     if (this.ms) this.ms.undeployed = val
+  }
+
+  public onTabChange(index: string | number) {
+    this.selectedTabIndex = typeof index === 'number' ? index : Number(index)
   }
 
   public onSave() {

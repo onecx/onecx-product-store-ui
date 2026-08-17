@@ -1,6 +1,8 @@
 @import '/src/app/_ps-mixins.scss';
 
+@include required-label;
 @include readable-disabled-form-controls;
+@include prepare-inputgroup;
 @include dropdown-zebra-rows;
 @include compact-dropdown-list-items;
 @include tabview-reduce-padding;
@@ -15,12 +17,58 @@
   /**
    * adjustments for tables with cell editing => endpoints
   */
+  .p-floatlabel-on:has(.p-select-label:not(.p-placeholder)) label,
+  .p-floatlabel-on:has(textarea:not(:placeholder-shown)) label {
+    top: 0;
+    transform: translateY(-50%);
+    border-radius: var(--p-border-radius-xs, 6px);
+    background: var(--p-form-field-background, #fff);
+    padding: 0 0.125rem;
+    font-size: var(--p-floatlabel-active-font-size, 0.75rem);
+  }
+
+  .p-floatlabel-on:has(.p-select-label:not(.p-placeholder)):not(:has(.p-inputwrapper-focus)) label,
+  .p-floatlabel-on:has(textarea:not(:placeholder-shown)):not(:has(textarea:focus)) label {
+    color: var(--p-floatlabel-active-color);
+  }
+
+  .p-floatlabel-on:has(textarea:not(:placeholder-shown)) .p-textarea {
+    padding-top: 1.5rem;
+  }
+
+  .p-floatlabel-on .p-textarea {
+    border-radius: var(--p-form-field-border-radius, 6px);
+  }
+
+  .p-datatable .p-datatable-thead > tr > th {
+    text-align: var(--table-cell-content-alignment, left);
+    padding: var(--table-header-cell-padding, 1rem 1rem);
+    border: var(--table-header-cell-border, 1px solid #e4e4e4);
+    border-width: var(--table-header-cell-border-width, 0 0 1px 0);
+    font-weight: var(--table-header-cell-font-weight, 500);
+    color: var(--text-color);
+    background: var(--table-header-cell-bg, #ffffff);
+  }
+
+  .p-datatable .p-datatable-tbody > tr {
+    background: var(--table-body-row-bg, #ffffff);
+    color: var(--text-color);
+
+    &:nth-child(even) > td {
+      background-color: var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02));
+    }
+  }
+
   .p-datatable .p-datatable-tbody > tr > td {
+    text-align: var(--table-cell-content-alignment, left);
+    border: var(--table-body-cell-border, 1px solid #e4e4e4);
+    border-width: var(--table-body-cell-border-width, 0 0 1px 0);
+
     &:not(:first-of-type) {
       min-width: 220px;
     }
     &:not(:has(p-celleditor .p-inputtext)) {
-      padding: var(--table-body-cell-padding);
+      padding: var(--table-body-cell-padding, 1rem 1rem);
     }
     &:has(p-celleditor .p-inputtext) {
       padding: 0.4rem;

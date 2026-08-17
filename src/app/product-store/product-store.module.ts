@@ -6,9 +6,12 @@ import { RouterModule, Routes } from '@angular/router'
 import { FieldsetModule } from 'primeng/fieldset'
 import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { ConfirmationService } from 'primeng/api'
+import { ButtonModule } from 'primeng/button'
+import { CheckboxModule } from 'primeng/checkbox'
+import { MessageModule } from 'primeng/message'
 
-import { PortalCoreModule } from '@onecx/portal-integration-angular'
-import { addInitializeModuleGuard, InitializeModuleGuard } from '@onecx/angular-integration-interface'
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
+import { PortalPageComponent } from '@onecx/angular-utils'
 
 import { LabelResolver } from 'src/app/shared/label.resolver'
 import { SharedModule } from 'src/app/shared/shared.module'
@@ -87,13 +90,17 @@ const routes: Routes = [
   imports: [
     CommonModule,
     ConfirmDialogModule,
+    ButtonModule,
+    CheckboxModule,
     FieldsetModule,
     FormsModule,
-    PortalCoreModule.forMicroFrontend(),
-    [RouterModule.forChild(addInitializeModuleGuard(routes))],
+    AngularAcceleratorModule,
+    MessageModule,
+    PortalPageComponent,
+    RouterModule.forChild(routes),
     SharedModule
   ],
-  providers: [ConfirmationService, InitializeModuleGuard]
+  providers: [ConfirmationService]
 })
 export class ProductStoreModule {
   constructor() {

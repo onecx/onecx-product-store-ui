@@ -13,72 +13,87 @@ import { DataViewModule } from 'primeng/dataview'
 import { DialogModule } from 'primeng/dialog'
 import { DialogService } from 'primeng/dynamicdialog'
 import { DropdownModule } from 'primeng/dropdown'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { ButtonModule } from 'primeng/button'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { InputGroupModule } from 'primeng/inputgroup'
 import { InputTextModule } from 'primeng/inputtext'
-import { InputTextareaModule } from 'primeng/inputtextarea'
 import { KeyFilterModule } from 'primeng/keyfilter'
 import { ListboxModule } from 'primeng/listbox'
 import { MultiSelectModule } from 'primeng/multiselect'
 import { SelectButtonModule } from 'primeng/selectbutton'
 import { TableModule } from 'primeng/table'
-import { TabViewModule } from 'primeng/tabview'
+import { TextareaModule } from 'primeng/textarea'
+import { TooltipModule } from 'primeng/tooltip'
+import { TabsModule } from 'primeng/tabs'
 import { ToastModule } from 'primeng/toast'
 
-import { PortalDialogService, PortalCoreModule } from '@onecx/portal-integration-angular'
+import { AngularAcceleratorModule, PortalDialogService } from '@onecx/angular-accelerator'
 
 import { LabelResolver } from './label.resolver'
 import { OcxChipComponent } from './ocx-chip/ocx-chip.component'
 import { ImageContainerComponent } from './image-container/image-container.component'
 
 @NgModule({
-  declarations: [ImageContainerComponent, OcxChipComponent],
   imports: [
-    PortalCoreModule.forMicroFrontend(),
+    AngularAcceleratorModule,
     AngularRemoteComponentsModule,
     AutoCompleteModule,
+    ButtonModule,
     CommonModule,
     ConfirmDialogModule,
     ConfirmPopupModule,
     DataViewModule,
     DialogModule,
     DropdownModule,
+    FloatLabelModule,
     FormsModule,
+    InputGroupAddonModule,
+    InputGroupModule,
     InputTextModule,
-    InputTextareaModule,
     KeyFilterModule,
     ListboxModule,
     MultiSelectModule,
     ReactiveFormsModule,
     SelectButtonModule,
     TableModule,
-    TabViewModule,
+    TextareaModule,
+    OcxChipComponent,
+    ImageContainerComponent,
+    TooltipModule,
+    TabsModule,
     ToastModule,
     TranslateModule
   ],
   exports: [
     AngularRemoteComponentsModule,
     AutoCompleteModule,
+    ButtonModule,
     CommonModule,
     ConfirmDialogModule,
     ConfirmPopupModule,
     DataViewModule,
     DialogModule,
     DropdownModule,
+    FloatLabelModule,
     FormsModule,
+    InputGroupAddonModule,
+    InputGroupModule,
     InputTextModule,
-    InputTextareaModule,
-    ImageContainerComponent,
     KeyFilterModule,
     ListboxModule,
     MultiSelectModule,
     ReactiveFormsModule,
     SelectButtonModule,
     TableModule,
-    TabViewModule,
+    TextareaModule,
+    OcxChipComponent,
+    ImageContainerComponent,
+    TooltipModule,
+    TabsModule,
     ToastModule,
-    TranslateModule,
-    OcxChipComponent
+    TranslateModule
   ],
-  //this is not elegant, for some reason the injection token from primeng does not work across federated module
   providers: [
     ConfirmationService,
     LabelResolver,
@@ -98,7 +113,6 @@ import { ImageContainerComponent } from './image-container/image-container.compo
         },
         deps: [TranslateService]
       },
-      //this is required because primeng calendar wraps things in an ugly way
       blurPredicate: (element: Element) => {
         return ['INPUT', 'TEXTAREA', 'SELECT', 'CUSTOM-DATE', 'P-CALENDAR', 'P-DROPDOWN'].includes(element.tagName)
       }

@@ -24,13 +24,40 @@
       }
     }
   }
-  /* hide unusable stuff */
-  ocx-column-group-selection,
-  ocx-data-view-controls div div button {
-    display: none;
+
+  .p-datatable-thead > tr > th:first-child,
+  .p-datatable-tbody > tr > td:first-child {
+    border-right: 1px solid var(--surface-border, #dee2e6);
+    width: 1%;
+    white-space: nowrap;
+    text-align: center;
+    padding-left: 1.3rem;
+    padding-right: 1.3rem;
   }
-  ocx-data-view-controls div {
-    justify-content: center !important;
+
+  // keep sortable header title and icon on one line
+  ocx-interactive-data-view .table-header-wrapper {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 0.35rem;
+    height: auto !important;
+  }
+
+  ocx-interactive-data-view .table-header-wrapper > span:first-child {
+    white-space: nowrap;
+  }
+
+  ocx-interactive-data-view .icon-button-header-wrapper,
+  ocx-interactive-data-view .sortButton {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+  }
+
+  /* hide unusable slot extension point */
+  ocx-column-group-selection {
+    display: none;
   }
 
   .max-height-for-2-lines {

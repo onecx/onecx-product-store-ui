@@ -1,7 +1,11 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core'
+import { CommonModule } from '@angular/common'
 import { Observable, map } from 'rxjs'
 
 import { AppStateService } from '@onecx/angular-integration-interface'
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
+import { TranslateModule } from '@ngx-translate/core'
+import { TooltipModule } from 'primeng/tooltip'
 
 import { environment } from 'src/environments/environment'
 import { Utils } from 'src/app/shared/utils'
@@ -14,6 +18,8 @@ import { Utils } from 'src/app/shared/utils'
  */
 @Component({
   selector: 'app-image-container',
+  standalone: true,
+  imports: [AngularAcceleratorModule, CommonModule, TooltipModule, TranslateModule],
   styleUrls: ['./image-container.component.scss'],
   templateUrl: './image-container.component.html',
   host: { hostId: 'this-avoids-component-id-collision' }

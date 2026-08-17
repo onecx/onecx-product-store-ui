@@ -281,6 +281,27 @@
       }
     }
   },
+  "SEARCH": {
+    "FILTER": {
+      "LABEL": "Filter",
+      "TOOLTIP": "Nach Anzeigename, Anbieter, Klassifizierung oder Version filtern",
+      "CLEAR": "Filter löschen"
+    },
+    "ENDPOINT": {
+      "FILTER": {
+        "LABEL": "Filter",
+        "TOOLTIP": "Nach Applikationsname, Microfrontend, Endpunktname oder Pfad filtern",
+        "CLEAR": "Filter löschen"
+      }
+    },
+    "SLOT": {
+      "FILTER": {
+        "LABEL": "Filter",
+        "TOOLTIP": "Nach Slot-Name, Zustand, Microfrontend oder Applikationsname filtern",
+        "CLEAR": "Filter löschen"
+      }
+    }
+  },
   "APP": {
     "APP_ID": "App ID",
     "APP_NAME": "Name",
