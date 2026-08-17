@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy } from '@angular/core'
+import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core'
 import { finalize, of, Observable, catchError, Subject, takeUntil, tap } from 'rxjs'
 import { SelectItem } from 'primeng/api'
 
@@ -32,7 +32,7 @@ export enum AppType {
   templateUrl: './product-apps.component.html',
   styleUrls: ['./product-apps.component.scss']
 })
-export class ProductAppsComponent implements OnChanges, OnDestroy {
+export class ProductAppsComponent implements OnChanges, OnDestroy, OnInit {
   @Input() product: Product | undefined
   @Input() dateFormat = 'medium'
   @Input() changeMode: ChangeMode = 'VIEW'

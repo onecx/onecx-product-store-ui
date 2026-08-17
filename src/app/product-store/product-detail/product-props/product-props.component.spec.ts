@@ -146,8 +146,8 @@ describe('ProductPropertyComponent', () => {
 
       component.criteria$.subscribe({
         next: (result) => {
-          expect(result.providers?.length).toBe(0)
-          expect(result.classifications?.length).toEqual(0)
+          expect(result.providers).toHaveSize(0)
+          expect(result.classifications).toHaveSize(0)
           done()
         },
         error: done.fail

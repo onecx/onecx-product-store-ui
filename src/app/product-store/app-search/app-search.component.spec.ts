@@ -202,7 +202,7 @@ describe('AppSearchComponent', () => {
 
     component.apps$.subscribe({
       next: (apps) => {
-        expect(apps.length).toBe(1)
+        expect(apps).toHaveSize(1)
         apps.forEach((app) => {
           expect(app.appType).toEqual('MFE')
         })
@@ -220,7 +220,7 @@ describe('AppSearchComponent', () => {
 
     component.apps$.subscribe({
       next: (apps) => {
-        expect(apps.length).toBe(0)
+        expect(apps).toHaveSize(0)
         done()
       },
       error: done.fail
@@ -235,7 +235,7 @@ describe('AppSearchComponent', () => {
 
     component.apps$.subscribe({
       next: (apps) => {
-        expect(apps.length).toBe(1)
+        expect(apps).toHaveSize(1)
         apps.forEach((app) => {
           expect(app.appType).toEqual('MS')
         })
@@ -253,7 +253,7 @@ describe('AppSearchComponent', () => {
 
     component.apps$.subscribe({
       next: (apps) => {
-        expect(apps.length).toBe(0)
+        expect(apps).toHaveSize(0)
         done()
       },
       error: done.fail
@@ -270,7 +270,7 @@ describe('AppSearchComponent', () => {
 
     component.apps$.subscribe({
       next: (result) => {
-        expect(result.length).toBe(0)
+        expect(result).toHaveSize(0)
         expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.APPS')
         expect(console.error).toHaveBeenCalledWith('searchMicrofrontends', errorResponse)
         done()
@@ -289,7 +289,7 @@ describe('AppSearchComponent', () => {
 
     component.apps$.subscribe({
       next: (result) => {
-        expect(result.length).toBe(0)
+        expect(result).toHaveSize(0)
         expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.APPS')
         expect(console.error).toHaveBeenCalledWith('searchMicroservice', errorResponse)
         done()
@@ -307,7 +307,7 @@ describe('AppSearchComponent', () => {
 
     component.apps$.subscribe({
       next: (result) => {
-        expect(result.length).toBe(2)
+        expect(result).toHaveSize(2)
         result.forEach((result, i) => {
           if (i === 0) expect(result.appType).toEqual('MFE')
           if (i === 1) expect(result.appType).toEqual('MS')
@@ -345,7 +345,7 @@ describe('AppSearchComponent', () => {
     component.onFilterChange(filter)
 
     component.filteredData$.subscribe((result) => {
-      expect(result.length).toBe(2)
+      expect(result).toHaveSize(2)
       result.forEach((app) => {
         expect(app.productName).toBe('prodName')
       })
@@ -362,7 +362,7 @@ describe('AppSearchComponent', () => {
     component.onFilterChange(filter)
 
     component.filteredData$.subscribe((result) => {
-      expect(result.length).toBe(0)
+      expect(result).toHaveSize(0)
     })
   })
 
@@ -378,7 +378,7 @@ describe('AppSearchComponent', () => {
     component.onFilterChange(filter)
 
     component.filteredData$.subscribe((result) => {
-      expect(result.length).toBe(1)
+      expect(result).toHaveSize(1)
     })
   })
 

@@ -160,7 +160,7 @@ describe('SlotSearchComponent', () => {
       component.filterStateValues$?.subscribe({
         next: (data) => {
           if (data) {
-            expect(data.length).toBe(3)
+            expect(data).toHaveSize(3)
           }
           done()
         },
@@ -217,7 +217,7 @@ describe('SlotSearchComponent', () => {
 
         component.slots$.subscribe({
           next: (result) => {
-            expect(result.length).toBe(5)
+            expect(result).toHaveSize(5)
             done()
           },
           error: done.fail
@@ -233,7 +233,7 @@ describe('SlotSearchComponent', () => {
 
         component.slots$.subscribe({
           next: (result) => {
-            expect(result.length).toBe(5)
+            expect(result).toHaveSize(5)
             done()
           },
           error: done.fail
@@ -248,7 +248,7 @@ describe('SlotSearchComponent', () => {
 
         component.slotData$.subscribe({
           next: (result) => {
-            expect(result.length).toBe(0)
+            expect(result).toHaveSize(0)
             done()
           },
           error: done.fail
@@ -265,7 +265,7 @@ describe('SlotSearchComponent', () => {
 
         component.slotData$.subscribe({
           next: (result) => {
-            expect(result.length).toBe(5)
+            expect(result).toHaveSize(5)
             expect(result[0].productName).toBe(result[0].productDisplayName)
             done()
           },
@@ -283,7 +283,7 @@ describe('SlotSearchComponent', () => {
 
         component.slotData$.subscribe({
           next: (result) => {
-            expect(result.length).toBe(5)
+            expect(result).toHaveSize(5)
             expect(result[0].productName).toBe(result[0].productDisplayName)
             expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PRODUCTS')
             expect(console.error).toHaveBeenCalledWith('searchProducts', errorResponse)
@@ -306,7 +306,7 @@ describe('SlotSearchComponent', () => {
 
         component.slotData$.subscribe({
           next: (result) => {
-            expect(result.length).toBe(0)
+            expect(result).toHaveSize(0)
             done()
           },
           error: done.fail
@@ -322,7 +322,7 @@ describe('SlotSearchComponent', () => {
 
         component.slotData$.subscribe({
           next: (result) => {
-            expect(result.length).toBe(0)
+            expect(result).toHaveSize(0)
             done()
           },
           error: (error) => {
@@ -565,7 +565,7 @@ describe('SlotSearchComponent', () => {
         component['initGlobalFilter']()
 
         component.filteredData$.subscribe((filteredData) => {
-          expect(filteredData.length).toEqual(1)
+          expect(filteredData).toHaveSize(1)
         })
       })
 
@@ -578,7 +578,7 @@ describe('SlotSearchComponent', () => {
         component['initGlobalFilter']()
 
         component.filteredData$.subscribe((filteredData) => {
-          expect(filteredData.length).toEqual(5)
+          expect(filteredData).toHaveSize(5)
         })
       })
       it('should filter object data based on filterData', () => {
@@ -590,7 +590,7 @@ describe('SlotSearchComponent', () => {
         component['initGlobalFilter']()
 
         component.filteredData$.subscribe((filteredData) => {
-          expect(filteredData.length).toEqual(4)
+          expect(filteredData).toHaveSize(4)
         })
       })
       it('should filter object data based on filterData', () => {
@@ -602,7 +602,7 @@ describe('SlotSearchComponent', () => {
         component['initGlobalFilter']()
 
         component.filteredData$.subscribe((filteredData) => {
-          expect(filteredData.length).toEqual(3)
+          expect(filteredData).toHaveSize(3)
         })
       })
     })

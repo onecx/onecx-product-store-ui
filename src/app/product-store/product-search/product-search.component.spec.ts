@@ -123,7 +123,7 @@ describe('ProductSearchComponent', () => {
       component.onFilterChange(filter)
 
       component.filteredData$.subscribe((result) => {
-        expect(result.length).toBe(1)
+        expect(result).toHaveSize(1)
         expect(result[0].provider).toBe('team')
       })
     })
@@ -136,7 +136,7 @@ describe('ProductSearchComponent', () => {
       component.onFilterChange(filter)
 
       component.filteredData$.subscribe((result) => {
-        expect(result.length).toBe(0)
+        expect(result).toHaveSize(0)
       })
     })
 
@@ -219,7 +219,7 @@ describe('ProductSearchComponent', () => {
 
       component.products$.subscribe({
         next: (result) => {
-          expect(result.length).toBe(1)
+          expect(result).toHaveSize(1)
           result.forEach((product) => {
             expect(product.id).toEqual('id')
           })
@@ -236,7 +236,7 @@ describe('ProductSearchComponent', () => {
 
       component.products$.subscribe({
         next: (result) => {
-          expect(result.length).toBe(0)
+          expect(result).toHaveSize(0)
           done()
         },
         error: done.fail
@@ -250,7 +250,7 @@ describe('ProductSearchComponent', () => {
 
       component.products$.subscribe({
         next: (result) => {
-          expect(result.length).toBe(0)
+          expect(result).toHaveSize(0)
           done()
         },
         error: done.fail
@@ -267,7 +267,7 @@ describe('ProductSearchComponent', () => {
       component.products$.subscribe({
         next: (result) => {
           if (result) {
-            expect(result.length).toBe(0)
+            expect(result).toHaveSize(0)
             expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PRODUCTS')
             expect(console.error).toHaveBeenCalledWith('searchProducts', errorResponse)
           }

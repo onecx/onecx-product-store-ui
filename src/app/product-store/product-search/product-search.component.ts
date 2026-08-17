@@ -104,8 +104,8 @@ export class ProductSearchComponent implements OnInit {
     const lowerCaseFilter = filter.toLowerCase()
     return products.filter((product) => {
       return ['displayName', 'name', 'provider', 'classes', 'version'].some((key: string) => {
-        const value = product[key as keyof ProductAbstractExtended]
-        return value?.toString().toLowerCase().includes(lowerCaseFilter)
+        const value = Utils.toSearchableText(product[key as keyof ProductAbstractExtended])
+        return value?.toLowerCase().includes(lowerCaseFilter)
       })
     })
   }

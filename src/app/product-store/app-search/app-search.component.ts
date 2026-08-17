@@ -16,6 +16,7 @@ import {
   Sort
 } from '@onecx/angular-accelerator'
 import { ChangeMode } from '../product-detail/product-detail.component'
+import { Utils } from 'src/app/shared/utils'
 
 import {
   MicrofrontendPageResult,
@@ -154,11 +155,8 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     const lowerCaseFilter = filter.toLowerCase()
     return apps.filter((app) => {
       return ['appId', 'appName', 'appType', 'appVersion', 'productName', 'classifications'].some((key: string) => {
-        const value = app[key as keyof AppAbstract]
-        if (Array.isArray(value)) {
-          return value.some((v) => v?.toString().toLowerCase().includes(lowerCaseFilter))
-        }
-        return value?.toString().toLowerCase().includes(lowerCaseFilter)
+        const value = Utils.toSearchableText(app[key as keyof AppAbstract])
+        return value?.toLowerCase().includes(lowerCaseFilter)
       })
     })
   }

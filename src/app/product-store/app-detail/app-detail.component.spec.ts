@@ -592,7 +592,7 @@ describe('AppDetailComponent', () => {
 
       component.onDeleteEndpointRow(1)
 
-      expect(component.endpoints.length).toBe(1)
+      expect(component.endpoints).toHaveSize(1)
     })
   })
 

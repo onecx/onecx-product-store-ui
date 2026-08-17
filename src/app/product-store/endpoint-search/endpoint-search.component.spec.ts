@@ -10,6 +10,7 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 import { DataSortDirection } from '@onecx/angular-accelerator'
 
 import { PortalMessageService } from '@onecx/angular-integration-interface'
+import { Utils } from 'src/app/shared/utils'
 
 interface Column {
   field: string
@@ -245,7 +246,7 @@ describe('EndpointSearchComponent', () => {
 
       component.endpoints$?.subscribe({
         next: (data) => {
-          expect(data.length).toEqual(0)
+          expect(data).toHaveSize(0)
           expect(msgServiceSpy.info).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.SEARCH.NOT_FOUND' })
           done()
         },
@@ -319,22 +320,22 @@ describe('EndpointSearchComponent', () => {
       component.onFilterChange('endpoint_1_1_1')
 
       component.filteredData$.subscribe((data) => {
-        expect(data.length).toBe(1)
+        expect(data).toHaveSize(1)
         expect(data[0].endpoint_name).toBe('endpoint_1_1_1')
         done()
       })
     })
 
     it('should convert values to searchable text', () => {
-      expect(component['toSearchableText'](null)).toBeUndefined()
-      expect(component['toSearchableText'](undefined)).toBeUndefined()
-      expect(component['toSearchableText']('text')).toBe('text')
-      expect(component['toSearchableText'](42)).toBe('42')
-      expect(component['toSearchableText'](true)).toBe('true')
-      expect(component['toSearchableText'](new Date('2020-01-01T00:00:00.000Z'))).toBe('2020-01-01T00:00:00.000Z')
-      expect(component['toSearchableText'](['a', null, '', 'b'])).toBe('a b')
-      expect(component['toSearchableText']([])).toBeUndefined()
-      expect(component['toSearchableText']({})).toBeUndefined()
+      expect(Utils.toSearchableText(null)).toBeUndefined()
+      expect(Utils.toSearchableText(undefined)).toBeUndefined()
+      expect(Utils.toSearchableText('text')).toBe('text')
+      expect(Utils.toSearchableText(42)).toBe('42')
+      expect(Utils.toSearchableText(true)).toBe('true')
+      expect(Utils.toSearchableText(new Date('2020-01-01T00:00:00.000Z'))).toBe('2020-01-01T00:00:00.000Z')
+      expect(Utils.toSearchableText(['a', null, '', 'b'])).toBe('a b')
+      expect(Utils.toSearchableText([])).toBeUndefined()
+      expect(Utils.toSearchableText({})).toBeUndefined()
     })
 
     it('should reset the form group', () => {

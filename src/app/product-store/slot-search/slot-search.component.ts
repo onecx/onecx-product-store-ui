@@ -492,8 +492,8 @@ export class SlotSearchComponent implements OnInit, OnDestroy {
     const lowerCaseFilter = filter.toLowerCase()
     return slots.filter((slot: SlotData) => {
       return ['name', 'state', 'appId', 'productDisplayName'].some((key: string) => {
-        const value = slot[key as keyof SlotData]
-        return value?.toString().toLowerCase().includes(lowerCaseFilter)
+        const value = Utils.toSearchableText(slot[key as keyof SlotData])
+        return value?.toLowerCase().includes(lowerCaseFilter)
       })
     })
   }

@@ -16,6 +16,7 @@ import {
   ProductSearchCriteria
 } from 'src/app/shared/generated'
 import { AppAbstract } from '../app-search/app-search.component'
+import { Utils } from 'src/app/shared/utils'
 
 export interface ProductSearchCriteriaControls {
   name: FormControl<string | null>
@@ -333,27 +334,10 @@ export class EndpointSearchComponent implements OnInit, OnDestroy {
     const lowerCaseFilter = filter.toLowerCase()
     return endpoints.filter((endpoint) => {
       return ['productDisplayName', 'appName', 'endpoint_name', 'endpoint_path'].some((key: string) => {
-        const value = endpoint[key as keyof MfeEndpoint]
-        const searchableText = this.toSearchableText(value)
+        const searchableText = Utils.toSearchableText(endpoint[key as keyof MfeEndpoint])
         if (!searchableText) return false
         return searchableText.toLowerCase().includes(lowerCaseFilter)
       })
     })
-  }
-
-  private toSearchableText(value: unknown): string | undefined {
-    if (value == null) return undefined
-    if (typeof value === 'string') return value
-    if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') {
-      return value.toString()
-    }
-    if (value instanceof Date) return value.toISOString()
-    if (Array.isArray(value)) {
-      const normalizedValues = value
-        .map((entry) => this.toSearchableText(entry))
-        .filter((entry): entry is string => entry != null && entry !== '')
-      return normalizedValues.length ? normalizedValues.join(' ') : undefined
-    }
-    return undefined
   }
 }
