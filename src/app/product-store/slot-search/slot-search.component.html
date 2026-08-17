@@ -100,19 +100,19 @@
               pInputText
               [value]="filter"
               [tooltipPosition]="'bottom'"
-              [pTooltip]="'SEARCH.FILTER.TOOLTIP' | translate"
+              [pTooltip]="'SEARCH.SLOT.FILTER.TOOLTIP' | translate"
               tooltipEvent="hover"
               (input)="onFilterChange(filterInput.value)"
             />
-            <label for="tm_search_filter" aria-hidden="true"> {{ 'SEARCH.FILTER.LABEL' | translate }}</label>
+            <label for="tm_search_filter" aria-hidden="true"> {{ 'SEARCH.SLOT.FILTER.LABEL' | translate }}</label>
           </p-float-label>
           <p-button
             id="tm_search_filter_clear"
             icon="pi pi-filter-slash"
             styleClass="tm-filter-clear"
             [disabled]="!filter"
-            [ariaLabel]="'SEARCH.FILTER.CLEAR' | translate"
-            [pTooltip]="'SEARCH.FILTER.CLEAR' | translate"
+            [ariaLabel]="'SEARCH.SLOT.FILTER.CLEAR' | translate"
+            [pTooltip]="'SEARCH.SLOT.FILTER.CLEAR' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
             (click)="onFilterChange('')"

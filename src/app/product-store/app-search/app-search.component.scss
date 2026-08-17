@@ -64,41 +64,11 @@
 }
 
 @media screen and (max-width: 768px) {
+  @include tm-filter-group;
+
   .app-search-top-center {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-  }
-
-  .tm-filter-group {
-    display: inline-flex;
-    align-items: stretch;
-    flex-wrap: nowrap;
-  }
-
-  .tm-filter-float {
-    display: inline-flex;
-    align-items: stretch;
-  }
-
-  .tm-filter-group .p-inputgroupaddon,
-  .tm-filter-input,
-  .tm-filter-group .tm-filter-clear {
-    height: 2.5rem;
-  }
-
-  .tm-filter-group .p-inputgroupaddon,
-  .tm-filter-group .tm-filter-clear {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .tm-filter-input {
-    min-width: 14rem;
-  }
-
-  .tm-filter-clear .pi {
-    line-height: 1;
   }
 }

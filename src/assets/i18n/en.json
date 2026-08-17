@@ -284,8 +284,22 @@
   "SEARCH": {
     "FILTER": {
       "LABEL": "Filter",
-      "TOOLTIP": "Filter results",
+      "TOOLTIP": "Filter by Display Name, Provider, Classification or Version",
       "CLEAR": "Clear filter"
+    },
+    "ENDPOINT": {
+      "FILTER": {
+        "LABEL": "Filter",
+        "TOOLTIP": "Filter by Application Name, Microfrontend, Endpoint Name or Path",
+        "CLEAR": "Clear filter"
+      }
+    },
+    "SLOT": {
+      "FILTER": {
+        "LABEL": "Filter",
+        "TOOLTIP": "Filter by Slot Name, State, Microfrontend or Application Name",
+        "CLEAR": "Clear filter"
+      }
     }
   },
   "APP": {

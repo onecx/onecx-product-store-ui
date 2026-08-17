@@ -80,19 +80,19 @@
               pInputText
               [value]="tableFilter"
               [tooltipPosition]="'bottom'"
-              [pTooltip]="'SEARCH.FILTER.TOOLTIP' | translate"
+              [pTooltip]="'SEARCH.ENDPOINT.FILTER.TOOLTIP' | translate"
               tooltipEvent="hover"
               (input)="onFilterChange(filterInput.value)"
             />
-            <label for="tm_search_filter" aria-hidden="true"> {{ 'SEARCH.FILTER.LABEL' | translate }}</label>
+            <label for="tm_search_filter" aria-hidden="true"> {{ 'SEARCH.ENDPOINT.FILTER.LABEL' | translate }}</label>
           </p-float-label>
           <p-button
             id="tm_search_filter_clear"
             icon="pi pi-filter-slash"
             styleClass="tm-filter-clear"
             [disabled]="!tableFilter"
-            [ariaLabel]="'SEARCH.FILTER.CLEAR' | translate"
-            [pTooltip]="'SEARCH.FILTER.CLEAR' | translate"
+            [ariaLabel]="'SEARCH.ENDPOINT.FILTER.CLEAR' | translate"
+            [pTooltip]="'SEARCH.ENDPOINT.FILTER.CLEAR' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
             (click)="onFilterChange('')"
