@@ -128,9 +128,9 @@ describe('ProductAppsComponent', () => {
 
       component.productDetails$.subscribe({
         next: (result) => {
-          expect(result.microfrontends?.length).toBe(1)
-          expect(result.microservices?.length).toBe(1)
-          expect(result.slots?.length).toBe(0)
+          expect(result.microfrontends).toHaveSize(1)
+          expect(result.microservices).toHaveSize(1)
+          expect(result.slots).toHaveSize(0)
           expect(component.hasComponents).toBeTrue()
           done()
         },
@@ -148,9 +148,9 @@ describe('ProductAppsComponent', () => {
 
       component.productDetails$.subscribe({
         next: (details) => {
-          expect(details.microfrontends?.length).toBe(0)
-          expect(details.microservices?.length).toBe(0)
-          expect(details.slots?.length).toBe(0)
+          expect(details.microfrontends).toHaveSize(0)
+          expect(details.microservices).toHaveSize(0)
+          expect(details.slots).toHaveSize(0)
           expect(component.hasComponents).toBeFalse()
           done()
         },

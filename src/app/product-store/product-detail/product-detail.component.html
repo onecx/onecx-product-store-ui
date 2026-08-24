@@ -9,7 +9,7 @@
   >
   </ocx-page-header>
 
-  <ocx-page-content>
+  <ocx-content>
     <p-message
       *ngIf="loading && !exceptionKey"
       id="ps_product_detail_loading_message"
@@ -25,71 +25,72 @@
       [text]="exceptionKey | translate"
     ></p-message>
 
-    <p-tabView
+    <p-tabs
       *ngIf="(product && !exceptionKey) || changeMode === 'CREATE'"
-      (onChange)="onTabChange($event, product)"
-      [activeIndex]="selectedTabIndex"
+      [value]="selectedTabIndex"
+      (valueChange)="onTabChange($event, product)"
     >
-      <p-tabPanel
-        id="ps_product_detail_panel_props"
-        [header]="'DIALOG.TABS.PROPERTIES' | translate"
-        [attr.aria-label]="'DIALOG.TABS.PROPERTIES' | translate"
-        [tooltip]="'DIALOG.TABS.TOOLTIPS.PROPERTIES' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-      >
-        <app-product-props
-          [product]="product"
-          [changeMode]="changeMode"
-          (currentLogoUrl)="currentLogoUrl = $event"
-        ></app-product-props>
-      </p-tabPanel>
+      <p-tablist>
+        <p-tab [value]="0" [attr.aria-label]="'DIALOG.TABS.PROPERTIES' | translate">
+          <span [pTooltip]="'DIALOG.TABS.TOOLTIPS.PROPERTIES' | translate" tooltipPosition="top" tooltipEvent="hover">
+            {{ 'DIALOG.TABS.PROPERTIES' | translate }}
+          </span>
+        </p-tab>
 
-      <p-tabPanel
-        id="ps_product_detail_panel_apps"
-        [disabled]="changeMode !== 'VIEW'"
-        [header]="'DIALOG.TABS.APPS' | translate"
-        [attr.aria-label]="'DIALOG.TABS.APPS' | translate"
-        [tooltip]="'DIALOG.TABS.TOOLTIPS.APPS' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-      >
-        <app-product-apps
-          *ngIf="product && selectedTabIndex === 1"
-          [product]="product_for_apps"
-          [changeMode]="changeMode"
-        ></app-product-apps>
-      </p-tabPanel>
+        <p-tab [value]="1" [disabled]="changeMode !== 'VIEW'" [attr.aria-label]="'DIALOG.TABS.APPS' | translate">
+          <span [pTooltip]="'DIALOG.TABS.TOOLTIPS.APPS' | translate" tooltipPosition="top" tooltipEvent="hover">
+            {{ 'DIALOG.TABS.APPS' | translate }}
+          </span>
+        </p-tab>
 
-      <p-tabPanel
-        id="ps_product_detail_panel_use"
-        [disabled]="changeMode !== 'VIEW'"
-        [header]="'DIALOG.TABS.USE' | translate"
-        [attr.aria-label]="'DIALOG.TABS.USE' | translate"
-        [tooltip]="'DIALOG.TABS.TOOLTIPS.USE' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-      >
-        <app-product-use *ngIf="product && selectedTabIndex === 2" [productName]="product.name"></app-product-use>
-      </p-tabPanel>
+        <p-tab [value]="2" [disabled]="changeMode !== 'VIEW'" [attr.aria-label]="'DIALOG.TABS.USE' | translate">
+          <span [pTooltip]="'DIALOG.TABS.TOOLTIPS.USE' | translate" tooltipPosition="top" tooltipEvent="hover">
+            {{ 'DIALOG.TABS.USE' | translate }}
+          </span>
+        </p-tab>
 
-      <p-tabPanel
-        id="ps_product_detail_panel_intern"
-        [disabled]="['CREATE', 'COPY'].includes(changeMode)"
-        [header]="'DIALOG.TABS.INTERN' | translate"
-        [attr.aria-label]="'DIALOG.TABS.INTERN' | translate"
-        [tooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-      >
-        <app-product-intern
-          [product]="product"
-          [editMode]="changeMode === 'EDIT'"
-          [dateFormat]="dateFormat"
-        ></app-product-intern>
-      </p-tabPanel>
-    </p-tabView>
-  </ocx-page-content>
+        <p-tab
+          [value]="3"
+          [disabled]="['CREATE', 'COPY'].includes(changeMode)"
+          [attr.aria-label]="'DIALOG.TABS.INTERN' | translate"
+        >
+          <span [pTooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate" tooltipPosition="top" tooltipEvent="hover">
+            {{ 'DIALOG.TABS.INTERN' | translate }}
+          </span>
+        </p-tab>
+      </p-tablist>
+
+      <p-tabpanels>
+        <p-tabpanel [value]="0">
+          <app-product-props
+            [product]="product"
+            [changeMode]="changeMode"
+            (currentLogoUrl)="currentLogoUrl = $event"
+          ></app-product-props>
+        </p-tabpanel>
+
+        <p-tabpanel [value]="1">
+          <app-product-apps
+            *ngIf="product && selectedTabIndex === 1"
+            [product]="product_for_apps"
+            [changeMode]="changeMode"
+          ></app-product-apps>
+        </p-tabpanel>
+
+        <p-tabpanel [value]="2">
+          <app-product-use *ngIf="product && selectedTabIndex === 2" [productName]="product.name"></app-product-use>
+        </p-tabpanel>
+
+        <p-tabpanel [value]="3">
+          <app-product-intern
+            [product]="product"
+            [editMode]="changeMode === 'EDIT'"
+            [dateFormat]="dateFormat"
+          ></app-product-intern>
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
+  </ocx-content>
 </ocx-portal-page>
 
 <p-dialog

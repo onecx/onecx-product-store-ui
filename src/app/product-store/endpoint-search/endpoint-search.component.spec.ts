@@ -5,11 +5,19 @@ import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { of, throwError } from 'rxjs'
-import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
+import { DataSortDirection } from '@onecx/angular-accelerator'
+
 import { PortalMessageService } from '@onecx/angular-integration-interface'
-import { Column } from '@onecx/portal-integration-angular'
+import { Utils } from 'src/app/shared/utils'
+
+interface Column {
+  field: string
+  header: string
+  active: boolean
+  translationPrefix?: string
+}
 
 import {
   MicrofrontendAbstract,
@@ -83,7 +91,8 @@ const mfeResponseData: MicrofrontendAbstract[] = [
 // MFEs with/without endpoints
 const mfeEndpoints: MfeEndpoint[] = [
   {
-    id: 'id1',
+    id: 'id1_0',
+    mfeId: 'id1',
     unique_id: 'id1_0',
     productName: 'product1',
     productDisplayName: 'Product 1',
@@ -96,7 +105,8 @@ const mfeEndpoints: MfeEndpoint[] = [
     endpoint_path: '/{name}'
   },
   {
-    id: 'id1',
+    id: 'id1_1',
+    mfeId: 'id1',
     unique_id: 'id1_1',
     productName: 'product1',
     productDisplayName: 'Product 1',
@@ -109,7 +119,8 @@ const mfeEndpoints: MfeEndpoint[] = [
     endpoint_path: '/{name}'
   },
   {
-    id: 'id2',
+    id: 'id2_0',
+    mfeId: 'id2',
     unique_id: 'id2_0',
     productName: 'product2',
     productDisplayName: 'Product 2',
@@ -122,7 +133,8 @@ const mfeEndpoints: MfeEndpoint[] = [
     endpoint_path: '/{name}'
   },
   {
-    id: 'id3',
+    id: 'id3_0',
+    mfeId: 'id3',
     unique_id: 'id3_0',
     productName: 'product3',
     productDisplayName: '',
@@ -192,26 +204,6 @@ describe('EndpointSearchComponent', () => {
       component.ngOnInit()
       expect(component.filteredColumns[0]).toEqual(component.columns[0])
     })
-
-    it('dataview translations', (done) => {
-      const translationData = {
-        'DIALOG.DATAVIEW.SORT_BY': 'sortBy'
-      }
-      const translateService = TestBed.inject(TranslateService)
-      spyOn(translateService, 'get').and.returnValue(of(translationData))
-
-      component.ngOnInit()
-
-      component.dataViewControlsTranslations$?.subscribe({
-        next: (data) => {
-          if (data) {
-            expect(data.sortDropdownTooltip).toEqual('sortBy')
-          }
-          done()
-        },
-        error: done.fail
-      })
-    })
   })
 
   describe('search', () => {
@@ -254,8 +246,8 @@ describe('EndpointSearchComponent', () => {
 
       component.endpoints$?.subscribe({
         next: (data) => {
-          expect(data.length).toEqual(0)
-          expect(msgServiceSpy.info).toHaveBeenCalledOnceWith({ summaryKey: 'ACTIONS.SEARCH.NOT_FOUND' })
+          expect(data).toHaveSize(0)
+          expect(msgServiceSpy.info).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.SEARCH.NOT_FOUND' })
           done()
         },
         error: done.fail
@@ -263,7 +255,7 @@ describe('EndpointSearchComponent', () => {
     })
 
     it('should display an error message if the search for Microfrontends fails', (done) => {
-      const errorResponse = { status: '403', statusText: 'Not authorized' }
+      const errorResponse = { status: 403, statusText: 'Not authorized' }
       mfeApiServiceSpy.searchMicrofrontends.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
 
@@ -302,6 +294,50 @@ describe('EndpointSearchComponent', () => {
         }
       })
     })
+
+    it('should handle errors while loading endpoint data', (done) => {
+      const badMfe = { id: 'idBad', productName: 'product1', endpoints: {} }
+      productApiServiceSpy.searchProducts.and.returnValue(of({ stream: productResponseData }))
+      mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: [badMfe] }))
+      spyOn(console, 'error')
+
+      component.ngOnInit()
+
+      component.endpoints$?.subscribe({
+        error: (err) => {
+          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_0.MFES')
+          expect(console.error).toHaveBeenCalledWith('loadData endpoints subscription', jasmine.anything())
+          done()
+        }
+      })
+    })
+
+    it('should filter endpoints based on filterData', (done) => {
+      productApiServiceSpy.searchProducts.and.returnValue(of({ stream: productResponseData }))
+      mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: mfeResponseData }))
+
+      component.ngOnInit()
+      component.onFilterChange('endpoint_1_1_1')
+
+      component.filteredData$.subscribe((data) => {
+        expect(data).toHaveSize(1)
+        expect(data[0].endpoint_name).toBe('endpoint_1_1_1')
+        done()
+      })
+    })
+
+    it('should convert values to searchable text', () => {
+      expect(Utils.toSearchableText(null)).toBeUndefined()
+      expect(Utils.toSearchableText(undefined)).toBeUndefined()
+      expect(Utils.toSearchableText('text')).toBe('text')
+      expect(Utils.toSearchableText(42)).toBe('42')
+      expect(Utils.toSearchableText(true)).toBe('true')
+      expect(Utils.toSearchableText(new Date('2020-01-01T00:00:00.000Z'))).toBe('2020-01-01T00:00:00.000Z')
+      expect(Utils.toSearchableText(['a', null, '', 'b'])).toBe('a b')
+      expect(Utils.toSearchableText([])).toBeUndefined()
+      expect(Utils.toSearchableText({})).toBeUndefined()
+    })
+
     it('should reset the form group', () => {
       component.searchCriteria = searchCriteriaForm
       spyOn(searchCriteriaForm, 'reset').and.callThrough()
@@ -322,7 +358,7 @@ describe('EndpointSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const action = actions[0]
-          action.actionCallback()
+          action.actionCallback?.()
           expect(routerSpy.navigate).toHaveBeenCalledWith(['..'], { relativeTo: routeMock })
         })
       }
@@ -334,7 +370,7 @@ describe('EndpointSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const action = actions[1]
-          action.actionCallback()
+          action.actionCallback?.()
           expect(routerSpy.navigate).toHaveBeenCalledWith(['../apps'], { relativeTo: routeMock })
         })
       }
@@ -346,7 +382,7 @@ describe('EndpointSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const action = actions[2]
-          action.actionCallback()
+          action.actionCallback?.()
           expect(routerSpy.navigate).toHaveBeenCalledWith(['../slots'], { relativeTo: routeMock })
         })
       }
@@ -355,22 +391,42 @@ describe('EndpointSearchComponent', () => {
 
   describe('filter columns', () => {
     it('should update the columns that are seen in data', () => {
-      const columns: Column[] = [{ field: 'productName', header: 'PRODUCT_NAME' }]
+      const columns: Column[] = [{ field: 'productName', header: 'PRODUCT_NAME', active: true }]
       const expectedColumn = { field: 'productName', header: 'PRODUCT_NAME' }
       component.columns = columns
 
       component.onColumnsChange(['productName'])
 
-      expect(component.filteredColumns).not.toContain(columns[1])
       expect(component.filteredColumns).toEqual([jasmine.objectContaining(expectedColumn)])
     })
 
     it('should apply a filter to the result table', () => {
-      component.dataTable = jasmine.createSpyObj('dataTable', ['filterGlobal'])
-
       component.onFilterChange('test')
 
-      expect(component.dataTable?.filterGlobal).toHaveBeenCalledWith('test', 'contains')
+      expect(component.tableFilter).toBe('test')
+    })
+  })
+
+  describe('interactive filter and sort', () => {
+    it('should set interactive filters', () => {
+      const filters = [{ columnId: 'appName', value: 'MFE 1' }]
+
+      component.onInteractiveFiltersChange(filters)
+
+      expect(component.interactiveFilters).toEqual(filters)
+    })
+
+    it('should set interactive sort values', () => {
+      component.onInteractiveSorted({ sortColumn: 'appName', sortDirection: DataSortDirection.DESCENDING })
+
+      expect(component.interactiveSortField).toBe('appName')
+      expect(component.interactiveSortDirection).toBe(DataSortDirection.DESCENDING)
+    })
+
+    it('should handle layout change', () => {
+      component.onLayoutChange('list')
+
+      expect().nothing()
     })
   })
 
@@ -378,7 +434,7 @@ describe('EndpointSearchComponent', () => {
     it('should trigger the opening the dialog', () => {
       component.onAppDetail(new Event('click'), mfeEndpoints[0])
 
-      expect(component.mfeItem4Detail?.id).toBe(mfeEndpoints[0].id)
+      expect(component.mfeItem4Detail?.id).toBe(mfeEndpoints[0].mfeId)
       expect(component.displayAppDetailDialog).toBeTrue()
     })
 
@@ -399,27 +455,29 @@ describe('EndpointSearchComponent', () => {
 
   describe('sort endpoints', () => {
     it('should correctly sort items by product', () => {
-      const items: MfeEndpoint[] = mfeEndpoints
-      const sortedItems = items.sort(component.sortMfes)
+      const items: MfeEndpoint[] = [...mfeEndpoints]
+      const sortedItems = items.sort((a, b) => component.sortMfes(a, b))
 
       expect(sortedItems[0]).toEqual(mfeEndpoints[0])
     })
 
     it("should treat falsy values for SelectItem.label as ''", () => {
-      const items: MfeEndpoint[] = mfeEndpoints
+      const items: MfeEndpoint[] = [...mfeEndpoints]
       items.push({ ...mfeEndpoints[1], exposedModule: undefined })
-      const sortedItems = items.sort(component.sortMfes)
+      const sortedItems = items.sort((a, b) => component.sortMfes(a, b))
 
-      expect(sortedItems[1]).toEqual(mfeEndpoints[1])
+      expect(sortedItems[0]).toEqual({ ...mfeEndpoints[1], exposedModule: undefined })
+      expect(sortedItems[1]).toEqual(mfeEndpoints[0])
     })
 
     it("should treat falsy values for SelectItem.label as ''", () => {
-      const items: MfeEndpoint[] = mfeEndpoints
+      const items: MfeEndpoint[] = [...mfeEndpoints]
       items.push({ ...mfeEndpoints[1], exposedModule: undefined })
       items.push({ ...mfeEndpoints[2], exposedModule: undefined })
-      const sortedItems = items.sort(component.sortMfes)
+      const sortedItems = items.sort((a, b) => component.sortMfes(a, b))
 
-      expect(sortedItems[1]).toEqual(mfeEndpoints[1])
+      expect(sortedItems[0]).toEqual({ ...mfeEndpoints[1], exposedModule: undefined })
+      expect(sortedItems[1]).toEqual(mfeEndpoints[0])
     })
   })
 })

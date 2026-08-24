@@ -6,11 +6,12 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { BehaviorSubject, of, throwError } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
-import { DataViewModule } from 'primeng/dataview'
 import { Table } from 'primeng/table'
 
 import { UserService } from '@onecx/angular-integration-interface'
 import { PortalMessageService } from '@onecx/angular-integration-interface'
+
+import { DataSortDirection } from '@onecx/angular-accelerator'
 
 import { Product, ProductsAPIService, SlotsAPIService, SlotPageResult, Slot } from 'src/app/shared/generated'
 import { SlotData, SlotSearchComponent } from './slot-search.component'
@@ -73,11 +74,11 @@ const slots: Slot[] = [
   }
 ]
 const slotData: SlotData[] = [
-  { ...slots[0], productDisplayName: products[0].displayName ?? '' },
-  { ...slots[1], productDisplayName: products[1].displayName ?? '' },
-  { ...slots[2], productDisplayName: products[0].displayName ?? '' },
-  { ...slots[3], productDisplayName: products[1].displayName ?? '' },
-  { ...slots[4], productDisplayName: products[1].displayName ?? '' }
+  { ...slots[0], productDisplayName: products[0].displayName ?? '', state: 'undeployed' },
+  { ...slots[1], productDisplayName: products[1].displayName ?? '', state: 'operator' },
+  { ...slots[2], productDisplayName: products[0].displayName ?? '', state: 'deprecated' },
+  { ...slots[3], productDisplayName: products[1].displayName ?? '', state: 'operator' },
+  { ...slots[4], productDisplayName: products[1].displayName ?? '', state: 'operator' }
 ]
 
 describe('SlotSearchComponent', () => {
@@ -107,7 +108,6 @@ describe('SlotSearchComponent', () => {
     TestBed.configureTestingModule({
       declarations: [SlotSearchComponent],
       imports: [
-        DataViewModule,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
@@ -160,26 +160,7 @@ describe('SlotSearchComponent', () => {
       component.filterStateValues$?.subscribe({
         next: (data) => {
           if (data) {
-            expect(data.length).toBe(3)
-          }
-          done()
-        },
-        error: done.fail
-      })
-    })
-    it('dataview translations', (done) => {
-      const translationData = {
-        'DIALOG.DATAVIEW.SORT_BY': 'sortBy'
-      }
-      const translateService = TestBed.inject(TranslateService)
-      spyOn(translateService, 'get').and.returnValue(of(translationData))
-
-      component.ngOnInit()
-
-      component.dataViewControlsTranslations$?.subscribe({
-        next: (data) => {
-          if (data) {
-            expect(data.sortDropdownTooltip).toEqual('sortBy')
+            expect(data).toHaveSize(3)
           }
           done()
         },
@@ -195,7 +176,7 @@ describe('SlotSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const firstAction = actions[0]
-          firstAction.actionCallback()
+          firstAction.actionCallback?.()
           expect(routerSpy.navigate).toHaveBeenCalledWith(['..'], { relativeTo: routeMock })
         })
       }
@@ -207,7 +188,7 @@ describe('SlotSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const firstAction = actions[1]
-          firstAction.actionCallback()
+          firstAction.actionCallback?.()
           expect(routerSpy.navigate).toHaveBeenCalledWith(['../endpoints'], { relativeTo: routeMock })
         })
       }
@@ -219,7 +200,7 @@ describe('SlotSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const firstAction = actions[2]
-          firstAction.actionCallback()
+          firstAction.actionCallback?.()
           expect(routerSpy.navigate).toHaveBeenCalledWith(['../apps'], { relativeTo: routeMock })
         })
       }
@@ -236,7 +217,7 @@ describe('SlotSearchComponent', () => {
 
         component.slots$.subscribe({
           next: (result) => {
-            expect(result.length).toBe(5)
+            expect(result).toHaveSize(5)
             done()
           },
           error: done.fail
@@ -252,7 +233,7 @@ describe('SlotSearchComponent', () => {
 
         component.slots$.subscribe({
           next: (result) => {
-            expect(result.length).toBe(5)
+            expect(result).toHaveSize(5)
             done()
           },
           error: done.fail
@@ -267,7 +248,7 @@ describe('SlotSearchComponent', () => {
 
         component.slotData$.subscribe({
           next: (result) => {
-            expect(result.length).toBe(0)
+            expect(result).toHaveSize(0)
             done()
           },
           error: done.fail
@@ -284,7 +265,7 @@ describe('SlotSearchComponent', () => {
 
         component.slotData$.subscribe({
           next: (result) => {
-            expect(result.length).toBe(5)
+            expect(result).toHaveSize(5)
             expect(result[0].productName).toBe(result[0].productDisplayName)
             done()
           },
@@ -302,7 +283,7 @@ describe('SlotSearchComponent', () => {
 
         component.slotData$.subscribe({
           next: (result) => {
-            expect(result.length).toBe(5)
+            expect(result).toHaveSize(5)
             expect(result[0].productName).toBe(result[0].productDisplayName)
             expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PRODUCTS')
             expect(console.error).toHaveBeenCalledWith('searchProducts', errorResponse)
@@ -325,7 +306,7 @@ describe('SlotSearchComponent', () => {
 
         component.slotData$.subscribe({
           next: (result) => {
-            expect(result.length).toBe(0)
+            expect(result).toHaveSize(0)
             done()
           },
           error: done.fail
@@ -341,7 +322,7 @@ describe('SlotSearchComponent', () => {
 
         component.slotData$.subscribe({
           next: (result) => {
-            expect(result.length).toBe(0)
+            expect(result).toHaveSize(0)
             done()
           },
           error: (error) => {
@@ -350,6 +331,26 @@ describe('SlotSearchComponent', () => {
             done.fail(error)
           }
         })
+      })
+
+      it('should handle loadData errors', () => {
+        apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: [null] }))
+        spyOn(console, 'error')
+
+        component.onSearch()
+
+        expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_0.SLOTS')
+        expect(console.error).toHaveBeenCalledWith('loadData', jasmine.anything())
+      })
+
+      it('should handle search errors without numeric status', () => {
+        apiSlotsServiceSpy.searchSlots.and.returnValue(throwError(() => new Error('error')))
+        spyOn(console, 'error')
+
+        component.onSearch()
+
+        expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_0.SLOTS')
+        expect(console.error).toHaveBeenCalledWith('searchSlots', jasmine.anything())
       })
     })
   })
@@ -362,6 +363,25 @@ describe('SlotSearchComponent', () => {
     it('should get displayname', () => {
       const n = component['getProductDisplayName']('name-xyz', [products[0]])
       expect(n).toBe('name-xyz')
+    })
+    it('should return empty slot state when no state is set', () => {
+      expect(component['getSlotState']({} as Slot)).toBe('')
+    })
+    it('should upperValue handle nullish values', () => {
+      expect(component['upperValue'](null)).toBe('')
+      expect(component['upperValue'](undefined)).toBe('')
+    })
+    it('should compare slot names when appIds are missing', () => {
+      const a = { name: 'same', appId: undefined } as unknown as SlotData
+      const b = { name: 'same', appId: undefined } as unknown as SlotData
+
+      expect(component['compareSlotNames'](a, b)).toBe(0)
+    })
+    it('should compare products when appIds are missing', () => {
+      const a = { productDisplayName: 'same' } as unknown as SlotData
+      const b = { productDisplayName: 'same' } as unknown as SlotData
+
+      expect(component['compareProducts'](a, b)).toBe(0)
     })
   })
 
@@ -404,6 +424,44 @@ describe('SlotSearchComponent', () => {
 
       expect(event.stopPropagation).toHaveBeenCalled()
     })
+
+    it('should set interactive filters and global filter', () => {
+      const filters = [{ columnId: 'global', value: 'test' }]
+
+      component.onInteractiveFiltersChange(filters)
+
+      expect(component.interactiveFilters).toEqual(filters)
+      expect(component.filter).toBe('test')
+    })
+
+    it('should keep the filter if there is no global filter', () => {
+      component.filter = 'test'
+
+      component.onInteractiveFiltersChange([{ columnId: 'someColumn', value: 'someValue' }])
+
+      expect(component.filter).toBe('test')
+    })
+
+    it('should set interactive sort values', () => {
+      component.onInteractiveSorted({ sortColumn: 'slotName', sortDirection: DataSortDirection.DESCENDING })
+
+      expect(component.interactiveSortField).toBe('slotName')
+      expect(component.interactiveSortDirection).toBe(DataSortDirection.DESCENDING)
+    })
+
+    it('should handle layout change', () => {
+      component.onLayoutChange('list')
+
+      expect().nothing()
+    })
+
+    it('should call onSlotCreate from interactive action callback', () => {
+      spyOn(component, 'onSlotCreate')
+
+      component.interactiveActions[0].callback?.({ ...slots[0] })
+
+      expect(component.onSlotCreate).toHaveBeenCalledWith({ ...slots[0] })
+    })
   })
 
   describe('detail', () => {
@@ -432,6 +490,22 @@ describe('SlotSearchComponent', () => {
 
       expect().nothing()
     })
+
+    it('should open slot detail dialog in edit mode onSlotEdit', () => {
+      component.onSlotEdit({ ...slots[0] } as SlotData)
+
+      expect(component.item4Detail).toEqual({ ...slots[0] })
+      expect(component.changeMode).toBe('EDIT')
+      expect(component.displaySlotDetailDialog).toBeTrue()
+    })
+
+    it('should open slot detail dialog in create mode onSlotCreate', () => {
+      component.onSlotCreate({ ...slots[0] } as SlotData)
+
+      expect(component.item4Detail).toEqual({ ...slots[0] })
+      expect(component.changeMode).toBe('CREATE')
+      expect(component.displaySlotDetailDialog).toBeTrue()
+    })
   })
 
   describe('delete', () => {
@@ -450,6 +524,13 @@ describe('SlotSearchComponent', () => {
 
       expect(component.displaySlotDeleteDialog).toBeFalse()
       expect(component.onSearch).toHaveBeenCalled()
+    })
+
+    it('should open delete dialog onSlotDeleteAction', () => {
+      component.onSlotDeleteAction({ ...slots[0] } as SlotData)
+
+      expect(component.item4Delete).toEqual({ ...slots[0] } as SlotData)
+      expect(component.displaySlotDeleteDialog).toBeTrue()
     })
   })
 
@@ -481,10 +562,10 @@ describe('SlotSearchComponent', () => {
 
         component.filteredData$ = new BehaviorSubject(slotData)
 
-        component.ngOnInit()
+        component['initGlobalFilter']()
 
         component.filteredData$.subscribe((filteredData) => {
-          expect(filteredData.length).toEqual(1)
+          expect(filteredData).toHaveSize(1)
         })
       })
 
@@ -494,10 +575,10 @@ describe('SlotSearchComponent', () => {
 
         component.filteredData$ = new BehaviorSubject(slotData)
 
-        component.ngOnInit()
+        component['initGlobalFilter']()
 
         component.filteredData$.subscribe((filteredData) => {
-          expect(filteredData.length).toEqual(5)
+          expect(filteredData).toHaveSize(5)
         })
       })
       it('should filter object data based on filterData', () => {
@@ -506,10 +587,10 @@ describe('SlotSearchComponent', () => {
 
         component.filteredData$ = new BehaviorSubject(slotData)
 
-        component.ngOnInit()
+        component['initGlobalFilter']()
 
         component.filteredData$.subscribe((filteredData) => {
-          expect(filteredData.length).toEqual(4)
+          expect(filteredData).toHaveSize(4)
         })
       })
       it('should filter object data based on filterData', () => {
@@ -518,10 +599,10 @@ describe('SlotSearchComponent', () => {
 
         component.filteredData$ = new BehaviorSubject(slotData)
 
-        component.ngOnInit()
+        component['initGlobalFilter']()
 
         component.filteredData$.subscribe((filteredData) => {
-          expect(filteredData.length).toEqual(3)
+          expect(filteredData).toHaveSize(3)
         })
       })
     })

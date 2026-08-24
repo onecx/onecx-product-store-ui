@@ -3,7 +3,7 @@
     <!-- row 1 -->
     <div class="flex flex-row flex-wrap gap-4">
       <div class="flex-grow-1">
-        <span class="p-float-label" controlErrorAnchor>
+        <p-float-label variant="on">
           <input
             pInputText
             type="text"
@@ -18,7 +18,7 @@
           <label class="ocx-required-label" for="ps_product_detail_form_field_name">
             {{ 'PRODUCT.NAME' | translate }}</label
           >
-        </span>
+        </p-float-label>
         <!-- Custom validator message -->
         <div *ngIf="this.formGroup.controls['name'].errors?.['invalidProductName']">
           <label class="control-error" for="ps_product_detail_form_field_name">
@@ -26,7 +26,7 @@
           >
         </div>
       </div>
-      <span class="flex-grow-1 p-float-label" controlErrorAnchor>
+      <p-float-label variant="on">
         <input
           pInputText
           type="text"
@@ -41,12 +41,12 @@
         <label class="ocx-required-label" for="ps_product_detail_form_field_version">
           {{ 'PRODUCT.VERSION' | translate }}</label
         >
-      </span>
+      </p-float-label>
     </div>
 
     <!-- row 2 -->
     <div class="flex flex-row flex-wrap gap-4">
-      <span class="flex-grow-1 p-float-label" controlErrorAnchor>
+      <p-float-label variant="on" class="flex-1">
         <input
           pInputText
           type="text"
@@ -61,8 +61,8 @@
         <label class="ocx-required-label" for="ps_product_detail_form_field_display_name">
           {{ 'PRODUCT.DISPLAY_NAME' | translate }}</label
         >
-      </span>
-      <span class="flex-grow-1 p-float-label" controlErrorAnchor>
+      </p-float-label>
+      <p-float-label variant="on" class="flex-1">
         <input
           pInputText
           type="text"
@@ -77,12 +77,12 @@
         <label class="ocx-required-label" for="ps_product_detail_form_field_basePath">
           {{ 'PRODUCT.BASE_PATH' | translate }}</label
         >
-      </span>
+      </p-float-label>
     </div>
 
     <!-- row 3 -->
     <div class="flex flex-row flex-wrap gap-4 align-items-center" *ngIf="criteria$ | async as criteria">
-      <span class="flex-grow-1 p-float-label">
+      <p-float-label variant="on" class="flex-1">
         <p-autoComplete
           id="ps_product_detail_form_field_provider"
           styleClass="w-full"
@@ -98,8 +98,8 @@
           tooltipEvent="hover"
         ></p-autoComplete>
         <label for="ps_product_detail_form_field_provider">{{ 'PRODUCT.PROVIDER' | translate }}</label>
-      </span>
-      <span class="flex-grow-1 min-w-full sm:min-w-0 p-float-label">
+      </p-float-label>
+      <p-float-label variant="on" class="flex-1">
         <p-autoComplete
           id="ps_product_detail_form_field_classifications"
           [styleClass]="'w-full' + (changeMode === 'VIEW' ? ' hide-item-decoration' : '')"
@@ -116,8 +116,8 @@
           tooltipEvent="hover"
         ></p-autoComplete>
         <label for="ps_product_detail_form_field_classifications">{{ 'PRODUCT.CLASSIFICATIONS' | translate }}</label>
-      </span>
-      <span class="flex-grow-1 p-float-label" controlErrorAnchor>
+      </p-float-label>
+      <p-float-label variant="on" class="flex-1">
         <p-dropdown
           id="ps_product_detail_form_field_icon_name"
           styleClass="w-full min-w-min input-field-correction"
@@ -143,7 +143,7 @@
           </ng-template>
         </p-dropdown>
         <label for="ps_product_detail_form_field_icon_name">{{ 'PRODUCT.ICON_NAME' | translate }}</label>
-      </span>
+      </p-float-label>
     </div>
 
     <!-- row 4 -->
@@ -183,7 +183,7 @@
         tooltipEvent="hover"
       ></button>
       <div class="flex-grow-1">
-        <span class="p-float-label">
+        <p-float-label variant="on">
           <input
             pInputText
             type="text"
@@ -198,7 +198,7 @@
             tooltipEvent="hover"
           />
           <label for="ps_product_detail_form_field_image_url">{{ 'PRODUCT.IMAGE_URL' | translate }}</label>
-        </span>
+        </p-float-label>
         <label *ngIf="changeMode === 'EDIT'" class="absolute mt-1 text-xs block" for="workspace_detail_form_logo_url">
           {{ ('VALIDATION.HINTS.FORMAT_URL' | translate) + externUrlPattern }}
         </label>
@@ -206,9 +206,9 @@
     </div>
 
     <!-- row 5 -->
-    <span class="mt-2 sm:mt-0 flex-grow-1 p-float-label" [ngClass]="changeMode !== 'VIEW' ? 'sm:mt-1' : 'sm:mt-0'">
+    <p-float-label variant="on">
       <textarea
-        pInputTextarea
+        pTextarea
         class="w-full"
         autoresize="true"
         rows="3"
@@ -220,6 +220,6 @@
         tooltipEvent="hover"
       ></textarea>
       <label for="ps_product_detail_form_field_description">{{ 'PRODUCT.DESCRIPTION' | translate }}</label>
-    </span>
+    </p-float-label>
   </div>
 </form>

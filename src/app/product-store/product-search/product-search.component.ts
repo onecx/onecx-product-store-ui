@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { FormControl, FormGroup } from '@angular/forms'
-import { finalize, map, of, Observable, catchError } from 'rxjs'
+import { BehaviorSubject, finalize, map, of, Observable, catchError } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
-import { DataView } from 'primeng/dataview'
 
-import { Action, DataViewControlTranslations } from '@onecx/portal-integration-angular'
+import { Action, ColumnType, DataSortDirection, DataTableColumn, Filter, Sort } from '@onecx/angular-accelerator'
 
 import {
   ImagesInternalAPIService,
@@ -27,6 +26,7 @@ export interface ProductSearchCriteriaControls {
 type ProductAbstractExtended = ProductAbstract & { classes?: string }
 
 @Component({
+  standalone: false,
   templateUrl: './product-search.component.html',
   styleUrls: ['./product-search.component.scss']
 })
@@ -39,14 +39,37 @@ export class ProductSearchComponent implements OnInit {
   // data
   public products$!: Observable<ProductAbstractExtended[]>
   public criteria$!: Observable<ProductCriteria>
+  public filteredData$ = new BehaviorSubject<ProductAbstractExtended[]>([])
+  public resultData$ = new BehaviorSubject<ProductAbstractExtended[]>([])
   public searchCriteria!: FormGroup<ProductSearchCriteriaControls>
   public filter: string | undefined
+  public interactiveFilters: Filter[] = []
+  public sortDirection: DataSortDirection = DataSortDirection.ASCENDING
   public sortField = 'displayName'
   public sortOrder = 1
   public quickFilterItems: string[] = []
-
-  @ViewChild(DataView) dv: DataView | undefined
-  public dataViewControlsTranslations$: Observable<DataViewControlTranslations> | undefined
+  private filterData = ''
+  public dataViewColumns: DataTableColumn[] = [
+    {
+      id: 'displayName',
+      nameKey: 'PRODUCT.DISPLAY_NAME',
+      columnType: ColumnType.STRING,
+      sortable: true,
+      filterable: true
+    },
+    { id: 'provider', nameKey: 'PRODUCT.PROVIDER', columnType: ColumnType.STRING, sortable: true, filterable: true },
+    {
+      id: 'classes',
+      nameKey: 'PRODUCT.CLASSIFICATIONS',
+      columnType: ColumnType.STRING,
+      sortable: true,
+      filterable: true
+    },
+    { id: 'version', nameKey: 'PRODUCT.VERSION', columnType: ColumnType.STRING, sortable: true, filterable: true },
+    { id: 'undeployed', nameKey: 'PRODUCT.UNDEPLOYED', columnType: ColumnType.STRING, filterable: true },
+    { id: 'multitenancy', nameKey: 'INTERNAL.MULTITENANCY', columnType: ColumnType.STRING, filterable: true }
+  ]
+  public displayedColumnKeys: string[] = this.dataViewColumns.map((column) => column.id)
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -63,10 +86,28 @@ export class ProductSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.prepareDialogTranslations()
     this.preparePageActions()
+    this.initGlobalFilter()
     this.searchProducts()
     this.getCriteria()
+  }
+
+  private initGlobalFilter(): void {
+    this.resultData$
+      .pipe(map((products) => (this.filterData.trim() ? this.stringFilter(this.filterData, products) : products)))
+      .subscribe({
+        next: (filteredData) => this.filteredData$.next(filteredData)
+      })
+  }
+
+  private stringFilter(filter: string, products: ProductAbstractExtended[]): ProductAbstractExtended[] {
+    const lowerCaseFilter = filter.toLowerCase()
+    return products.filter((product) => {
+      return ['displayName', 'name', 'provider', 'classes', 'version'].some((key: string) => {
+        const value = Utils.toSearchableText(product[key as keyof ProductAbstractExtended])
+        return value?.toLowerCase().includes(lowerCaseFilter)
+      })
+    })
   }
 
   private searchProducts(): void {
@@ -95,6 +136,9 @@ export class ProductSearchComponent implements OnInit {
       }),
       finalize(() => (this.loading = false))
     )
+    this.products$.subscribe({
+      next: (products) => this.resultData$.next(products)
+    })
   }
   public sortProductsByDisplayName(a: ProductAbstract, b: ProductAbstract): number {
     return (a.displayName as string).toUpperCase().localeCompare((b.displayName as string).toUpperCase())
@@ -112,50 +156,6 @@ export class ProductSearchComponent implements OnInit {
   /**
    * DIALOG
    */
-  private prepareDialogTranslations(): void {
-    this.dataViewControlsTranslations$ = this.translate
-      .get([
-        'PRODUCT.DISPLAY_NAME',
-        'PRODUCT.CLASSIFICATIONS',
-        'PRODUCT.PROVIDER',
-        'PRODUCT.VERSION',
-        'DIALOG.DATAVIEW.VIEW_MODE_GRID',
-        'DIALOG.DATAVIEW.VIEW_MODE_LIST',
-        'DIALOG.DATAVIEW.VIEW_MODE_TABLE',
-        'DIALOG.DATAVIEW.FILTER',
-        'DIALOG.DATAVIEW.FILTER_OF',
-        'DIALOG.DATAVIEW.SORT_BY',
-        'DIALOG.DATAVIEW.SORT_DIRECTION_ASC',
-        'DIALOG.DATAVIEW.SORT_DIRECTION_DESC'
-      ])
-      .pipe(
-        map((data) => {
-          return {
-            sortDropdownPlaceholder: data['DIALOG.DATAVIEW.SORT_BY'],
-            filterInputPlaceholder: data['DIALOG.DATAVIEW.FILTER'],
-            filterInputTooltip:
-              data['DIALOG.DATAVIEW.FILTER_OF'] +
-              data['PRODUCT.DISPLAY_NAME'] +
-              ', ' +
-              data['PRODUCT.PROVIDER'] +
-              ', ' +
-              data['PRODUCT.CLASSIFICATIONS'] +
-              ', ' +
-              data['PRODUCT.VERSION'],
-            viewModeToggleTooltips: {
-              grid: data['DIALOG.DATAVIEW.VIEW_MODE_GRID'],
-              list: data['DIALOG.DATAVIEW.VIEW_MODE_LIST']
-            },
-            sortOrderTooltips: {
-              ascending: data['DIALOG.DATAVIEW.SORT_DIRECTION_ASC'],
-              descending: data['DIALOG.DATAVIEW.SORT_DIRECTION_DESC']
-            },
-            sortDropdownTooltip: data['DIALOG.DATAVIEW.SORT_BY']
-          } as DataViewControlTranslations
-        })
-      )
-  }
-
   private preparePageActions(): void {
     this.actions$ = this.translate
       .get([
@@ -211,18 +211,28 @@ export class ProductSearchComponent implements OnInit {
   /**
    * UI EVENTS
    */
-  public onLayoutChange(viewMode: 'grid' | 'list'): void {
-    this.viewMode = viewMode
+  public onLayoutChange(viewMode: 'grid' | 'list' | 'table'): void {
+    if (viewMode !== 'table') this.viewMode = viewMode
   }
   public onFilterChange(filter: string): void {
     this.filter = filter
-    this.dv?.filter(filter, 'contains')
+    this.filterData = filter
+    this.resultData$.next(this.resultData$.value)
   }
   public onSortChange(field: string): void {
     this.sortField = field
   }
   public onSortDirChange(asc: boolean): void {
     this.sortOrder = asc ? -1 : 1
+    this.sortDirection = asc ? DataSortDirection.DESCENDING : DataSortDirection.ASCENDING
+  }
+  public onInteractiveFiltersChange(filters: Filter[]): void {
+    this.interactiveFilters = filters
+  }
+  public onInteractiveSorted(sort: Sort): void {
+    this.sortField = sort.sortColumn
+    this.sortDirection = sort.sortDirection
+    this.sortOrder = sort.sortDirection === DataSortDirection.DESCENDING ? -1 : 1
   }
 
   public onSearch() {

@@ -39,7 +39,9 @@ export function productNameValidator(): ValidatorFn {
 
 @Component({
   selector: 'app-product-props',
-  templateUrl: './product-props.component.html'
+  standalone: false,
+  templateUrl: './product-props.component.html',
+  styleUrls: ['./product-props.component.scss']
 })
 export class ProductPropertyComponent implements OnChanges {
   @Input() product: Product | undefined = undefined

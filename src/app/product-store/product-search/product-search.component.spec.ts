@@ -4,9 +4,9 @@ import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { provideRouter, Router } from '@angular/router'
 import { of, throwError } from 'rxjs'
-import { DataViewModule } from 'primeng/dataview'
-import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
+
+import { DataSortDirection } from '@onecx/angular-accelerator'
 
 import {
   Product,
@@ -44,7 +44,6 @@ describe('ProductSearchComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ProductSearchComponent],
       imports: [
-        DataViewModule,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
@@ -72,24 +71,8 @@ describe('ProductSearchComponent', () => {
       expect(component).toBeTruthy()
     })
 
-    it('dataview translations', (done) => {
-      const translationData = {
-        'DIALOG.DATAVIEW.SORT_BY': 'sortBy'
-      }
-      const translateService = TestBed.inject(TranslateService)
-      spyOn(translateService, 'get').and.returnValue(of(translationData))
-
-      component.ngOnInit()
-
-      component.dataViewControlsTranslations$?.subscribe({
-        next: (data) => {
-          if (data) {
-            expect(data.sortDropdownTooltip).toEqual('sortBy')
-          }
-          done()
-        },
-        error: done.fail
-      })
+    it('should expose displayedColumnKeys for all data view columns', () => {
+      expect(component.displayedColumnKeys).toEqual(component.dataViewColumns.map((column) => column.id))
     })
   })
 
@@ -132,6 +115,31 @@ describe('ProductSearchComponent', () => {
       expect(component.filter).toEqual(filter)
     })
 
+    it('should filter the product list onFilterChange', () => {
+      const filter = 'team'
+      apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product] } as ProductPageResult))
+
+      component.onSearch()
+      component.onFilterChange(filter)
+
+      component.filteredData$.subscribe((result) => {
+        expect(result).toHaveSize(1)
+        expect(result[0].provider).toBe('team')
+      })
+    })
+
+    it('should clear the product list filter onFilterChange', () => {
+      const filter = 'non-existent'
+      apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product] } as ProductPageResult))
+
+      component.onSearch()
+      component.onFilterChange(filter)
+
+      component.filteredData$.subscribe((result) => {
+        expect(result).toHaveSize(0)
+      })
+    })
+
     it('should set correct value onSortChange', () => {
       const sortField = 'field'
 
@@ -148,6 +156,26 @@ describe('ProductSearchComponent', () => {
       asc = false
       component.onSortDirChange(asc)
       expect(component.sortOrder).toEqual(1)
+    })
+
+    it('should set interactive filters onInteractiveFiltersChange', () => {
+      const filters = [{ columnId: 'global', value: 'test' }]
+
+      component.onInteractiveFiltersChange(filters)
+
+      expect(component.interactiveFilters).toEqual(filters)
+    })
+
+    it('should set sort values onInteractiveSorted', () => {
+      component.onInteractiveSorted({ sortColumn: 'name', sortDirection: DataSortDirection.DESCENDING })
+
+      expect(component.sortField).toBe('name')
+      expect(component.sortDirection).toBe(DataSortDirection.DESCENDING)
+      expect(component.sortOrder).toBe(-1)
+
+      component.onInteractiveSorted({ sortColumn: 'name', sortDirection: DataSortDirection.ASCENDING })
+
+      expect(component.sortOrder).toBe(1)
     })
   })
 
@@ -191,7 +219,7 @@ describe('ProductSearchComponent', () => {
 
       component.products$.subscribe({
         next: (result) => {
-          expect(result.length).toBe(1)
+          expect(result).toHaveSize(1)
           result.forEach((product) => {
             expect(product.id).toEqual('id')
           })
@@ -208,7 +236,7 @@ describe('ProductSearchComponent', () => {
 
       component.products$.subscribe({
         next: (result) => {
-          expect(result.length).toBe(0)
+          expect(result).toHaveSize(0)
           done()
         },
         error: done.fail
@@ -222,7 +250,7 @@ describe('ProductSearchComponent', () => {
 
       component.products$.subscribe({
         next: (result) => {
-          expect(result.length).toBe(0)
+          expect(result).toHaveSize(0)
           done()
         },
         error: done.fail
@@ -239,7 +267,7 @@ describe('ProductSearchComponent', () => {
       component.products$.subscribe({
         next: (result) => {
           if (result) {
-            expect(result.length).toBe(0)
+            expect(result).toHaveSize(0)
             expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PRODUCTS')
             expect(console.error).toHaveBeenCalledWith('searchProducts', errorResponse)
           }

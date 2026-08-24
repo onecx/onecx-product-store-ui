@@ -25,6 +25,7 @@ export type Workspace = {
 
 @Component({
   selector: 'app-product-use',
+  standalone: false,
   templateUrl: './product-use.component.html'
 })
 export class ProductUseComponent implements OnChanges {

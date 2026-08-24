@@ -8,7 +8,7 @@
     [actions]="(actions$ | async) ?? []"
   >
     <form id="ps_slot_search_criteria" [formGroup]="searchCriteria" class="flex flex-row flex-wrap gap-3 md:px-2">
-      <span class="p-float-label">
+      <p-float-label variant="on">
         <input
           pInputText
           id="ps_slot_search_criteria_slot_name"
@@ -21,8 +21,8 @@
           tooltipEvent="hover"
         />
         <label for="ps_slot_search_criteria_slot_name" aria-hidden="true">{{ 'SLOT.NAME' | translate }}</label>
-      </span>
-      <span class="p-float-label">
+      </p-float-label>
+      <p-float-label variant="on">
         <input
           pInputText
           id="ps_slot_search_criteria_product_name"
@@ -37,11 +37,11 @@
         <label for="ps_slot_search_criteria_product_name" aria-hidden="true">
           {{ 'SLOT.PRODUCT_NAME' | translate }}
         </label>
-      </span>
+      </p-float-label>
     </form>
   </ocx-search-header>
 
-  <ocx-page-content *ngIf="slotData$ | async as slots">
+  <ocx-content>
     <p-message
       *ngIf="loading"
       id="ps_slot_search_loading_message"
@@ -57,412 +57,117 @@
       [text]="exceptionKey | translate"
     ></p-message>
 
-    <p-table
-      *ngIf="!(loading || exceptionKey)"
-      #dataTable
+    <ocx-interactive-data-view
+      *ngIf="!loading"
       id="ps_slot_search_table"
-      styleClass="mx-3 mb-2"
-      [value]="(filteredData$ | async) ?? []"
-      [columns]="filteredColumns"
-      dataKey="id"
-      [globalFilterFields]="['productName', 'appId', 'name']"
-      [reorderableColumns]="false"
-      [scrollable]="true"
-      scrollHeight="590px"
-      groupRowsBy="productName"
-      rowGroupMode="rowspan"
-      sortField="productName"
-      [sortOrder]="1"
-      [rowsPerPageOptions]="[10, 30, 100]"
-      [rows]="10"
-      [paginator]="true"
-      paginatorPosition="bottom"
-      [alwaysShowPaginator]="true"
-      [showCurrentPageReport]="true"
-      currentPageReportTemplate="{first} - {last} {{ 'ACTIONS.SEARCH.OF' | translate }} {totalRecords}"
+      [data]="$any((filteredData$ | async) ?? [])"
+      [supportedViewLayouts]="['table']"
+      [layout]="'table'"
+      [columns]="interactiveColumns"
+      [displayedColumnKeys]="interactiveDisplayedColumnKeys"
+      [editPermission]="'SLOT#EDIT'"
+      [deletePermission]="'SLOT#DELETE'"
+      [additionalActions]="interactiveActions"
+      [listGridPaginator]="false"
+      [tablePaginator]="true"
+      [pageSize]="10"
+      [pageSizes]="[10, 30, 100]"
+      [emptyResultsMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
+      [disableFilterView]="true"
+      [clientSideFiltering]="true"
+      [clientSideSorting]="true"
+      [filters]="interactiveFilters"
+      [sortField]="interactiveSortField"
+      [sortDirection]="interactiveSortDirection"
+      [actionColumnPosition]="'left'"
+      (filtered)="onInteractiveFiltersChange($event)"
+      (sorted)="onInteractiveSorted($event)"
+      (editItem)="onSlotEdit($event)"
+      (deleteItem)="onSlotDeleteAction($event)"
+      (dataViewLayoutChange)="onLayoutChange($event)"
     >
-      <ng-template pTemplate="caption">
-        <ocx-data-view-controls
-          [supportedViews]="['table']"
-          [enableFiltering]="true"
-          [enableSorting]="false"
-          [columnDefinitions]="columns"
-          (filterChange)="onFilterChange($event)"
-          [translations]="(dataViewControlsTranslations$ | async) ?? {}"
-        ></ocx-data-view-controls>
-      </ng-template>
-
-      <ng-template pTemplate="emptymessage">
-        <tr>
-          <td id="ps_slot_search_table_emptymessage" colspan="16">{{ 'ACTIONS.SEARCH.NO_DATA' | translate }}</td>
-        </tr>
-      </ng-template>
-
-      <ng-template pTemplate="header" let-columns>
-        <tr>
-          <th pFrozenColumn id="ps_slot_search_table_header_actions" class="text-center">
-            {{ 'ACTIONS.LABEL' | translate }}
-          </th>
-          <ng-container *ngFor="let col of columns">
-            <th
-              *ngIf="col.field === 'name'"
-              pFrozenColumn
-              [id]="'ps_slot_search_table_header_col_' + col.field"
-              class="white-space-nowrap border-right-1"
-              [class]="col.css"
-              [attr.aria-label]="'SLOT.NAME' | translate"
-            >
-              <section #headerSectionSlotName class="relative flex flex-row flex-nowrap gap-0 align-items-center">
-                <div [pTooltip]="'SLOT.TOOLTIPS.NAME' | translate">{{ 'SLOT.NAME' | translate }}</div>
-                <button
-                  pbutton
-                  type="button"
-                  id="ps_slot_search_table_header_slot_name_action_sort"
-                  class="ml-1 p-button p-button-rounded p-button-text p-button-icon-only"
-                  (click)="onSortColumn($event, 'slotName', headerSortIconSlotName)"
-                  [attr.aria-label]="'SLOT.SORT.NAME' | translate"
-                  [pTooltip]="'SLOT.SORT.NAME' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                >
-                  <span #headerSortIconSlotName class="pi pi-sort-amount-up-alt"></span>
-                </button>
-                <button
-                  pbutton
-                  type="button"
-                  id="ps_slot_search_table_header_slot_name_filter_action"
-                  class="p-button p-button-rounded p-button-text p-button-icon-only"
-                  (click)="onToggleFilterSlotName($event, headerFilterOptionsSlotName, headerFilterIconSlotName)"
-                  [attr.aria-label]="'SLOT.FILTER.NAME' | translate"
-                  [pTooltip]="'SLOT.FILTER.NAME' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                >
-                  <span #headerFilterIconSlotName class="pi pi-filter"></span>
-                </button>
-                <!-- This is hidden: only the overlay is shown on click -->
-                <p-dropdown
-                  #headerFilterOptionsSlotName
-                  id="ps_slot_search_table_header_slot_name_filter"
-                  styleClass="w-full hidden"
-                  [appendTo]="headerSectionSlotName"
-                  [options]="filterSlotNameItems"
-                  [(ngModel)]="filterSlotNameValue"
-                  (onClick)="onClick($event)"
-                  (onChange)="
-                    onFilterChange($event.value, headerFilterIconSlotName, true);
-                    onResetFilterIcons($event.value, ['slotState', 'product'])
-                  "
-                  (onShow)="filterPanelSlotNameVisible = true"
-                  (onHide)="filterPanelSlotNameVisible = false"
-                  [emptyMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
-                  [pTooltip]="'SLOT.TOOLTIPS.NAME' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                ></p-dropdown>
-              </section>
-            </th>
-            <th *ngIf="col.field === 'state'" id="ps_slot_search_table_header_state" [class]="col.css">
-              <section #headerSectionSlotState class="flex flex-row flex-nowrap gap-0 align-items-center">
-                <div>{{ 'SLOT.STATE' | translate }}</div>
-                <button
-                  pbutton
-                  type="button"
-                  id="ps_slot_search_table_header_state_action_sort"
-                  class="p-button p-button-rounded p-button-text p-button-icon-only"
-                  (click)="onSortColumn($event, 'slotState', headerSortIconSlotState)"
-                  [attr.aria-label]="'SLOT.SORT.STATE' | translate"
-                  [pTooltip]="'SLOT.SORT.STATE' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                >
-                  <span #headerSortIconSlotState class="pi pi-sort-amount-up-alt"></span>
-                </button>
-                <button
-                  pbutton
-                  type="button"
-                  id="ps_slot_search_table_header_state_action_filter"
-                  class="p-button p-button-rounded p-button-text p-button-icon-only"
-                  (click)="onToggleFilterSlotState($event, stateFilterOptions)"
-                  [attr.aria-label]="'SLOT.FILTER.STATE' | translate"
-                  [pTooltip]="'SLOT.FILTER.STATE' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                >
-                  <span #headerFilterIconSlotState class="pi pi-filter"></span>
-                </button>
-                <!-- This is hidden: only the overlay is shown on click -->
-                <p-multiSelect
-                  #stateFilterOptions
-                  id="ps_slot_search_table_header_filter_state"
-                  styleClass="w-full hidden"
-                  [appendTo]="headerSectionSlotState"
-                  [showClear]="true"
-                  [maxSelectedLabels]="1"
-                  [showToggleAll]="false"
-                  [showHeader]="false"
-                  [options]="(filterStateValues$ | async) ?? []"
-                  optionLabel="label"
-                  optionValue="value"
-                  (onChange)="
-                    onFilterChange($event.value, headerFilterIconSlotState);
-                    onResetFilterIcons($event.value, ['slotName', 'product'])
-                  "
-                  (onPanelShow)="filterPanelSlotStateVisible = true"
-                  (onPanelHide)="filterPanelSlotStateVisible = false"
-                  [ngModel]="filterStateValue"
-                >
-                  <ng-template let-state pTemplate="item">
-                    <div class="ml-2 flex flex-row flex-nowrap align-items-center column-gap-2">
-                      <span
-                        [class]="'pi ' + state.icon"
-                        [ngClass]="{ 'danger-action-text': ['deprecated', 'undeployed'].includes(state.value) }"
-                      ></span>
-                      <div>{{ state.label }}</div>
-                    </div>
-                  </ng-template>
-                </p-multiSelect>
-              </section>
-            </th>
-            <th
-              *ngIf="col.field === 'description'"
-              [id]="'ps_slot_search_table_header_col_' + col.field"
-              [class]="col.css"
-              [attr.aria-label]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
-              [pTooltip]="col.translationPrefix + '.TOOLTIPS.' + col.header | translate"
-              tooltipPosition="top"
+      <ng-template #topCenter>
+        <p-inputgroup class="w-auto tm-filter-group">
+          <p-inputgroup-addon>
+            <i class="pi pi-filter"></i>
+          </p-inputgroup-addon>
+          <p-float-label variant="on">
+            <input
+              #filterInput
+              id="tm_search_filter"
+              type="text"
+              class="tm-filter-input"
+              pInputText
+              [value]="filter"
+              [tooltipPosition]="'bottom'"
+              [pTooltip]="'SEARCH.SLOT.FILTER.TOOLTIP' | translate"
               tooltipEvent="hover"
-            >
-              <span>{{ col.translationPrefix + '.' + col.header | translate }}</span>
-              <p-sortIcon *ngIf="col.sort" [field]="col.field"></p-sortIcon>
-            </th>
-          </ng-container>
-          <th
-            pSortableColumn="appId"
-            id="ps_slot_search_table_header_col_app_id"
-            class="white-space-nowrap"
-            [attr.aria-label]="'SLOT.APP_ID' | translate"
-            [pTooltip]="'SLOT.TOOLTIPS.APP_ID' | translate"
+              (input)="onFilterChange(filterInput.value)"
+            />
+            <label for="tm_search_filter" aria-hidden="true"> {{ 'SEARCH.SLOT.FILTER.LABEL' | translate }}</label>
+          </p-float-label>
+          <p-button
+            id="tm_search_filter_clear"
+            icon="pi pi-filter-slash"
+            styleClass="tm-filter-clear"
+            [disabled]="!filter"
+            [ariaLabel]="'SEARCH.SLOT.FILTER.CLEAR' | translate"
+            [pTooltip]="'SEARCH.SLOT.FILTER.CLEAR' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
-          >
-            {{ 'SLOT.APP_ID' | translate }}
-            <p-sortIcon field="appId" />
-          </th>
-          <th id="ps_slot_search_table_header_col_product_name" [class]="'white-space-nowrap'">
-            <section
-              #headerSectionProduct
-              class="flex flex-row align-items-center column-gap-1"
-              [attr.aria-label]="'SLOT.PRODUCT_NAME' | translate"
-            >
-              <div>{{ 'SLOT.PRODUCT_NAME' | translate }}</div>
-              <button
-                pbutton
-                type="button"
-                id="ps_slot_search_table_header_product_action_sort"
-                class="ml-1 p-button p-button-rounded p-button-text p-button-icon-only"
-                (click)="onSortColumn($event, 'product', headerSortIconProduct)"
-                [attr.aria-label]="'SLOT.SORT.PRODUCT' | translate"
-                [pTooltip]="'SLOT.SORT.PRODUCT' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              >
-                <span #headerSortIconProduct class="pi pi-sort-amount-up-alt"></span>
-              </button>
-              <button
-                pbutton
-                type="button"
-                id="ps_slot_search_table_header_product_action_filter"
-                class="p-button p-button-rounded p-button-text p-button-icon-only"
-                (click)="onToggleFilterProduct($event, headerFilterOptionsProduct, headerFilterIconProduct)"
-                [attr.aria-label]="'SLOT.FILTER.PRODUCT' | translate"
-                [pTooltip]="'SLOT.FILTER.PRODUCT' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              >
-                <span #headerFilterIconProduct class="pi pi-filter"></span>
-              </button>
-              <!-- This is hidden: only the overlay is shown on click -->
-              <p-dropdown
-                #headerFilterOptionsProduct
-                id="ps_slot_search_table_header_filter_product"
-                styleClass="w-full hidden"
-                [appendTo]="headerSectionProduct"
-                [options]="filterProductItems"
-                [(ngModel)]="filterProductValue"
-                (onClick)="onClick($event)"
-                (onChange)="
-                  onFilterChange($event.value, headerFilterIconProduct, true);
-                  onResetFilterIcons($event.value, ['slotName', 'slotState'])
-                "
-                (onShow)="filterPanelProductVisible = true"
-                (onHide)="filterPanelProductVisible = false"
-                [emptyMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
-                [attr.aria-label]="'SLOT.PRODUCT_NAME' | translate"
-                [pTooltip]="'SLOT.TOOLTIPS.PRODUCT_NAME' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              ></p-dropdown>
-            </section>
-          </th>
-        </tr>
+            (click)="onFilterChange('')"
+            (keydown.enter)="onFilterChange('')"
+          />
+        </p-inputgroup>
       </ng-template>
 
-      <ng-template
-        pTemplate="body"
-        let-columns="columns"
-        let-i="rowIndex"
-        let-rowData
-        let-rowspan="rowspan"
-        let-rowgroup="rowgroup"
-      >
-        <tr>
-          <!-- actions -->
-          <td pFrozenColumn class="white-space-nowrap text-center">
-            <!-- use the following as container to wrap button within the row height -->
-            <ng-container *ocxIfNotPermission="'SLOT#EDIT'">
-              <p-button
-                *ocxIfPermission="'SLOT#VIEW'"
-                type="button"
-                [id]="'ps_slot_search_table_row_' + i + '_action_view'"
-                [text]="true"
-                [rounded]="true"
-                [icon]="'pi pi-eye'"
-                (onClick)="onSlotDetail('VIEW', $event, rowData)"
-                [attr.aria-label]="'ACTIONS.VIEW.LABEL' | translate"
-                [pTooltip]="'ACTIONS.VIEW.LABEL' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              />
-            </ng-container>
-            <p-button
-              *ocxIfPermission="'SLOT#EDIT'"
-              type="button"
-              [id]="'ps_slot_search_table_row_' + i + '_action_edit'"
-              [text]="true"
-              [rounded]="true"
-              [icon]="'pi pi-pencil'"
-              (onClick)="onSlotDetail('EDIT', $event, rowData)"
-              [attr.aria-label]="'ACTIONS.EDIT.LABEL' | translate"
-              [pTooltip]="'ACTIONS.EDIT.LABEL' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <p-button
-              *ocxIfPermission="'SLOT#CREATE'"
-              type="button"
-              [id]="'ps_slot_search_table_row_' + i + '_action_copy'"
-              [text]="true"
-              [rounded]="true"
-              [icon]="'pi pi-copy'"
-              (onClick)="onSlotDetail('CREATE', $event, rowData)"
-              [attr.aria-label]="'ACTIONS.COPY.LABEL' | translate"
-              [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-            <p-button
-              *ocxIfPermission="'SLOT#DELETE'"
-              type="button"
-              [id]="'ps_slot_search_table_row_' + i + '_action_delete'"
-              [text]="true"
-              [rounded]="true"
-              severity="danger"
-              [icon]="'pi pi-trash'"
-              (onClick)="onSlotDelete($event, rowData)"
-              [attr.aria-label]="'ACTIONS.DELETE.LABEL' | translate"
-              [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-          </td>
-          <ng-container *ngFor="let col of columns">
-            <td
-              *ngIf="col.field === 'name'"
-              pFrozenColumn
-              [id]="'ps_slot_search_table_row_' + i + '_' + col.field"
-              class="border-right-1"
-              [class]="col.css"
-            >
-              <span
-                class="text-ellipsis-2-lines"
-                [ngClass]="rowData[col.field].length > col.limit ? col.css : ''"
-                [pTooltip]="rowData[col.field].length > 100 ? rowData[col.field] : ''"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              >
-                {{ rowData[col.field] }}
-              </span>
-            </td>
-            <td
-              *ngIf="col.field === 'state'"
-              [id]="'ps_slot_search_table_row_' + i + '_' + col.field"
-              [class]="col.css"
-            >
-              <div class="flex flex-nowrap justify-content-center">
-                <span
-                  class="p-2 pi pi-cog"
-                  [ngClass]="{ invisible: !rowData['operator'] }"
-                  [attr.aria-label]="'SLOT.OPERATOR_SEARCH' | translate"
-                  [pTooltip]="'SLOT.OPERATOR_SEARCH' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                ></span>
-                <span
-                  class="p-2 pi pi-ban danger-action-text"
-                  [ngClass]="{ hidden: !rowData['undeployed'] }"
-                  [attr.aria-label]="'SLOT.UNDEPLOYED_SEARCH' | translate"
-                  [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                ></span>
-                <span
-                  class="p-2 pi pi-exclamation-circle danger-action-text"
-                  [ngClass]="{
-                    invisible: !rowData['deprecated'],
-                    hidden: rowData['undeployed']
-                  }"
-                  [attr.aria-label]="'SLOT.DEPRECATED_SEARCH' | translate"
-                  [pTooltip]="'SLOT.DEPRECATED_SEARCH' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                ></span>
-              </div>
-            </td>
-            <td
-              *ngIf="col.field === 'description'"
-              [id]="'ps_slot_search_table_row_' + i + '_' + col.field"
-              [class]="col.css"
-            >
-              <div class="text-ellipsis-2-lines">{{ rowData[col.field] }}</div>
-            </td>
-          </ng-container>
-          <td [id]="'ps_slot_search_table_row_app_id'" class="white-space-nowrap">{{ rowData['appId'] }}</td>
-          <td
-            *ngIf="rowgroup"
-            [attr.rowspan]="rowspan"
-            [id]="'ps_slot_search_table_row_product_name'"
-            class="bg-inherit white-space-nowrap border-right-1"
-          >
-            <a
-              tabindex="0"
-              [id]="'ps_slot_search_table_row_' + i + '_goto_product'"
-              class="bookmark-link font-italic text-primary cursor-pointer"
-              (click)="onGotoProduct($event, rowData)"
-              (keydown.enter)="onGotoProduct($event, rowData)"
-              (keydown.space)="onGotoProduct($event, rowData)"
-              [attr.aria-label]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
-              [pTooltip]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            >
-              {{ rowData['productDisplayName'] }}
-            </a>
-          </td>
-        </tr>
+      <ng-template pTemplate="stateIdTableCell" let-rowObject="rowObject" let-column="column">
+        <div class="slot-state-icons inline-flex flex-nowrap align-items-center justify-content-center column-gap-2">
+          <span
+            class="pi pi-cog"
+            [ngClass]="{ hidden: !rowObject['operator'] }"
+            [attr.aria-label]="'SLOT.OPERATOR_SEARCH' | translate"
+            [pTooltip]="'SLOT.OPERATOR_SEARCH' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          ></span>
+          <span
+            class="pi pi-ban danger-action-text"
+            [ngClass]="{ hidden: !rowObject['undeployed'] }"
+            [attr.aria-label]="'SLOT.UNDEPLOYED_SEARCH' | translate"
+            [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          ></span>
+          <span
+            class="pi pi-exclamation-circle danger-action-text"
+            [ngClass]="{ hidden: !rowObject['deprecated'] || rowObject['undeployed'] }"
+            [attr.aria-label]="'SLOT.DEPRECATED_SEARCH' | translate"
+            [pTooltip]="'SLOT.DEPRECATED_SEARCH' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          ></span>
+        </div>
       </ng-template>
-    </p-table>
-  </ocx-page-content>
+
+      <ng-template pTemplate="productDisplayNameIdTableCell" let-rowObject="rowObject" let-column="column">
+        <a
+          tabindex="0"
+          [id]="'ps_slot_search_table_row_' + rowObject['id'] + '_goto_product'"
+          class="bookmark-link font-italic text-primary cursor-pointer"
+          (click)="onGotoProduct($event, rowObject)"
+          (keydown.enter)="onGotoProduct($event, rowObject)"
+          (keydown.space)="onGotoProduct($event, rowObject)"
+          [attr.aria-label]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
+          [pTooltip]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        >
+          {{ rowObject['productDisplayName'] }}
+        </a>
+      </ng-template>
+    </ocx-interactive-data-view>
+  </ocx-content>
 </ocx-portal-page>
 
 <app-slot-detail
