@@ -1,12 +1,11 @@
 import { importProvidersFrom } from '@angular/core'
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
-import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations'
 import { provideRouter } from '@angular/router'
 import { MissingTranslationHandler, TranslateLoader } from '@ngx-translate/core'
 
 import { AngularAuthModule } from '@onecx/angular-auth'
-import { AngularAcceleratorMissingTranslationHandler } from '@onecx/angular-accelerator'
+import { AngularAcceleratorModule, AngularAcceleratorMissingTranslationHandler } from '@onecx/angular-accelerator'
 import {
   createTranslateLoader,
   provideAngularUtils,
@@ -22,9 +21,7 @@ import { OneCXProductDataComponent } from './product-data.component'
 
 bootstrapRemoteComponent(OneCXProductDataComponent, 'ocx-product-data-component', environment.production, [
   provideHttpClient(withInterceptorsFromDi()),
-  importProvidersFrom(AngularAuthModule),
-  importProvidersFrom(BrowserModule),
-  importProvidersFrom(BrowserAnimationsModule),
+  importProvidersFrom(AngularAcceleratorModule, AngularAuthModule, BrowserAnimationsModule),
   provideAnimations(),
   ...provideAngularUtils(),
   ...provideTranslationConnectionService(),

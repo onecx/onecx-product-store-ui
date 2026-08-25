@@ -219,26 +219,29 @@
               tabindex="0"
             >
               <!-- BADGES -->
-              <div
-                *ngIf="!item?.multitenancy"
-                [id]="'ps_product_search_data_grid_row_' + item.name + '_multitenancy'"
-                class="card-badge-left badge-1 p-2 pi pi-user-minus text-xl"
-                [attr.aria-label]="'INTERNAL.TOOLTIPS.MULTITENANCY_SEARCH' | translate"
-                [pTooltip]="'INTERNAL.TOOLTIPS.MULTITENANCY_SEARCH' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-                role="note"
-              ></div>
-              <div
-                *ngIf="item?.undeployed"
-                [id]="'ps_product_search_data_grid_row_' + item.name + '_undeployed'"
-                class="card-badge-right badge-1 p-2 pi pi-ban danger-action-text text-xl"
-                [attr.aria-label]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
-                [pTooltip]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-                role="note"
-              ></div>
+              @if (!item?.multitenancy) {
+                <div
+                  [id]="'ps_product_search_data_grid_row_' + item.name + '_multitenancy'"
+                  class="card-badge-left badge-1 p-2 pi pi-user-minus text-xl"
+                  [attr.aria-label]="'INTERNAL.TOOLTIPS.MULTITENANCY_SEARCH' | translate"
+                  [pTooltip]="'INTERNAL.TOOLTIPS.MULTITENANCY_SEARCH' | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                  role="note"
+                ></div>
+              }
+              @if (item?.undeployed) {
+                <div
+                  *ngIf="item?.undeployed"
+                  [id]="'ps_product_search_data_grid_row_' + item.name + '_undeployed'"
+                  class="card-badge-right badge-1 p-2 pi pi-ban danger-action-text text-xl"
+                  [attr.aria-label]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
+                  [pTooltip]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                  role="note"
+                ></div>
+              }
               <!-- CONTENT -->
               <div
                 [id]="'ps_product_search_data_grid_row_' + item.name + '_product_display_name'"
@@ -258,7 +261,7 @@
               >
                 <app-image-container
                   [id]="'ps_product_search_data_grid_row_' + item.name + '_image'"
-                  styleClass="max-h-3rem sm:max-h-4rem md:max-h-7rem lg:max-h-9rem max-w-6rem sm:max-w-10rem md:max-w-11rem lg:max-w-13rem xl:max-w-14rem"
+                  styleClass="max-h-3rem sm:max-h-4rem md:max-h-7rem lg:max-h-8rem max-w-6rem sm:max-w-10rem md:max-w-11rem lg:max-w-13rem xl:max-w-14rem"
                   [imageUrl]="getLogoUrl(item)"
                 ></app-image-container>
               </div>
