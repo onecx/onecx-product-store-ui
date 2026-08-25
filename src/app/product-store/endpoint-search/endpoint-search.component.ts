@@ -1,11 +1,30 @@
 import { Component, OnDestroy, OnInit } from '@angular/core'
+import { AsyncPipe } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
-import { FormControl, FormGroup } from '@angular/forms'
-import { TranslateService } from '@ngx-translate/core'
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, Observable, of, Subscription, tap } from 'rxjs'
 
+import { ButtonModule } from 'primeng/button'
+import { DialogModule } from 'primeng/dialog'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputTextModule } from 'primeng/inputtext'
+import { MessageModule } from 'primeng/message'
+import { TooltipModule } from 'primeng/tooltip'
+
 import { PortalMessageService } from '@onecx/angular-integration-interface'
-import { Action, ColumnType, DataSortDirection, DataTableColumn, Filter, Sort } from '@onecx/angular-accelerator'
+import {
+  Action,
+  AngularAcceleratorModule,
+  ColumnType,
+  DataSortDirection,
+  DataTableColumn,
+  Filter,
+  Sort
+} from '@onecx/angular-accelerator'
+import { PortalPageComponent } from '@onecx/angular-utils'
 
 import {
   MicrofrontendAbstract,
@@ -15,8 +34,9 @@ import {
   ProductAbstract,
   ProductSearchCriteria
 } from 'src/app/shared/generated'
-import { AppAbstract } from '../app-search/app-search.component'
 import { Utils } from 'src/app/shared/utils'
+import { AppAbstract } from '../app-search/app-search.component'
+import { AppDetailComponent } from '../app-detail/app-detail.component'
 
 export interface ProductSearchCriteriaControls {
   name: FormControl<string | null>
@@ -38,7 +58,24 @@ export interface Column {
 
 @Component({
   selector: 'app-endpoint-search',
-  standalone: false,
+  standalone: true,
+  imports: [
+    AngularAcceleratorModule,
+    AsyncPipe,
+    ButtonModule,
+    DialogModule,
+    FloatLabelModule,
+    InputGroupAddonModule,
+    InputGroupModule,
+    InputTextModule,
+    MessageModule,
+    ReactiveFormsModule,
+    TooltipModule,
+    TranslateModule,
+    // components
+    AppDetailComponent,
+    PortalPageComponent
+  ],
   templateUrl: './endpoint-search.component.html',
   styleUrls: ['./endpoint-search.component.scss']
 })

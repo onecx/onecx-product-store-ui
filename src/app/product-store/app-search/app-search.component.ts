@@ -1,13 +1,25 @@
 import { Component, OnInit, OnDestroy } from '@angular/core'
-import { FormControl, FormGroup } from '@angular/forms'
+import { AsyncPipe, NgClass } from '@angular/common'
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
-import { TranslateService } from '@ngx-translate/core'
-import { SelectItem } from 'primeng/api'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { combineLatest, finalize, map, of, Observable, Subject, catchError, BehaviorSubject } from 'rxjs'
+
+import { ButtonModule } from 'primeng/button'
+import { DialogModule } from 'primeng/dialog'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputTextModule } from 'primeng/inputtext'
+import { MessageModule } from 'primeng/message'
+import { SelectButtonModule } from 'primeng/selectbutton'
+import { SelectItem } from 'primeng/api'
+import { TooltipModule } from 'primeng/tooltip'
 
 import { UserService } from '@onecx/angular-integration-interface'
 import {
   Action,
+  AngularAcceleratorModule,
   ColumnType,
   DataSortDirection,
   DataTableColumn,
@@ -15,9 +27,9 @@ import {
   FilterType,
   Sort
 } from '@onecx/angular-accelerator'
-import { ChangeMode } from '../product-detail/product-detail.component'
-import { Utils } from 'src/app/shared/utils'
+import { PortalPageComponent } from '@onecx/angular-utils'
 
+import { Utils } from 'src/app/shared/utils'
 import {
   MicrofrontendPageResult,
   MicrofrontendsAPIService,
@@ -26,6 +38,9 @@ import {
   MicroservicePageResult,
   MicroservicesAPIService
 } from 'src/app/shared/generated'
+import { ChangeMode } from '../product-detail/product-detail.component'
+import { AppDetailComponent } from '../app-detail/app-detail.component'
+import { AppDeleteComponent } from '../app-delete/app-delete.component'
 
 export interface AppSearchCriteria {
   appName: FormControl<string | null>
@@ -38,7 +53,27 @@ export type AppFilterType = 'ALL' | AppType
 export type AppAbstract = Microservice & { appType: AppType; appTypeKey?: string; mfeType?: MicrofrontendType }
 
 @Component({
-  standalone: false,
+  standalone: true,
+  imports: [
+    AngularAcceleratorModule,
+    AsyncPipe,
+    NgClass,
+    ButtonModule,
+    DialogModule,
+    FloatLabelModule,
+    InputGroupAddonModule,
+    InputGroupModule,
+    InputTextModule,
+    MessageModule,
+    ReactiveFormsModule,
+    SelectButtonModule,
+    TooltipModule,
+    TranslateModule,
+    // components
+    PortalPageComponent,
+    AppDetailComponent,
+    AppDeleteComponent
+  ],
   templateUrl: './app-search.component.html',
   styleUrls: ['./app-search.component.scss']
 })

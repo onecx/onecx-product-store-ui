@@ -1,281 +1,277 @@
-<div *ngIf="productDetails$ | async as details" class="mb-1 mx-1">
-  <p-message
-    *ngIf="!hasComponents"
-    id="ps_product_apps_no_data"
-    severity="info"
-    [text]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
-  ></p-message>
-  <p-fieldset
-    *ngIf="details.microfrontends && details.microfrontends.length > 0"
-    [toggleable]="false"
-    [collapsed]="false"
-    styleClass="surface-50 py-0 mt-1 mb-3 mx-1"
-  >
-    <ng-template pTemplate="header">
-      <span [pTooltip]="'DIALOG.COMPONENTS.TOOLTIPS.MFE' | translate" tooltipPosition="top" tooltipEvent="hover">
-        {{ 'DIALOG.COMPONENTS.MFE' | translate }}
-      </span>
-    </ng-template>
+@let details = productDetails$ | async;
+@if (details) {
+  <div class="mb-1 mx-1">
+    @if (!hasComponents) {
+      <p-message
+        id="ps_product_apps_no_data"
+        severity="info"
+        [text]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
+      ></p-message>
+    }
+    @if (details.microfrontends && details.microfrontends.length > 0) {
+      <p-fieldset [toggleable]="false" [collapsed]="false" styleClass="surface-50 py-0 mt-1 mb-3 mx-1">
+        <ng-template pTemplate="header">
+          <span [pTooltip]="'DIALOG.COMPONENTS.TOOLTIPS.MFE' | translate" tooltipPosition="top" tooltipEvent="hover">
+            {{ 'DIALOG.COMPONENTS.MFE' | translate }}
+          </span>
+        </ng-template>
 
-    <div class="flex flex-row flex-wrap column-gap-3 sm:column-gap-4 row-gap-2 sm:row-gap-3">
-      <a
-        *ngFor="let mfe of details.microfrontends.sort(sortMfesByTypeAndExposedModule); index as i"
-        tabindex="0"
-        [id]="'ps_product_apps_components_mfe_' + i + '_' + mfe.appId"
-        class="card relative w-full sm:w-21rem m-0 pt-2 pb-1 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
-        (click)="onAppDetail($event, mfe, AppType.MFE)"
-        (keydown.enter)="onAppDetail($event, mfe, AppType.MFE)"
-        (keydown.space)="onAppDetail($event, mfe, AppType.MFE)"
-        [attr.aria-label]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
-      >
-        <!-- BADGES -->
-        <a
-          *ngIf="hasCreatePermission"
-          tabindex="0"
-          [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_copy_app'"
-          class="card-badge-left badge-1 button-icon-only"
-          (click)="onCopy($event, mfe, AppType.MFE)"
-          (keydown.enter)="onCopy($event, mfe, AppType.MFE)"
-          (keydown.space)="onCopy($event, mfe, AppType.MFE)"
-          [attr.aria-label]="'ACTIONS.COPY.LABEL' | translate"
-          [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        >
-          <span class="pi pi-copy" aria-hidden="true"></span>
-        </a>
-        <a
-          *ngIf="hasDeletePermission"
-          tabindex="0"
-          [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_delete'"
-          class="card-badge-left badge-2 p-2 danger-action-text button-icon-only"
-          (click)="onDelete($event, mfe, AppType.MFE)"
-          (keydown.enter)="onDelete($event, mfe, AppType.MFE)"
-          (keydown.space)="onDelete($event, mfe, AppType.MFE)"
-          [attr.aria-label]="'ACTIONS.DELETE.LABEL' | translate"
-          [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        >
-          <span class="pi pi-trash" aria-hidden="true"></span>
-        </a>
-        <span
-          *ngIf="mfe?.undeployed"
-          [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_undeployed'"
-          class="card-badge-right badge-1 pi pi-ban danger-action-text cursor-auto"
-          [attr.aria-label]="'APP.UNDEPLOYED' | translate"
-          [pTooltip]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        ></span>
-        <span
-          *ngIf="mfe?.deprecated && !mfe?.undeployed"
-          [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_deprecated'"
-          class="card-badge-right badge-1 pi pi-exclamation-circle danger-action-text cursor-auto"
-          [attr.aria-label]="'APP.DEPRECATED' | translate"
-          [pTooltip]="'APP.TOOLTIPS.DEPRECATED_SEARCH' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        ></span>
-        <span
-          [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_icon'"
-          class="card-badge-right badge-2 p-2 pi cursor-auto"
-          [ngClass]="'pi-' + mfe.iconName"
-          [attr.aria-label]="'Icon'"
-          [pTooltip]="'Icon'"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        ></span>
-        <!-- CONTENT -->
-        <div class="flex flex-column justify-content-between gap-1 text-center">
-          <div
-            class="text-sm text-responsive"
-            [attr.aria-label]="'APP.APP_ID' | translate"
-            [pTooltip]="mfe.appId.length <= 25 ? '' : mfe.appId"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          >
-            {{ mfe.appId }}
-          </div>
-          <div
-            class="font-bold text-responsive"
-            [attr.aria-label]="'APP.EXPOSED_MODULE' | translate"
-            [pTooltip]="mfe.exposedModule && mfe.exposedModule.length <= 25 ? '' : (mfe.exposedModule ?? '')"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          >
-            {{ mfe.exposedModule ?? '' }}
-          </div>
-          <app-ocx-chip
-            [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_type'"
-            class="py-1"
-            [styleClass]="mfe.type === 'MODULE' ? 'bg-primary' : ''"
-            [label]="mfe.type"
-            [title]="'APP.TOOLTIPS.TYPE' | translate"
-          />
+        <div class="flex flex-row flex-wrap column-gap-3 sm:column-gap-4 row-gap-2 sm:row-gap-3">
+          @for (mfe of details.microfrontends.sort(sortMfesByTypeAndExposedModule); track mfe.id) {
+            <p-card
+              tabindex="0"
+              [id]="'ps_product_apps_components_mfe_' + mfe.id + '_' + mfe.appId"
+              class="card relative w-full sm:w-21rem m-0 pt-2 pb-1 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
+              (click)="onAppDetail($event, mfe, AppType.MFE)"
+              (keydown.enter)="onAppDetail($event, mfe, AppType.MFE)"
+              (keydown.space)="onAppDetail($event, mfe, AppType.MFE)"
+              [attr.aria-label]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
+            >
+              <!-- BADGES -->
+              <a
+                *ngIf="hasCreatePermission"
+                tabindex="0"
+                [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_copy_app'"
+                class="card-badge-left badge-1 button-icon-only"
+                (click)="onCopy($event, mfe, AppType.MFE)"
+                (keydown.enter)="onCopy($event, mfe, AppType.MFE)"
+                (keydown.space)="onCopy($event, mfe, AppType.MFE)"
+                [attr.aria-label]="'ACTIONS.COPY.LABEL' | translate"
+                [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+                <span class="pi pi-copy" aria-hidden="true"></span>
+              </a>
+              <a
+                *ngIf="hasDeletePermission"
+                tabindex="0"
+                [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_delete'"
+                class="card-badge-left badge-2 p-2 danger-action-text button-icon-only"
+                (click)="onDelete($event, mfe, AppType.MFE)"
+                (keydown.enter)="onDelete($event, mfe, AppType.MFE)"
+                (keydown.space)="onDelete($event, mfe, AppType.MFE)"
+                [attr.aria-label]="'ACTIONS.DELETE.LABEL' | translate"
+                [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+                <span class="pi pi-trash" aria-hidden="true"></span>
+              </a>
+              <span
+                *ngIf="mfe?.undeployed"
+                [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_undeployed'"
+                class="card-badge-right badge-1 pi pi-ban danger-action-text cursor-auto"
+                [attr.aria-label]="'APP.UNDEPLOYED' | translate"
+                [pTooltip]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              ></span>
+              <span
+                *ngIf="mfe?.deprecated && !mfe?.undeployed"
+                [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_deprecated'"
+                class="card-badge-right badge-1 pi pi-exclamation-circle danger-action-text cursor-auto"
+                [attr.aria-label]="'APP.DEPRECATED' | translate"
+                [pTooltip]="'APP.TOOLTIPS.DEPRECATED_SEARCH' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              ></span>
+              <span
+                [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_icon'"
+                class="card-badge-right badge-2 p-2 pi cursor-auto"
+                [ngClass]="'pi-' + mfe.iconName"
+                [attr.aria-label]="'Icon'"
+                [pTooltip]="'Icon'"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              ></span>
+              <!-- CONTENT -->
+              <div class="flex flex-column justify-content-between gap-1 text-center">
+                <div
+                  class="text-sm text-responsive"
+                  [attr.aria-label]="'APP.APP_ID' | translate"
+                  [pTooltip]="mfe.appId.length <= 25 ? '' : mfe.appId"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  {{ mfe.appId }}
+                </div>
+                <div
+                  class="font-bold text-responsive"
+                  [attr.aria-label]="'APP.EXPOSED_MODULE' | translate"
+                  [pTooltip]="mfe.exposedModule && mfe.exposedModule.length <= 25 ? '' : (mfe.exposedModule ?? '')"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  {{ mfe.exposedModule ?? '' }}
+                </div>
+                <app-ocx-chip
+                  [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_type'"
+                  class="py-1"
+                  [styleClass]="mfe.type === 'MODULE' ? 'bg-primary' : ''"
+                  [label]="mfe.type"
+                  [title]="'APP.TOOLTIPS.TYPE' | translate"
+                />
+              </div>
+            </p-card>
+          }
         </div>
-      </a>
-    </div>
-  </p-fieldset>
+      </p-fieldset>
+    }
+    @if (details.slots && details.slots.length > 0) {
+      <p-fieldset [toggleable]="false" [collapsed]="false" styleClass="surface-50 py-0 mt-1 mb-3 mx-1">
+        <ng-template pTemplate="header">
+          <span [pTooltip]="'DIALOG.COMPONENTS.TOOLTIPS.SLOT' | translate" tooltipPosition="top" tooltipEvent="hover">
+            {{ 'DIALOG.COMPONENTS.SLOT' | translate }}
+          </span>
+        </ng-template>
 
-  <p-fieldset
-    *ngIf="details.slots && details.slots.length > 0"
-    [toggleable]="false"
-    [collapsed]="false"
-    styleClass="surface-50 py-0 mt-1 mb-3 mx-1"
-  >
-    <ng-template pTemplate="header">
-      <span [pTooltip]="'DIALOG.COMPONENTS.TOOLTIPS.SLOT' | translate" tooltipPosition="top" tooltipEvent="hover">
-        {{ 'DIALOG.COMPONENTS.SLOT' | translate }}
-      </span>
-    </ng-template>
-
-    <div class="flex flex-row flex-wrap column-gap-3 sm:column-gap-4 row-gap-2 sm:row-gap-3">
-      <a
-        *ngFor="let slot of details.slots.sort(sortSlotsByName); index as i"
-        tabindex="0"
-        [id]="'ps_product_apps_components_mfe_' + i + '_' + slot.name"
-        class="card relative w-full sm:w-21rem m-0 pt-2 pb-1 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
-        (click)="onSlotDetail($event, slot)"
-        (keydown.enter)="onSlotDetail($event, slot)"
-        (keydown.space)="onSlotDetail($event, slot)"
-        [attr.aria-label]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
-      >
-        <!-- BADGES -->
-        <a
-          *ngIf="hasDeletePermission"
-          tabindex="0"
-          [id]="'ps_product_apps_components_slot_' + slot.appId + '_delete'"
-          class="card-badge-left badge-2-slot p-2 danger-action-text button-icon-only"
-          (click)="onSlotDelete($event, slot)"
-          [attr.aria-label]="'ACTIONS.DELETE.LABEL' | translate"
-          [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        >
-          <span class="pi pi-trash" aria-hidden="true"></span>
-        </a>
-        <span
-          *ngIf="slot?.undeployed"
-          [id]="'ps_product_apps_components_slot_' + slot.name + '_undeployed'"
-          class="card-badge-right badge-1 pi pi-ban danger-action-text cursor-auto"
-          [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        ></span>
-        <span
-          *ngIf="slot?.deprecated && !slot?.undeployed"
-          [id]="'ps_product_apps_components_slot_' + slot.appId + '_deprecated'"
-          class="card-badge-right badge-1 pi pi-exclamation-circle danger-action-text cursor-auto"
-          [pTooltip]="'SLOT.DEPRECATED_SEARCH' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        ></span>
-        <!-- CONTENT -->
-        <div class="flex flex-column justify-content-between row-gap-1 text-center">
-          <div class="text-sm text-responsive">{{ slot.appId }}</div>
-          <div
-            class="font-bold text-responsive"
-            [pTooltip]="slot.name.length <= 25 ? '' : slot.name"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          >
-            {{ slot.name }}
-          </div>
-          <div
-            class="text-responsive"
-            [pTooltip]="slot.description && slot.description.length <= 25 ? '' : slot.description"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          >
-            {{ slot.description }} &nbsp;
-          </div>
+        <div class="flex flex-row flex-wrap column-gap-3 sm:column-gap-4 row-gap-2 sm:row-gap-3">
+          @for (slot of details.slots.sort(sortSlotsByName); track slot.name) {
+            <p-card
+              tabindex="0"
+              [id]="'ps_product_apps_components_slot_' + slot.name"
+              class="card relative w-full sm:w-21rem m-0 pt-2 pb-1 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
+              (click)="onSlotDetail($event, slot)"
+              (keydown.enter)="onSlotDetail($event, slot)"
+              (keydown.space)="onSlotDetail($event, slot)"
+              [attr.aria-label]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
+            >
+              <!-- BADGES -->
+              <a
+                *ngIf="hasDeletePermission"
+                tabindex="0"
+                [id]="'ps_product_apps_components_slot_' + slot.appId + '_delete'"
+                class="card-badge-left badge-2-slot p-2 danger-action-text button-icon-only"
+                (click)="onSlotDelete($event, slot)"
+                [attr.aria-label]="'ACTIONS.DELETE.LABEL' | translate"
+                [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+                <span class="pi pi-trash" aria-hidden="true"></span>
+              </a>
+              <span
+                *ngIf="slot?.undeployed"
+                [id]="'ps_product_apps_components_slot_' + slot.name + '_undeployed'"
+                class="card-badge-right badge-1 pi pi-ban danger-action-text cursor-auto"
+                [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              ></span>
+              <span
+                *ngIf="slot?.deprecated && !slot?.undeployed"
+                [id]="'ps_product_apps_components_slot_' + slot.appId + '_deprecated'"
+                class="card-badge-right badge-1 pi pi-exclamation-circle danger-action-text cursor-auto"
+                [pTooltip]="'SLOT.DEPRECATED_SEARCH' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              ></span>
+              <!-- CONTENT -->
+              <div class="flex flex-column justify-content-between row-gap-1 text-center">
+                <div class="text-sm text-responsive">{{ slot.appId }}</div>
+                <div
+                  class="font-bold text-responsive"
+                  [pTooltip]="slot.name.length <= 25 ? '' : slot.name"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  {{ slot.name }}
+                </div>
+                <div
+                  class="text-responsive"
+                  [pTooltip]="slot.description && slot.description.length <= 25 ? '' : slot.description"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  {{ slot.description }} &nbsp;
+                </div>
+              </div>
+            </p-card>
+          }
         </div>
-      </a>
-    </div>
-  </p-fieldset>
+      </p-fieldset>
+    }
+    @if (details.microservices && details.microservices.length > 0) {
+      <p-fieldset [toggleable]="false" [collapsed]="false" styleClass="surface-50 py-0">
+        <ng-template pTemplate="header">
+          <span [pTooltip]="'DIALOG.COMPONENTS.TOOLTIPS.MS' | translate" tooltipPosition="top" tooltipEvent="hover">
+            {{ 'DIALOG.COMPONENTS.MS' | translate }}
+          </span>
+        </ng-template>
 
-  <p-fieldset
-    *ngIf="details.microservices && details.microservices.length > 0"
-    [toggleable]="false"
-    [collapsed]="false"
-    styleClass="surface-50 py-0"
-  >
-    <ng-template pTemplate="header">
-      <span [pTooltip]="'DIALOG.COMPONENTS.TOOLTIPS.MS' | translate" tooltipPosition="top" tooltipEvent="hover">
-        {{ 'DIALOG.COMPONENTS.MS' | translate }}
-      </span>
-    </ng-template>
-
-    <div class="flex flex-row flex-wrap column-gap-3 sm:column-gap-4 row-gap-2 sm:row-gap-3">
-      <a
-        *ngFor="let ms of details.microservices.sort(sortMssByAppId); index as i"
-        tabindex="0"
-        [id]="'ps_product_apps_components_mms_' + i + '_' + ms.appId"
-        class="card relative w-full sm:w-21rem m-0 py-2 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
-        (click)="onAppDetail($event, ms, AppType.MS)"
-        (keydown.enter)="onAppDetail($event, ms, AppType.MS)"
-        (keydown.space)="onAppDetail($event, ms, AppType.MS)"
-        [attr.aria-label]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
-      >
-        <!-- BADGES -->
-        <a
-          *ngIf="hasCreatePermission"
-          tabindex="0"
-          [id]="'ps_product_apps_components_ms_' + ms.appId + '_copy_app'"
-          class="card-badge-left badge-1 button-icon-only"
-          (click)="onCopy($event, ms, AppType.MS)"
-          [attr.aria-label]="'ACTIONS.COPY.LABEL' | translate"
-          [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        >
-          <span class="pi pi-copy" aria-hidden="true"></span>
-        </a>
-        <a
-          *ngIf="hasDeletePermission"
-          tabindex="0"
-          [id]="'ps_product_apps_components_ms_' + ms.appId + '_delete'"
-          class="card-badge-left badge-2-ms p-2 danger-action-text button-icon-only"
-          (click)="onDelete($event, ms, AppType.MS)"
-          [attr.aria-label]="'ACTIONS.DELETE.LABEL' | translate"
-          [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        >
-          <span class="pi pi-trash" aria-hidden="true"></span>
-        </a>
-        <span
-          *ngIf="ms?.undeployed"
-          [id]="'ps_product_apps_components_ms_' + ms.appId + '_undeployed'"
-          class="card-badge-right badge-1 pi pi-ban danger-action-text cursor-auto"
-          [pTooltip]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        ></span>
-        <!-- CONTENT -->
-        <div class="h-2-5rem flex flex-column justify-content-between row-gap-1 text-center">
-          <div
-            class="font-bold text-responsive"
-            [pTooltip]="ms.appId && ms.appId.length <= 25 ? '' : (ms.appId ?? '')"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          >
-            {{ ms.appId }}
-          </div>
-          <div
-            class="text-responsive"
-            [pTooltip]="'APP.TOOLTIPS.APP_VERSION' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          >
-            {{ ms.appVersion }}
-          </div>
+        <div class="flex flex-row flex-wrap column-gap-3 sm:column-gap-4 row-gap-2 sm:row-gap-3">
+          @for (ms of details.microservices.sort(sortMssByAppId); track ms.id) {
+            <p-card
+              tabindex="0"
+              [id]="'ps_product_apps_components_mms_' + ms.id + '_' + ms.appId"
+              class="card relative w-full sm:w-21rem m-0 py-2 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
+              (click)="onAppDetail($event, ms, AppType.MS)"
+              (keydown.enter)="onAppDetail($event, ms, AppType.MS)"
+              (keydown.space)="onAppDetail($event, ms, AppType.MS)"
+              [attr.aria-label]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
+            >
+              <!-- BADGES -->
+              <a
+                *ngIf="hasCreatePermission"
+                tabindex="0"
+                [id]="'ps_product_apps_components_ms_' + ms.appId + '_copy_app'"
+                class="card-badge-left badge-1 button-icon-only"
+                (click)="onCopy($event, ms, AppType.MS)"
+                [attr.aria-label]="'ACTIONS.COPY.LABEL' | translate"
+                [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+                <span class="pi pi-copy" aria-hidden="true"></span>
+              </a>
+              <a
+                *ngIf="hasDeletePermission"
+                tabindex="0"
+                [id]="'ps_product_apps_components_ms_' + ms.appId + '_delete'"
+                class="card-badge-left badge-2-ms p-2 danger-action-text button-icon-only"
+                (click)="onDelete($event, ms, AppType.MS)"
+                [attr.aria-label]="'ACTIONS.DELETE.LABEL' | translate"
+                [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+                <span class="pi pi-trash" aria-hidden="true"></span>
+              </a>
+              <span
+                *ngIf="ms?.undeployed"
+                [id]="'ps_product_apps_components_ms_' + ms.appId + '_undeployed'"
+                class="card-badge-right badge-1 pi pi-ban danger-action-text cursor-auto"
+                [pTooltip]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              ></span>
+              <!-- CONTENT -->
+              <div class="h-2-5rem flex flex-column justify-content-between row-gap-1 text-center">
+                <div
+                  class="font-bold text-responsive"
+                  [pTooltip]="ms.appId && ms.appId.length <= 25 ? '' : (ms.appId ?? '')"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  {{ ms.appId }}
+                </div>
+                <div
+                  class="text-responsive"
+                  [pTooltip]="'APP.TOOLTIPS.APP_VERSION' | translate"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  {{ ms.appVersion }}
+                </div>
+              </div>
+            </p-card>
+          }
         </div>
-      </a>
-    </div>
-  </p-fieldset>
-</div>
+      </p-fieldset>
+    }
+  </div>
+}
 
 <app-app-detail
   [displayDialog]="displayDetailDialog"

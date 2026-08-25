@@ -1,32 +1,28 @@
-import { DoBootstrap, Injector, NgModule, provideAppInitializer, inject } from '@angular/core'
+import { DoBootstrap, inject, Injector, NgModule, provideAppInitializer } from '@angular/core'
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
-import { RouterModule, Routes, Router } from '@angular/router'
-import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { RouterModule, Routes, Router } from '@angular/router'
 import { TranslateLoader, TranslateModule, MissingTranslationHandler } from '@ngx-translate/core'
 
 import { AngularAuthModule } from '@onecx/angular-auth'
-import { AngularAcceleratorModule, AngularAcceleratorMissingTranslationHandler } from '@onecx/angular-accelerator'
 import {
   createTranslateLoader,
+  MultiLanguageMissingTranslationHandler,
   PortalApiConfiguration,
-  provideAngularUtils,
-  providePermissionService,
   provideThemeConfig,
-  provideTranslationConnectionService,
   provideTranslationPathFromMeta
 } from '@onecx/angular-utils'
 import { createAppEntrypoint, initializeRouter, startsWith } from '@onecx/angular-webcomponents'
-import { AppStateService } from '@onecx/angular-integration-interface'
+import { AppStateService, ConfigurationService } from '@onecx/angular-integration-interface'
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
-import { Configuration } from './shared/generated'
 import { environment } from 'src/environments/environment'
+import { Configuration } from './shared/generated'
+import { LabelResolver } from './shared/label.resolver'
 import { AppEntrypointComponent } from './app-entrypoint.component'
 
-function apiConfigProvider(appStateService: AppStateService) {
-  const portalApiConfiguration = new PortalApiConfiguration(Configuration, environment.apiPrefix)
-  portalApiConfiguration.appStateService = appStateService
-  return portalApiConfiguration
+function apiConfigProvider() {
+  return new PortalApiConfiguration(Configuration, environment.apiPrefix)
 }
 
 const routes: Routes = [
@@ -37,37 +33,40 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [AppEntrypointComponent],
   imports: [
-    AngularAuthModule,
-    BrowserModule,
-    BrowserAnimationsModule,
+    AppEntrypointComponent,
     AngularAcceleratorModule,
+    AngularAuthModule,
+    BrowserAnimationsModule,
     RouterModule.forRoot(routes),
     TranslateModule.forRoot({
       isolate: true,
-      loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] },
+      loader: {
+        provide: TranslateLoader,
+        useFactory: createTranslateLoader,
+        deps: [HttpClient]
+      },
       missingTranslationHandler: {
         provide: MissingTranslationHandler,
-        useClass: AngularAcceleratorMissingTranslationHandler
+        useClass: MultiLanguageMissingTranslationHandler
       }
     })
   ],
   providers: [
-    { provide: Configuration, useFactory: apiConfigProvider, deps: [AppStateService] },
-    providePermissionService(),
-    provideAppInitializer(() => initializeRouter(inject(Router), inject(AppStateService))()),
-    ...provideAngularUtils(),
-    ...provideTranslationConnectionService(),
-    provideThemeConfig(),
+    ConfigurationService,
+    LabelResolver,
+    { provide: Configuration, useFactory: apiConfigProvider },
+    provideAppInitializer(() => {
+      const initializerFn = initializeRouter(inject(Router), inject(AppStateService))
+      return initializerFn()
+    }),
     provideTranslationPathFromMeta(import.meta.url, 'assets/i18n/'),
-    provideHttpClient(withInterceptorsFromDi())
+    provideHttpClient(withInterceptorsFromDi()),
+    provideThemeConfig()
   ]
 })
 export class OneCXProductStoreModule implements DoBootstrap {
-  constructor(private readonly injector: Injector) {
-    console.info('OneCX Product Store Module constructor')
-  }
+  private readonly injector = inject(Injector)
 
   ngDoBootstrap(): void {
     createAppEntrypoint(AppEntrypointComponent, 'ocx-product-store-component', this.injector)

@@ -1,11 +1,22 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
-import { Location } from '@angular/common'
+import { AsyncPipe, Location } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
 import { catchError, Observable, of, finalize, map } from 'rxjs'
-import { TranslateService } from '@ngx-translate/core'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
+
+import { ButtonModule } from 'primeng/button'
+import { DialogModule } from 'primeng/dialog'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputTextModule } from 'primeng/inputtext'
+import { MessageModule } from 'primeng/message'
+import { TabsModule } from 'primeng/tabs'
+import { TooltipModule } from 'primeng/tooltip'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
-import { Action } from '@onecx/angular-accelerator'
+import { Action, AngularAcceleratorModule } from '@onecx/angular-accelerator'
+import { PortalPageComponent } from '@onecx/angular-utils'
 
 import {
   CreateProductRequest,
@@ -16,13 +27,35 @@ import {
   UpdateProductRequest
 } from 'src/app/shared/generated'
 import { Utils } from 'src/app/shared/utils'
+import { ProductAppsComponent } from './product-apps/product-apps.component'
 import { ProductPropertyComponent } from './product-props/product-props.component'
 import { ProductInternComponent } from './product-intern/product-intern.component'
+import { ProductUseComponent } from './product-use/product-use.component'
 
 export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
 
 @Component({
-  standalone: false,
+  standalone: true,
+  imports: [
+    AngularAcceleratorModule,
+    AsyncPipe,
+    ButtonModule,
+    DialogModule,
+    FloatLabelModule,
+    InputGroupAddonModule,
+    InputGroupModule,
+    InputTextModule,
+    MessageModule,
+    TabsModule,
+    TooltipModule,
+    TranslateModule,
+    // coponents
+    PortalPageComponent,
+    ProductAppsComponent,
+    ProductInternComponent,
+    ProductPropertyComponent,
+    ProductUseComponent
+  ],
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.scss']
 })

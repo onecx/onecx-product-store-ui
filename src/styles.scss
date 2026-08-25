@@ -1,5 +1,6 @@
 /* global styles */
-@import 'node_modules/primeicons/primeicons.css';
+@use 'primeflex/primeflex.scss';
+@use 'primeicons/primeicons.css';
 
 /* portal core */
-@import 'node_modules/@onecx/angular-accelerator/assets/styles.scss';
+@use 'node_modules/@onecx/angular-accelerator/assets/styles.scss';

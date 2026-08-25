@@ -1,7 +1,7 @@
-@import '/src/app/_ps-mixins.scss';
+@use '/src/app/_ps-mixins.scss' as *;
 
 @include danger-action;
-@include displaying-text-responsive;
+@include ocx-text-responsive;
 @include table-zebra-rows;
 @include table-inline-buttons;
 @include table-responsive-columns;

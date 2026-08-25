@@ -1,13 +1,30 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
-import { FormControl, FormGroup } from '@angular/forms'
-import { TranslateService } from '@ngx-translate/core'
+import { DatePipe } from '@angular/common'
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
+
+import { CheckboxModule } from 'primeng/checkbox'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputTextModule } from 'primeng/inputtext'
+import { MessageModule } from 'primeng/message'
+import { TooltipModule } from 'primeng/tooltip'
 
 import { Microfrontend, Microservice } from 'src/app/shared/generated'
 import { ChangeMode } from '../../product-detail/product-detail.component'
 
 @Component({
   selector: 'app-app-intern',
-  standalone: false,
+  standalone: true,
+  imports: [
+    DatePipe,
+    CheckboxModule,
+    FloatLabelModule,
+    InputTextModule,
+    MessageModule,
+    ReactiveFormsModule,
+    TooltipModule,
+    TranslateModule
+  ],
   templateUrl: './app-intern.component.html'
 })
 export class AppInternComponent implements OnChanges {

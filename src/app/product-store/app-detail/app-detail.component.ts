@@ -1,9 +1,22 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core'
-import { FormControl, FormGroup, Validators } from '@angular/forms'
-import { TranslateService } from '@ngx-translate/core'
+import { NgClass } from '@angular/common'
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { finalize, map } from 'rxjs'
+
 import { SelectItem } from 'primeng/api'
-import { Table } from 'primeng/table'
+import { DialogModule } from 'primeng/dialog'
+import { DropdownModule } from 'primeng/dropdown'
+import { ButtonModule } from 'primeng/button'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { InputTextModule } from 'primeng/inputtext'
+import { MessageModule } from 'primeng/message'
+import { MultiSelectModule } from 'primeng/multiselect'
+import { Table, TableModule } from 'primeng/table'
+import { TabsModule } from 'primeng/tabs'
+import { TooltipModule } from 'primeng/tooltip'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 
@@ -56,7 +69,25 @@ export interface MsForm {
 
 @Component({
   selector: 'app-app-detail',
-  standalone: false,
+  standalone: true,
+  imports: [
+    NgClass,
+    ButtonModule,
+    DialogModule,
+    DropdownModule,
+    FloatLabelModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    InputTextModule,
+    MessageModule,
+    MultiSelectModule,
+    ReactiveFormsModule,
+    TableModule,
+    TabsModule,
+    TooltipModule,
+    TranslateModule,
+    AppInternComponent
+  ],
   templateUrl: './app-detail.component.html',
   styleUrls: ['./app-detail.component.scss']
 })

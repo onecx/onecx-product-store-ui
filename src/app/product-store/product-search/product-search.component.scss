@@ -1,14 +1,31 @@
-@import '/src/app/_ps-mixins.scss';
+@use '/src/app/_ps-mixins.scss' as *;
 
+@include card-badges;
+@include danger-action;
+@include ocx-text-responsive;
+@include ocx-interactive-data-view-fixes;
+@include dataview-list-flex-zebra-rows;
+/*
 @include correct-data-view-control;
 @include correct-search-criteria;
 @include correct-select-button;
-@include displaying-text-responsive;
+@include ocx-text-responsive;
 @include correct-ocx-interactive-data-view;
-@include card-badges;
-@include danger-action;
+*/
 
 :host ::ng-deep {
+  .ocx-content > div {
+    margin-bottom: 0 !important;
+    padding: 0.75rem 0.5rem !important;
+  }
+
+  /* fixes for p-card */
+  --onecx-product-store-onecx-product-store-ui-card-body-padding: 0.5rem;
+  --onecx-product-store-onecx-product-store-ui-card-border-radius: 4px;
+  --onecx-product-store-onecx-product-store-ui-card-shadow:
+    0 2px 1px -1px #0003, 0 1px 1px #00000024, 0 1px 3px #0000001f;
+
+  /*
   .correct-min-size .p-multiselect-label-container {
     min-width: 9rem;
   }
@@ -27,6 +44,7 @@
       0 1px 1px 0 rgba(0, 0, 0, 0.14),
       0 1px 3px 0 rgba(0, 0, 0, 0.12);
   }
+*/
 }
 
 @media screen and (min-width: 768px) {

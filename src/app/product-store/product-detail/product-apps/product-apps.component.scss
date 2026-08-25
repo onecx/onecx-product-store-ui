@@ -1,4 +1,4 @@
-@import '/src/app/_ps-mixins.scss';
+@use '/src/app/_ps-mixins.scss' as *;
 
 @include card-badges;
 @include danger-action;

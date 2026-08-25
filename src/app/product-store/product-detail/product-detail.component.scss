@@ -1,8 +1,8 @@
-@import '/src/app/_ps-mixins.scss';
+@use '/src/app/_ps-mixins.scss' as *;
 
 @include danger-action;
 @include readable-disabled-form-controls;
-@include displaying-text-responsive;
+@include ocx-text-responsive;
 @include prepare-inputgroup;
 @include correct-autocomplete;
 @include dropdown-zebra-rows;

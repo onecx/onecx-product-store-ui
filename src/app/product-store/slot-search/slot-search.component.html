@@ -8,7 +8,7 @@
     [actions]="(actions$ | async) ?? []"
   >
     <form id="ps_slot_search_criteria" [formGroup]="searchCriteria" class="flex flex-row flex-wrap gap-3 md:px-2">
-      <p-float-label variant="on">
+      <p-floatlabel variant="on">
         <input
           pInputText
           id="ps_slot_search_criteria_slot_name"
@@ -21,8 +21,8 @@
           tooltipEvent="hover"
         />
         <label for="ps_slot_search_criteria_slot_name" aria-hidden="true">{{ 'SLOT.NAME' | translate }}</label>
-      </p-float-label>
-      <p-float-label variant="on">
+      </p-floatlabel>
+      <p-floatlabel variant="on">
         <input
           pInputText
           id="ps_slot_search_criteria_product_name"
@@ -37,136 +37,136 @@
         <label for="ps_slot_search_criteria_product_name" aria-hidden="true">
           {{ 'SLOT.PRODUCT_NAME' | translate }}
         </label>
-      </p-float-label>
+      </p-floatlabel>
     </form>
   </ocx-search-header>
 
-  <ocx-content>
-    <p-message
-      *ngIf="loading"
-      id="ps_slot_search_loading_message"
-      severity="info"
-      styleClass="m-3 p-2"
-      [text]="'ACTIONS.LOADING' | translate"
-    ></p-message>
-    <p-message
-      *ngIf="!loading && exceptionKey"
-      id="ps_slot_search_error_message"
-      severity="error"
-      styleClass="m-3 p-2"
-      [text]="exceptionKey | translate"
-    ></p-message>
-
-    <ocx-interactive-data-view
-      *ngIf="!loading"
-      id="ps_slot_search_table"
-      [data]="$any((filteredData$ | async) ?? [])"
-      [supportedViewLayouts]="['table']"
-      [layout]="'table'"
-      [columns]="interactiveColumns"
-      [displayedColumnKeys]="interactiveDisplayedColumnKeys"
-      [editPermission]="'SLOT#EDIT'"
-      [deletePermission]="'SLOT#DELETE'"
-      [additionalActions]="interactiveActions"
-      [listGridPaginator]="false"
-      [tablePaginator]="true"
-      [pageSize]="10"
-      [pageSizes]="[10, 30, 100]"
-      [emptyResultsMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
-      [disableFilterView]="true"
-      [clientSideFiltering]="true"
-      [clientSideSorting]="true"
-      [filters]="interactiveFilters"
-      [sortField]="interactiveSortField"
-      [sortDirection]="interactiveSortDirection"
-      [actionColumnPosition]="'left'"
-      (filtered)="onInteractiveFiltersChange($event)"
-      (sorted)="onInteractiveSorted($event)"
-      (editItem)="onSlotEdit($event)"
-      (deleteItem)="onSlotDeleteAction($event)"
-      (dataViewLayoutChange)="onLayoutChange($event)"
-    >
-      <ng-template #topCenter>
-        <p-inputgroup class="w-auto tm-filter-group">
-          <p-inputgroup-addon>
-            <i class="pi pi-filter"></i>
-          </p-inputgroup-addon>
-          <p-float-label variant="on">
-            <input
-              #filterInput
-              id="tm_search_filter"
-              type="text"
-              class="tm-filter-input"
-              pInputText
-              [value]="filter"
-              [tooltipPosition]="'bottom'"
-              [pTooltip]="'SEARCH.SLOT.FILTER.TOOLTIP' | translate"
+  <ocx-content class="ocx-content">
+    @if (loading) {
+      <p-message
+        id="ps_slot_search_loading_message"
+        severity="info"
+        styleClass="m-3 p-2"
+        [text]="'ACTIONS.LOADING' | translate"
+      ></p-message>
+    } @else if (exceptionKey) {
+      <p-message
+        id="ps_slot_search_error_message"
+        severity="error"
+        styleClass="m-3 p-2"
+        [text]="exceptionKey | translate"
+      ></p-message>
+    } @else {
+      <ocx-interactive-data-view
+        id="ps_slot_search_table"
+        [data]="$any((filteredData$ | async) ?? [])"
+        [supportedViewLayouts]="['table']"
+        [layout]="'table'"
+        [columns]="interactiveColumns"
+        [displayedColumnKeys]="interactiveDisplayedColumnKeys"
+        [editPermission]="'SLOT#EDIT'"
+        [deletePermission]="'SLOT#DELETE'"
+        [additionalActions]="interactiveActions"
+        [listGridPaginator]="false"
+        [tablePaginator]="true"
+        [pageSize]="10"
+        [pageSizes]="[10, 30, 100]"
+        [emptyResultsMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
+        [disableFilterView]="true"
+        [clientSideFiltering]="true"
+        [clientSideSorting]="true"
+        [filters]="interactiveFilters"
+        [sortField]="interactiveSortField"
+        [sortDirection]="interactiveSortDirection"
+        [actionColumnPosition]="'left'"
+        (filtered)="onInteractiveFiltersChange($event)"
+        (sorted)="onInteractiveSorted($event)"
+        (editItem)="onSlotEdit($event)"
+        (deleteItem)="onSlotDeleteAction($event)"
+        (dataViewLayoutChange)="onLayoutChange($event)"
+      >
+        <ng-template #topCenter>
+          <p-inputgroup class="w-auto tm-filter-group">
+            <p-inputgroup-addon>
+              <i class="pi pi-filter"></i>
+            </p-inputgroup-addon>
+            <p-floatlabel variant="on">
+              <input
+                #filterInput
+                id="tm_search_filter"
+                type="text"
+                class="tm-filter-input"
+                pInputText
+                [value]="filter"
+                [tooltipPosition]="'bottom'"
+                [pTooltip]="'SEARCH.SLOT.FILTER.TOOLTIP' | translate"
+                tooltipEvent="hover"
+                (input)="onFilterChange(filterInput.value)"
+              />
+              <label for="tm_search_filter" aria-hidden="true"> {{ 'SEARCH.SLOT.FILTER.LABEL' | translate }}</label>
+            </p-floatlabel>
+            <p-button
+              id="tm_search_filter_clear"
+              icon="pi pi-filter-slash"
+              styleClass="tm-filter-clear"
+              [disabled]="!filter"
+              [ariaLabel]="'SEARCH.SLOT.FILTER.CLEAR' | translate"
+              [pTooltip]="'SEARCH.SLOT.FILTER.CLEAR' | translate"
+              tooltipPosition="top"
               tooltipEvent="hover"
-              (input)="onFilterChange(filterInput.value)"
+              (click)="onFilterChange('')"
+              (keydown.enter)="onFilterChange('')"
             />
-            <label for="tm_search_filter" aria-hidden="true"> {{ 'SEARCH.SLOT.FILTER.LABEL' | translate }}</label>
-          </p-float-label>
-          <p-button
-            id="tm_search_filter_clear"
-            icon="pi pi-filter-slash"
-            styleClass="tm-filter-clear"
-            [disabled]="!filter"
-            [ariaLabel]="'SEARCH.SLOT.FILTER.CLEAR' | translate"
-            [pTooltip]="'SEARCH.SLOT.FILTER.CLEAR' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-            (click)="onFilterChange('')"
-            (keydown.enter)="onFilterChange('')"
-          />
-        </p-inputgroup>
-      </ng-template>
+          </p-inputgroup>
+        </ng-template>
 
-      <ng-template pTemplate="stateIdTableCell" let-rowObject="rowObject" let-column="column">
-        <div class="slot-state-icons inline-flex flex-nowrap align-items-center justify-content-center column-gap-2">
-          <span
-            class="pi pi-cog"
-            [ngClass]="{ hidden: !rowObject['operator'] }"
-            [attr.aria-label]="'SLOT.OPERATOR_SEARCH' | translate"
-            [pTooltip]="'SLOT.OPERATOR_SEARCH' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          ></span>
-          <span
-            class="pi pi-ban danger-action-text"
-            [ngClass]="{ hidden: !rowObject['undeployed'] }"
-            [attr.aria-label]="'SLOT.UNDEPLOYED_SEARCH' | translate"
-            [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          ></span>
-          <span
-            class="pi pi-exclamation-circle danger-action-text"
-            [ngClass]="{ hidden: !rowObject['deprecated'] || rowObject['undeployed'] }"
-            [attr.aria-label]="'SLOT.DEPRECATED_SEARCH' | translate"
-            [pTooltip]="'SLOT.DEPRECATED_SEARCH' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          ></span>
-        </div>
-      </ng-template>
+        <ng-template pTemplate="stateIdTableCell" let-rowObject="rowObject" let-column="column">
+          <div class="slot-state-icons inline-flex flex-nowrap align-items-center justify-content-center column-gap-2">
+            <span
+              class="pi pi-cog"
+              [ngClass]="{ hidden: !rowObject['operator'] }"
+              [attr.aria-label]="'SLOT.OPERATOR_SEARCH' | translate"
+              [pTooltip]="'SLOT.OPERATOR_SEARCH' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            ></span>
+            <span
+              class="pi pi-ban danger-action-text"
+              [ngClass]="{ hidden: !rowObject['undeployed'] }"
+              [attr.aria-label]="'SLOT.UNDEPLOYED_SEARCH' | translate"
+              [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            ></span>
+            <span
+              class="pi pi-exclamation-circle danger-action-text"
+              [ngClass]="{ hidden: !rowObject['deprecated'] || rowObject['undeployed'] }"
+              [attr.aria-label]="'SLOT.DEPRECATED_SEARCH' | translate"
+              [pTooltip]="'SLOT.DEPRECATED_SEARCH' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            ></span>
+          </div>
+        </ng-template>
 
-      <ng-template pTemplate="productDisplayNameIdTableCell" let-rowObject="rowObject" let-column="column">
-        <a
-          tabindex="0"
-          [id]="'ps_slot_search_table_row_' + rowObject['id'] + '_goto_product'"
-          class="bookmark-link font-italic text-primary cursor-pointer"
-          (click)="onGotoProduct($event, rowObject)"
-          (keydown.enter)="onGotoProduct($event, rowObject)"
-          (keydown.space)="onGotoProduct($event, rowObject)"
-          [attr.aria-label]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
-          [pTooltip]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        >
-          {{ rowObject['productDisplayName'] }}
-        </a>
-      </ng-template>
-    </ocx-interactive-data-view>
+        <ng-template pTemplate="productDisplayNameIdTableCell" let-rowObject="rowObject" let-column="column">
+          <a
+            tabindex="0"
+            [id]="'ps_slot_search_table_row_' + rowObject['id'] + '_goto_product'"
+            class="bookmark-link font-italic text-primary cursor-pointer"
+            (click)="onGotoProduct($event, rowObject)"
+            (keydown.enter)="onGotoProduct($event, rowObject)"
+            (keydown.space)="onGotoProduct($event, rowObject)"
+            [attr.aria-label]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
+            [pTooltip]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
+            {{ rowObject['productDisplayName'] }}
+          </a>
+        </ng-template>
+      </ocx-interactive-data-view>
+    }
   </ocx-content>
 </ocx-portal-page>
 

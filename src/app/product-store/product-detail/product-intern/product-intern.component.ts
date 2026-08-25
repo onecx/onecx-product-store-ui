@@ -1,5 +1,13 @@
 import { Component, Input, OnChanges } from '@angular/core'
-import { FormControl, FormGroup } from '@angular/forms'
+import { DatePipe } from '@angular/common'
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { TranslateModule } from '@ngx-translate/core'
+
+import { CheckboxModule } from 'primeng/checkbox'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputTextModule } from 'primeng/inputtext'
+import { MessageModule } from 'primeng/message'
+import { TooltipModule } from 'primeng/tooltip'
 
 import { Product } from 'src/app/shared/generated'
 
@@ -11,7 +19,17 @@ export interface ProductInternForm {
 
 @Component({
   selector: 'app-product-intern',
-  standalone: false,
+  standalone: true,
+  imports: [
+    DatePipe,
+    CheckboxModule,
+    FloatLabelModule,
+    InputTextModule,
+    MessageModule,
+    ReactiveFormsModule,
+    TooltipModule,
+    TranslateModule
+  ],
   templateUrl: './product-intern.component.html'
 })
 export class ProductInternComponent implements OnChanges {

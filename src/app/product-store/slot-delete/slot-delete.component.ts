@@ -1,13 +1,19 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core'
-import { TranslateService } from '@ngx-translate/core'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
+
+import { ButtonModule } from 'primeng/button'
+import { DialogModule } from 'primeng/dialog'
+import { TooltipModule } from 'primeng/tooltip'
 
 import { PortalMessageService } from '@onecx/angular-integration-interface'
+
 import { SlotsAPIService } from 'src/app/shared/generated'
 import { SlotData } from '../slot-search/slot-search.component'
 
 @Component({
   selector: 'app-slot-delete',
-  standalone: false,
+  standalone: true,
+  imports: [ButtonModule, DialogModule, TooltipModule, TranslateModule],
   templateUrl: './slot-delete.component.html',
   styleUrls: ['./slot-delete.component.scss']
 })

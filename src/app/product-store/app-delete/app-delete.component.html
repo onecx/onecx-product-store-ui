@@ -1,47 +1,51 @@
-<p-dialog
-  [(visible)]="displayDialog"
-  (onHide)="onDialogHide()"
-  [header]="appAbstract?.appType ? ('ACTIONS.DELETE.' + appAbstract?.appType + '.HEADER' | translate) : ''"
-  [modal]="true"
-  [resizable]="false"
-  [dismissableMask]="true"
-  [style]="{ 'max-width': '425px' }"
->
-  <div class="flex column-gap-4 row-gap-1 justify-content-start align-items-center">
-    <div class="pi pi-question-circle text-3xl danger-action-text"></div>
-    <div class="flex flex-column row-gap-2">
-      <div id="ps_app_delete_message" class="font-bold">{{ 'ACTIONS.DELETE.APP.MESSAGE' | translate }}</div>
-      <div id="ps_app_delete_app_id" class="font-bold danger-action-text text-center">{{ appAbstract?.appId }}</div>
-      <div class="flex flex-row column-gap-2">
-        <div class="text-right font-bold">{{ 'APP.PRODUCT_NAME' | translate }}:</div>
-        <div class="text-left white-space-nowrap" id="ps_app_delete_product_name">{{ appAbstract?.productName }}</div>
+@if (displayDialog && appAbstract) {
+  <p-dialog
+    [visible]="true"
+    (onVisibleChange)="onDialogHide()"
+    [header]="appAbstract.appType ? ('ACTIONS.DELETE.' + appAbstract.appType + '.HEADER' | translate) : ''"
+    [modal]="true"
+    [resizable]="false"
+    [dismissableMask]="true"
+    [style]="{ 'max-width': '425px' }"
+  >
+    <div class="flex column-gap-4 row-gap-1 justify-content-start align-items-center">
+      <div class="pi pi-question-circle text-3xl danger-action-text"></div>
+      <div class="flex flex-column row-gap-2">
+        <div id="ps_app_delete_message" class="font-bold">{{ 'ACTIONS.DELETE.APP.MESSAGE' | translate }}</div>
+        <div id="ps_app_delete_app_id" class="font-bold danger-action-text text-center">{{ appAbstract.appId }}</div>
+        <div class="flex flex-row column-gap-2">
+          <div class="text-right font-bold">{{ 'APP.PRODUCT_NAME' | translate }}:</div>
+          <div class="text-left white-space-nowrap" id="ps_app_delete_product_name">{{ appAbstract.productName }}</div>
+        </div>
+        @if (appAbstract.operator) {
+          <div>{{ 'ACTIONS.DELETE.APP.OPERATOR_TEXT' | translate }}</div>
+        }
+        <div>{{ 'ACTIONS.DELETE.MESSAGE_INFO' | translate }}</div>
       </div>
-      <div *ngIf="appAbstract?.operator">{{ 'ACTIONS.DELETE.APP.OPERATOR_TEXT' | translate }}</div>
-      <div>{{ 'ACTIONS.DELETE.MESSAGE_INFO' | translate }}</div>
     </div>
-  </div>
-  <ng-template pTemplate="footer">
-    <div class="flex flex-wrap column-gap-2 row-gap-1 justify-content-end">
-      <p-button
-        id="ps_app_delete_action_no"
-        icon="pi pi-times"
-        (onClick)="onDialogHide()"
-        [label]="'ACTIONS.CONFIRMATION.NO' | translate"
-        [attr.aria-label]="'ACTIONS.CONFIRMATION.NO' | translate"
-        [pTooltip]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-      ></p-button>
-      <p-button
-        id="ps_app_delete_action_yes"
-        icon="pi pi-check"
-        (onClick)="onConfirmDeletion()"
-        [label]="'ACTIONS.CONFIRMATION.YES' | translate"
-        [attr.aria-label]="'ACTIONS.CONFIRMATION.YES' | translate"
-        [pTooltip]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-      ></p-button>
-    </div>
-  </ng-template>
-</p-dialog>
+    <ng-template pTemplate="footer">
+      <div class="flex flex-wrap column-gap-2 row-gap-1 justify-content-end">
+        <p-button
+          id="ps_app_delete_action_no"
+          icon="pi pi-times"
+          (onClick)="onDialogHide()"
+          [label]="'ACTIONS.CONFIRMATION.NO' | translate"
+          [attr.aria-label]="'ACTIONS.CONFIRMATION.NO' | translate"
+          [pTooltip]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        ></p-button>
+        <p-button
+          id="ps_app_delete_action_yes"
+          icon="pi pi-check"
+          (onClick)="onConfirmDeletion()"
+          [label]="'ACTIONS.CONFIRMATION.YES' | translate"
+          [attr.aria-label]="'ACTIONS.CONFIRMATION.YES' | translate"
+          [pTooltip]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        ></p-button>
+      </div>
+    </ng-template>
+  </p-dialog>
+}

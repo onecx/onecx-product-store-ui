@@ -1,8 +1,15 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import { AsyncPipe } from '@angular/common'
+import { RouterModule } from '@angular/router'
+import { TranslateModule } from '@ngx-translate/core'
 import { BehaviorSubject, Observable, of } from 'rxjs'
+
+import { MessageModule } from 'primeng/message'
+import { TooltipModule } from 'primeng/tooltip'
 
 import { SlotService } from '@onecx/angular-remote-components'
 import { WorkspaceService } from '@onecx/angular-integration-interface'
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
 import { Utils } from 'src/app/shared/utils'
 
@@ -25,7 +32,8 @@ export type Workspace = {
 
 @Component({
   selector: 'app-product-use',
-  standalone: false,
+  standalone: true,
+  imports: [AngularAcceleratorModule, AsyncPipe, MessageModule, RouterModule, TooltipModule, TranslateModule],
   templateUrl: './product-use.component.html'
 })
 export class ProductUseComponent implements OnChanges {

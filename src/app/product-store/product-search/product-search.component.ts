@@ -1,10 +1,32 @@
-import { Component, OnInit } from '@angular/core'
-import { ActivatedRoute, Router } from '@angular/router'
-import { FormControl, FormGroup } from '@angular/forms'
+import { Component, DestroyRef, inject, OnInit } from '@angular/core'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
+import { AsyncPipe } from '@angular/common'
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { ActivatedRoute, Router, RouterModule } from '@angular/router'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, finalize, map, of, Observable, catchError } from 'rxjs'
-import { TranslateService } from '@ngx-translate/core'
 
-import { Action, ColumnType, DataSortDirection, DataTableColumn, Filter, Sort } from '@onecx/angular-accelerator'
+import { ButtonModule } from 'primeng/button'
+import { CardModule } from 'primeng/card'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { InputTextModule } from 'primeng/inputtext'
+import { MessageModule } from 'primeng/message'
+import { MultiSelectModule } from 'primeng/multiselect'
+import { TooltipModule } from 'primeng/tooltip'
+
+import {
+  Action,
+  AngularAcceleratorModule,
+  ColumnType,
+  DataSortDirection,
+  DataTableColumn,
+  Filter,
+  RowListGridData,
+  Sort
+} from '@onecx/angular-accelerator'
+import { PortalPageComponent } from '@onecx/angular-utils'
 
 import {
   ImagesInternalAPIService,
@@ -16,6 +38,7 @@ import {
   RefType
 } from 'src/app/shared/generated'
 import { Utils } from 'src/app/shared/utils'
+import { ImageContainerComponent } from 'src/app/shared/image-container/image-container.component'
 
 export interface ProductSearchCriteriaControls {
   name: FormControl<string | null>
@@ -26,11 +49,31 @@ export interface ProductSearchCriteriaControls {
 type ProductAbstractExtended = ProductAbstract & { classes?: string }
 
 @Component({
-  standalone: false,
+  standalone: true,
+  imports: [
+    AngularAcceleratorModule,
+    AsyncPipe,
+    ButtonModule,
+    CardModule,
+    FloatLabelModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    InputTextModule,
+    MessageModule,
+    MultiSelectModule,
+    ReactiveFormsModule,
+    RouterModule,
+    TooltipModule,
+    TranslateModule,
+    // components
+    PortalPageComponent,
+    ImageContainerComponent
+  ],
   templateUrl: './product-search.component.html',
   styleUrls: ['./product-search.component.scss']
 })
 export class ProductSearchComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef)
   // dialog
   public loading = false
   public exceptionKey: string | undefined
@@ -42,7 +85,7 @@ export class ProductSearchComponent implements OnInit {
   public filteredData$ = new BehaviorSubject<ProductAbstractExtended[]>([])
   public resultData$ = new BehaviorSubject<ProductAbstractExtended[]>([])
   public searchCriteria!: FormGroup<ProductSearchCriteriaControls>
-  public filter: string | undefined
+  public globalFilterValue: string | undefined
   public interactiveFilters: Filter[] = []
   public sortDirection: DataSortDirection = DataSortDirection.ASCENDING
   public sortField = 'displayName'
@@ -134,7 +177,8 @@ export class ProductSearchComponent implements OnInit {
         console.error('searchProducts', err)
         return of([])
       }),
-      finalize(() => (this.loading = false))
+      finalize(() => (this.loading = false)),
+      takeUntilDestroyed(this.destroyRef)
     )
     this.products$.subscribe({
       next: (products) => this.resultData$.next(products)
@@ -214,8 +258,8 @@ export class ProductSearchComponent implements OnInit {
   public onLayoutChange(viewMode: 'grid' | 'list' | 'table'): void {
     if (viewMode !== 'table') this.viewMode = viewMode
   }
-  public onFilterChange(filter: string): void {
-    this.filter = filter
+  public onGlobalFilter(filter: string): void {
+    this.globalFilterValue = filter
     this.filterData = filter
     this.resultData$.next(this.resultData$.value)
   }
@@ -235,6 +279,11 @@ export class ProductSearchComponent implements OnInit {
     this.sortOrder = sort.sortDirection === DataSortDirection.DESCENDING ? -1 : 1
   }
 
+  public onAppClick(item: RowListGridData): void {
+    const product = item as unknown as ProductAbstract
+    if (!product?.name) return
+    this.router.navigate(['./', product.name], { relativeTo: this.route })
+  }
   public onSearch() {
     this.searchProducts()
   }

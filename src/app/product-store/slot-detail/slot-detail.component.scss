@@ -1,6 +1,6 @@
-@import '/src/app/_ps-mixins.scss';
+@use '/src/app/_ps-mixins.scss' as *;
 
-@include required-label;
+@include ocx-required-label;
 
 @include readable-disabled-form-controls;
 @include dropdown-zebra-rows;

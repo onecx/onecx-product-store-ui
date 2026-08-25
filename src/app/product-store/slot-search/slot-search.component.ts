@@ -1,13 +1,24 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { AsyncPipe, NgClass } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
-import { FormControl, FormGroup } from '@angular/forms'
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, combineLatest, finalize, map, Observable, of, Subscription, tap } from 'rxjs'
-import { TranslateService } from '@ngx-translate/core'
+
+import { ButtonModule } from 'primeng/button'
+import { DialogModule } from 'primeng/dialog'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputTextModule } from 'primeng/inputtext'
+import { MessageModule } from 'primeng/message'
+import { TooltipModule } from 'primeng/tooltip'
 import { Table } from 'primeng/table'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 import {
   Action,
+  AngularAcceleratorModule,
   ColumnType,
   DataAction,
   DataSortDirection,
@@ -15,6 +26,7 @@ import {
   Filter,
   Sort
 } from '@onecx/angular-accelerator'
+import { PortalPageComponent } from '@onecx/angular-utils'
 
 import {
   ProductsAPIService,
@@ -25,6 +37,8 @@ import {
 } from 'src/app/shared/generated'
 import { Utils } from 'src/app/shared/utils'
 import { ChangeMode } from '../product-detail/product-detail.component'
+import { SlotDetailComponent } from '../slot-detail/slot-detail.component'
+import { SlotDeleteComponent } from '../slot-delete/slot-delete.component'
 
 export interface SlotSearchCriteria {
   slotName: FormControl<string | null>
@@ -45,7 +59,26 @@ export interface Column {
 export type ExtendedColumn = Column
 
 @Component({
-  standalone: false,
+  standalone: true,
+  imports: [
+    AngularAcceleratorModule,
+    AsyncPipe,
+    NgClass,
+    ButtonModule,
+    DialogModule,
+    FloatLabelModule,
+    InputTextModule,
+    InputGroupAddonModule,
+    InputGroupModule,
+    MessageModule,
+    ReactiveFormsModule,
+    TooltipModule,
+    TranslateModule,
+    // components
+    PortalPageComponent,
+    SlotDetailComponent,
+    SlotDeleteComponent
+  ],
   templateUrl: './slot-search.component.html',
   styleUrls: ['./slot-search.component.scss']
 })

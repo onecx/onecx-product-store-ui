@@ -1,6 +1,6 @@
-@import '/src/app/_ps-mixins.scss';
+@use '/src/app/_ps-mixins.scss' as *;
 
-@include required-label;
+@include ocx-required-label;
 
 :host ::ng-deep {
   .p-floatlabel-on:has(.p-select-label:not(.p-placeholder)) label,

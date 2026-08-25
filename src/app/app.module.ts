@@ -1,15 +1,14 @@
 import { NgModule } from '@angular/core'
-import { CommonModule } from '@angular/common'
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
+import { BrowserAnimationsModule, provideAnimations } from '@angular/platform-browser/animations'
 import { RouterModule, Routes } from '@angular/router'
-import { BrowserModule } from '@angular/platform-browser'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
+import { MissingTranslationHandler, TranslateLoader, TranslateModule } from '@ngx-translate/core'
 
 import { AngularAuthModule } from '@onecx/angular-auth'
-import { createTranslateLoader, providePermissionService, provideTranslationPathFromMeta } from '@onecx/angular-utils'
 import { APP_CONFIG } from '@onecx/angular-integration-interface'
-import { provideStandaloneProviders, StandaloneShellModule } from '@onecx/angular-standalone-shell'
+import { AngularAcceleratorMissingTranslationHandler, AngularAcceleratorModule } from '@onecx/angular-accelerator'
+import { StandaloneShellModule, provideStandaloneProviders } from '@onecx/angular-standalone-shell'
+import { createTranslateLoader, provideThemeConfig, provideTranslationPathFromMeta } from '@onecx/angular-utils'
 
 import { environment } from 'src/environments/environment'
 import { AppComponent } from './app.component'
@@ -20,35 +19,33 @@ const routes: Routes = [
     loadChildren: () => import('./product-store/product-store.module').then((m) => m.ProductStoreModule)
   }
 ]
-
 @NgModule({
-  bootstrap: [AppComponent],
-  declarations: [AppComponent],
   imports: [
-    CommonModule,
-    BrowserModule,
-    BrowserAnimationsModule,
+    AppComponent,
+    AngularAcceleratorModule,
     AngularAuthModule,
-    StandaloneShellModule,
+    BrowserAnimationsModule,
     RouterModule.forRoot(routes, {
       initialNavigation: 'enabledBlocking',
-      enableTracing: true
+      enableTracing: false
     }),
+    StandaloneShellModule,
     TranslateModule.forRoot({
       isolate: true,
-      loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] }
+      loader: { provide: TranslateLoader, useFactory: createTranslateLoader, deps: [HttpClient] },
+      missingTranslationHandler: {
+        provide: MissingTranslationHandler,
+        useClass: AngularAcceleratorMissingTranslationHandler
+      }
     })
   ],
   providers: [
     { provide: APP_CONFIG, useValue: environment },
-    provideStandaloneProviders(),
-    providePermissionService(),
     provideTranslationPathFromMeta(import.meta.url, 'assets/i18n/'),
-    provideHttpClient(withInterceptorsFromDi())
+    provideHttpClient(withInterceptorsFromDi()),
+    provideStandaloneProviders(),
+    provideThemeConfig(),
+    provideAnimations()
   ]
 })
-export class AppModule {
-  constructor() {
-    console.info('OneCX Product Store Module constructor')
-  }
-}
+export class AppModule {}

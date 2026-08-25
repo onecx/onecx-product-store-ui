@@ -51,13 +51,13 @@
 
     <!-- row 2 -->
     <div class="flex flex-row flex-wrap gap-4">
-      <p-float-label variant="on" class="flex-grow-1 sm:flex-grow-0">
+      <p-floatlabel variant="on" class="flex-grow-1 sm:flex-grow-0">
         <input
           pInputText
           type="text"
           id="ps_slot_detail_form_field_creation_date"
           class="w-full sm:w-13rem pt-3 pb-2 text-responsive"
-          [value]="slot?.creationDate ? (slot?.creationDate | date: dateFormat) : ''"
+          [value]="slot ? (slot.creationDate | date: dateFormat) : ''"
           [disabled]="true"
           [attr.aria-label]="'INTERNAL.CREATION_DATE' | translate"
           [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
@@ -65,8 +65,8 @@
           tooltipEvent="hover"
         />
         <label for="ps_slot_detail_form_field_creation_date">{{ 'INTERNAL.CREATION_DATE' | translate }}</label>
-      </p-float-label>
-      <p-float-label variant="on" class="flex-grow-1">
+      </p-floatlabel>
+      <p-floatlabel variant="on" class="flex-grow-1">
         <input
           pInputText
           type="text"
@@ -80,18 +80,18 @@
           tooltipEvent="hover"
         />
         <label for="ps_slot_detail_form_field_creation_user"> {{ 'INTERNAL.CREATION_USER' | translate }} </label>
-      </p-float-label>
+      </p-floatlabel>
     </div>
 
     <!-- row 3 -->
     <div class="flex flex-row flex-wrap gap-4">
-      <p-float-label variant="on" class="flex-grow-1 sm:flex-grow-0">
+      <p-floatlabel variant="on" class="flex-grow-1 sm:flex-grow-0">
         <input
           pInputText
           type="text"
           id="ps_slot_detail_form_field_modification_date"
           class="w-full sm:w-13rem pt-3 pb-2"
-          [value]="slot?.modificationDate ? (slot?.modificationDate | date: dateFormat) : ''"
+          [value]="slot ? (slot.modificationDate | date: dateFormat) : ''"
           [disabled]="true"
           [attr.aria-label]="'INTERNAL.MODIFICATION_DATE' | translate"
           [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"
@@ -101,8 +101,8 @@
         <label for="ps_slot_detail_form_field_modification_date">
           {{ 'INTERNAL.MODIFICATION_DATE' | translate }}
         </label>
-      </p-float-label>
-      <p-float-label variant="on" class="flex-grow-1">
+      </p-floatlabel>
+      <p-floatlabel variant="on" class="flex-grow-1">
         <input
           pInputText
           type="text"
@@ -118,7 +118,7 @@
         <label for="ps_slot_detail_form_field_modification_user">
           {{ 'INTERNAL.MODIFICATION_USER' | translate }}
         </label>
-      </p-float-label>
+      </p-floatlabel>
     </div>
   </div>
 </form>

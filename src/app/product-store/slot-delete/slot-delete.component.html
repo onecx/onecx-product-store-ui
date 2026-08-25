@@ -1,55 +1,59 @@
-<p-dialog
-  [header]="'ACTIONS.DELETE.SLOT.HEADER' | translate"
-  [(visible)]="displayDialog"
-  (onHide)="onDialogHide()"
-  [modal]="true"
-  [closable]="true"
-  [draggable]="true"
-  [resizable]="false"
-  [dismissableMask]="true"
-  [style]="{ 'max-width': '500px' }"
->
-  <div class="flex column-gap-4 row-gap-1 justify-content-start align-items-center">
-    <div class="pi pi-question-circle text-3xl danger-action-text"></div>
-    <div class="flex flex-column row-gap-2">
-      <div id="ps_slot_delete_message" class="font-bold">{{ 'ACTIONS.DELETE.SLOT.MESSAGE' | translate }}</div>
+@if (displayDialog && slot) {
+  <p-dialog
+    [header]="'ACTIONS.DELETE.SLOT.HEADER' | translate"
+    [visible]="true"
+    (onVisibleChange)="onDialogHide()"
+    [modal]="true"
+    [closable]="true"
+    [draggable]="true"
+    [resizable]="false"
+    [dismissableMask]="true"
+    [style]="{ 'max-width': '500px' }"
+  >
+    <div class="flex column-gap-4 row-gap-1 justify-content-start align-items-center">
+      <div class="pi pi-question-circle text-3xl danger-action-text"></div>
       <div class="flex flex-column row-gap-2">
-        <div id="ps_slot_delete_slot_name" class="font-bold danger-action-text text-center">{{ slot?.name }}</div>
-        <div class="flex flex-row column-gap-2">
-          <div class="text-right font-bold">{{ 'SLOT.PRODUCT_NAME' | translate }}:</div>
-          <div class="text-left white-space-nowrap" id="ps_slot_delete_product_name">
-            {{ slot?.productDisplayName ?? slot?.productName }}
+        <div id="ps_slot_delete_message" class="font-bold">{{ 'ACTIONS.DELETE.SLOT.MESSAGE' | translate }}</div>
+        <div class="flex flex-column row-gap-2">
+          <div id="ps_slot_delete_slot_name" class="font-bold danger-action-text text-center">{{ slot.name }}</div>
+          <div class="flex flex-row column-gap-2">
+            <div class="text-right font-bold">{{ 'SLOT.PRODUCT_NAME' | translate }}:</div>
+            <div class="text-left white-space-nowrap" id="ps_slot_delete_product_name">
+              {{ slot.productDisplayName }}
+            </div>
           </div>
+          @if (slot.operator) {
+            <div id="ps_slot_delete_operator">
+              {{ 'ACTIONS.DELETE.SLOT.OPERATOR_TEXT' | translate }}
+            </div>
+          }
         </div>
-        <div *ngIf="slot?.operator" id="ps_slot_delete_operator">
-          {{ 'ACTIONS.DELETE.SLOT.OPERATOR_TEXT' | translate }}
-        </div>
+        <div>{{ 'ACTIONS.DELETE.MESSAGE_INFO' | translate }}</div>
       </div>
-      <div>{{ 'ACTIONS.DELETE.MESSAGE_INFO' | translate }}</div>
     </div>
-  </div>
-  <ng-template pTemplate="footer">
-    <div class="flex flex-wrap column-gap-2 row-gap-1 justify-content-end">
-      <p-button
-        id="ps_slot_delete_action_no"
-        icon="pi pi-times"
-        (onClick)="onDialogHide()"
-        [label]="'ACTIONS.CONFIRMATION.NO' | translate"
-        [ariaLabel]="'ACTIONS.CONFIRMATION.NO' | translate"
-        [pTooltip]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-      ></p-button>
-      <p-button
-        id="ps_slot_delete_action_yes"
-        icon="pi pi-check"
-        (onClick)="onConfirmDeletion()"
-        [label]="'ACTIONS.CONFIRMATION.YES' | translate"
-        [ariaLabel]="'ACTIONS.CONFIRMATION.YES' | translate"
-        [pTooltip]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-      ></p-button>
-    </div>
-  </ng-template>
-</p-dialog>
+    <ng-template pTemplate="footer">
+      <div class="flex flex-wrap column-gap-2 row-gap-1 justify-content-end">
+        <p-button
+          id="ps_slot_delete_action_no"
+          icon="pi pi-times"
+          (onClick)="onDialogHide()"
+          [label]="'ACTIONS.CONFIRMATION.NO' | translate"
+          [ariaLabel]="'ACTIONS.CONFIRMATION.NO' | translate"
+          [pTooltip]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        ></p-button>
+        <p-button
+          id="ps_slot_delete_action_yes"
+          icon="pi pi-check"
+          (onClick)="onConfirmDeletion()"
+          [label]="'ACTIONS.CONFIRMATION.YES' | translate"
+          [ariaLabel]="'ACTIONS.CONFIRMATION.YES' | translate"
+          [pTooltip]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        ></p-button>
+      </div>
+    </ng-template>
+  </p-dialog>
+}

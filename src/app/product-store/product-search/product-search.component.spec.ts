@@ -107,20 +107,20 @@ describe('ProductSearchComponent', () => {
       expect(component.viewMode).toEqual('list')
     })
 
-    it('should set correct values onFilterChange', () => {
+    it('should set correct values onGlobalFilter', () => {
       const filter = 'filter'
 
-      component.onFilterChange(filter)
+      component.onGlobalFilter(filter)
 
-      expect(component.filter).toEqual(filter)
+      expect(component.globalFilterValue).toEqual(filter)
     })
 
-    it('should filter the product list onFilterChange', () => {
+    it('should filter the product list onGlobalFilter', () => {
       const filter = 'team'
       apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product] } as ProductPageResult))
 
       component.onSearch()
-      component.onFilterChange(filter)
+      component.onGlobalFilter(filter)
 
       component.filteredData$.subscribe((result) => {
         expect(result).toHaveSize(1)
@@ -128,12 +128,12 @@ describe('ProductSearchComponent', () => {
       })
     })
 
-    it('should clear the product list filter onFilterChange', () => {
+    it('should clear the product list filter onGlobalFilter', () => {
       const filter = 'non-existent'
       apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product] } as ProductPageResult))
 
       component.onSearch()
-      component.onFilterChange(filter)
+      component.onGlobalFilter(filter)
 
       component.filteredData$.subscribe((result) => {
         expect(result).toHaveSize(0)

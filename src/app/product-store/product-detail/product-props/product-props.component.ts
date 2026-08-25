@@ -1,9 +1,28 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, Output } from '@angular/core'
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms'
-import { SelectItem } from 'primeng/api'
+import { AsyncPipe } from '@angular/common'
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from '@angular/forms'
+import { TranslateModule } from '@ngx-translate/core'
 import { map, of, Observable, catchError } from 'rxjs'
 
+import { AutoCompleteModule } from 'primeng/autocomplete'
+import { CheckboxModule } from 'primeng/checkbox'
+import { DropdownModule } from 'primeng/dropdown'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputTextModule } from 'primeng/inputtext'
+import { MessageModule } from 'primeng/message'
+import { SelectItem } from 'primeng/api'
+import { TooltipModule } from 'primeng/tooltip'
+
 import { PortalMessageService } from '@onecx/angular-integration-interface'
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
 import {
   ImagesInternalAPIService,
@@ -39,7 +58,20 @@ export function productNameValidator(): ValidatorFn {
 
 @Component({
   selector: 'app-product-props',
-  standalone: false,
+  standalone: true,
+  imports: [
+    AngularAcceleratorModule,
+    AsyncPipe,
+    AutoCompleteModule,
+    CheckboxModule,
+    DropdownModule,
+    FloatLabelModule,
+    InputTextModule,
+    MessageModule,
+    ReactiveFormsModule,
+    TooltipModule,
+    TranslateModule
+  ],
   templateUrl: './product-props.component.html',
   styleUrls: ['./product-props.component.scss']
 })
