@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges } from '@angular/core'
+import { Component, EventEmitter, inject, Input, OnChanges } from '@angular/core'
 import { CommonModule, Location } from '@angular/common'
 import { UntilDestroy } from '@ngneat/until-destroy'
 import { TranslateModule } from '@ngx-translate/core'
@@ -19,7 +19,6 @@ import {
   ProductsAPIService,
   ProductSearchCriteria
 } from 'src/app/shared/generated'
-import { SharedModule } from 'src/app/shared/shared.module'
 import { Utils } from 'src/app/shared/utils'
 import { environment } from 'src/environments/environment'
 
@@ -29,10 +28,11 @@ type DataType = 'logo' | 'products' | 'product'
   selector: 'app-product-data',
   templateUrl: './product-data.component.html',
   standalone: true,
-  imports: [AngularAcceleratorModule, AngularRemoteComponentsModule, CommonModule, TranslateModule, SharedModule]
+  imports: [AngularAcceleratorModule, AngularRemoteComponentsModule, CommonModule, TranslateModule]
 })
 @UntilDestroy()
 export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteWebcomponent, OnChanges {
+  private readonly productApi = inject(ProductsAPIService)
   // input
   @Input() refresh: boolean | undefined = false // on any change here a reload is triggered
   @Input() dataType: DataType | undefined = undefined // which response data is expected
@@ -59,8 +59,6 @@ export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteW
   public product$: Observable<ProductAbstract | undefined> | undefined
   public imageUrl$ = new BehaviorSubject<string | undefined>(undefined)
   public defaultImageUrl: string | undefined = undefined
-
-  constructor(private readonly productApi: ProductsAPIService) {}
 
   ocxInitRemoteComponent(remoteComponentConfig: RemoteComponentConfig) {
     this.productApi.configuration = new Configuration({
