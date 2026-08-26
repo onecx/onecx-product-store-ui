@@ -1,38 +1,12 @@
 @use '/src/app/_ps-mixins.scss' as *;
 
+@include danger-action;
+@include ocx-text-responsive;
 @include ocx-required-label;
-
-@include readable-disabled-form-controls;
-@include dropdown-zebra-rows;
-@include compact-dropdown-list-items;
-@include table-zebra-rows;
-@include table-inline-buttons;
-@include table-vertical-lines;
-@include dialog-footer-buttons;
-@include dialog-modal-dialog-content;
+@include ocx-p-inputgroup;
+@include ocx-p-message;
+@include ocx-p-tabs;
 
 :host ::ng-deep {
-  /**
-   * adjustments for tables with cell editing => endpoints
-  */
-  .p-datatable .p-datatable-tbody > tr > td {
-    &:not(:first-of-type) {
-      min-width: 220px;
-    }
-    &:not(:has(p-celleditor .p-inputtext)) {
-      padding: var(--table-body-cell-padding);
-    }
-    &:has(p-celleditor .p-inputtext) {
-      padding: 0.4rem;
-    }
-  }
-  /**
-   * position aligned to card dimensions
-  */
-  .card-badge-right,
-  .card-badge-left {
-    &.badge-2 {
-      top: 39px;
-    }
-  }
+  --onecx-product-store-onecx-product-store-ui-tabs-tabpanel-padding: 0.75rem;
 }
