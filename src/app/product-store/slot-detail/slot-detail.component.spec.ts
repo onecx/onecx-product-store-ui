@@ -327,10 +327,10 @@ describe('SlotDetailComponent', () => {
   describe('on tab change', () => {
     it('should set selectedTabIndex onTabChange', () => {
       component.onTabChange(1)
-      expect(component.selectedTabIndex).toBe(1)
+      expect(component.selectedTabIndex).toBe('1')
 
       component.onTabChange('2')
-      expect(component.selectedTabIndex).toBe(2)
+      expect(component.selectedTabIndex).toBe('2')
     })
   })
 

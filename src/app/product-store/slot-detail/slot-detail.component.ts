@@ -61,7 +61,7 @@ export class SlotDetailComponent implements OnInit, OnChanges {
   @ViewChild(SlotInternComponent, { static: false }) appInternComponent!: SlotInternComponent
 
   public formGroupSlot: FormGroup
-  public selectedTabIndex = 0
+  public selectedTabIndex = '0'
   public dialogTitleKey: string | undefined = undefined
   public loading = false
   public hasCreatePermission = false
@@ -95,7 +95,7 @@ export class SlotDetailComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     if (this.displayDialog && this.slot) {
-      this.selectedTabIndex = 0
+      this.selectedTabIndex = '0'
       this.dialogTitleKey = undefined
       this.formGroupSlot.reset()
       this.formGroupSlot.disable()
@@ -189,8 +189,8 @@ export class SlotDetailComponent implements OnInit, OnChanges {
     if (this.slot) this.slot.undeployed = val
   }
 
-  public onTabChange(index: string | number) {
-    this.selectedTabIndex = typeof index === 'number' ? index : Number(index)
+  public onTabChange(tabValue: string | number) {
+    this.selectedTabIndex = typeof tabValue === 'number' ? tabValue.toString() : tabValue
   }
 
   public onSave() {
