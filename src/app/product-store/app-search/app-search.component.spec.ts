@@ -327,22 +327,22 @@ describe('AppSearchComponent', () => {
     expect(component.viewMode).toBe('list')
   })
 
-  it('should update filter and call dv.filter onFilterChange', () => {
+  it('should update filter and call dv.filter onGlobalFilter', () => {
     const filter = 'testFilter'
 
-    component.onFilterChange(filter)
+    component.onGlobalFilter(filter)
 
-    expect(component.filter).toBe(filter)
+    expect(component.globalFilterValue).toBe(filter)
   })
 
-  it('should filter the app list onFilterChange', () => {
+  it('should filter the app list onGlobalFilter', () => {
     const filter = 'prodName'
     component.appSearchCriteriaGroup.controls['appType'].setValue('ALL')
     apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: [mfe] } as MicrofrontendPageResult))
     apiMsServiceSpy.searchMicroservice.and.returnValue(of({ stream: [ms] } as MicroservicePageResult))
 
     component.searchApps()
-    component.onFilterChange(filter)
+    component.onGlobalFilter(filter)
 
     component.filteredData$.subscribe((result) => {
       expect(result).toHaveSize(2)
@@ -352,21 +352,21 @@ describe('AppSearchComponent', () => {
     })
   })
 
-  it('should clear the app list filter onFilterChange', () => {
+  it('should clear the app list filter onGlobalFilter', () => {
     const filter = 'non-existent'
     component.appSearchCriteriaGroup.controls['appType'].setValue('ALL')
     apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: [mfe] } as MicrofrontendPageResult))
     apiMsServiceSpy.searchMicroservice.and.returnValue(of({ stream: [ms] } as MicroservicePageResult))
 
     component.searchApps()
-    component.onFilterChange(filter)
+    component.onGlobalFilter(filter)
 
     component.filteredData$.subscribe((result) => {
       expect(result).toHaveSize(0)
     })
   })
 
-  it('should filter the app list by classification onFilterChange', () => {
+  it('should filter the app list by classification onGlobalFilter', () => {
     const filter = 'test'
     const mfeWithClassification = { ...mfe, classifications: ['test'] }
     component.appSearchCriteriaGroup.controls['appType'].setValue('MFE')
@@ -375,7 +375,7 @@ describe('AppSearchComponent', () => {
     )
 
     component.searchApps()
-    component.onFilterChange(filter)
+    component.onGlobalFilter(filter)
 
     component.filteredData$.subscribe((result) => {
       expect(result).toHaveSize(1)

@@ -1,21 +1,22 @@
-<img
-  *ngIf="!displayDefaultLogo"
-  [id]="id"
-  [class]="'border-round-sm image-object ' + (styleClass ? styleClass : '')"
-  [ocxSrc]="displayImageUrl"
-  (error)="onImageError()"
-  [alt]="'DIALOG.LOGO.LABEL' | translate"
-  [pTooltip]="title"
-  tooltipPosition="top"
-  tooltipEvent="hover"
-/>
-<img
-  *ngIf="displayDefaultLogo"
-  [id]="id"
-  [class]="'border-round-sm image-object ' + (styleClass ? styleClass : '')"
-  [src]="defaultImageUrl$ | async"
-  [alt]="'DIALOG.LOGO.PLACEHOLDER' | translate"
-  [pTooltip]="title"
-  tooltipPosition="top"
-  tooltipEvent="hover"
-/>
+@if (displayDefaultLogo) {
+  <img
+    [id]="id"
+    [class]="'border-round-sm image-object ' + (styleClass ? styleClass : '')"
+    [src]="defaultImageUrl$ | async"
+    [alt]="'DIALOG.LOGO.PLACEHOLDER' | translate"
+    [pTooltip]="title"
+    tooltipPosition="top"
+    tooltipEvent="hover"
+  />
+} @else {
+  <img
+    [id]="id"
+    [class]="'border-round-sm image-object ' + (styleClass ? styleClass : '')"
+    [ocxSrc]="displayImageUrl"
+    (error)="onImageError()"
+    [alt]="'DIALOG.LOGO.LABEL' | translate"
+    [pTooltip]="title"
+    tooltipPosition="top"
+    tooltipEvent="hover"
+  />
+}

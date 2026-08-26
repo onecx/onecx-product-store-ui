@@ -3,18 +3,52 @@
 @include card-badges;
 @include danger-action;
 @include ocx-text-responsive;
-// @include correct-data-view-control;
-@include correct-select-button;
-@include correct-search-criteria;
-@include search-criteria-select-button;
-@include search-criteria-select-button-slim;
+@include ocx-p-message;
+@include ocx-p-inputgroup;
+@include ocx-interactive-data-view-fixes;
+@include dataview-list-flex-zebra-rows;
 
 :host ::ng-deep {
-  ocx-search-header [aria-label='Search Criteria'] #ps_app_search_criteria_app_name,
-  ocx-search-header [aria-label='Search Criteria'] #ps_app_search_criteria_product_name {
-    height: 3rem;
+  .ocx-content > div {
+    margin-bottom: 0 !important;
+    padding: 0.75rem 0.5rem !important;
   }
 
+  /* fixes for p-card */
+  --onecx-product-store-onecx-product-store-ui-card-body-padding: 0.5rem;
+  --onecx-product-store-onecx-product-store-ui-card-border-radius: 4px;
+  --onecx-product-store-onecx-product-store-ui-card-shadow:
+    rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+
+  // Make the top center area flexible to allow centering the quick filter and/or other controls
+  ocx-interactive-data-view > {
+    div:first-child {
+      > div:first-child {
+        > div:nth-child(2) {
+          flex: 1 1 0% !important;
+        }
+      }
+    }
+  }
+  .p-dataview .p-dataview-content {
+    margin: 0.75rem 0rem 0rem 0rem;
+    padding: 0rem 0rem 1rem 0rem;
+    border-top: var(--table-header-border);
+    > .grid {
+      gap: 0 !important;
+      padding: 0 0.5rem;
+    }
+  }
+
+  .card-badge-left,
+  .card-badge-right {
+    &.badge-2 {
+      top: 52px;
+    }
+  }
+}
+
+/*
   ocx-interactive-data-view
     #interactiveDataViewHeader
     > div.flex.flex-wrap.justify-content-between.align-items-center.py-1.gap-2
@@ -45,12 +79,6 @@
   .h-05rem {
     height: 0.5rem;
   }
-  .card-badge-left,
-  .card-badge-right {
-    &.badge-2 {
-      top: 39px;
-    }
-  }
 
   .p-dataview-grid .p-dataview-content .grid {
     gap: 0 !important;
@@ -72,3 +100,4 @@
     justify-content: center;
   }
 }
+*/

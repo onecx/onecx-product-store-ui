@@ -147,7 +147,6 @@ export class ProductDetailComponent implements OnInit {
       .subscribe((product: Product | undefined) => {
         this.product = product
         this.preparePageAction(product)
-        //this.goToTab(product)
       })
   }
 

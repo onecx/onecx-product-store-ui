@@ -232,7 +232,6 @@
               }
               @if (item?.undeployed) {
                 <div
-                  *ngIf="item?.undeployed"
                   [id]="'ps_product_search_data_grid_row_' + item.name + '_undeployed'"
                   class="card-badge-right badge-1 p-2 pi pi-ban danger-action-text text-xl"
                   [attr.aria-label]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"

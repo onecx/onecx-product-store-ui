@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core'
 import { AsyncPipe, NgClass } from '@angular/common'
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { combineLatest, finalize, map, of, Observable, Subject, catchError, BehaviorSubject } from 'rxjs'
 
 import { ButtonModule } from 'primeng/button'
+import { CardModule } from 'primeng/card'
 import { DialogModule } from 'primeng/dialog'
 import { FloatLabelModule } from 'primeng/floatlabel'
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
@@ -59,8 +60,10 @@ export type AppAbstract = Microservice & { appType: AppType; appTypeKey?: string
     AsyncPipe,
     NgClass,
     ButtonModule,
+    CardModule,
     DialogModule,
     FloatLabelModule,
+    FormsModule,
     InputGroupAddonModule,
     InputGroupModule,
     InputTextModule,
@@ -101,7 +104,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public filterValue: string | undefined
   public filterValueDefault = 'appId,appName,appType,appVersion,productName,classifications'
   public filterBy = this.filterValueDefault
-  public filter: string | undefined
+  public globalFilterValue: string | undefined
   public tableFilter = ''
   public interactiveFilters: Filter[] = []
   public sortDirection: DataSortDirection = DataSortDirection.ASCENDING
@@ -366,32 +369,32 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public onAppTypeFilterChange(ev: any): void {
     if (ev.value) this.appTypeFilterValue = ev.value
   }
-  public onQuickFilterChange(ev: any): void {
+  public onQuickFilterChange(val: string): void {
     // handle PrimeNG bug - start (each 2nd click removes the value)
-    if (ev.value) this.quickFilterValueOld = this.quickFilterValue
-    if (!ev.value) this.quickFilterValue = this.quickFilterValueOld
+    if (val) this.quickFilterValueOld = this.quickFilterValue
+    if (!val) this.quickFilterValue = this.quickFilterValueOld
     // handle PrimeNG bug - end
-    if (ev.value === 'ALL') {
+    if (val === 'ALL') {
       this.filterBy = this.filterValueDefault
       this.filterValue = ''
       this.interactiveFilters = this.interactiveFilters.filter((f) => f.columnId !== 'appType')
     } else {
       this.filterBy = 'appType'
-      if (ev.value) {
-        this.filterValue = ev.value
+      if (val) {
+        this.filterValue = val
         this.interactiveFilters = [
           ...this.interactiveFilters.filter((f) => f.columnId !== 'appType'),
           {
             columnId: 'appType',
-            value: ev.value,
+            value: val,
             filterType: FilterType.EQUALS
           }
         ]
       }
     }
   }
-  public onFilterChange(filter: string): void {
-    this.filter = filter
+  public onGlobalFilter(filter: string): void {
+    this.globalFilterValue = filter
     this.filterData = filter
     this.resultData$.next(this.resultData$.value)
   }

@@ -9,6 +9,18 @@
 @include ocx-interactive-data-view-fixes;
 
 :host ::ng-deep {
+  --onecx-product-store-onecx-product-store-ui-tabs-tabpanel-padding: 0.75rem;
+
+  /* tabs with modal dialog */
+  .p-tabs .p-tabpanels {
+    .p-tabpanel:not([value='2']) > * {
+      margin: 1rem 0 0;
+    }
+    .p-tabpanel[value='2'] > * {
+      margin: 0.25rem 0rem;
+    }
+  }
+
   /**
    * adjustments for tables with cell editing => endpoints
   */
