@@ -6,8 +6,8 @@ import { BehaviorSubject, of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { DataSortDirection } from '@onecx/angular-accelerator'
-
 import { UserService } from '@onecx/angular-integration-interface'
+import { PermissionService } from '@onecx/angular-utils'
 
 import {
   Product,
@@ -18,7 +18,6 @@ import {
 } from 'src/app/shared/generated'
 
 import { ProductSearchComponent } from './product-search.component'
-import { PermissionService, providePermissionService } from '@onecx/angular-utils'
 
 describe('ProductSearchComponent', () => {
   let component: ProductSearchComponent

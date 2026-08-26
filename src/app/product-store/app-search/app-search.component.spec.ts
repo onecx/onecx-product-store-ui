@@ -19,7 +19,7 @@ import {
   MicroservicesAPIService
 } from 'src/app/shared/generated'
 import { AppAbstract, AppType, AppSearchComponent, AppSearchCriteria } from './app-search.component'
-import { PermissionService, providePermissionService } from '@onecx/angular-utils'
+import { PermissionService } from '@onecx/angular-utils'
 import { provideNoopAnimations } from '@angular/platform-browser/animations'
 
 const form = new FormGroup<AppSearchCriteria>({
