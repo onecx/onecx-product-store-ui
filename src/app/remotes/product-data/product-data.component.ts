@@ -1,5 +1,5 @@
 import { Component, EventEmitter, inject, Input, OnChanges } from '@angular/core'
-import { CommonModule, Location } from '@angular/common'
+import { AsyncPipe, Location } from '@angular/common'
 import { UntilDestroy } from '@ngneat/until-destroy'
 import { TranslateModule } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs'
@@ -28,7 +28,7 @@ type DataType = 'logo' | 'products' | 'product'
   selector: 'app-product-data',
   templateUrl: './product-data.component.html',
   standalone: true,
-  imports: [AngularAcceleratorModule, AngularRemoteComponentsModule, CommonModule, TranslateModule]
+  imports: [AngularAcceleratorModule, AngularRemoteComponentsModule, AsyncPipe, TranslateModule]
 })
 @UntilDestroy()
 export class OneCXProductDataComponent implements ocxRemoteComponent, ocxRemoteWebcomponent, OnChanges {

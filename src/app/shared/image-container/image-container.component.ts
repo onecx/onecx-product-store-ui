@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core'
-import { CommonModule } from '@angular/common'
+import { AsyncPipe } from '@angular/common'
 import { Observable, map } from 'rxjs'
 
 import { AppStateService } from '@onecx/angular-integration-interface'
@@ -19,7 +19,7 @@ import { Utils } from 'src/app/shared/utils'
 @Component({
   selector: 'app-image-container',
   standalone: true,
-  imports: [AngularAcceleratorModule, CommonModule, TooltipModule, TranslateModule],
+  imports: [AngularAcceleratorModule, AsyncPipe, TooltipModule, TranslateModule],
   styleUrls: ['./image-container.component.scss'],
   templateUrl: './image-container.component.html',
   host: { hostId: 'this-avoids-component-id-collision' }
