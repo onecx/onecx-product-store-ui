@@ -579,12 +579,11 @@
                     <td [pEditableColumn]="endpoint.path" pEditableColumnField="path">
                       <p-cellEditor>
                         <ng-template pTemplate="input">
-                          <!-- TODO: use a form? -->
                           <input
                             pInputText
                             [id]="'ps_app_detail_endpoint_table_row_' + i + '_endpoint_path'"
                             type="text"
-                            [(ngModel)]="endpoint.name"
+                            [(ngModel)]="endpoint.path"
                           />
                         </ng-template>
                         <ng-template pTemplate="output"> {{ endpoint.path }} </ng-template>
