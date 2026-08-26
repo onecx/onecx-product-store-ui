@@ -13,12 +13,14 @@ import { TranslateModule } from '@ngx-translate/core'
 import { map, of, Observable, catchError } from 'rxjs'
 
 import { AutoCompleteModule } from 'primeng/autocomplete'
+import { ButtonModule } from 'primeng/button'
 import { CheckboxModule } from 'primeng/checkbox'
 import { DropdownModule } from 'primeng/dropdown'
 import { FloatLabelModule } from 'primeng/floatlabel'
 import { InputTextModule } from 'primeng/inputtext'
 import { MessageModule } from 'primeng/message'
 import { SelectItem } from 'primeng/api'
+import { TextareaModule } from 'primeng/textarea'
 import { TooltipModule } from 'primeng/tooltip'
 
 import { PortalMessageService } from '@onecx/angular-integration-interface'
@@ -63,12 +65,14 @@ export function productNameValidator(): ValidatorFn {
     AngularAcceleratorModule,
     AsyncPipe,
     AutoCompleteModule,
+    ButtonModule,
     CheckboxModule,
     DropdownModule,
     FloatLabelModule,
     InputTextModule,
     MessageModule,
     ReactiveFormsModule,
+    TextareaModule,
     TooltipModule,
     TranslateModule
   ],

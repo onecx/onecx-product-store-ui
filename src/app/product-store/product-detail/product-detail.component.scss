@@ -1,6 +1,15 @@
 @use '/src/app/_ps-mixins.scss' as *;
 
 @include danger-action;
+@include ocx-text-responsive;
+@include ocx-required-label;
+@include ocx-p-inputgroup;
+@include ocx-p-message;
+@include ocx-p-tabs;
+@include ocx-interactive-data-view-fixes;
+
+/*
+@include danger-action;
 @include readable-disabled-form-controls;
 @include ocx-text-responsive;
 @include prepare-inputgroup;
@@ -11,22 +20,31 @@
 @include dialog-footer-buttons;
 @include dialog-non-full-size-modal;
 @include tabview-fix-color-selected-tab;
+*/
+:host ::ng-deep {
+  .ocx-content > div {
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+  }
+
+  --onecx-product-store-onecx-product-store-ui-tabs-tabpanel-padding: 0.75rem;
+}
 
 :host ::ng-deep {
-  .p-autocomplete.p-disabled {
+  .ap-autocomplete.p-disabled {
     opacity: 1; /* fix: wrong level */
     .p-autocomplete-multiple-container {
       opacity: var(--disabled-opacity);
     }
   }
-  .p-autocomplete.p-autocomplete-multiple {
+  .ap-autocomplete.p-autocomplete-multiple {
     min-width: 11rem;
     .p-autocomplete-multiple-container {
       /* correct horizontal size of component */
       width: 100%;
     }
   }
-  .p-autocomplete.hide-item-decoration .p-autocomplete-multiple-container {
+  .ap-autocomplete.hide-item-decoration .p-autocomplete-multiple-container {
     /* correct vertical size of component */
     padding: 0.6rem 0.75rem 0.4rem 0.75rem;
 

@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core'
+import { Component, DestroyRef, inject, OnInit, ViewChild } from '@angular/core'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { AsyncPipe, Location } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
 import { catchError, Observable, of, finalize, map } from 'rxjs'
@@ -60,6 +61,7 @@ export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
   styleUrls: ['./product-detail.component.scss']
 })
 export class ProductDetailComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef)
   // dialog
   public exceptionKey: string | undefined
   public loading = false
@@ -76,6 +78,7 @@ export class ProductDetailComponent implements OnInit {
   public currentLogoUrl: string | undefined = undefined
   // data
   public product$: Observable<Product | undefined> = of(undefined)
+  public product: Product | undefined = undefined
   public item4Delete: Product | undefined
   public product_for_apps: Product | undefined
 
@@ -116,33 +119,40 @@ export class ProductDetailComponent implements OnInit {
         ['apps', 1],
         ['use', 2]
       ])
-      this.onTabChange(tabMap.get(this.uriFragment), product)
+      this.onTabChange(tabMap.get(this.uriFragment))
     }
   }
-  public onTabChange(index: string | number | undefined, product: Product) {
+  public onTabChange(index: string | number | undefined) {
     this.selectedTabIndex = typeof index === 'number' ? index : Number(index ?? this.selectedTabIndex)
-    this.preparePageAction(product)
-    if (this.selectedTabIndex === 1) this.product_for_apps = product // lazy load
+    this.preparePageAction(this.product)
+    if (this.selectedTabIndex === 1) this.product_for_apps = this.product // lazy load
   }
 
   /** READ */
   private getProduct(): void {
     this.loading = true
-    this.product$ = this.productApi.getProductByName({ name: this.productName! }).pipe(
-      map((data: Product) => {
-        this.preparePageAction(data)
-        this.productId = data.id
-        this.currentLogoUrl = this.getLogoUrl(data)
-        this.goToTab(data)
-        return { ...data, classifications: data.classifications?.sort(Utils.sortByLocale) }
-      }),
-      catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCT'
-        console.error('getProductByName', err)
-        return of(undefined)
-      }),
-      finalize(() => (this.loading = false))
-    )
+    this.productApi
+      .getProductByName({ name: this.productName! })
+      .pipe(
+        map((data: Product) => {
+          this.preparePageAction(data)
+          this.productId = data.id
+          this.currentLogoUrl = this.getLogoUrl(data)
+          return { ...data, classifications: data.classifications?.sort(Utils.sortByLocale) }
+        }),
+        catchError((err) => {
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCT'
+          console.error('getProductByName', err)
+          return of(undefined)
+        }),
+        finalize(() => (this.loading = false)),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((product: Product | undefined) => {
+        this.product = product
+        this.preparePageAction(product)
+        this.goToTab(product)
+      })
   }
 
   public preparePageAction(product?: Product): void {

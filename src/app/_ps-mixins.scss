@@ -85,23 +85,20 @@
     }
   }
 }
-
-@mixin prepare-inputgroup {
+@mixin ocx-p-inputgroup {
   :host ::ng-deep {
-    .inputgroup-dropdown-with-link {
-      border-right: none;
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-    .input-field-correction .p-inputtext {
-      padding-top: 1rem !important;
-      padding-bottom: 0.5rem !important;
-    }
-    .pseudo-button:hover {
-      background: var(--button-hover-bg) !important;
-      cursor: pointer;
-      * {
-        background: var(--button-hover-bg) !important;
+    .p-inputgroupaddon {
+      > p-button {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        > .p-button {
+          flex-grow: 1;
+        }
+      }
+      /* Manipulate the addon wrapper depends on button state inside */
+      &:has(.p-button.p-button-primary) {
+        border: none;
       }
     }
   }
@@ -145,10 +142,10 @@
     }
     // clickable icon-only buttons
     .button-icon-only {
-      border-radius: var(--border-radius);
+      border-radius: 4px;
       &:hover {
-        color: var(--primary-color-text);
-        background: var(--button-hover-bg);
+        color: var(--onecx-product-store-onecx-product-store-ui-button-primary-hover-color);
+        background: var(--onecx-product-store-onecx-product-store-ui-button-primary-hover-background);
         cursor: pointer;
       }
     }
@@ -550,6 +547,15 @@
   }
 }
 
+@mixin ocx-p-message {
+  :host ::ng-deep {
+    .p-message {
+      display: inline-grid;
+      min-width: 20rem;
+    }
+  }
+}
+
 /* **********************************************
  *  DIALOG
  * **********************************************/
@@ -584,17 +590,25 @@
   }
 }
 
-@mixin tabview-reduce-padding {
+/* **********************************************
+ *  TABs
+ * **********************************************/
+@mixin ocx-p-tabs {
   :host ::ng-deep {
-    .p-tabview .p-tabview-panels,
-    .p-tabs .p-tabpanels {
-      padding: 1.4rem 0 0 0;
+    .p-tabs {
+      .p-tablist {
+        border-bottom: 1px solid var(--surface-300);
+      }
+      .p-tab {
+        padding: 0.75rem 1rem;
+        &.p-tab-active {
+          background-color: rgb(from var(--primary-color) r g b / 0.1);
+        }
+      }
+      .p-tabpanels {
+        padding: 0.75rem;
+      }
     }
-  }
-}
-@mixin tabview-fix-color-selected-tab {
-  :host ::ng-deep {
-    --tabview-header-active-bg: rgb(from var(--primary-color) r g b / 0.12) !important;
   }
 }
 
