@@ -401,7 +401,7 @@ describe('AppSearchComponent', () => {
     it('should update filterBy and filterValue onQuickFilterChange: ALL', () => {
       component.interactiveFilters = [{ columnId: 'someColumn', value: 'someValue' }]
 
-      component.onQuickFilterChange({ value: 'ALL' })
+      component.onQuickFilterChange('ALL')
 
       expect(component.filterBy).toBe(component.filterValueDefault)
       expect(component.filterValue).toBe('')
@@ -409,7 +409,7 @@ describe('AppSearchComponent', () => {
     })
 
     it('should update filterBy and filterValue onQuickFilterChange: other', () => {
-      component.onQuickFilterChange({ value: 'other' })
+      component.onQuickFilterChange('other')
 
       expect(component.filterValue).toBe('other')
       expect(component.filterBy).toBe('appType')
@@ -418,7 +418,7 @@ describe('AppSearchComponent', () => {
     it('should update interactiveFilters onQuickFilterChange preserving other filters', () => {
       component.interactiveFilters = [{ columnId: 'someColumn', value: 'someValue' }]
 
-      component.onQuickFilterChange({ value: 'other' })
+      component.onQuickFilterChange('other')
 
       expect(component.interactiveFilters).toEqual([
         { columnId: 'someColumn', value: 'someValue' },
@@ -429,7 +429,7 @@ describe('AppSearchComponent', () => {
     it('should set to quickFulterVaule to the original one if there is no current value', () => {
       component.quickFilterValueOld = 'old'
 
-      component.onQuickFilterChange({})
+      component.onQuickFilterChange('')
 
       expect(component.quickFilterValue).toBe('old')
     })

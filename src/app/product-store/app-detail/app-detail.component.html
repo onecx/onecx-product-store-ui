@@ -584,7 +584,7 @@
                             pInputText
                             [id]="'ps_app_detail_endpoint_table_row_' + i + '_endpoint_path'"
                             type="text"
-                            [value]="endpoint.path"
+                            [(ngModel)]="endpoint.name"
                           />
                         </ng-template>
                         <ng-template pTemplate="output"> {{ endpoint.path }} </ng-template>

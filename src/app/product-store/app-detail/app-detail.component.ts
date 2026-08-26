@@ -1,6 +1,6 @@
 import { Component, DestroyRef, EventEmitter, inject, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core'
 import { NgClass } from '@angular/common'
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { finalize, map } from 'rxjs'
 
@@ -78,6 +78,7 @@ export interface MsForm {
     DialogModule,
     DropdownModule,
     FloatLabelModule,
+    FormsModule,
     InputGroupModule,
     InputGroupAddonModule,
     InputTextModule,
