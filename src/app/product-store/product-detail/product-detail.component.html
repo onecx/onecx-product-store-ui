@@ -27,9 +27,9 @@
     }
     @if (product || changeMode === 'CREATE') {
       <!--
-      <p-tabs [(value)]="selectedTabIndex" (valueChange)="onTabChange($event)">
+      <p-tabs (valueChange)="onTabChange($event)">
       -->
-      <p-tabs value="0" (valueChange)="onTabChange($event)">
+      <p-tabs [lazy]="false" [(value)]="selectedTabIndex" (valueChange)="onTabChange($event, product)">
         <p-tablist>
           <p-tab
             value="0"
@@ -82,11 +82,13 @@
           </p-tabpanel>
 
           <p-tabpanel value="1">
-            <app-product-apps [product]="product_for_apps" [changeMode]="changeMode"></app-product-apps>
+            @if (selectedTabIndex === '1') {
+              <app-product-apps [product]="product" [changeMode]="changeMode"></app-product-apps>
+            }
           </p-tabpanel>
 
           <p-tabpanel value="2">
-            @if (selectedTabIndex === 2) {
+            @if (selectedTabIndex === '2') {
               <app-product-use [productName]="product?.name"></app-product-use>
             }
           </p-tabpanel>

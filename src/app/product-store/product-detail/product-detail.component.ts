@@ -74,13 +74,12 @@ export class ProductDetailComponent implements OnInit {
   public headerImageUrl?: string
   public productDeleteVisible = false
   public productDeleteMessage = ''
-  public selectedTabIndex = 0
+  public selectedTabIndex = '0' // have to be a string, number does not work
   public currentLogoUrl: string | undefined = undefined
   // data
   public product$: Observable<Product | undefined> = of(undefined)
   public product: Product | undefined = undefined
   public item4Delete: Product | undefined
-  public product_for_apps: Product | undefined
 
   @ViewChild(ProductPropertyComponent, { static: false }) productPropsComponent!: ProductPropertyComponent
   @ViewChild(ProductInternComponent, { static: false }) productInternComponent!: ProductInternComponent
@@ -113,19 +112,17 @@ export class ProductDetailComponent implements OnInit {
 
   // triggered by URI
   private goToTab(product: Product | undefined) {
-    if (product && this.uriFragment) {
-      const tabMap = new Map([
-        ['props', 0],
-        ['apps', 1],
-        ['use', 2]
-      ])
-      this.onTabChange(tabMap.get(this.uriFragment))
-    }
+    const tabMap = new Map([
+      ['props', 0],
+      ['apps', 1],
+      ['use', 2]
+    ])
+    this.onTabChange(tabMap.get(this.uriFragment ?? 'props') ?? 0, product)
   }
-  public onTabChange(index: string | number | undefined) {
-    this.selectedTabIndex = typeof index === 'number' ? index : Number(index ?? this.selectedTabIndex)
-    this.preparePageAction(this.product)
-    if (this.selectedTabIndex === 1) this.product_for_apps = this.product // lazy load
+  public onTabChange(tabValue: string | number, product?: Product): void {
+    if (product) {
+      this.selectedTabIndex = typeof tabValue === 'number' ? tabValue.toString() : tabValue
+    } else this.selectedTabIndex = '0'
   }
 
   /** READ */
@@ -135,7 +132,6 @@ export class ProductDetailComponent implements OnInit {
       .getProductByName({ name: this.productName! })
       .pipe(
         map((data: Product) => {
-          this.preparePageAction(data)
           this.productId = data.id
           this.currentLogoUrl = this.getLogoUrl(data)
           return { ...data, classifications: data.classifications?.sort(Utils.sortByLocale) }
@@ -151,7 +147,7 @@ export class ProductDetailComponent implements OnInit {
       .subscribe((product: Product | undefined) => {
         this.product = product
         this.preparePageAction(product)
-        this.goToTab(product)
+        //this.goToTab(product)
       })
   }
 
@@ -191,8 +187,7 @@ export class ProductDetailComponent implements OnInit {
               icon: 'pi pi-pencil',
               show: 'always',
               conditional: true,
-              showCondition:
-                [0, 3].includes(this.selectedTabIndex) && this.changeMode === 'VIEW' && product !== undefined,
+              showCondition: product && this.changeMode === 'VIEW' && ['0', '3'].includes(this.selectedTabIndex),
               permission: 'PRODUCT#EDIT'
             },
             {
@@ -221,7 +216,7 @@ export class ProductDetailComponent implements OnInit {
               icon: 'pi pi-copy',
               show: 'asOverflow',
               conditional: true,
-              showCondition: this.selectedTabIndex === 0 && this.changeMode === 'VIEW' && product !== undefined,
+              showCondition: product && this.changeMode === 'VIEW' && this.selectedTabIndex === '0',
               permission: 'PRODUCT#CREATE'
             },
             {
@@ -231,7 +226,7 @@ export class ProductDetailComponent implements OnInit {
               icon: 'pi pi-trash',
               show: 'asOverflow',
               conditional: true,
-              showCondition: this.changeMode === 'VIEW' && product !== undefined,
+              showCondition: product && this.changeMode === 'VIEW',
               permission: 'PRODUCT#DELETE'
             }
           ]

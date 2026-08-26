@@ -7,7 +7,7 @@
   --onecx-product-store-onecx-product-store-ui-card-body-padding: 0.5rem;
 
   /* fixes for p-card */
-  --onecx-product-store-onecx-product-store-ui-card-body-padding: 0.5rem;
+  --onecx-product-store-onecx-product-store-ui-card-body-padding: 0.25rem;
   --onecx-product-store-onecx-product-store-ui-card-border-radius: 4px;
   --onecx-product-store-onecx-product-store-ui-card-shadow:
     rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
@@ -37,13 +37,13 @@
   .card-badge-right,
   .card-badge-left {
     &.badge-2-mfe {
-      top: 57px;
+      top: 51px;
     }
     &.badge-2-ms {
-      top: 38px;
+      top: 31px;
     }
     &.badge-2-slot {
-      top: 51px;
+      top: 45px;
     }
   }
 }

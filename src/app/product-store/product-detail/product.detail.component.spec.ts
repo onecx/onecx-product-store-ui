@@ -304,29 +304,19 @@ describe('ProductDetailComponent', () => {
       component.uriFragment = 'apps'
       component['goToTab'](product)
 
-      expect(component.selectedTabIndex).toEqual(1)
-      expect(component.product_for_apps).toEqual(product)
+      expect(component.selectedTabIndex).toEqual('1')
     })
 
     it('should behave correctly onTabChange: 1', () => {
       component.onTabChange(1, product)
 
-      expect(component.selectedTabIndex).toEqual(1)
-      expect(component.product_for_apps).toEqual(product)
+      expect(component.selectedTabIndex).toEqual('1')
     })
 
     it('should behave correctly onTabChange: string index', () => {
       component.onTabChange('1', product)
 
-      expect(component.selectedTabIndex).toEqual(1)
-    })
-
-    it('should behave correctly onTabChange: undefined index', () => {
-      component.selectedTabIndex = 2
-
-      component.onTabChange(undefined, product)
-
-      expect(component.selectedTabIndex).toEqual(2)
+      expect(component.selectedTabIndex).toEqual('1')
     })
   })
 
