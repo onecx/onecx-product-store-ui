@@ -1,4 +1,3 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
@@ -27,21 +26,29 @@ describe('SlotDeleteComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [SlotDeleteComponent],
       imports: [
+        SlotDeleteComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
       providers: [
-        provideHttpClientTesting(),
         provideHttpClient(),
+        provideHttpClientTesting(),
         { provide: SlotsAPIService, useValue: apiSlotServiceSpy },
         { provide: PortalMessageService, useValue: msgServiceSpy }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents()
+      ]
+    })
+      .overrideComponent(SlotDeleteComponent, {
+        add: {
+          providers: [
+            { provide: SlotsAPIService, useValue: apiSlotServiceSpy },
+            { provide: PortalMessageService, useValue: msgServiceSpy }
+          ]
+        }
+      })
+      .compileComponents()
   }))
 
   beforeEach(() => {

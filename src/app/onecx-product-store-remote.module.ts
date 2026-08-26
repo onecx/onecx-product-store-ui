@@ -9,6 +9,7 @@ import {
   createTranslateLoader,
   MultiLanguageMissingTranslationHandler,
   PortalApiConfiguration,
+  providePermissionService,
   provideThemeConfig,
   provideTranslationPathFromMeta
 } from '@onecx/angular-utils'
@@ -60,6 +61,7 @@ const routes: Routes = [
       const initializerFn = initializeRouter(inject(Router), inject(AppStateService))
       return initializerFn()
     }),
+    providePermissionService(),
     provideTranslationPathFromMeta(import.meta.url, 'assets/i18n/'),
     provideHttpClient(withInterceptorsFromDi()),
     provideThemeConfig()

@@ -1,15 +1,14 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
-import { of, throwError } from 'rxjs'
+import { BehaviorSubject, of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { DataSortDirection } from '@onecx/angular-accelerator'
 
-import { PortalMessageService } from '@onecx/angular-integration-interface'
+import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 import { Utils } from 'src/app/shared/utils'
 
 interface Column {
@@ -155,29 +154,44 @@ describe('EndpointSearchComponent', () => {
   const routeMock = { snapshot: { paramMap: new Map() } }
 
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
+  const mockUserService = {
+    lang$: new BehaviorSubject<string>('en'),
+    hasPermission: jasmine.createSpy('hasPermission').and.returnValue(Promise.resolve(true))
+  }
   const productApiServiceSpy = { searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of([])) }
   const mfeApiServiceSpy = { searchMicrofrontends: jasmine.createSpy('searchMicrofrontends').and.returnValue(of([])) }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [EndpointSearchComponent],
       imports: [
+        EndpointSearchComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
-      schemas: [NO_ERRORS_SCHEMA],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: PortalMessageService, useValue: msgServiceSpy },
+        { provide: UserService, useValue: mockUserService },
         { provide: ProductsAPIService, useValue: productApiServiceSpy },
         { provide: MicrofrontendsAPIService, useValue: mfeApiServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: routeMock }
       ]
-    }).compileComponents()
+    })
+      .overrideComponent(EndpointSearchComponent, {
+        add: {
+          providers: [
+            { provide: PortalMessageService, useValue: msgServiceSpy },
+            { provide: UserService, useValue: mockUserService },
+            { provide: ProductsAPIService, useValue: productApiServiceSpy },
+            { provide: MicrofrontendsAPIService, useValue: mfeApiServiceSpy }
+          ]
+        }
+      })
+      .compileComponents()
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
     msgServiceSpy.info.calls.reset()

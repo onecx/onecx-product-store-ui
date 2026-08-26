@@ -1,10 +1,9 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { Location } from '@angular/common'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { provideRouter, Router } from '@angular/router'
-import { of, throwError } from 'rxjs'
+import { BehaviorSubject, of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { ConfigurationService, PortalMessageService, UserService } from '@onecx/angular-integration-interface'
@@ -12,7 +11,8 @@ import { ConfigurationService, PortalMessageService, UserService } from '@onecx/
 import { ProductDetailComponent } from './product-detail.component'
 import { ProductPropertyComponent } from './product-props/product-props.component'
 import { ProductInternComponent } from './product-intern/product-intern.component'
-import { Product, ProductsAPIService } from 'src/app/shared/generated'
+import { Product, ProductsAPIService, ImagesInternalAPIService } from 'src/app/shared/generated'
+import { provideNoopAnimations } from '@angular/platform-browser/animations'
 
 const productProps: Product = {
   id: 'id',
@@ -68,18 +68,23 @@ describe('ProductDetailComponent', () => {
     lang: 'en'
   }
   const mockUserService = {
-    lang$: {
-      getValue: jasmine.createSpy('getValue').and.returnValue('en')
-    },
+    lang$: new BehaviorSubject<string>('en'),
     hasPermission: jasmine.createSpy('hasPermission').and.callFake((permission) => {
       return ['PRODUCT#CREATE', 'PRODUCT#EDIT', 'PRODUCT#VIEW'].includes(permission)
     })
   }
 
+  const imageApiSpy = {
+    getImage: jasmine.createSpy('getImage').and.returnValue(of({})),
+    uploadImage: jasmine.createSpy('uploadImage').and.returnValue(of({})),
+    deleteImage: jasmine.createSpy('deleteImage').and.returnValue(of({})),
+    configuration: { basePath: 'basepath' }
+  }
+
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ProductDetailComponent],
       imports: [
+        ProductDetailComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
@@ -88,15 +93,37 @@ describe('ProductDetailComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideNoopAnimations(),
         provideRouter([{ path: '', component: ProductDetailComponent }]),
         { provide: ProductsAPIService, useValue: productApiSpy },
+        { provide: ImagesInternalAPIService, useValue: imageApiSpy },
         { provide: PortalMessageService, useValue: msgServiceSpy },
         { provide: ConfigurationService, useValue: configServiceSpy },
         { provide: UserService, useValue: mockUserService },
         { provide: Location, useValue: locationSpy }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents()
+      ]
+    })
+      .overrideComponent(ProductDetailComponent, {
+        add: {
+          providers: [
+            { provide: ProductsAPIService, useValue: productApiSpy },
+            { provide: ImagesInternalAPIService, useValue: imageApiSpy },
+            { provide: PortalMessageService, useValue: msgServiceSpy },
+            { provide: ConfigurationService, useValue: configServiceSpy },
+            { provide: UserService, useValue: mockUserService }
+          ]
+        }
+      })
+      .overrideComponent(ProductPropertyComponent, {
+        add: {
+          providers: [
+            { provide: ProductsAPIService, useValue: productApiSpy },
+            { provide: ImagesInternalAPIService, useValue: imageApiSpy },
+            { provide: PortalMessageService, useValue: msgServiceSpy }
+          ]
+        }
+      })
+      .compileComponents()
   }))
 
   beforeEach(() => {
@@ -291,7 +318,7 @@ describe('ProductDetailComponent', () => {
 
   describe('language', () => {
     it('should call this.user.lang$ from the constructor and set this.dateFormat to default format if user.lang$ is de', () => {
-      mockUserService.lang$.getValue.and.returnValue('de')
+      mockUserService.lang$.next('de')
       fixture = TestBed.createComponent(ProductDetailComponent)
       component = fixture.componentInstance
       fixture.detectChanges()

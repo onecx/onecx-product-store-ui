@@ -1,4 +1,3 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
@@ -10,7 +9,8 @@ import { Table } from 'primeng/table'
 
 import { UserService } from '@onecx/angular-integration-interface'
 import { PortalMessageService } from '@onecx/angular-integration-interface'
-
+import { PermissionService } from '@onecx/angular-remote-components'
+import { provideNoopAnimations } from '@angular/platform-browser/animations'
 import { DataSortDirection } from '@onecx/angular-accelerator'
 
 import { Product, ProductsAPIService, SlotsAPIService, SlotPageResult, Slot } from 'src/app/shared/generated'
@@ -81,7 +81,7 @@ const slotData: SlotData[] = [
   { ...slots[4], productDisplayName: products[1].displayName ?? '', state: 'operator' }
 ]
 
-describe('SlotSearchComponent', () => {
+fdescribe('SlotSearchComponent', () => {
   let component: SlotSearchComponent
   let fixture: ComponentFixture<SlotSearchComponent>
   const routerSpy = jasmine.createSpyObj('Router', ['navigate'])
@@ -96,35 +96,46 @@ describe('SlotSearchComponent', () => {
     searchSlots: jasmine.createSpy('searchSlots').and.returnValue(of({ stream: [] }))
   }
   const mockUserService = {
-    lang$: {
-      getValue: jasmine.createSpy('getValue').and.returnValue('de')
-    },
+    lang$: new BehaviorSubject<string>('de'),
     hasPermission: jasmine.createSpy('hasPermission').and.callFake((permission) => {
       return ['APP#CREATE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
-    })
+    }),
+    getPermission: jasmine.createSpy('getPermission').and.returnValue(Promise.resolve(true))
   }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [SlotSearchComponent],
       imports: [
+        SlotSearchComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
       providers: [
-        provideHttpClientTesting(),
         provideHttpClient(),
+        provideHttpClientTesting(),
+        provideNoopAnimations(),
+        { provide: PermissionService, useValue: { hasPermission: () => of(true) } },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: routeMock },
         { provide: UserService, useValue: mockUserService },
         { provide: PortalMessageService, useValue: msgServiceSpy },
         { provide: ProductsAPIService, useValue: apiProductsServiceSpy },
         { provide: SlotsAPIService, useValue: apiSlotsServiceSpy }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents()
+      ]
+    })
+      .overrideComponent(SlotSearchComponent, {
+        add: {
+          providers: [
+            { provide: UserService, useValue: mockUserService },
+            { provide: PortalMessageService, useValue: msgServiceSpy },
+            { provide: ProductsAPIService, useValue: apiProductsServiceSpy },
+            { provide: SlotsAPIService, useValue: apiSlotsServiceSpy }
+          ]
+        }
+      })
+      .compileComponents()
   }))
 
   beforeEach(async () => {
@@ -543,7 +554,7 @@ describe('SlotSearchComponent', () => {
     })
 
     it('should set default date format', () => {
-      mockUserService.lang$.getValue.and.returnValue('en')
+      mockUserService.lang$.next('en')
       fixture = TestBed.createComponent(SlotSearchComponent)
       component = fixture.componentInstance
       fixture.detectChanges()

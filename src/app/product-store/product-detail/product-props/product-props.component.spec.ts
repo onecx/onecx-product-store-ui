@@ -1,4 +1,3 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { of, throwError } from 'rxjs'
@@ -68,8 +67,8 @@ describe('ProductPropertyComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ProductPropertyComponent],
       imports: [
+        ProductPropertyComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
@@ -79,9 +78,18 @@ describe('ProductPropertyComponent', () => {
         { provide: ProductsAPIService, useValue: productApiSpy },
         { provide: PortalMessageService, useValue: msgServiceSpy },
         { provide: ImagesInternalAPIService, useValue: imageApiSpy }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents()
+      ]
+    })
+      .overrideComponent(ProductPropertyComponent, {
+        add: {
+          providers: [
+            { provide: ProductsAPIService, useValue: productApiSpy },
+            { provide: PortalMessageService, useValue: msgServiceSpy },
+            { provide: ImagesInternalAPIService, useValue: imageApiSpy }
+          ]
+        }
+      })
+      .compileComponents()
   }))
 
   beforeEach(() => {

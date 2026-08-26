@@ -1,12 +1,13 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { provideRouter, Router } from '@angular/router'
-import { of, throwError } from 'rxjs'
+import { BehaviorSubject, of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { DataSortDirection } from '@onecx/angular-accelerator'
+
+import { UserService } from '@onecx/angular-integration-interface'
 
 import {
   Product,
@@ -17,6 +18,7 @@ import {
 } from 'src/app/shared/generated'
 
 import { ProductSearchComponent } from './product-search.component'
+import { PermissionService, providePermissionService } from '@onecx/angular-utils'
 
 describe('ProductSearchComponent', () => {
   let component: ProductSearchComponent
@@ -39,24 +41,39 @@ describe('ProductSearchComponent', () => {
     searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of({ stream: [] })),
     getProductSearchCriteria: jasmine.createSpy('getProductSearchCriteria').and.returnValue(of({}))
   }
+  const mockUserService = {
+    lang$: new BehaviorSubject<string>('en'),
+    hasPermission: jasmine.createSpy('hasPermission').and.returnValue(Promise.resolve(true)),
+    getPermission: jasmine.createSpy('getPermission').and.returnValue(Promise.resolve(true))
+  }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ProductSearchComponent],
       imports: [
+        ProductSearchComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
       providers: [
-        provideHttpClientTesting(),
         provideHttpClient(),
+        provideHttpClientTesting(),
         provideRouter([{ path: '', component: ProductSearchComponent }]),
-        { provide: ProductsAPIService, useValue: apiProductServiceSpy }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents()
+        { provide: PermissionService, useValue: { hasPermission: () => of(true) } },
+        { provide: ProductsAPIService, useValue: apiProductServiceSpy },
+        { provide: UserService, useValue: mockUserService }
+      ]
+    })
+      .overrideComponent(ProductSearchComponent, {
+        add: {
+          providers: [
+            { provide: ProductsAPIService, useValue: apiProductServiceSpy },
+            { provide: UserService, useValue: mockUserService }
+          ]
+        }
+      })
+      .compileComponents()
   }))
 
   beforeEach(async () => {

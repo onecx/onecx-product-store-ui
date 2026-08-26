@@ -56,7 +56,6 @@ export type AppAbstract = Microservice & { appType: AppType; appTypeKey?: string
 @Component({
   standalone: true,
   imports: [
-    AngularAcceleratorModule,
     AsyncPipe,
     NgClass,
     ButtonModule,

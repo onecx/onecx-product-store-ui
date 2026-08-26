@@ -1,10 +1,9 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
-import { of, throwError } from 'rxjs'
+import { BehaviorSubject, of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { DataSortDirection, FilterType } from '@onecx/angular-accelerator'
@@ -20,6 +19,8 @@ import {
   MicroservicesAPIService
 } from 'src/app/shared/generated'
 import { AppAbstract, AppType, AppSearchComponent, AppSearchCriteria } from './app-search.component'
+import { PermissionService, providePermissionService } from '@onecx/angular-utils'
+import { provideNoopAnimations } from '@angular/platform-browser/animations'
 
 const form = new FormGroup<AppSearchCriteria>({
   appName: new FormControl<string | null>(null, Validators.minLength(2)),
@@ -71,18 +72,17 @@ describe('AppSearchComponent', () => {
     searchMicroservice: jasmine.createSpy('searchMicroservice').and.returnValue(of({}))
   }
   const mockUserService = {
-    lang$: {
-      getValue: jasmine.createSpy('getValue').and.returnValue('de')
-    },
+    lang$: new BehaviorSubject<string>('de'),
     hasPermission: jasmine.createSpy('hasPermission').and.callFake(async (permission) => {
       return ['APP#CREATE', 'APP#DELETE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
-    })
+    }),
+    getPermission: jasmine.createSpy('getPermission').and.returnValue(Promise.resolve(true))
   }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [AppSearchComponent],
       imports: [
+        AppSearchComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
@@ -91,19 +91,31 @@ describe('AppSearchComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideNoopAnimations(),
+        { provide: PermissionService, useValue: { hasPermission: () => of(true) } },
         { provide: MicrofrontendsAPIService, useValue: apiMfeServiceSpy },
         { provide: MicroservicesAPIService, useValue: apiMsServiceSpy },
         { provide: UserService, useValue: mockUserService },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: routeMock }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents()
+      ]
+    })
+      .overrideComponent(AppSearchComponent, {
+        add: {
+          providers: [
+            { provide: MicrofrontendsAPIService, useValue: apiMfeServiceSpy },
+            { provide: MicroservicesAPIService, useValue: apiMsServiceSpy },
+            { provide: UserService, useValue: mockUserService }
+          ]
+        }
+      })
+      .compileComponents()
   }))
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AppSearchComponent)
     component = fixture.componentInstance
+    fixture.detectChanges()
     fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
     component.hasEditPermission = true
   })
@@ -574,7 +586,7 @@ describe('AppSearchComponent', () => {
     })
 
     it('should set default date format', () => {
-      mockUserService.lang$.getValue.and.returnValue('en')
+      mockUserService.lang$.next('en')
       fixture = TestBed.createComponent(AppSearchComponent)
       component = fixture.componentInstance
       fixture.detectChanges()

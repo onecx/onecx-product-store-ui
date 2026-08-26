@@ -1,4 +1,3 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
@@ -38,8 +37,8 @@ describe('AppDeleteComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [AppDeleteComponent],
       imports: [
+        AppDeleteComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
@@ -51,9 +50,18 @@ describe('AppDeleteComponent', () => {
         { provide: MicrofrontendsAPIService, useValue: apiMfeServiceSpy },
         { provide: MicroservicesAPIService, useValue: apiMsServiceSpy },
         { provide: PortalMessageService, useValue: msgServiceSpy }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents()
+      ]
+    })
+      .overrideComponent(AppDeleteComponent, {
+        add: {
+          providers: [
+            { provide: MicrofrontendsAPIService, useValue: apiMfeServiceSpy },
+            { provide: MicroservicesAPIService, useValue: apiMsServiceSpy },
+            { provide: PortalMessageService, useValue: msgServiceSpy }
+          ]
+        }
+      })
+      .compileComponents()
   }))
 
   beforeEach(() => {
