@@ -58,15 +58,13 @@ describe('ProductSearchComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        provideRouter([{ path: '', component: ProductSearchComponent }]),
-        { provide: PermissionService, useValue: { hasPermission: () => of(true) } },
-        { provide: ProductsAPIService, useValue: apiProductServiceSpy },
-        { provide: UserService, useValue: mockUserService }
+        provideRouter([{ path: '', component: ProductSearchComponent }])
       ]
     })
       .overrideComponent(ProductSearchComponent, {
         add: {
           providers: [
+            { provide: PermissionService, useValue: { hasPermission: () => of(true) } },
             { provide: ProductsAPIService, useValue: apiProductServiceSpy },
             { provide: UserService, useValue: mockUserService }
           ]
@@ -79,7 +77,14 @@ describe('ProductSearchComponent', () => {
     fixture = TestBed.createComponent(ProductSearchComponent)
     component = fixture.componentInstance
     router = TestBed.inject(Router)
+
+    //fixture.detectChanges()
     fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
+  })
+
+  afterEach(() => {
+    apiProductServiceSpy.getProductSearchCriteria.and.returnValue(of({}))
+    apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [] }))
   })
 
   describe('initialize', () => {
@@ -216,7 +221,7 @@ describe('ProductSearchComponent', () => {
 
       component.ngOnInit()
 
-      component.criteria$.subscribe({
+      const sub = component.criteria$.subscribe({
         next: (result) => {
           expect(result.providers).toEqual([])
           expect(result.classifications).toEqual([])
@@ -224,16 +229,17 @@ describe('ProductSearchComponent', () => {
         },
         error: done.fail
       })
+      sub.unsubscribe()
       expect(console.error).toHaveBeenCalledWith('getProductSearchCriteria', errorResponse)
     })
 
     it('should search products - successful found', (done) => {
       apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product] } as ProductPageResult))
-      component.searchCriteria.controls['name'].setValue(product.name)
+      component.searchCriteriaForm.controls['name'].setValue(product.name)
 
       component.onSearch()
 
-      component.products$.subscribe({
+      const sub = component.products$.subscribe({
         next: (result) => {
           expect(result).toHaveSize(1)
           result.forEach((product) => {
@@ -243,6 +249,7 @@ describe('ProductSearchComponent', () => {
         },
         error: done.fail
       })
+      sub.unsubscribe()
     })
 
     it('should search products - successful not found', (done) => {
@@ -250,13 +257,14 @@ describe('ProductSearchComponent', () => {
 
       component.onSearch()
 
-      component.products$.subscribe({
+      const sub = component.products$.subscribe({
         next: (result) => {
           expect(result).toHaveSize(0)
           done()
         },
         error: done.fail
       })
+      sub.unsubscribe()
     })
 
     it('should search products - no stream', (done) => {
@@ -264,23 +272,24 @@ describe('ProductSearchComponent', () => {
 
       component.onSearch()
 
-      component.products$.subscribe({
+      const sub = component.products$.subscribe({
         next: (result) => {
           expect(result).toHaveSize(0)
           done()
         },
         error: done.fail
       })
+      sub.unsubscribe()
     })
 
     it('should search products - failed', (done) => {
-      const errorResponse = { status: 401, statusText: 'Not authorized' }
+      const errorResponse = { status: 4012, statusText: 'Not authorized' }
       apiProductServiceSpy.searchProducts.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
 
       component.onSearch()
 
-      component.products$.subscribe({
+      const sub = component.products$.subscribe({
         next: (result) => {
           if (result) {
             expect(result).toHaveSize(0)
@@ -291,15 +300,16 @@ describe('ProductSearchComponent', () => {
         },
         error: done.fail
       })
+      sub.unsubscribe()
     })
-  })
 
-  it('should reset productSearchCriteriaGroup onSearchReset', () => {
-    spyOn(component.searchCriteria, 'reset')
+    it('should reset productSearchCriteriaGroup onSearchReset', () => {
+      spyOn(component.searchCriteriaForm, 'reset')
 
-    component.onSearchReset()
+      component.onSearchReset()
 
-    expect(component.searchCriteria.reset).toHaveBeenCalled()
+      expect(component.searchCriteriaForm.reset).toHaveBeenCalled()
+    })
   })
 
   describe('navigate', () => {

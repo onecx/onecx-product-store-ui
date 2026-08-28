@@ -74,6 +74,11 @@ type ProductAbstractExtended = ProductAbstract & { classes?: string }
 })
 export class ProductSearchComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef)
+  private readonly route = inject(ActivatedRoute)
+  private readonly router = inject(Router)
+  private readonly translate = inject(TranslateService)
+  private readonly productApi = inject(ProductsAPIService)
+  private readonly imageApi = inject(ImagesInternalAPIService)
   // dialog
   public loading = false
   public exceptionKey: string | undefined
@@ -84,7 +89,12 @@ export class ProductSearchComponent implements OnInit {
   public criteria$!: Observable<ProductCriteria>
   public filteredData$ = new BehaviorSubject<ProductAbstractExtended[]>([])
   public resultData$ = new BehaviorSubject<ProductAbstractExtended[]>([])
-  public searchCriteria!: FormGroup<ProductSearchCriteriaControls>
+  private searchCriteria$ = new BehaviorSubject<ProductSearchCriteria>({} as ProductSearchCriteria)
+  public searchCriteriaForm = new FormGroup<ProductSearchCriteriaControls>({
+    name: new FormControl<string | null>(null),
+    providers: new FormControl<string[] | null>(null),
+    classifications: new FormControl<string[] | null>(null)
+  })
   public globalFilterValue: string | undefined
   public interactiveFilters: Filter[] = []
   public sortDirection: DataSortDirection = DataSortDirection.ASCENDING
@@ -114,20 +124,6 @@ export class ProductSearchComponent implements OnInit {
   ]
   public displayedColumnKeys: string[] = this.dataViewColumns.map((column) => column.id)
 
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly translate: TranslateService,
-    private readonly productApi: ProductsAPIService,
-    private readonly imageApi: ImagesInternalAPIService
-  ) {
-    this.searchCriteria = new FormGroup<ProductSearchCriteriaControls>({
-      name: new FormControl<string | null>(null),
-      providers: new FormControl<string[] | null>(null),
-      classifications: new FormControl<string[] | null>(null)
-    })
-  }
-
   ngOnInit(): void {
     this.preparePageActions()
     this.initGlobalFilter()
@@ -152,15 +148,23 @@ export class ProductSearchComponent implements OnInit {
       })
     })
   }
+  private prepareSearchCriteria(): void {
+    const name = this.searchCriteriaForm.controls['name'].value ?? undefined
+    const providers = this.searchCriteriaForm.controls['providers'].value ?? undefined
+    const classifications = this.searchCriteriaForm.controls['classifications'].value ?? undefined
+
+    this.searchCriteria$.next({
+      ...(name ? { names: [name] } : {}),
+      ...(providers ? { providers: providers } : {}),
+      ...(classifications ? { classifications: classifications } : {}),
+      pageSize: 1000
+    })
+  }
 
   private searchProducts(): void {
     this.loading = true
-    const criteria: ProductSearchCriteria = {
-      names: this.searchCriteria.controls['name'].value ? [this.searchCriteria.controls['name'].value] : undefined,
-      providers: this.searchCriteria.controls['providers'].value ?? undefined,
-      classifications: this.searchCriteria.controls['classifications'].value ?? undefined,
-      pageSize: 1000
-    }
+    this.prepareSearchCriteria()
+    const criteria = this.searchCriteria$.getValue()
     this.products$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
       map((data: ProductPageResult) => {
         const products: ProductAbstractExtended[] = []
@@ -288,7 +292,7 @@ export class ProductSearchComponent implements OnInit {
     this.searchProducts()
   }
   public onSearchReset() {
-    this.searchCriteria.reset()
+    this.searchCriteriaForm.reset()
   }
   public onAppSearch() {
     this.router.navigate(['./apps'], { relativeTo: this.route })
