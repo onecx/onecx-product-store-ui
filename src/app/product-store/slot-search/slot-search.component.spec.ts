@@ -1,14 +1,14 @@
-import { ComponentFixture, fakeAsync, flush, TestBed, tick, waitForAsync } from '@angular/core/testing'
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
-import { Router, ActivatedRoute, provideRouter } from '@angular/router'
-import { BehaviorSubject, EMPTY, firstValueFrom, of, skip, take, throwError } from 'rxjs'
+import { Router, ActivatedRoute } from '@angular/router'
+import { BehaviorSubject, of, throwError } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { Table } from 'primeng/table'
 
-import { AppStateService, MfeInfo, PortalMessageService, UserService } from '@onecx/angular-integration-interface'
-import { PermissionService, PortalPageComponent } from '@onecx/angular-utils'
+import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
+import { PortalPageComponent } from '@onecx/angular-utils'
 import { provideNoopAnimations } from '@angular/platform-browser/animations'
 import {
   AngularAcceleratorModule,
@@ -86,29 +86,20 @@ const slotData: SlotData[] = [
   { ...slots[3], productDisplayName: products[1].displayName ?? '', state: 'operator' },
   { ...slots[4], productDisplayName: products[1].displayName ?? '', state: 'operator' }
 ]
+const defaulResponseObject = { stream: [], totalElements: 0 }
 
-const mfeInfo: MfeInfo = {
-  mountPath: 'path',
-  remoteBaseUrl: 'url',
-  baseHref: 'href',
-  shellName: 'shell',
-  appId: 'app1',
-  productName: 'prodName'
-}
-
-xdescribe('SlotSearchComponent', () => {
+describe('SlotSearchComponent', () => {
   let component: SlotSearchComponent
   let fixture: ComponentFixture<SlotSearchComponent>
   const routerSpy = jasmine.createSpyObj('Router', ['navigate'])
   const routeMock = { snapshot: { paramMap: new Map() } }
-  const mockAppState = { currentMfe$: of(mfeInfo) }
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
   const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
   const apiProductsServiceSpy = {
-    searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of({ stream: [] }))
+    searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of(defaulResponseObject))
   }
   const apiSlotsServiceSpy = {
-    searchSlots: jasmine.createSpy('searchSlots').and.returnValue(of({ stream: [] }))
+    searchSlots: jasmine.createSpy('searchSlots').and.returnValue(of(defaulResponseObject))
   }
   const mockUserService = {
     lang$: new BehaviorSubject<string>('de'),
@@ -116,11 +107,6 @@ xdescribe('SlotSearchComponent', () => {
       return ['APP#CREATE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
     }),
     getPermission: jasmine.createSpy('getPermission').and.returnValue(Promise.resolve(true))
-  }
-  class MockAppStateService {
-    currentMfe$ = of({
-      remoteBaseUrl: '/base/'
-    })
   }
 
   beforeEach(waitForAsync(() => {
@@ -137,11 +123,7 @@ xdescribe('SlotSearchComponent', () => {
         provideHttpClientTesting(),
         provideNoopAnimations(),
         { provide: Router, useValue: routerSpy },
-        { provide: ActivatedRoute, useValue: routeMock },
-        { provide: UserService, useValue: mockUserService },
-        { provide: PortalMessageService, useValue: msgServiceSpy },
-        { provide: ProductsAPIService, useValue: apiProductsServiceSpy },
-        { provide: SlotsAPIService, useValue: apiSlotsServiceSpy }
+        { provide: ActivatedRoute, useValue: routeMock }
       ]
     })
       // replace problematic components with mocks to avoid errors during testing
@@ -149,7 +131,15 @@ xdescribe('SlotSearchComponent', () => {
         remove: {
           imports: [AngularAcceleratorModule, PortalPageComponent, PageHeaderComponent, SearchHeaderComponent]
         },
-        add: { imports: [...ONECX_MOCK_COMPONENTS] }
+        add: {
+          imports: [...ONECX_MOCK_COMPONENTS],
+          providers: [
+            { provide: UserService, useValue: mockUserService },
+            { provide: PortalMessageService, useValue: msgServiceSpy },
+            { provide: ProductsAPIService, useValue: apiProductsServiceSpy },
+            { provide: SlotsAPIService, useValue: apiSlotsServiceSpy }
+          ]
+        }
       })
       .compileComponents()
   }))
@@ -170,8 +160,8 @@ xdescribe('SlotSearchComponent', () => {
     apiSlotsServiceSpy.searchSlots.calls.reset()
     translateServiceSpy.get.calls.reset()
 
-    apiProductsServiceSpy.searchProducts.and.returnValue(of({ stream: [] }))
-    apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: [] }))
+    apiProductsServiceSpy.searchProducts.and.returnValue(of(defaulResponseObject))
+    apiSlotsServiceSpy.searchSlots.and.returnValue(of(defaulResponseObject))
   })
 
   describe('initialize', () => {
@@ -239,182 +229,107 @@ xdescribe('SlotSearchComponent', () => {
   })
 
   describe('searching', () => {
-    describe('successful', () => {
-      it('should search slots - successful found, no condition', () => {
-        apiProductsServiceSpy.searchProducts.and.returnValue(of({ stream: products, totalElements: products.length }))
-        apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: slots, totalElements: slots.length }))
-
-        const sub = component.slotData$.subscribe((res) => {
-          expect(res).toBeTruthy()
-          expect(res).toHaveSize(5)
-          expect(component.loading).toBeFalse()
-        })
-
-        component.onSearch()
-
-        sub.unsubscribe()
-      })
-
-      it('should search slots - successful found, with condition', () => {
-        apiProductsServiceSpy.searchProducts.and.returnValue(of({ stream: products }))
-        apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: slots }))
-        component.searchCriteriaForm.controls['productName'].setValue(products[0].name)
-
-        const sub = component.slotData$.subscribe((res) => {
-          expect(res).toBeTruthy()
-          expect(res).toHaveSize(5)
-          expect(component.loading).toBeFalse()
-        })
-
-        component.onSearch()
-
-        sub.unsubscribe()
-      })
-
-      it('should search slots - successful without data', () => {
-        apiProductsServiceSpy.searchProducts.and.returnValue(of({ stream: products, totalElements: products.length }))
-        apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: [], totalElements: 0 } as SlotPageResult))
-
-        const sub = component.slotData$.subscribe({
-          next: (result) => {
-            expect(result).toHaveSize(0)
-          }
-        })
-
-        component.onSearch()
-
-        sub.unsubscribe()
-      })
-    })
-
-    describe('successful without products', () => {
-      it('should get slots - no product stream', fakeAsync(() => {
-        apiProductsServiceSpy.searchProducts.and.returnValue(of({}))
-        apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: slots, totalElements: slots.length }))
-
-        fixture.detectChanges()
-
-        component.onSearch()
-        const sub = component.slotData$.subscribe({
-          next: (result) => {
-            console.log('slots received without product stream:', result)
-            expect(result).toHaveSize(5)
-            expect(result[0].productName).toBe(result[0].productDisplayName)
-          }
-        })
-        tick()
-        fixture.detectChanges()
-
-        sub.unsubscribe()
-        expect().nothing()
-      }))
-
-      it('should get slots - ignore product error', (done) => {
-        const errorResponse = { status: 401, statusText: 'Not authorized' }
-        apiProductsServiceSpy.searchProducts.and.returnValue(throwError(() => errorResponse))
-        apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: slots }))
-        spyOn(console, 'error')
-
-        component.onSearch()
-
-        component.slotData$.subscribe({
-          next: (result) => {
-            expect(result).toHaveSize(5)
-            expect(result[0].productName).toBe(result[0].productDisplayName)
-            expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PRODUCTS')
-            expect(console.error).toHaveBeenCalledWith('searchProducts', errorResponse)
-            done()
-          },
-          error: done.fail
-        })
-      })
-    })
-
-    xdescribe('issues', () => {
-      beforeEach(() => {
-        apiProductsServiceSpy.searchProducts.and.returnValue(of({ stream: products }))
-      })
-
-      it('should manage no slot data', (done) => {
-        apiSlotsServiceSpy.searchSlots.and.returnValue(of({} as SlotPageResult))
-
-        component.onSearch()
-
-        component.slotData$.subscribe({
-          next: (result) => {
-            expect(result).toHaveSize(0)
-            done()
-          },
-          error: done.fail
-        })
-      })
-
-      it('should display slot search error', (done) => {
-        const errorResponse = { status: 401, statusText: 'Not authorized for slot search' }
-        apiSlotsServiceSpy.searchSlots.and.returnValue(throwError(() => errorResponse))
-        spyOn(console, 'error')
-
-        component.onSearch()
-
-        component.slotData$.subscribe({
-          next: (result) => {
-            expect(result).toHaveSize(0)
-            done()
-          },
-          error: (error) => {
-            expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.SLOTS')
-            expect(console.error).toHaveBeenCalledWith('searchSlots', errorResponse)
-            done.fail(error)
-          }
-        })
-      })
-
-      it('should handle prepareGetData errors', () => {
-        apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: [null] }))
-        spyOn(console, 'error')
-
-        component.onSearch()
-
-        expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_0.SLOTS')
-        expect(console.error).toHaveBeenCalledWith('prepareGetData', jasmine.anything())
-      })
-
-      it('should handle search errors without numeric status', () => {
-        apiSlotsServiceSpy.searchSlots.and.returnValue(throwError(() => new Error('error')))
-        spyOn(console, 'error')
-
-        component.onSearch()
-
-        expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_0.SLOTS')
-        expect(console.error).toHaveBeenCalledWith('searchSlots', jasmine.anything())
-      })
-    })
-  })
-
-  describe('SlotSearchComponent - Search Logic', () => {
-    it('should load slots and products successfully on search', (done) => {
-      const mockP = [{ id: 'p1', productName: 'prod1' }]
+    it('should load slots and products successfully, use cached products when appropriate', fakeAsync(() => {
+      const mockP = [{ id: 'p1', name: 'prod1' }]
       const mockS = [{ id: 's1' }, { id: 's2' }, { id: 's3' }, { id: 's4' }, { id: 's5', productName: 'prod1' }]
 
       apiProductsServiceSpy.searchProducts.and.returnValue(of({ stream: mockP, totalElements: mockP.length }))
       apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: mockS, totalElements: mockS.length }))
+      // search condition set only to trigger the requests, but does not influence the actual filtering logic
       component.searchCriteriaForm.controls['productName'].setValue('prod1')
       component.searchCriteriaForm.controls['slotName'].setValue('s5')
+      component['cachedProducts'] = []
 
       component.onSearch()
+      tick()
+      //fixture.detectChanges()
 
-      const sub = component.slotData$.subscribe({
-        next: (res) => {
-          expect(res).toBeTruthy()
-          expect(res).toHaveSize(1)
-          expect(component.loading).toBeFalse()
-          done()
-        },
-        error: done.fail
-      })
+      const res = component.resultData$.getValue()
+      expect(res).toHaveSize(5)
+      expect(component.loading).toBeFalse()
+      expect(component['cachedProducts']).toEqual(mockP)
 
-      sub.unsubscribe()
-    })
+      // test caching: if product conddition has not changed, cached products should be reused
+      component.searchCriteriaForm.controls['slotName'].setValue('s4')
+
+      component.onSearch()
+      tick()
+
+      const res2 = component.resultData$.getValue()
+      expect(res2).toHaveSize(5)
+      expect(component.loading).toBeFalse()
+    }))
+
+    it('should search slots - exceptinal case: no product stream', fakeAsync(() => {
+      // empty response object => result should be []
+      apiProductsServiceSpy.searchProducts.and.returnValue(of({}))
+      apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: slots, totalElements: slots.length }))
+      // search condition set only to trigger the requests, but does not influence the actual filtering logic
+      component.searchCriteriaForm.controls['productName'].setValue(products[1].displayName ?? null)
+      component.searchCriteriaForm.controls['slotName'].setValue('slot-3')
+
+      component.onSearch()
+      tick()
+
+      const res = component.resultData$.getValue()
+      expect(res).toHaveSize(5)
+      expect(component.loading).toBeFalse()
+    }))
+
+    it('should search slots - exceptinal case: no slot stream', fakeAsync(() => {
+      apiProductsServiceSpy.searchProducts.and.returnValue(of({ stream: products, totalElements: products.length }))
+      apiSlotsServiceSpy.searchSlots.and.returnValue(of({} as SlotPageResult))
+
+      // search condition set only to trigger the requests, but does not influence the actual filtering logic
+      component.searchCriteriaForm.controls['productName'].setValue(products[1].displayName ?? null)
+      component.searchCriteriaForm.controls['slotName'].setValue('slot-3')
+
+      component.onSearch()
+      tick()
+
+      const res = component.resultData$.getValue()
+      expect(res).toHaveSize(0)
+      expect(component.loading).toBeFalse()
+    }))
+
+    it('should search slots - exceptinal case: product request exception', fakeAsync(() => {
+      const errorResponse = { status: 401, statusText: 'Not authorized' }
+      apiProductsServiceSpy.searchProducts.and.returnValue(throwError(() => errorResponse))
+      apiSlotsServiceSpy.searchSlots.and.returnValue(of({} as SlotPageResult))
+      // search condition set only to trigger the requests, but does not influence the actual filtering logic
+      component.searchCriteriaForm.controls['productName'].setValue(products[1].displayName ?? null)
+      component.searchCriteriaForm.controls['slotName'].setValue('slot-3')
+      spyOn(console, 'error')
+
+      component.onSearch()
+      tick()
+
+      expect(component.exceptionKey).toBe('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PRODUCTS')
+      expect(console.error).toHaveBeenCalledWith('searchProducts', errorResponse)
+      const res = component.resultData$.getValue()
+      expect(res).toHaveSize(0)
+      expect(component.loading).toBeFalse()
+    }))
+
+    it('should search slots - exceptinal case: slot request exception', fakeAsync(() => {
+      // no status provided in the error response, should default to 0
+      const errorResponse = { statusText: 'Not authorized' }
+      apiProductsServiceSpy.searchProducts.and.returnValue(of({ stream: products }))
+      apiSlotsServiceSpy.searchSlots.and.returnValue(throwError(() => errorResponse))
+      // search condition set only to trigger the requests, but does not influence the actual filtering logic
+      component.searchCriteriaForm.controls['productName'].setValue(products[1].displayName ?? null)
+      component.searchCriteriaForm.controls['slotName'].setValue('slot-3')
+      spyOn(console, 'error')
+
+      component.onSearch()
+      tick()
+
+      expect(component.exceptionKey).toBe('EXCEPTIONS.HTTP_STATUS_0.SLOTS')
+      expect(console.error).toHaveBeenCalledWith('searchSlots', errorResponse)
+      const res = component.resultData$.getValue()
+      expect(res).toHaveSize(0)
+      expect(component.loading).toBeFalse()
+    }))
   })
 
   describe('Helper', () => {

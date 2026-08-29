@@ -4,20 +4,7 @@ import { AsyncPipe, NgClass } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
-import {
-  BehaviorSubject,
-  catchError,
-  distinctUntilChanged,
-  finalize,
-  forkJoin,
-  map,
-  Observable,
-  of,
-  shareReplay,
-  switchMap,
-  take,
-  tap
-} from 'rxjs'
+import { BehaviorSubject, catchError, finalize, forkJoin, map, Observable, of, switchMap, tap } from 'rxjs'
 
 import { ButtonModule } from 'primeng/button'
 import { DialogModule } from 'primeng/dialog'
@@ -229,7 +216,7 @@ export class SlotSearchComponent implements OnInit {
     this.prepareActionButtons()
     this.prepareStateValues()
     this.prepareSearchCriteria()
-    this.prepareGetData()
+    this.getData()
   }
 
   /****************************************************************************
@@ -254,7 +241,7 @@ export class SlotSearchComponent implements OnInit {
   }
 
   // complete refresh: getting meta data and trigger search
-  private prepareGetData(): void {
+  private getData(): void {
     this.slotData$ = this.searchCriteria$.pipe(
       switchMap((criteria) => {
         this.loading = true
@@ -264,24 +251,13 @@ export class SlotSearchComponent implements OnInit {
         const currentProdFiltersStr = JSON.stringify(criteria.productFilters)
         let productsRequest$: Observable<ProductAbstract[]>
 
-        console.log(
-          'Preparing to get data with criteria:',
-          criteria,
-          currentProdFiltersStr,
-          this.lastProductFilters,
-          this.cachedProducts
-        )
-
         if (currentProdFiltersStr === this.lastProductFilters && this.cachedProducts.length > 0) {
-          console.log('Reusing cached products')
           productsRequest$ = of(this.cachedProducts) // reuse cached products
         } else {
-          console.log('Fetching new products from API')
           this.lastProductFilters = currentProdFiltersStr
           productsRequest$ = this.productApi.searchProducts({ productSearchCriteria: criteria.productFilters }).pipe(
             tap((data) => {
               this.cachedProducts = data.stream ?? []
-              console.log('products received:', data.stream)
               if (data?.totalElements === 0) this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.NOT_FOUND' })
             }),
             map((r) => (r.stream ?? []) as ProductAbstract[]),
@@ -297,7 +273,6 @@ export class SlotSearchComponent implements OnInit {
           products: productsRequest$,
           slots: this.slotApi.searchSlots({ slotSearchCriteria: criteria.slotFilters }).pipe(
             map((r) => {
-              console.log('slots received:', r.stream)
               return r.stream as Slot[]
             }),
             catchError((err) => {
@@ -315,7 +290,6 @@ export class SlotSearchComponent implements OnInit {
     )
     this.slotData$.subscribe({
       next: (sd) => {
-        console.log('slot data received:', sd)
         this.resultData$.next(sd)
         this.filteredData$.next(sd as FilteredData[])
       }
@@ -323,7 +297,7 @@ export class SlotSearchComponent implements OnInit {
   }
 
   private combineData(data: { slots: Slot[]; products: ProductAbstract[] }): SlotData[] {
-    console.log('combine data...')
+    if (!data.slots || data.slots.length === 0) return []
     const sd: SlotData[] = []
     this.filterProductItems = []
     let slot: SlotData
