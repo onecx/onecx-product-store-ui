@@ -26,9 +26,6 @@
       ></p-message>
     }
     @if (product || changeMode === 'CREATE') {
-      <!--
-      <p-tabs (valueChange)="onTabChange($event)">
-      -->
       <p-tabs [lazy]="false" [(value)]="selectedTabIndex" (valueChange)="onTabChange($event, product)">
         <p-tablist>
           <p-tab

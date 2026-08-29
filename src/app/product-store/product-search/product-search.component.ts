@@ -88,8 +88,8 @@ export class ProductSearchComponent implements OnInit {
   public products$!: Observable<ProductAbstractExtended[]>
   public productSearchCriterias$!: Observable<ProductCriteria>
   public filteredData$ = new BehaviorSubject<ProductAbstractExtended[]>([])
-  public resultData$ = new BehaviorSubject<ProductAbstractExtended[]>([])
-  private searchCriteria$ = new BehaviorSubject<ProductSearchCriteria>({} as ProductSearchCriteria)
+  public readonly resultData$ = new BehaviorSubject<ProductAbstractExtended[]>([])
+  private readonly searchCriteria$ = new BehaviorSubject<ProductSearchCriteria>({})
   public searchCriteriaForm = new FormGroup<ProductSearchCriteriaControls>({
     name: new FormControl<string | null>(null),
     providers: new FormControl<string[] | null>(null),
