@@ -244,7 +244,7 @@ describe('SlotSearchComponent', () => {
       tick()
       //fixture.detectChanges()
 
-      const res = component.resultData$.getValue()
+      const res = component['resultData$'].getValue()
       expect(res).toHaveSize(5)
       expect(component.loading).toBeFalse()
       expect(component['cachedProducts']).toEqual(mockP)
@@ -255,7 +255,7 @@ describe('SlotSearchComponent', () => {
       component.onSearch()
       tick()
 
-      const res2 = component.resultData$.getValue()
+      const res2 = component['resultData$'].getValue()
       expect(res2).toHaveSize(5)
       expect(component.loading).toBeFalse()
     }))
@@ -271,7 +271,7 @@ describe('SlotSearchComponent', () => {
       component.onSearch()
       tick()
 
-      const res = component.resultData$.getValue()
+      const res = component['resultData$'].getValue()
       expect(res).toHaveSize(5)
       expect(component.loading).toBeFalse()
     }))
@@ -287,7 +287,7 @@ describe('SlotSearchComponent', () => {
       component.onSearch()
       tick()
 
-      const res = component.resultData$.getValue()
+      const res = component['resultData$'].getValue()
       expect(res).toHaveSize(0)
       expect(component.loading).toBeFalse()
     }))
@@ -306,7 +306,7 @@ describe('SlotSearchComponent', () => {
 
       expect(component.exceptionKey).toBe('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PRODUCTS')
       expect(console.error).toHaveBeenCalledWith('searchProducts', errorResponse)
-      const res = component.resultData$.getValue()
+      const res = component['resultData$'].getValue()
       expect(res).toHaveSize(0)
       expect(component.loading).toBeFalse()
     }))
@@ -326,7 +326,7 @@ describe('SlotSearchComponent', () => {
 
       expect(component.exceptionKey).toBe('EXCEPTIONS.HTTP_STATUS_0.SLOTS')
       expect(console.error).toHaveBeenCalledWith('searchSlots', errorResponse)
-      const res = component.resultData$.getValue()
+      const res = component['resultData$'].getValue()
       expect(res).toHaveSize(0)
       expect(component.loading).toBeFalse()
     }))
@@ -534,9 +534,8 @@ describe('SlotSearchComponent', () => {
   describe('table filtering', () => {
     describe('global filter', () => {
       it('should filter string data based on filterData', () => {
-        component.resultData$ = new BehaviorSubject(slotData)
-        ;(component as any).filterData = slots[0].name
-
+        ;(component as any)['resultData$'] = new BehaviorSubject(slotData)
+        component['filterData'] = slots[0].name
         component.filteredData$ = new BehaviorSubject(slotData as FilteredData[])
 
         component['initGlobalFilter']()
@@ -547,9 +546,8 @@ describe('SlotSearchComponent', () => {
       })
 
       it('should filter object data based on filterData', () => {
-        component.resultData$ = new BehaviorSubject(slotData)
-        ;(component as any).filterData = ['operator', 'undeployed', 'deprecated']
-
+        ;(component as any)['resultData$'] = new BehaviorSubject(slotData)
+        component['filterData'] = ['operator', 'undeployed', 'deprecated']
         component.filteredData$ = new BehaviorSubject(slotData as FilteredData[])
 
         component['initGlobalFilter']()
@@ -559,9 +557,8 @@ describe('SlotSearchComponent', () => {
         })
       })
       it('should filter object data based on filterData', () => {
-        component.resultData$ = new BehaviorSubject(slotData)
-        ;(component as any).filterData = ['undeployed']
-
+        ;(component as any)['resultData$'] = new BehaviorSubject(slotData)
+        component['filterData'] = ['undeployed']
         component.filteredData$ = new BehaviorSubject(slotData as FilteredData[])
 
         component['initGlobalFilter']()
@@ -571,9 +568,8 @@ describe('SlotSearchComponent', () => {
         })
       })
       it('should filter object data based on filterData', () => {
-        component.resultData$ = new BehaviorSubject(slotData)
-        ;(component as any).filterData = ['deprecated']
-
+        ;(component as any)['resultData$'] = new BehaviorSubject(slotData)
+        component['filterData'] = ['deprecated']
         component.filteredData$ = new BehaviorSubject(slotData as FilteredData[])
 
         component['initGlobalFilter']()

@@ -138,7 +138,7 @@ export class SlotSearchComponent implements OnInit {
   public products$: Observable<ProductAbstract[]> = of([])
   public slots$: Observable<Slot[]> = of([])
   public slotData$: Observable<SlotData[]> = of([])
-  public readonly filteredData$ = new BehaviorSubject<FilteredData[]>([])
+  public filteredData$ = new BehaviorSubject<FilteredData[]>([])
   public readonly resultData$ = new BehaviorSubject<SlotData[]>([])
   private lastProductFilters = ''
   private cachedProducts: ProductAbstract[] = []
