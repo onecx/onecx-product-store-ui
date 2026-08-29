@@ -68,7 +68,7 @@ export class ProductDetailComponent implements OnInit {
   public actions$: Observable<Action[]> | undefined
   public changeMode: ChangeMode = 'VIEW'
   public dateFormat = 'medium'
-  public uriFragment = this.route.snapshot.fragment // #fragment to address a certain TAB
+  public uriFragment: string | null = null
   public productName: string | null = null
   public productId: string | undefined
   public headerImageUrl?: string
@@ -102,6 +102,7 @@ export class ProductDetailComponent implements OnInit {
     this.item4Delete = undefined
     if (this.productName) {
       this.changeMode = 'VIEW'
+      this.uriFragment = this.route.snapshot.fragment
       this.getProduct()
     } else {
       this.changeMode = 'CREATE'
@@ -113,9 +114,9 @@ export class ProductDetailComponent implements OnInit {
   // triggered by URI
   private goToTab(product: Product | undefined) {
     const tabMap = new Map([
-      ['props', 0],
-      ['apps', 1],
-      ['use', 2]
+      ['props', '0'],
+      ['apps', '1'],
+      ['use', '2']
     ])
     this.onTabChange(tabMap.get(this.uriFragment ?? 'props') ?? 0, product)
   }
@@ -134,6 +135,7 @@ export class ProductDetailComponent implements OnInit {
         map((data: Product) => {
           this.productId = data.id
           this.currentLogoUrl = this.getLogoUrl(data)
+          this.goToTab(data)
           return { ...data, classifications: data.classifications?.sort(Utils.sortByLocale) }
         }),
         catchError((err) => {

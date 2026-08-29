@@ -321,6 +321,13 @@ describe('ProductDetailComponent', () => {
       expect(component.selectedTabIndex).toEqual('1')
     })
 
+    it('should go to props TAB if there is no URI fragment', () => {
+      component.uriFragment = null
+      component['goToTab'](product)
+
+      expect(component.selectedTabIndex).toEqual('0')
+    })
+
     it('should behave correctly onTabChange: 1', () => {
       component.onTabChange(1, product)
 
@@ -331,6 +338,12 @@ describe('ProductDetailComponent', () => {
       component.onTabChange('1', product)
 
       expect(component.selectedTabIndex).toEqual('1')
+    })
+
+    it('should behave correctly onTabChange: string index', () => {
+      component.onTabChange('1')
+
+      expect(component.selectedTabIndex).toEqual('0')
     })
   })
 
