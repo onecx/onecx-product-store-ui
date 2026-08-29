@@ -133,7 +133,10 @@ export class SlotSearchComponent implements OnInit {
     }
   ]
   // data
-  private searchCriteria$ = new BehaviorSubject<CombinedSearchCriteria>({ productFilters: {}, slotFilters: {} }) // Observable for search criteria changes
+  private readonly searchCriteria$ = new BehaviorSubject<CombinedSearchCriteria>({
+    productFilters: {},
+    slotFilters: {}
+  }) // Observable for search criteria changes
   public searchCriteriaForm: FormGroup<SlotSearchCriteriaForm>
   public products$: Observable<ProductAbstract[]> = of([])
   public slots$: Observable<Slot[]> = of([])
