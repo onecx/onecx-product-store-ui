@@ -4,7 +4,7 @@ import { AsyncPipe, NgClass } from '@angular/common'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
-import { combineLatest, finalize, map, of, Observable, Subject, catchError, BehaviorSubject } from 'rxjs'
+import { combineLatest, finalize, map, of, Observable, catchError, BehaviorSubject } from 'rxjs'
 
 import { ButtonModule } from 'primeng/button'
 import { CardModule } from 'primeng/card'

@@ -1,3 +1,8 @@
+/**
+ * This is a Helper for mocking OneCX components in tests
+ */
+
+/* eslint-disable @angular-eslint/component-selector */
 import { Component, Input } from '@angular/core'
 
 @Component({

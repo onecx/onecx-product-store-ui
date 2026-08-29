@@ -4,7 +4,7 @@ import { AsyncPipe } from '@angular/common'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
-import { BehaviorSubject, catchError, combineLatest, finalize, map, Observable, of, Subscription } from 'rxjs'
+import { BehaviorSubject, catchError, combineLatest, finalize, map, Observable, of } from 'rxjs'
 
 import { ButtonModule } from 'primeng/button'
 import { DialogModule } from 'primeng/dialog'
@@ -27,13 +27,13 @@ import {
 import { PortalPageComponent } from '@onecx/angular-utils'
 
 import {
+  MfeAndMsSearchCriteria,
   MicrofrontendAbstract,
   MicrofrontendsAPIService,
   MicrofrontendType,
   ProductsAPIService,
   ProductAbstract,
-  ProductSearchCriteria,
-  MfeAndMsSearchCriteria
+  ProductSearchCriteria
 } from 'src/app/shared/generated'
 import { Utils } from 'src/app/shared/utils'
 import { AppAbstract } from '../app-search/app-search.component'
