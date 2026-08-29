@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core'
+import { Component, OnInit, inject, DestroyRef } from '@angular/core'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { AsyncPipe, NgClass } from '@angular/common'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
@@ -80,12 +81,14 @@ export type AppAbstract = Microservice & { appType: AppType; appTypeKey?: string
   templateUrl: './app-search.component.html',
   styleUrls: ['./app-search.component.scss']
 })
-export class AppSearchComponent implements OnInit, OnDestroy {
-  private readonly destroy$ = new Subject()
+export class AppSearchComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef)
+  // dialog
   public exceptionKey: string | undefined
   public loading = true
   public actions$: Observable<Action[]> | undefined
   public dateFormat = 'medium'
+  // data
   public apps$!: Observable<AppAbstract[]>
   public filteredData$ = new BehaviorSubject<AppAbstract[]>([])
   public resultData$ = new BehaviorSubject<AppAbstract[]>([])
@@ -93,7 +96,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public mss$!: Observable<MicroservicePageResult>
   private filterData = ''
   public app: AppAbstract | undefined
-  public appSearchCriteriaGroup!: FormGroup<AppSearchCriteria>
+  public appSearchCriteriaForm!: FormGroup<AppSearchCriteria>
   public viewMode: 'grid' | 'list' = 'grid'
   public changeMode: ChangeMode = 'VIEW'
   public appTypeItems: SelectItem[]
@@ -110,7 +113,6 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public sortDirection: DataSortDirection = DataSortDirection.ASCENDING
   public sortField = 'appId'
   public sortOrder = 1
-  public searchInProgress = false
   public displayDetailDialog = false
   public displayDeleteDialog = false
   public hasCreatePermission = false
@@ -147,12 +149,12 @@ export class AppSearchComponent implements OnInit, OnDestroy {
       { label: 'ACTIONS.SEARCH.APP.QUICK_FILTER.MFE', value: 'MFE' },
       { label: 'ACTIONS.SEARCH.APP.QUICK_FILTER.MS', value: 'MS' }
     ]
-    this.appSearchCriteriaGroup = new FormGroup<AppSearchCriteria>({
+    this.appSearchCriteriaForm = new FormGroup<AppSearchCriteria>({
       appName: new FormControl<string | null>(null),
       appType: new FormControl<AppFilterType | null>('ALL'),
       productName: new FormControl<string | null>(null)
     })
-    this.appSearchCriteriaGroup.controls['appType'].setValue('ALL') // default: all app types
+    this.appSearchCriteriaForm.controls['appType'].setValue('ALL') // default: all app types
     // quick filter
     this.quickFilterItems = [
       { label: 'ACTIONS.SEARCH.APP.QUICK_FILTER.ALL', value: 'ALL' },
@@ -172,10 +174,6 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     this.hasCreatePermission = await this.user.hasPermission('APP#CREATE')
     this.hasDeletePermission = await this.user.hasPermission('APP#DELETE')
     this.hasEditPermission = await this.user.hasPermission('APP#EDIT')
-  }
-  public ngOnDestroy(): void {
-    this.destroy$.next(undefined)
-    this.destroy$.complete()
   }
 
   /**
@@ -206,8 +204,8 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     this.mfes$ = this.mfeApi
       .searchMicrofrontends({
         mfeAndMsSearchCriteria: {
-          appName: this.appSearchCriteriaGroup.controls['appName'].value,
-          productName: this.appSearchCriteriaGroup.controls['productName'].value,
+          appName: this.appSearchCriteriaForm.controls['appName'].value,
+          productName: this.appSearchCriteriaForm.controls['productName'].value,
           pageSize: 1000
         }
       })
@@ -217,15 +215,16 @@ export class AppSearchComponent implements OnInit, OnDestroy {
           console.error('searchMicrofrontends', err)
           return of({})
         }),
-        finalize(() => (this.searchInProgress = false))
+        finalize(() => (this.loading = false)),
+        takeUntilDestroyed(this.destroyRef)
       )
   }
   private declareMsObservable(): void {
     this.mss$ = this.msApi
       .searchMicroservice({
         mfeAndMsSearchCriteria: {
-          appName: this.appSearchCriteriaGroup.controls['appName'].value,
-          productName: this.appSearchCriteriaGroup.controls['productName'].value,
+          appName: this.appSearchCriteriaForm.controls['appName'].value,
+          productName: this.appSearchCriteriaForm.controls['productName'].value,
           pageSize: 1000
         }
       })
@@ -235,7 +234,8 @@ export class AppSearchComponent implements OnInit, OnDestroy {
           console.error('searchMicroservice', err)
           return of({})
         }),
-        finalize(() => (this.searchInProgress = false))
+        finalize(() => (this.loading = false)),
+        takeUntilDestroyed(this.destroyRef)
       )
   }
 
@@ -272,9 +272,9 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   }
 
   public searchApps(): void {
-    this.searchInProgress = true
+    this.loading = true
     this.exceptionKey = undefined
-    switch (this.appSearchCriteriaGroup.controls['appType'].value) {
+    switch (this.appSearchCriteriaForm.controls['appType'].value) {
       case 'ALL':
         this.apps$ = combineLatest([this.searchMfes(), this.searchMss()]).pipe(
           map(([mfes, mss]) => mfes.concat(mss).sort(this.sortAppsByAppId))
@@ -419,7 +419,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     this.searchApps()
   }
   public onSearchReset() {
-    this.appSearchCriteriaGroup.reset({ appType: 'ALL' })
+    this.appSearchCriteriaForm.reset({ appType: 'ALL' })
   }
   public onGotoProduct(ev: any, product: string) {
     ev.stopPropagation()

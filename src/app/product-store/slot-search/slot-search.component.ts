@@ -1,9 +1,23 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { Component, DestroyRef, ElementRef, inject, OnInit, ViewChild } from '@angular/core'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { AsyncPipe, NgClass } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
-import { BehaviorSubject, catchError, combineLatest, finalize, map, Observable, of, Subscription, tap } from 'rxjs'
+import {
+  BehaviorSubject,
+  catchError,
+  distinctUntilChanged,
+  finalize,
+  forkJoin,
+  map,
+  Observable,
+  of,
+  shareReplay,
+  switchMap,
+  take,
+  tap
+} from 'rxjs'
 
 import { ButtonModule } from 'primeng/button'
 import { DialogModule } from 'primeng/dialog'
@@ -24,6 +38,7 @@ import {
   DataSortDirection,
   DataTableColumn,
   Filter,
+  RowListGridData,
   Sort
 } from '@onecx/angular-accelerator'
 import { PortalPageComponent } from '@onecx/angular-utils'
@@ -33,14 +48,16 @@ import {
   ProductAbstract,
   ProductSearchCriteria,
   Slot,
-  SlotsAPIService
+  SlotsAPIService,
+  SlotSearchCriteria
 } from 'src/app/shared/generated'
 import { Utils } from 'src/app/shared/utils'
+
 import { ChangeMode } from '../product-detail/product-detail.component'
 import { SlotDetailComponent } from '../slot-detail/slot-detail.component'
 import { SlotDeleteComponent } from '../slot-delete/slot-delete.component'
 
-export interface SlotSearchCriteria {
+export interface SlotSearchCriteriaForm {
   slotName: FormControl<string | null>
   productName: FormControl<string | null>
 }
@@ -57,7 +74,11 @@ export interface Column {
   hasFilter?: boolean
 }
 export type ExtendedColumn = Column
-
+export type CombinedSearchCriteria = {
+  productFilters: ProductSearchCriteria
+  slotFilters: SlotSearchCriteria
+}
+export type FilteredData = SlotData & RowListGridData
 @Component({
   standalone: true,
   imports: [
@@ -82,7 +103,8 @@ export type ExtendedColumn = Column
   templateUrl: './slot-search.component.html',
   styleUrls: ['./slot-search.component.scss']
 })
-export class SlotSearchComponent implements OnInit, OnDestroy {
+export class SlotSearchComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef)
   // dialog
   public loading = false
   public exceptionKey: string | undefined = undefined
@@ -124,17 +146,20 @@ export class SlotSearchComponent implements OnInit, OnDestroy {
     }
   ]
   // data
-  public searchCriteria: FormGroup<SlotSearchCriteria>
+  private searchCriteria$ = new BehaviorSubject<CombinedSearchCriteria>({ productFilters: {}, slotFilters: {} }) // Observable for search criteria changes
+  public searchCriteriaForm: FormGroup<SlotSearchCriteriaForm>
   public products$: Observable<ProductAbstract[]> = of([])
   public slots$: Observable<Slot[]> = of([])
   public slotData$: Observable<SlotData[]> = of([])
+  public filteredData$ = new BehaviorSubject<FilteredData[]>([])
+  public resultData$ = new BehaviorSubject<SlotData[]>([])
+  private lastProductFilters = ''
+  private cachedProducts: ProductAbstract[] = []
+
   public item4Detail: Slot | undefined
   public item4Delete: SlotData | undefined
-  public filteredData$ = new BehaviorSubject<SlotData[]>([])
-  public resultData$ = new BehaviorSubject<SlotData[]>([])
-  public filter = ''
-  private slotDataSubscription?: Subscription
 
+  public filter = ''
   private filterData: any = ''
   public filteredColumns: ExtendedColumn[] = []
   public filterProductItems: string[] = []
@@ -193,7 +218,7 @@ export class SlotSearchComponent implements OnInit, OnDestroy {
   ) {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.filteredColumns = this.columns.filter((a) => a.active === true)
-    this.searchCriteria = new FormGroup<SlotSearchCriteria>({
+    this.searchCriteriaForm = new FormGroup<SlotSearchCriteriaForm>({
       slotName: new FormControl<string | null>(null),
       productName: new FormControl<string | null>(null)
     })
@@ -203,100 +228,115 @@ export class SlotSearchComponent implements OnInit, OnDestroy {
     this.initGlobalFilter()
     this.prepareActionButtons()
     this.prepareStateValues()
-    this.declareDataSources()
-    this.loadData()
-  }
-
-  ngOnDestroy(): void {
-    this.slotDataSubscription?.unsubscribe()
+    this.prepareSearchCriteria()
+    this.prepareGetData()
   }
 
   /****************************************************************************
    *  SEARCHING
    */
-  public declareDataSources(): void {
-    // Products => to get the product display name
-    const criteria: ProductSearchCriteria = {
-      names: this.searchCriteria.controls['productName'].value
-        ? [this.searchCriteria.controls['productName'].value]
-        : undefined,
-      pageSize: 1000
-    }
-    this.products$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
-      map((data) => data.stream ?? []),
-      catchError((err) => {
-        this.exceptionKey = this.getHttpExceptionKey(err, 'PRODUCTS')
-        console.error('searchProducts', err)
-        return of([])
-      })
-    )
-    // Slots
-    this.slots$ = this.slotApi
-      .searchSlots({
-        slotSearchCriteria: {
-          name: this.searchCriteria.controls['slotName'].value ?? undefined,
-          productName: this.searchCriteria.controls['productName'].value ?? undefined,
-          pageSize: 1000
-        }
-      })
-      .pipe(
-        tap((data) => {
-          if (data?.totalElements === 0) this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.NOT_FOUND' })
-        }),
-        map((data) => data.stream ?? []),
-        catchError((err) => {
-          this.exceptionKey = this.getHttpExceptionKey(err, 'SLOTS')
-          console.error('searchSlots', err)
-          return of([])
-        }),
-        finalize(() => (this.loading = false))
-      )
-  }
-  public resetFilters() {
-    this.filterData = ''
-    this.filter = ''
-    this.interactiveFilters = []
-    this.filterPanelSlotNameVisible = false
-    this.filterPanelSlotStateVisible = false
-    this.filterPanelProductVisible = false
-    this.onResetFilterIcons('not empty', ['slotName', 'slotState', 'product'])
-    this.dataTable?.clear()
+  // Combine search criteria for slots and products (get the product display name)
+  private prepareSearchCriteria(): void {
+    const productName = this.searchCriteriaForm.controls['productName'].value ?? undefined
+    const slotName = this.searchCriteriaForm.controls['slotName'].value ?? undefined
+
+    this.searchCriteria$.next({
+      productFilters: {
+        ...(productName ? { names: [productName] } : {}),
+        pageSize: 100
+      },
+      slotFilters: {
+        ...(slotName ? { name: slotName } : {}),
+        ...(productName ? { productName: productName } : {}),
+        pageSize: 1000
+      }
+    })
   }
 
   // complete refresh: getting meta data and trigger search
-  private loadData(): void {
-    this.loading = true
-    this.exceptionKey = undefined
-    this.slotData$ = combineLatest([this.products$, this.slots$]).pipe(
-      map(([ps, slots]) => {
-        const sd: SlotData[] = []
-        this.filterProductItems = []
-        let slot: SlotData
-        for (const s of slots) {
-          slot = {
-            ...s,
-            productDisplayName: this.getProductDisplayName(s.productName, ps),
-            state: this.getSlotState(s)
-          }
-          sd.push(slot)
-        }
-        sd.sort((a, b) => this.sortSlots(a, b))
-        return sd
-      }),
-      finalize(() => (this.loading = false))
-    )
+  private prepareGetData(): void {
+    this.slotData$ = this.searchCriteria$.pipe(
+      switchMap((criteria) => {
+        this.loading = true
+        this.exceptionKey = undefined
 
-    this.slotDataSubscription?.unsubscribe()
-    this.slotDataSubscription = this.slotData$.subscribe({
+        // Optimization: any change in product search criteria?
+        const currentProdFiltersStr = JSON.stringify(criteria.productFilters)
+        let productsRequest$: Observable<ProductAbstract[]>
+
+        console.log(
+          'Preparing to get data with criteria:',
+          criteria,
+          currentProdFiltersStr,
+          this.lastProductFilters,
+          this.cachedProducts
+        )
+
+        if (currentProdFiltersStr === this.lastProductFilters && this.cachedProducts.length > 0) {
+          console.log('Reusing cached products')
+          productsRequest$ = of(this.cachedProducts) // reuse cached products
+        } else {
+          console.log('Fetching new products from API')
+          this.lastProductFilters = currentProdFiltersStr
+          productsRequest$ = this.productApi.searchProducts({ productSearchCriteria: criteria.productFilters }).pipe(
+            tap((data) => {
+              this.cachedProducts = data.stream ?? []
+              console.log('products received:', data.stream)
+              if (data?.totalElements === 0) this.msgService.info({ summaryKey: 'ACTIONS.SEARCH.NOT_FOUND' })
+            }),
+            map((r) => (r.stream ?? []) as ProductAbstract[]),
+            catchError((err) => {
+              this.exceptionKey = this.getHttpExceptionKey(err, 'PRODUCTS')
+              console.error('searchProducts', err)
+              return of([])
+            })
+          )
+        }
+        // forkJoin triggers both requests and waits for both to complete before proceeding
+        return forkJoin({
+          products: productsRequest$,
+          slots: this.slotApi.searchSlots({ slotSearchCriteria: criteria.slotFilters }).pipe(
+            map((r) => {
+              console.log('slots received:', r.stream)
+              return r.stream as Slot[]
+            }),
+            catchError((err) => {
+              this.exceptionKey = this.getHttpExceptionKey(err, 'SLOTS')
+              console.error('searchSlots', err)
+              return of([] as Slot[])
+            })
+          )
+        }).pipe(
+          map((data) => this.combineData(data)),
+          finalize(() => (this.loading = false))
+        )
+      }),
+      takeUntilDestroyed(this.destroyRef)
+    )
+    this.slotData$.subscribe({
       next: (sd) => {
+        console.log('slot data received:', sd)
         this.resultData$.next(sd)
-        this.filteredData$.next(sd)
-      },
-      error: (err) => {
-        this.exceptionKey = this.exceptionKey ?? 'EXCEPTIONS.HTTP_STATUS_0.SLOTS'
-        console.error('loadData', err)
+        this.filteredData$.next(sd as FilteredData[])
       }
     })
+  }
+
+  private combineData(data: { slots: Slot[]; products: ProductAbstract[] }): SlotData[] {
+    console.log('combine data...')
+    const sd: SlotData[] = []
+    this.filterProductItems = []
+    let slot: SlotData
+    for (const s of data.slots) {
+      slot = {
+        ...s,
+        productDisplayName: this.getProductDisplayName(s.productName, data.products),
+        state: this.getSlotState(s)
+      }
+      sd.push(slot)
+    }
+    sd.sort((a, b) => this.sortSlots(a, b))
+    return sd
   }
   private sortSlots(a: SlotData, b: SlotData): number {
     return (
@@ -387,14 +427,20 @@ export class SlotSearchComponent implements OnInit, OnDestroy {
       )
   }
 
+  public resetFilters() {
+    this.filterData = ''
+    this.filter = ''
+    this.interactiveFilters = []
+    this.filterPanelSlotNameVisible = false
+    this.filterPanelSlotStateVisible = false
+    this.filterPanelProductVisible = false
+    this.onResetFilterIcons('not empty', ['slotName', 'slotState', 'product'])
+    this.dataTable?.clear()
+  }
+
   /**
    * UI EVENTS
    */
-  public onSearch() {
-    this.declareDataSources()
-    this.resetFilters()
-    this.loadData()
-  }
   public onInteractiveFiltersChange(filters: Filter[]): void {
     this.interactiveFilters = filters
     const globalFilter = filters.find((f) => f.columnId === 'global')
@@ -407,10 +453,16 @@ export class SlotSearchComponent implements OnInit, OnDestroy {
   public onLayoutChange(viewMode: 'grid' | 'list' | 'table'): void {
     // Layout change handler for interactive data view - table-only component
   }
+
+  public onSearch() {
+    this.resetFilters()
+    this.prepareSearchCriteria()
+  }
   public onSearchReset() {
-    this.searchCriteria.reset()
+    this.searchCriteriaForm.reset()
     this.onFilterChange('')
   }
+
   public onBack() {
     this.router.navigate(['../'], { relativeTo: this.route })
   }
@@ -418,7 +470,6 @@ export class SlotSearchComponent implements OnInit, OnDestroy {
     ev.stopPropagation()
     this.router.navigate(['../', data.productName], { fragment: 'apps', relativeTo: this.route })
   }
-
   public onSlotDetail(mode: ChangeMode, ev: MouseEvent, data: SlotData) {
     ev.stopPropagation()
     this.openSlotDetail(mode, data)
@@ -516,7 +567,7 @@ export class SlotSearchComponent implements OnInit, OnDestroy {
         next: (filteredData) => {
           this.prepareFilterSlotNames(filteredData)
           this.prepareFilterProductNames(filteredData)
-          this.filteredData$.next(filteredData)
+          this.filteredData$.next(filteredData as FilteredData[])
         }
       })
   }

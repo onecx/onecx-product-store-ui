@@ -1,6 +1,4 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { provideHttpClient } from '@angular/common/http'
-import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { BehaviorSubject, of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
@@ -148,15 +146,7 @@ describe('AppDetailComponent', () => {
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        { provide: MicrofrontendsAPIService, useValue: mfeApiServiceSpy },
-        { provide: MicroservicesAPIService, useValue: msApiServiceSpy },
-        { provide: PortalMessageService, useValue: msgServiceSpy },
-        { provide: ConfigurationService, useValue: configServiceSpy },
-        { provide: UserService, useValue: mockUserService }
-      ]
+      providers: []
     })
       .overrideComponent(AppDetailComponent, {
         add: {

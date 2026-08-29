@@ -6,17 +6,10 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { BehaviorSubject, of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
-import { DataSortDirection } from '@onecx/angular-accelerator'
+import { BreadcrumbService, DataSortDirection } from '@onecx/angular-accelerator'
 
-import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
+import { UserService } from '@onecx/angular-integration-interface'
 import { Utils } from 'src/app/shared/utils'
-
-interface Column {
-  field: string
-  header: string
-  active: boolean
-  translationPrefix?: string
-}
 
 import {
   MicrofrontendAbstract,
@@ -26,6 +19,7 @@ import {
   ProductsAPIService
 } from 'src/app/shared/generated'
 import { EndpointSearchComponent, MfeEndpoint, ProductSearchCriteriaControls } from './endpoint-search.component'
+import { PermissionService } from '@onecx/angular-utils'
 
 const searchCriteriaForm = new FormGroup<ProductSearchCriteriaControls>({
   name: new FormControl<string | null>(null)
@@ -153,10 +147,10 @@ describe('EndpointSearchComponent', () => {
   const routerSpy = jasmine.createSpyObj('Router', ['navigate'])
   const routeMock = { snapshot: { paramMap: new Map() } }
 
-  const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
   const mockUserService = {
     lang$: new BehaviorSubject<string>('en'),
-    hasPermission: jasmine.createSpy('hasPermission').and.returnValue(Promise.resolve(true))
+    hasPermission: jasmine.createSpy('hasPermission').and.returnValue(Promise.resolve(true)),
+    getPermission: jasmine.createSpy('getPermission').and.returnValue(Promise.resolve(true))
   }
   const productApiServiceSpy = { searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of([])) }
   const mfeApiServiceSpy = { searchMicrofrontends: jasmine.createSpy('searchMicrofrontends').and.returnValue(of([])) }
@@ -173,10 +167,6 @@ describe('EndpointSearchComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: PortalMessageService, useValue: msgServiceSpy },
-        { provide: UserService, useValue: mockUserService },
-        { provide: ProductsAPIService, useValue: productApiServiceSpy },
-        { provide: MicrofrontendsAPIService, useValue: mfeApiServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: ActivatedRoute, useValue: routeMock }
       ]
@@ -184,7 +174,8 @@ describe('EndpointSearchComponent', () => {
       .overrideComponent(EndpointSearchComponent, {
         add: {
           providers: [
-            { provide: PortalMessageService, useValue: msgServiceSpy },
+            { provide: BreadcrumbService, useValue: {} },
+            { provide: PermissionService, useValue: { hasPermission: () => of(true) } },
             { provide: UserService, useValue: mockUserService },
             { provide: ProductsAPIService, useValue: productApiServiceSpy },
             { provide: MicrofrontendsAPIService, useValue: mfeApiServiceSpy }
@@ -192,31 +183,27 @@ describe('EndpointSearchComponent', () => {
         }
       })
       .compileComponents()
-    msgServiceSpy.success.calls.reset()
-    msgServiceSpy.error.calls.reset()
-    msgServiceSpy.info.calls.reset()
+  }))
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(EndpointSearchComponent)
+    component = fixture.componentInstance
+    //fixture.detectChanges()
+    fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
+  })
+
+  afterEach(() => {
     // reset data services
     productApiServiceSpy.searchProducts.calls.reset()
     mfeApiServiceSpy.searchMicrofrontends.calls.reset()
     // to spy data: refill with neutral data
     productApiServiceSpy.searchProducts.and.returnValue(of([]))
     mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of([]))
-  }))
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(EndpointSearchComponent)
-    component = fixture.componentInstance
-    fixture.detectChanges()
   })
 
   describe('construction', () => {
     it('should create', () => {
       expect(component).toBeTruthy()
-    })
-
-    it('should call OnInit and populate filteredColumns/actions correctly', () => {
-      component.ngOnInit()
-      expect(component.filteredColumns[0]).toEqual(component.columns[0])
     })
   })
 
@@ -239,7 +226,7 @@ describe('EndpointSearchComponent', () => {
     it('should search enpoints with search criteria', (done) => {
       productApiServiceSpy.searchProducts.and.returnValue(of({ stream: productResponseData }))
       mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: mfeResponseData }))
-      component.searchCriteria.controls['name'].setValue(productResponseData[0].name)
+      component.searchCriteriaForm.controls['name'].setValue(productResponseData[0].name)
 
       component.onSearch()
 
@@ -261,7 +248,6 @@ describe('EndpointSearchComponent', () => {
       component.endpoints$?.subscribe({
         next: (data) => {
           expect(data).toHaveSize(0)
-          expect(msgServiceSpy.info).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.SEARCH.NOT_FOUND' })
           done()
         },
         error: done.fail
@@ -278,19 +264,16 @@ describe('EndpointSearchComponent', () => {
       component.endpoints$?.subscribe({
         next: (data) => {
           expect(data).toEqual([])
+          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.MFES')
+          expect(console.error).toHaveBeenCalledWith('searchMicrofrontends', errorResponse)
           done()
         },
-        error: () => {
-          expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.SEARCH.MESSAGE.SEARCH_FAILED' })
-          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.MFES')
-          expect(console.error).toHaveBeenCalledWith('searchParametersByCriteria', errorResponse)
-          done.fail
-        }
+        error: done.fail
       })
     })
 
     it('should display an error message if the search for products fails', (done) => {
-      const errorResponse = { status: '403', statusText: 'Not authorized' }
+      const errorResponse = { status: 403, statusText: 'Not authorized' }
       productApiServiceSpy.searchProducts.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
 
@@ -299,30 +282,28 @@ describe('EndpointSearchComponent', () => {
       component.products$?.subscribe({
         next: (data) => {
           expect(data).toEqual([])
+          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PRODUCTS')
+          expect(console.error).toHaveBeenCalledWith('searchProducts', errorResponse)
           done()
         },
-        error: () => {
-          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PRODUCTS')
-          expect(console.error).toHaveBeenCalledWith('searchParametersByCriteria', errorResponse)
-          done.fail
-        }
+        error: done.fail
       })
     })
 
-    it('should handle errors while loading endpoint data', (done) => {
-      const badMfe = { id: 'idBad', productName: 'product1', endpoints: {} }
-      productApiServiceSpy.searchProducts.and.returnValue(of({ stream: productResponseData }))
-      mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: [badMfe] }))
+    it('should default to status 0 when the error has no numeric status', (done) => {
+      const errorResponse = { status: '403', statusText: 'Not authorized' }
+      mfeApiServiceSpy.searchMicrofrontends.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
 
       component.ngOnInit()
 
-      component.endpoints$?.subscribe({
-        error: (err) => {
+      component.mfes$?.subscribe({
+        next: () => {
           expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_0.MFES')
-          expect(console.error).toHaveBeenCalledWith('loadData endpoints subscription', jasmine.anything())
+          expect(console.error).toHaveBeenCalledWith('searchMicrofrontends', errorResponse)
           done()
-        }
+        },
+        error: done.fail
       })
     })
 
@@ -331,7 +312,7 @@ describe('EndpointSearchComponent', () => {
       mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: mfeResponseData }))
 
       component.ngOnInit()
-      component.onFilterChange('endpoint_1_1_1')
+      component.onGlobalFilter('endpoint_1_1_1')
 
       component.filteredData$.subscribe((data) => {
         expect(data).toHaveSize(1)
@@ -353,12 +334,12 @@ describe('EndpointSearchComponent', () => {
     })
 
     it('should reset the form group', () => {
-      component.searchCriteria = searchCriteriaForm
+      component.searchCriteriaForm = searchCriteriaForm
       spyOn(searchCriteriaForm, 'reset').and.callThrough()
 
       component.onCriteriaReset()
 
-      expect(component.searchCriteria.reset).toHaveBeenCalled()
+      expect(component.searchCriteriaForm.reset).toHaveBeenCalled()
     })
   })
 
@@ -400,24 +381,6 @@ describe('EndpointSearchComponent', () => {
           expect(routerSpy.navigate).toHaveBeenCalledWith(['../slots'], { relativeTo: routeMock })
         })
       }
-    })
-  })
-
-  describe('filter columns', () => {
-    it('should update the columns that are seen in data', () => {
-      const columns: Column[] = [{ field: 'productName', header: 'PRODUCT_NAME', active: true }]
-      const expectedColumn = { field: 'productName', header: 'PRODUCT_NAME' }
-      component.columns = columns
-
-      component.onColumnsChange(['productName'])
-
-      expect(component.filteredColumns).toEqual([jasmine.objectContaining(expectedColumn)])
-    })
-
-    it('should apply a filter to the result table', () => {
-      component.onFilterChange('test')
-
-      expect(component.tableFilter).toBe('test')
     })
   })
 

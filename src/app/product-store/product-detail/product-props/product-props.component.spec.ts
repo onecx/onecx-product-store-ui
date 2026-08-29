@@ -74,11 +74,7 @@ describe('ProductPropertyComponent', () => {
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
-      providers: [
-        { provide: ProductsAPIService, useValue: productApiSpy },
-        { provide: PortalMessageService, useValue: msgServiceSpy },
-        { provide: ImagesInternalAPIService, useValue: imageApiSpy }
-      ]
+      providers: []
     })
       .overrideComponent(ProductPropertyComponent, {
         add: {
@@ -165,21 +161,21 @@ describe('ProductPropertyComponent', () => {
   })
 
   describe('init image URL', () => {
-    it('should patchValue in formGroup with product - no image URL', () => {
+    it('should patchValue in propsForm with product - no image URL', () => {
       const p = { ...product, imageUrl: undefined }
       component.product = p
       component.changeMode = 'VIEW'
-      spyOn(component.formGroup, 'patchValue')
+      spyOn(component.propsForm, 'patchValue')
 
       component.ngOnChanges()
 
-      expect(component.formGroup.patchValue).toHaveBeenCalledWith(p)
-      expect(component.formGroup.disabled).toBeTrue()
+      expect(component.propsForm.patchValue).toHaveBeenCalledWith(p)
+      expect(component.propsForm.disabled).toBeTrue()
       expect(component.product.name).toEqual(p.name)
       expect(component.fetchingImageUrl).toEqual('basepath/images/name/logo')
     })
 
-    it('should patchValue in formGroup with product - empty image URL', () => {
+    it('should patchValue in propsForm with product - empty image URL', () => {
       const p = { ...product, imageUrl: '' }
       component.product = p
       component.changeMode = 'VIEW'
@@ -189,7 +185,7 @@ describe('ProductPropertyComponent', () => {
       expect(component.fetchingImageUrl).toEqual('basepath/images/name/logo')
     })
 
-    it('should patchValue in formGroup with product - with image URL', () => {
+    it('should patchValue in propsForm with product - with image URL', () => {
       const p = { ...product, imageUrl: 'https://host/assets/images/logo.svg' }
       component.product = p
       component.changeMode = 'VIEW'
@@ -203,7 +199,7 @@ describe('ProductPropertyComponent', () => {
   /*
   it('should call createProduct onSave in new mode', () => {
     productApiSpy.createProduct.and.returnValue(of({}))
-    const formGroup = new FormGroup<ProductPropsForm>({
+    const propsForm = new FormGroup<ProductPropsForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
       version: new FormControl<string | null>('version'),
@@ -215,7 +211,7 @@ describe('ProductPropertyComponent', () => {
       iconName: new FormControl<string | null>('icon'),
       classifications: new FormControl<string[] | null>(null)
     })
-    component.formGroup = formGroup as FormGroup<ProductPropsForm>
+    component.propsForm = propsForm as FormGroup<ProductPropsForm>
     component.changeMode = 'CREATE'
 
     component.onSave()
@@ -226,7 +222,7 @@ describe('ProductPropertyComponent', () => {
 
   it('should call updateProduct onSave in edit mode', () => {
     productApiSpy.updateProduct.and.returnValue(of({}))
-    const formGroup = new FormGroup<ProductPropsForm>({
+    const propsForm = new FormGroup<ProductPropsForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
       version: new FormControl<string | null>('version'),
@@ -239,7 +235,7 @@ describe('ProductPropertyComponent', () => {
       iconName: new FormControl<string | null>('icon'),
       classifications: new FormControl<string[] | null>(null)
     })
-    component.formGroup = formGroup as FormGroup<ProductPropsForm>
+    component.propsForm = propsForm as FormGroup<ProductPropsForm>
     component.changeMode = 'EDIT'
 
     component.onSave()
@@ -250,7 +246,7 @@ describe('ProductPropertyComponent', () => {
 
   it('should display error if updateProduct fails', () => {
     productApiSpy.updateProduct.and.returnValue(throwError(() => new Error()))
-    const formGroup = new FormGroup<ProductPropsForm>({
+    const propsForm = new FormGroup<ProductPropsForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
       version: new FormControl<string | null>('version'),
@@ -263,13 +259,13 @@ describe('ProductPropertyComponent', () => {
       iconName: new FormControl<string | null>('icon'),
       classifications: new FormControl<string[] | null>(null)
     })
-    component.formGroup = formGroup as FormGroup<ProductPropsForm>
-    component.formGroup.controls['name'].setValue('')
+    component.propsForm = propsForm as FormGroup<ProductPropsForm>
+    component.propsForm.controls['name'].setValue('')
     component.changeMode = 'EDIT'
 
     component.onSave()
 
-    expect(component.formGroup.valid).toBeTrue()
+    expect(component.propsForm.valid).toBeTrue()
     expect(msgServiceSpy.error).toHaveBeenCalledWith({
       summaryKey: 'ACTIONS.EDIT.PRODUCT.NOK'
     })
@@ -292,7 +288,7 @@ describe('ProductPropertyComponent', () => {
       }
     }
     productApiSpy.updateProduct.and.returnValue(throwError(() => error))
-    const formGroup = new FormGroup<ProductPropsForm>({
+    const propsForm = new FormGroup<ProductPropsForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
       version: new FormControl<string | null>('version'),
@@ -305,13 +301,13 @@ describe('ProductPropertyComponent', () => {
       iconName: new FormControl<string | null>('icon'),
       classifications: new FormControl<string[] | null>(null)
     })
-    component.formGroup = formGroup as FormGroup<ProductPropsForm>
+    component.propsForm = propsForm as FormGroup<ProductPropsForm>
     component.changeMode = 'EDIT'
-    component.formGroup.controls['name'].setValue('')
+    component.propsForm.controls['name'].setValue('')
 
     component.onSave()
 
-    expect(component.formGroup.valid).toBeTrue()
+    expect(component.propsForm.valid).toBeTrue()
     expect(msgServiceSpy.error).toHaveBeenCalledWith({
       summaryKey: 'ACTIONS.EDIT.PRODUCT.NOK',
       detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT.NAME'
@@ -335,7 +331,7 @@ describe('ProductPropertyComponent', () => {
       }
     }
     productApiSpy.updateProduct.and.returnValue(throwError(() => error))
-    const formGroup = new FormGroup<ProductPropsForm>({
+    const propsForm = new FormGroup<ProductPropsForm>({
       id: new FormControl<string | null>('id'),
       name: new FormControl<string | null>('name'),
       version: new FormControl<string | null>('version'),
@@ -348,13 +344,13 @@ describe('ProductPropertyComponent', () => {
       iconName: new FormControl<string | null>('icon'),
       classifications: new FormControl<string[] | null>(null)
     })
-    component.formGroup = formGroup as FormGroup<ProductPropsForm>
+    component.propsForm = propsForm as FormGroup<ProductPropsForm>
     component.changeMode = 'EDIT'
-    component.formGroup.controls['basePath'].setValue('')
+    component.propsForm.controls['basePath'].setValue('')
 
     component.onSave()
 
-    expect(component.formGroup.valid).toBeTrue()
+    expect(component.propsForm.valid).toBeTrue()
     expect(msgServiceSpy.error).toHaveBeenCalledWith({
       summaryKey: 'ACTIONS.EDIT.PRODUCT.NOK',
       detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT.BASEPATH'
@@ -369,7 +365,7 @@ describe('ProductPropertyComponent', () => {
 
       component.ngOnChanges()
 
-      expect(component.formGroup.enabled).toBeFalse()
+      expect(component.propsForm.enabled).toBeFalse()
     })
 
     it('should fill form correctly - EDIT mode', () => {
@@ -382,9 +378,9 @@ describe('ProductPropertyComponent', () => {
 
       expect(form.name).toBeUndefined() // on edit mode
       expect(form.displayName).toBe(productProps.displayName)
-      expect(component.formGroup.controls['name'].disabled).toBeTrue()
-      expect(component.formGroup.enabled).toBeTrue()
-      expect(component.formGroup.valid).toBeTrue()
+      expect(component.propsForm.controls['name'].disabled).toBeTrue()
+      expect(component.propsForm.enabled).toBeTrue()
+      expect(component.propsForm.valid).toBeTrue()
     })
 
     it('should enable clean form - CREATE mode', () => {
@@ -393,8 +389,8 @@ describe('ProductPropertyComponent', () => {
 
       component.ngOnChanges()
 
-      expect(component.formGroup.enabled).toBeTrue()
-      expect(component.formGroup.valid).toBeFalse()
+      expect(component.propsForm.enabled).toBeTrue()
+      expect(component.propsForm.valid).toBeFalse()
     })
 
     it('should set product.id to undefined onChanges if product and changeMode is COPY', () => {
@@ -404,7 +400,7 @@ describe('ProductPropertyComponent', () => {
         basePath: 'path'
       }
       component.product = product
-      spyOn(component.formGroup, 'patchValue')
+      spyOn(component.propsForm, 'patchValue')
       component.changeMode = 'COPY'
 
       component.ngOnChanges()
@@ -412,23 +408,23 @@ describe('ProductPropertyComponent', () => {
       expect(component.productId).toBeUndefined()
     })
 
-    it('should reset formGroup onChanges if no product', () => {
-      spyOn(component.formGroup, 'reset')
+    it('should reset propsForm onChanges if no product', () => {
+      spyOn(component.propsForm, 'reset')
 
       component.ngOnChanges()
 
-      expect(component.formGroup.reset).toHaveBeenCalled()
+      expect(component.propsForm.reset).toHaveBeenCalled()
     })
   })
 
   describe('save', () => {
-    it('should display error onSave if formGroup invalid', () => {
-      component.formGroup = propsForm
+    it('should display error onSave if propsForm invalid', () => {
+      component.propsForm = propsForm
 
       const form = component.onSave()
 
       expect(form).toBeUndefined()
-      expect(component.formGroup.valid).toBeFalse()
+      expect(component.propsForm.valid).toBeFalse()
       expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'VALIDATION.FORM_INVALID' })
     })
 
@@ -441,7 +437,7 @@ describe('ProductPropertyComponent', () => {
       component.ngOnChanges()
       component.onSave()
 
-      expect(component.formGroup.valid).toBeFalse()
+      expect(component.propsForm.valid).toBeFalse()
       expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'VALIDATION.FORM_INVALID' })
       expect(focusSpy).toHaveBeenCalled()
     })
@@ -450,7 +446,7 @@ describe('ProductPropertyComponent', () => {
   describe('file', () => {
     it('should not upload a file if productName is empty', () => {
       const event = { target: { files: ['file'] } }
-      component.formGroup.controls['name'].setValue('')
+      component.propsForm.controls['name'].setValue('')
 
       component.onFileUpload(event as any)
 
@@ -462,7 +458,7 @@ describe('ProductPropertyComponent', () => {
 
     it('should not upload a file if productName is null', () => {
       const event = { target: { files: ['file'] } }
-      component.formGroup.controls['name'].setValue(null)
+      component.propsForm.controls['name'].setValue(null)
 
       component.onFileUpload(event as any)
 
@@ -476,11 +472,11 @@ describe('ProductPropertyComponent', () => {
       const largeBlob = new Blob(['a'.repeat(200001)], { type: 'image/png' })
       const largeFile = new File([largeBlob], 'test.png', { type: 'image/png' })
       const event = { target: { files: [largeFile] } }
-      component.formGroup.controls['name'].setValue('name')
+      component.propsForm.controls['name'].setValue('name')
 
       component.onFileUpload(event as any)
 
-      expect(component.formGroup.valid).toBeFalse()
+      expect(component.propsForm.valid).toBeFalse()
       expect(msgServiceSpy.error).toHaveBeenCalledWith({
         summaryKey: 'IMAGE.CONSTRAINT_FAILED',
         detailKey: 'IMAGE.CONSTRAINT_SIZE'
@@ -491,11 +487,11 @@ describe('ProductPropertyComponent', () => {
       const blob = new Blob(['a'.repeat(10)], { type: 'txt' })
       const file = new File([blob], 'test.txt', { type: 'txt' })
       const event = { target: { files: [file] } }
-      component.formGroup.controls['name'].setValue('name')
+      component.propsForm.controls['name'].setValue('name')
 
       component.onFileUpload(event as any)
 
-      expect(component.formGroup.valid).toBeFalse()
+      expect(component.propsForm.valid).toBeFalse()
       expect(msgServiceSpy.error).toHaveBeenCalledWith({
         summaryKey: 'IMAGE.CONSTRAINT_FAILED',
         detailKey: 'IMAGE.CONSTRAINT_FILE_TYPE'
@@ -508,7 +504,7 @@ describe('ProductPropertyComponent', () => {
     const blob = new Blob(['a'.repeat(10)], { type: 'image/png' })
     const file = new File([blob], 'test.png', { type: 'image/png' })
     const event = { target: { files: [file] } }
-    component.formGroup.controls['name'].setValue('name')
+    component.propsForm.controls['name'].setValue('name')
 
     component.onFileUpload(event as any)
 
@@ -518,7 +514,7 @@ describe('ProductPropertyComponent', () => {
   it('should display error if file choice fails', () => {
     imageApiSpy.getImage.and.returnValue(throwError(() => new Error()))
     const event = { target: { files: undefined } }
-    component.formGroup.controls['name'].setValue('name')
+    component.propsForm.controls['name'].setValue('name')
 
     component.onFileUpload(event as any)
 
@@ -530,18 +526,18 @@ describe('ProductPropertyComponent', () => {
 
   describe('Remove logo', () => {
     it('should remove the logo URL - successful', () => {
-      component.formGroup.controls['name'].setValue('name')
-      component.formGroup.controls['imageUrl'].setValue('image URL')
+      component.propsForm.controls['name'].setValue('name')
+      component.propsForm.controls['imageUrl'].setValue('image URL')
 
       component.onRemoveLogo()
 
       expect(component.fetchingImageUrl).toEqual('basepath/images/name/logo')
-      expect(component.formGroup.get('imageUrl')?.value).toBeNull()
+      expect(component.propsForm.get('imageUrl')?.value).toBeNull()
     })
 
     it('should remove the uploaded logo - successful', () => {
       imageApiSpy.deleteImage.and.returnValue(of({}))
-      component.formGroup.controls['name'].setValue('name')
+      component.propsForm.controls['name'].setValue('name')
 
       component.onRemoveLogo()
 
@@ -552,7 +548,7 @@ describe('ProductPropertyComponent', () => {
     it('should remove the log - failed', () => {
       const errorResponse = { status: 400, statusText: 'Error on image deletion' }
       imageApiSpy.deleteImage.and.returnValue(throwError(() => errorResponse))
-      component.formGroup.controls['name'].setValue('name')
+      component.propsForm.controls['name'].setValue('name')
       spyOn(console, 'error')
 
       component.onRemoveLogo()
@@ -573,7 +569,7 @@ describe('ProductPropertyComponent', () => {
 
     it('should change to empty value', fakeAsync(() => {
       const event = { target: { value: '' } } as unknown as Event
-      component.formGroup.controls['name'].setValue('name')
+      component.propsForm.controls['name'].setValue('name')
 
       component.onInputChange(product, event)
 

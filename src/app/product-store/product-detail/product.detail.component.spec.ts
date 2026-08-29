@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing'
 import { Location } from '@angular/common'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
@@ -13,6 +13,7 @@ import { ProductPropertyComponent } from './product-props/product-props.componen
 import { ProductInternComponent } from './product-intern/product-intern.component'
 import { Product, ProductsAPIService, ImagesInternalAPIService } from 'src/app/shared/generated'
 import { provideNoopAnimations } from '@angular/platform-browser/animations'
+import { PermissionService } from '@onecx/angular-utils'
 
 const productProps: Product = {
   id: 'id',
@@ -33,13 +34,11 @@ class MockProductPropertyComponent {
   public onSave(): Partial<Product> {
     return productProps
   }
-  public ngOnChanges(): void {}
 }
 class MockProductInternComponent {
   public onSave(): Partial<Product> {
     return productInternals
   }
-  public ngOnChanges(): void {}
 }
 
 describe('ProductDetailComponent', () => {
@@ -53,7 +52,8 @@ describe('ProductDetailComponent', () => {
     createProduct: jasmine.createSpy('createProduct').and.returnValue(of({})),
     updateProduct: jasmine.createSpy('updateProduct').and.returnValue(of({})),
     deleteProduct: jasmine.createSpy('deleteProduct').and.returnValue(of({})),
-    getProductByName: jasmine.createSpy('getProductByName').and.returnValue(of({}))
+    getProductByName: jasmine.createSpy('getProductByName').and.returnValue(of({})),
+    getProductSearchCriteria: jasmine.createSpy('getProductSearchCriteria').and.returnValue(of({}))
   }
   const locationSpy = jasmine.createSpyObj<Location>('Location', ['back'])
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error'])
@@ -95,17 +95,13 @@ describe('ProductDetailComponent', () => {
         provideHttpClientTesting(),
         provideNoopAnimations(),
         provideRouter([{ path: '', component: ProductDetailComponent }]),
-        { provide: ProductsAPIService, useValue: productApiSpy },
-        { provide: ImagesInternalAPIService, useValue: imageApiSpy },
-        { provide: PortalMessageService, useValue: msgServiceSpy },
-        { provide: ConfigurationService, useValue: configServiceSpy },
-        { provide: UserService, useValue: mockUserService },
         { provide: Location, useValue: locationSpy }
       ]
     })
       .overrideComponent(ProductDetailComponent, {
         add: {
           providers: [
+            { provide: PermissionService, useValue: { hasPermission: () => of(true) } },
             { provide: ProductsAPIService, useValue: productApiSpy },
             { provide: ImagesInternalAPIService, useValue: imageApiSpy },
             { provide: PortalMessageService, useValue: msgServiceSpy },
@@ -140,6 +136,7 @@ describe('ProductDetailComponent', () => {
     productApiSpy.createProduct.calls.reset()
     productApiSpy.updateProduct.calls.reset()
     productApiSpy.deleteProduct.calls.reset()
+    productApiSpy.getProductSearchCriteria.calls.reset()
   })
 
   it('should create', () => {
@@ -163,39 +160,29 @@ describe('ProductDetailComponent', () => {
       expect(component.changeMode).toEqual('CREATE')
     })
 
-    it('should get product onInit - successful: found', (done) => {
+    it('should get product onInit - successful: found', fakeAsync(() => {
       productApiSpy.getProductByName.and.returnValue(of(product))
       component.productName = product.name
 
       component.ngOnInit()
+      tick()
 
-      component.product$.subscribe({
-        next: (data) => {
-          expect(data?.id).toBe(product.id)
-          done()
-        },
-        error: done.fail
-      })
-    })
+      expect(component.product?.id).toBe(product.id)
+    }))
 
-    it('should get product onInit - failed: not found', (done) => {
+    it('should get product onInit - failed: not found', fakeAsync(() => {
       const errorResponse = { status: 404, statusText: 'Not Found' }
       productApiSpy.getProductByName.and.returnValue(throwError(() => errorResponse))
       component.productName = 'unknown'
       spyOn(console, 'error')
 
       component.ngOnInit()
+      tick()
 
-      component.product$.subscribe({
-        next: (result) => {
-          expect(result).toBeUndefined()
-          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PRODUCT')
-          expect(console.error).toHaveBeenCalledWith('getProductByName', errorResponse)
-          done()
-        },
-        error: done.fail
-      })
-    })
+      expect(component.product).toBeUndefined()
+      expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PRODUCT')
+      expect(console.error).toHaveBeenCalledWith('getProductByName', errorResponse)
+    }))
   })
 
   describe('changes', () => {

@@ -1,28 +1,7 @@
 @use '/src/app/_ps-mixins.scss' as *;
 
-@include ocx-required-label;
-
 :host ::ng-deep {
-  .p-floatlabel-on:has(.p-select-label:not(.p-placeholder)) label,
-  .p-floatlabel-on:has(textarea:not(:placeholder-shown)) label {
-    top: 0;
-    transform: translateY(-50%);
-    border-radius: var(--p-border-radius-xs, 6px);
-    background: var(--p-form-field-background, #fff);
-    padding: 0 0.125rem;
-    font-size: var(--p-floatlabel-active-font-size, 0.75rem);
-  }
-
-  .p-floatlabel-on:has(.p-select-label:not(.p-placeholder)):not(:has(.p-inputwrapper-focus)) label,
-  .p-floatlabel-on:has(textarea:not(:placeholder-shown)):not(:has(textarea:focus)) label {
-    color: var(--p-floatlabel-active-color);
-  }
-
-  .p-floatlabel-on:has(textarea:not(:placeholder-shown)) .p-textarea {
-    padding-top: 1.5rem;
-  }
-
-  .p-floatlabel-on .p-textarea {
-    border-radius: var(--p-form-field-border-radius, 6px);
+  .p-autocomplete-chip.p-chip {
+    opacity: 0.7;
   }
 }

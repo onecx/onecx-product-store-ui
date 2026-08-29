@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { of, throwError } from 'rxjs'
+import { provideHttpClient } from '@angular/common/http'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { TranslateTestingModule } from 'ngx-translate-testing'
+import { of, throwError } from 'rxjs'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 
@@ -17,11 +19,8 @@ import {
 } from 'src/app/shared/generated'
 
 import { AppAbstract } from '../../app-search/app-search.component'
-import { AppType, ProductAppsComponent } from './product-apps.component'
 import { SlotData } from '../../slot-search/slot-search.component'
-import { provideHttpClient } from '@angular/common/http'
-import { provideHttpClientTesting } from '@angular/common/http/testing'
-import { provideNoopAnimations } from '@angular/platform-browser/animations'
+import { AppType, ProductAppsComponent } from './product-apps.component'
 
 describe('ProductAppsComponent', () => {
   let component: ProductAppsComponent
@@ -77,14 +76,7 @@ describe('ProductAppsComponent', () => {
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        provideNoopAnimations(),
-        { provide: UserService, useValue: mockUserService },
-        { provide: ProductsAPIService, useValue: productServiceSpy },
-        { provide: PortalMessageService, useValue: msgServiceSpy }
-      ]
+      providers: [provideHttpClient(), provideHttpClientTesting()]
     })
       .overrideComponent(ProductAppsComponent, {
         add: {

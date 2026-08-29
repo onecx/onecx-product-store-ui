@@ -7,7 +7,7 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <form [formGroup]="appSearchCriteriaGroup" class="flex flex-wrap gap-3 md:px-2">
+    <form [formGroup]="appSearchCriteriaForm" class="flex flex-wrap gap-3 md:px-2">
       <p-floatlabel variant="on">
         <input
           pInputText
@@ -69,41 +69,48 @@
     </form>
   </ocx-search-header>
 
+  @let data = $any((filteredData$ | async) ?? []);
   <ocx-content class="ocx-content">
-    @if (exceptionKey) {
-      <p-message
-        id="ps_app_search_criteria_error_message"
-        severity="error"
-        styleClass="m-2"
-        [text]="exceptionKey | translate"
-      ></p-message>
-    } @else {
-      <ocx-interactive-data-view
-        id="ps_app_search_dataview"
-        styleClass="p-0"
-        [data]="$any((filteredData$ | async) ?? [])"
-        [supportedViewLayouts]="['grid']"
-        [layout]="viewMode"
-        [columns]="dataViewColumns"
-        [displayedColumnKeys]="displayedColumnKeys"
-        [listGridPaginator]="true"
-        [tablePaginator]="false"
-        [pageSizes]="viewMode === 'grid' ? [20, 40, 100] : [10, 40, 100]"
-        [pageSize]="viewMode === 'grid' ? 20 : 10"
-        [emptyResultsMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
-        [disableFilterView]="true"
-        [filters]="interactiveFilters"
-        [clientSideFiltering]="true"
-        [clientSideSorting]="true"
-        [sortField]="sortField"
-        [sortDirection]="sortDirection"
-        [actionColumnPosition]="'left'"
-        (filtered)="onInteractiveFiltersChange($event)"
-        (sorted)="onInteractiveSorted($event)"
-        (dataViewLayoutChange)="onLayoutChange($event)"
-      >
-        <ng-template #topCenter>
-          <div class="flex flex-wrap flex-row justify-content-between align-items-center gap-2">
+    <!-- loading and exceptionKey messages displaying inside the top center section -->
+    <ocx-interactive-data-view
+      id="ps_app_search_dataview"
+      styleClass="p-0"
+      [data]="data"
+      [supportedViewLayouts]="['grid']"
+      [layout]="viewMode"
+      [columns]="dataViewColumns"
+      [displayedColumnKeys]="displayedColumnKeys"
+      [listGridPaginator]="true"
+      [tablePaginator]="false"
+      [pageSizes]="viewMode === 'grid' ? [20, 40, 100] : [10, 40, 100]"
+      [pageSize]="viewMode === 'grid' ? 20 : 10"
+      [emptyResultsMessage]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
+      [disableFilterView]="true"
+      [filters]="interactiveFilters"
+      [clientSideFiltering]="true"
+      [clientSideSorting]="true"
+      [sortField]="sortField"
+      [sortDirection]="sortDirection"
+      [actionColumnPosition]="'left'"
+      (filtered)="onInteractiveFiltersChange($event)"
+      (sorted)="onInteractiveSorted($event)"
+      (dataViewLayoutChange)="onLayoutChange($event)"
+    >
+      <ng-template #topCenter>
+        <div class="flex flex-wrap flex-row justify-content-between align-items-center gap-2">
+          @if (loading) {
+            <p-message
+              id="ps_app_search_criteria_loading_message"
+              severity="info"
+              [text]="'ACTIONS.LOADING' | translate"
+            ></p-message>
+          } @else if (exceptionKey) {
+            <p-message
+              id="ps_app_search_criteria_error_message"
+              severity="error"
+              [text]="exceptionKey | translate"
+            ></p-message>
+          } @else {
             <!-- QUICK Filter -->
             <div class="slim-selectbutton search-criteria-selectbutton">
               <p-selectButton
@@ -130,198 +137,197 @@
                 <span> {{ 'ACTIONS.SEARCH.APP.QUICK_FILTER.' + quickFilterValue | translate }}</span>
               </div>
             </div>
+          }
+          <!-- GLOBAL Filter -->
+          <p-inputgroup class="w-auto">
+            <p-inputgroup-addon>
+              <i class="pi pi-filter" aria-hidden="true"></i>
+            </p-inputgroup-addon>
+            <p-floatlabel variant="on">
+              <input
+                #globalFilterInput
+                id="ps_app_search_filter"
+                type="text"
+                pInputText
+                [value]="globalFilterValue ?? ''"
+                (input)="onGlobalFilter(globalFilterInput.value)"
+                [pTooltip]="
+                  ('DIALOG.DATAVIEW.FILTER.OF' | translate) +
+                  ('APP.APP_NAME' | translate) +
+                  ', ' +
+                  ('APP.APP_ID' | translate) +
+                  ', ' +
+                  ('APP.APP_TYPE' | translate) +
+                  ', ' +
+                  ('APP.APP_VERSION' | translate) +
+                  ', ' +
+                  ('APP.PRODUCT_NAME' | translate) +
+                  ', ' +
+                  ('APP.CLASSIFICATIONS' | translate)
+                "
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              />
+              <label for="ps_app_search_filter" aria-hidden="true">
+                {{ 'DIALOG.DATAVIEW.FILTER.LABEL' | translate }}</label
+              >
+            </p-floatlabel>
+            <p-inputgroup-addon>
+              <p-button
+                id="ps_app_search_filter_clear"
+                icon="pi pi-filter-slash"
+                [disabled]="globalFilterInput.value === ''"
+                (onClick)="onGlobalFilter('')"
+                [ariaLabel]="'DIALOG.DATAVIEW.FILTER.CLEAR' | translate"
+                [pTooltip]="'DIALOG.DATAVIEW.FILTER.CLEAR' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              />
+            </p-inputgroup-addon>
+          </p-inputgroup>
 
-            <!-- GLOBAL Filter -->
-            <p-inputgroup class="w-auto">
-              <p-inputgroup-addon>
-                <i class="pi pi-filter" aria-hidden="true"></i>
-              </p-inputgroup-addon>
-              <p-floatlabel variant="on">
-                <input
-                  #globalFilterInput
-                  id="ps_app_search_filter"
-                  type="text"
-                  pInputText
-                  [value]="globalFilterValue ?? ''"
-                  (input)="onGlobalFilter(globalFilterInput.value)"
-                  [pTooltip]="
-                    ('DIALOG.DATAVIEW.FILTER.OF' | translate) +
-                    ('APP.APP_NAME' | translate) +
-                    ', ' +
-                    ('APP.APP_ID' | translate) +
-                    ', ' +
-                    ('APP.APP_TYPE' | translate) +
-                    ', ' +
-                    ('APP.APP_VERSION' | translate) +
-                    ', ' +
-                    ('APP.PRODUCT_NAME' | translate) +
-                    ', ' +
-                    ('APP.CLASSIFICATIONS' | translate)
-                  "
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                />
-                <label for="ps_app_search_filter" aria-hidden="true">
-                  {{ 'DIALOG.DATAVIEW.FILTER.LABEL' | translate }}</label
-                >
-              </p-floatlabel>
-              <p-inputgroup-addon>
-                <p-button
-                  id="ps_app_search_filter_clear"
-                  icon="pi pi-filter-slash"
-                  [disabled]="globalFilterInput.value === ''"
-                  (onClick)="onGlobalFilter('')"
-                  [ariaLabel]="'DIALOG.DATAVIEW.FILTER.CLEAR' | translate"
-                  [pTooltip]="'DIALOG.DATAVIEW.FILTER.CLEAR' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                />
-              </p-inputgroup-addon>
-            </p-inputgroup>
+          <!-- ALIGNMENT Helper -->
+          <div>&nbsp;</div>
+        </div>
+      </ng-template>
 
-            <!-- ALIGNMENT Helper -->
-            <div>&nbsp;</div>
-          </div>
-        </ng-template>
-
-        <ng-template #gridItem let-app>
-          <div class="col-6 md:col-4 lg:col-4 xl:col-3 p-2 md:p-3" [attr.aria-label]="app.appId">
-            <p-card
-              tabindex="0"
-              [id]="'ps_app_search_data_' + app.appId"
-              styleClass="relative p-1 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
-              (click)="onAppDetail($event, app)"
-              (keydown.enter)="onAppDetail($event, app)"
-              (keydown.space)="onAppDetail($event, app)"
-              [ariaLabel]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
-              role="link"
-            >
-              <!-- BADGES -->
-              @if (hasCreatePermission) {
-                <a
-                  tabindex="0"
-                  [id]="'ps_app_search_data_' + app.appId + '_copy_app'"
-                  class="card-badge-left badge-1 p-2 pi button-icon-only"
-                  (click)="onAppCopy($event, app)"
-                  (keydown.enter)="onAppCopy($event, app)"
-                  (keydown.space)="onAppCopy($event, app)"
-                  [attr.aria-label]="'ACTIONS.COPY.LABEL' | translate"
-                  [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                >
-                  <span class="pi pi-copy" aria-hidden="true"></span>
-                </a>
-              }
-              @if (hasDeletePermission) {
-                <a
-                  tabindex="0"
-                  [id]="'ps_app_search_data_' + app.appId + '_delete_app'"
-                  class="card-badge-left badge-2 p-2 danger-action-text button-icon-only"
-                  (click)="onAppDelete($event, app)"
-                  (keydown.enter)="onAppDelete($event, app)"
-                  (keydown.space)="onAppDelete($event, app)"
-                  [attr.aria-label]="'ACTIONS.DELETE.LABEL' | translate"
-                  [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                >
-                  <span class="pi pi-trash" aria-hidden="true"></span>
-                </a>
-              }
-              @if (!(app?.deprecated || app?.undeployed)) {
-                <a
-                  tabindex="0"
-                  [id]="'ps_app_search_data_' + app.appId + '_goto_product'"
-                  class="card-badge-right badge-1 p-2 button-icon-only"
-                  (click)="onGotoProduct($event, app.productName)"
-                  (keydown.enter)="onGotoProduct($event, app.productName)"
-                  (keydown.space)="onGotoProduct($event, app.productName)"
-                  [attr.aria-label]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
-                  [pTooltip]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                >
-                  <span class="pi pi-external-link" aria-hidden="true"></span>
-                </a>
-              }
-              @if (app?.undeployed) {
-                <span
-                  [id]="'ps_app_search_data_' + app.appId + '_undeployed'"
-                  class="card-badge-right badge-1 p-2 pi pi-ban danger-action-text cursor-auto"
-                  [pTooltip]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                ></span>
-              } @else if (app?.deprecated) {
-                <span
-                  [id]="'ps_app_search_data_' + app.appId + '_deprecated'"
-                  class="card-badge-right badge-1 p-2 pi pi-exclamation-circle danger-action-text cursor-auto"
-                  [pTooltip]="'APP.TOOLTIPS.DEPRECATED_SEARCH' | translate"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                ></span>
-              }
-              @if (app.appType === 'MFE') {
-                <span
-                  [id]="'ps_app_search_data_' + app.appId + '_icon'"
-                  class="card-badge-right badge-2 p-2 pi cursor-auto"
-                  [ngClass]="'pi-' + app.iconName"
-                  [pTooltip]="'Icon'"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                ></span>
-              }
-              <!-- CONTENT -->
-              <div class="h-4rem flex flex-column justify-content-between gap-1 text-center">
-                <div
-                  [id]="'ps_app_search_data_' + app.appId + '_app_id'"
-                  class="font-bold text-responsive"
-                  [pTooltip]="app.appId.length <= 15 ? '' : app.appId"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                >
-                  {{ app.appId }}
-                </div>
-                @if (app.appType === 'MS') {
-                  <div
-                    [id]="'ps_app_search_data_' + app.appId + '_app_type_key'"
-                    class="text-xs sm:text-sm text-responsive"
-                    [pTooltip]="('APP.TOOLTIPS.MS' | translate) + ': ' + ('APP.APP_VERSION' | translate)"
-                    tooltipPosition="top"
-                    tooltipEvent="hover"
-                  >
-                    {{ app.appVersion }}
-                  </div>
-                } @else if (app.appType === 'MFE') {
-                  <div
-                    [id]="'ps_app_search_data_' + app.appId + '_app_type_key'"
-                    class="text-xs text-responsive"
-                    [pTooltip]="app.exposedModule.length <= 25 ? '' : app.exposedModule"
-                    tooltipPosition="top"
-                    tooltipEvent="hover"
-                  >
-                    {{ app.exposedModule }}
-                  </div>
-                  <div [id]="'ps_app_search_data_' + app.appId + '_app_version'" class="text-xs text-responsive">
-                    {{ app.appVersion }}
-                  </div>
-                }
-                <div
-                  [id]="'ps_app_search_data_' + app.appId + '_product_name'"
-                  class="text-xs text-responsive"
-                  [pTooltip]="('APP.PRODUCT_NAME' | translate) + (app.productName.length <= 25 ? '' : app.productName)"
-                  tooltipPosition="top"
-                  tooltipEvent="hover"
-                >
-                  {{ app.productName }}
-                </div>
+      <ng-template #gridItem let-app>
+        <div class="col-6 md:col-4 lg:col-4 xl:col-3 p-2 md:p-3" [attr.aria-label]="app.appId">
+          <p-card
+            tabindex="0"
+            [id]="'ps_app_search_data_' + app.appId"
+            styleClass="relative p-1 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
+            (click)="onAppDetail($event, app)"
+            (keydown.enter)="onAppDetail($event, app)"
+            (keydown.space)="onAppDetail($event, app)"
+            [ariaLabel]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
+            role="link"
+          >
+            <!-- BADGES -->
+            @if (hasCreatePermission) {
+              <a
+                tabindex="0"
+                [id]="'ps_app_search_data_' + app.appId + '_copy_app'"
+                class="card-badge-left badge-1 p-2 pi button-icon-only"
+                (click)="onAppCopy($event, app)"
+                (keydown.enter)="onAppCopy($event, app)"
+                (keydown.space)="onAppCopy($event, app)"
+                [attr.aria-label]="'ACTIONS.COPY.LABEL' | translate"
+                [pTooltip]="'ACTIONS.COPY.LABEL' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+                <span class="pi pi-copy" aria-hidden="true"></span>
+              </a>
+            }
+            @if (hasDeletePermission) {
+              <a
+                tabindex="0"
+                [id]="'ps_app_search_data_' + app.appId + '_delete_app'"
+                class="card-badge-left badge-2 p-2 danger-action-text button-icon-only"
+                (click)="onAppDelete($event, app)"
+                (keydown.enter)="onAppDelete($event, app)"
+                (keydown.space)="onAppDelete($event, app)"
+                [attr.aria-label]="'ACTIONS.DELETE.LABEL' | translate"
+                [pTooltip]="'ACTIONS.DELETE.LABEL' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+                <span class="pi pi-trash" aria-hidden="true"></span>
+              </a>
+            }
+            @if (!(app?.deprecated || app?.undeployed)) {
+              <a
+                tabindex="0"
+                [id]="'ps_app_search_data_' + app.appId + '_goto_product'"
+                class="card-badge-right badge-1 p-2 button-icon-only"
+                (click)="onGotoProduct($event, app.productName)"
+                (keydown.enter)="onGotoProduct($event, app.productName)"
+                (keydown.space)="onGotoProduct($event, app.productName)"
+                [attr.aria-label]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
+                [pTooltip]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+                <span class="pi pi-external-link" aria-hidden="true"></span>
+              </a>
+            }
+            @if (app?.undeployed) {
+              <span
+                [id]="'ps_app_search_data_' + app.appId + '_undeployed'"
+                class="card-badge-right badge-1 p-2 pi pi-ban danger-action-text cursor-auto"
+                [pTooltip]="'APP.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              ></span>
+            } @else if (app?.deprecated) {
+              <span
+                [id]="'ps_app_search_data_' + app.appId + '_deprecated'"
+                class="card-badge-right badge-1 p-2 pi pi-exclamation-circle danger-action-text cursor-auto"
+                [pTooltip]="'APP.TOOLTIPS.DEPRECATED_SEARCH' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              ></span>
+            }
+            @if (app.appType === 'MFE') {
+              <span
+                [id]="'ps_app_search_data_' + app.appId + '_icon'"
+                class="card-badge-right badge-2 p-2 pi cursor-auto"
+                [ngClass]="'pi-' + app.iconName"
+                [pTooltip]="'Icon'"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              ></span>
+            }
+            <!-- CONTENT -->
+            <div class="h-4rem flex flex-column justify-content-between gap-1 text-center">
+              <div
+                [id]="'ps_app_search_data_' + app.appId + '_app_id'"
+                class="font-bold text-responsive"
+                [pTooltip]="app.appId.length <= 15 ? '' : app.appId"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+                {{ app.appId }}
               </div>
-            </p-card>
-          </div>
-        </ng-template>
-      </ocx-interactive-data-view>
-    }
+              @if (app.appType === 'MS') {
+                <div
+                  [id]="'ps_app_search_data_' + app.appId + '_app_type_key'"
+                  class="text-xs sm:text-sm text-responsive"
+                  [pTooltip]="('APP.TOOLTIPS.MS' | translate) + ': ' + ('APP.APP_VERSION' | translate)"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  {{ app.appVersion }}
+                </div>
+              } @else if (app.appType === 'MFE') {
+                <div
+                  [id]="'ps_app_search_data_' + app.appId + '_app_type_key'"
+                  class="text-xs text-responsive"
+                  [pTooltip]="app.exposedModule.length <= 25 ? '' : app.exposedModule"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                  {{ app.exposedModule }}
+                </div>
+                <div [id]="'ps_app_search_data_' + app.appId + '_app_version'" class="text-xs text-responsive">
+                  {{ app.appVersion }}
+                </div>
+              }
+              <div
+                [id]="'ps_app_search_data_' + app.appId + '_product_name'"
+                class="text-xs text-responsive"
+                [pTooltip]="('APP.PRODUCT_NAME' | translate) + (app.productName.length <= 25 ? '' : app.productName)"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+                {{ app.productName }}
+              </div>
+            </div>
+          </p-card>
+        </div>
+      </ng-template>
+    </ocx-interactive-data-view>
   </ocx-content>
 </ocx-portal-page>
 

@@ -1,14 +1,13 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { provideHttpClient } from '@angular/common/http'
-import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
 import { PortalMessageService } from '@onecx/angular-integration-interface'
 
 import { Slot, SlotsAPIService } from 'src/app/shared/generated'
-import { SlotDeleteComponent } from './slot-delete.component'
+
 import { SlotData } from '../slot-search/slot-search.component'
+import { SlotDeleteComponent } from './slot-delete.component'
 
 describe('SlotDeleteComponent', () => {
   let component: SlotDeleteComponent
@@ -32,12 +31,6 @@ describe('SlotDeleteComponent', () => {
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
-      ],
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        { provide: SlotsAPIService, useValue: apiSlotServiceSpy },
-        { provide: PortalMessageService, useValue: msgServiceSpy }
       ]
     })
       .overrideComponent(SlotDeleteComponent, {

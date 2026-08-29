@@ -3,8 +3,6 @@ import { RouterModule, Routes } from '@angular/router'
 
 import { ConfirmationService } from 'primeng/api'
 
-import { providePermissionService } from '@onecx/angular-utils'
-
 import { LabelResolver } from 'src/app/shared/label.resolver'
 
 import { AppSearchComponent } from './app-search/app-search.component'
@@ -60,6 +58,6 @@ const routes: Routes = [
     ProductDetailComponent,
     RouterModule.forChild(routes)
   ],
-  providers: [ConfirmationService, ...providePermissionService()]
+  providers: [ConfirmationService]
 })
 export class ProductStoreModule {}

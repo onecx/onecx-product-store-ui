@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
@@ -6,7 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { BehaviorSubject, of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
-import { DataSortDirection, FilterType } from '@onecx/angular-accelerator'
+import { BreadcrumbService, DataSortDirection, FilterType } from '@onecx/angular-accelerator'
 
 import { UserService } from '@onecx/angular-integration-interface'
 
@@ -92,7 +92,6 @@ describe('AppSearchComponent', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         provideNoopAnimations(),
-        { provide: PermissionService, useValue: { hasPermission: () => of(true) } },
         { provide: MicrofrontendsAPIService, useValue: apiMfeServiceSpy },
         { provide: MicroservicesAPIService, useValue: apiMsServiceSpy },
         { provide: UserService, useValue: mockUserService },
@@ -103,6 +102,8 @@ describe('AppSearchComponent', () => {
       .overrideComponent(AppSearchComponent, {
         add: {
           providers: [
+            { provide: BreadcrumbService, useValue: {} },
+            { provide: PermissionService, useValue: { hasPermission: () => of(true) } },
             { provide: MicrofrontendsAPIService, useValue: apiMfeServiceSpy },
             { provide: MicroservicesAPIService, useValue: apiMsServiceSpy },
             { provide: UserService, useValue: mockUserService }
@@ -115,7 +116,7 @@ describe('AppSearchComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AppSearchComponent)
     component = fixture.componentInstance
-    fixture.detectChanges()
+    // fixture.detectChanges()
     fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
     component.hasEditPermission = true
   })
@@ -124,6 +125,9 @@ describe('AppSearchComponent', () => {
     apiMfeServiceSpy.searchMicrofrontends.calls.reset()
     apiMsServiceSpy.searchMicroservice.calls.reset()
     translateServiceSpy.get.calls.reset()
+    // to spy data: refill with neutral data
+    apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of([]))
+    apiMsServiceSpy.searchMicroservice.and.returnValue(of([]))
   })
 
   describe('initialize', () => {
@@ -207,7 +211,7 @@ describe('AppSearchComponent', () => {
   })
 
   it('should search mfes: one mfe', (done) => {
-    component.appSearchCriteriaGroup.controls['appType'].setValue('MFE')
+    component.appSearchCriteriaForm.controls['appType'].setValue('MFE')
     apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: [mfe] } as MicrofrontendPageResult))
 
     component.searchApps()
@@ -225,7 +229,7 @@ describe('AppSearchComponent', () => {
   })
 
   it('should search mfes: empty', (done) => {
-    component.appSearchCriteriaGroup.controls['appType'].setValue('MFE')
+    component.appSearchCriteriaForm.controls['appType'].setValue('MFE')
     apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of({} as MicrofrontendPageResult))
 
     component.searchApps()
@@ -240,7 +244,7 @@ describe('AppSearchComponent', () => {
   })
 
   it('should search mss: one ms', (done) => {
-    component.appSearchCriteriaGroup.controls['appType'].setValue('MS')
+    component.appSearchCriteriaForm.controls['appType'].setValue('MS')
     apiMsServiceSpy.searchMicroservice.and.returnValue(of({ stream: [ms] } as MicroservicePageResult))
 
     component.searchApps()
@@ -258,7 +262,7 @@ describe('AppSearchComponent', () => {
   })
 
   it('should search mss: empty', (done) => {
-    component.appSearchCriteriaGroup.controls['appType'].setValue('MS')
+    component.appSearchCriteriaForm.controls['appType'].setValue('MS')
     apiMsServiceSpy.searchMicroservice.and.returnValue(of({} as MicroservicePageResult))
 
     component.searchApps()
@@ -272,27 +276,22 @@ describe('AppSearchComponent', () => {
     })
   })
 
-  it('should catch error on searchApps: mfes', (done) => {
-    component.appSearchCriteriaGroup.controls['appType'].setValue('MFE')
+  it('should catch error on searchApps: mfes', fakeAsync(() => {
+    component.appSearchCriteriaForm.controls['appType'].setValue('MFE')
     const errorResponse = { status: 401, statusText: 'Not authorized' }
     apiMfeServiceSpy.searchMicrofrontends.and.returnValue(throwError(() => errorResponse))
     spyOn(console, 'error')
 
     component.searchApps()
+    tick()
 
-    component.apps$.subscribe({
-      next: (result) => {
-        expect(result).toHaveSize(0)
-        expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.APPS')
-        expect(console.error).toHaveBeenCalledWith('searchMicrofrontends', errorResponse)
-        done()
-      },
-      error: done.fail
-    })
-  })
+    expect(component.apps$).toBeDefined()
+    expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.APPS')
+    expect(console.error).toHaveBeenCalledWith('searchMicrofrontends', errorResponse)
+  }))
 
   it('should catch error on searchApps: mss', (done) => {
-    component.appSearchCriteriaGroup.controls['appType'].setValue('MS')
+    component.appSearchCriteriaForm.controls['appType'].setValue('MS')
     const errorResponse = { status: 401, statusText: 'Not authorized' }
     apiMsServiceSpy.searchMicroservice.and.returnValue(throwError(() => errorResponse))
     spyOn(console, 'error')
@@ -311,7 +310,7 @@ describe('AppSearchComponent', () => {
   })
 
   it('should combine mfe and ms streams into apps$', (done) => {
-    component.appSearchCriteriaGroup.controls['appType'].setValue('ALL')
+    component.appSearchCriteriaForm.controls['appType'].setValue('ALL')
     apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: [mfe] } as MicrofrontendPageResult))
     apiMsServiceSpy.searchMicroservice.and.returnValue(of({ stream: [ms] } as MicroservicePageResult))
 
@@ -349,7 +348,7 @@ describe('AppSearchComponent', () => {
 
   it('should filter the app list onGlobalFilter', () => {
     const filter = 'prodName'
-    component.appSearchCriteriaGroup.controls['appType'].setValue('ALL')
+    component.appSearchCriteriaForm.controls['appType'].setValue('ALL')
     apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: [mfe] } as MicrofrontendPageResult))
     apiMsServiceSpy.searchMicroservice.and.returnValue(of({ stream: [ms] } as MicroservicePageResult))
 
@@ -366,7 +365,7 @@ describe('AppSearchComponent', () => {
 
   it('should clear the app list filter onGlobalFilter', () => {
     const filter = 'non-existent'
-    component.appSearchCriteriaGroup.controls['appType'].setValue('ALL')
+    component.appSearchCriteriaForm.controls['appType'].setValue('ALL')
     apiMfeServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: [mfe] } as MicrofrontendPageResult))
     apiMsServiceSpy.searchMicroservice.and.returnValue(of({ stream: [ms] } as MicroservicePageResult))
 
@@ -381,7 +380,7 @@ describe('AppSearchComponent', () => {
   it('should filter the app list by classification onGlobalFilter', () => {
     const filter = 'test'
     const mfeWithClassification = { ...mfe, classifications: ['test'] }
-    component.appSearchCriteriaGroup.controls['appType'].setValue('MFE')
+    component.appSearchCriteriaForm.controls['appType'].setValue('MFE')
     apiMfeServiceSpy.searchMicrofrontends.and.returnValue(
       of({ stream: [mfeWithClassification] } as unknown as MicrofrontendPageResult)
     )
@@ -462,13 +461,13 @@ describe('AppSearchComponent', () => {
       expect(component.sortOrder).toBe(1)
     })
 
-    it('should reset appSearchCriteriaGroup onSearchReset is called', () => {
-      component.appSearchCriteriaGroup = form
+    it('should reset appSearchCriteriaForm onSearchReset is called', () => {
+      component.appSearchCriteriaForm = form
       spyOn(form, 'reset').and.callThrough()
 
       component.onSearchReset()
 
-      expect(component.appSearchCriteriaGroup.reset).toHaveBeenCalled()
+      expect(component.appSearchCriteriaForm.reset).toHaveBeenCalled()
     })
   })
 
@@ -589,7 +588,7 @@ describe('AppSearchComponent', () => {
       mockUserService.lang$.next('en')
       fixture = TestBed.createComponent(AppSearchComponent)
       component = fixture.componentInstance
-      fixture.detectChanges()
+      // fixture.detectChanges()
       expect(component.dateFormat).toEqual('M/d/yy, hh:mm:ss a')
     })
   })

@@ -22,7 +22,8 @@
         />
         <label for="ps_product_search_criteria_name" aria-hidden="true">{{ 'PRODUCT.NAME' | translate }}</label>
       </p-floatlabel>
-      @let criteria = criteria$ | async;
+
+      @let criteria = productSearchCriterias$ | async;
       <p-floatlabel variant="on">
         <p-multiSelect
           id="ps_product_search_criteria_providers"
@@ -87,7 +88,7 @@
       [data]="data"
       [supportedViewLayouts]="['grid', 'list']"
       [layout]="viewMode"
-      [columns]="dataViewColumns"
+      [columns]="interactiveColumns"
       [displayedColumnKeys]="displayedColumnKeys"
       [listGridPaginator]="true"
       [tablePaginator]="false"
@@ -97,8 +98,8 @@
       [disableFilterView]="true"
       [clientSideFiltering]="true"
       [clientSideSorting]="true"
-      [sortField]="sortField"
-      [sortDirection]="sortDirection"
+      [sortField]="interactiveSortField"
+      [sortDirection]="interactiveSortDirection"
       [actionColumnPosition]="'left'"
       (sorted)="onInteractiveSorted($event)"
       (dataViewLayoutChange)="onLayoutChange($event)"
@@ -116,7 +117,7 @@
               pInputText
               id="ps_product_search_filter"
               class="text-responsive"
-              [value]="globalFilterValue ?? ''"
+              [value]="globalFilterValue"
               (input)="onGlobalFilter(globalFilterInput.value)"
               [ariaLabel]="'DIALOG.DATAVIEW.FILTER.LABEL' | translate"
               [pTooltip]="

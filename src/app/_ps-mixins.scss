@@ -30,7 +30,9 @@
 
 @mixin ocx-text-responsive {
   :host ::ng-deep {
-    --disabled-opacity: 0.7;
+    .p-inputtext:disabled {
+      opacity: 0.7;
+    }
     .text-responsive {
       white-space: nowrap;
       overflow: hidden;
