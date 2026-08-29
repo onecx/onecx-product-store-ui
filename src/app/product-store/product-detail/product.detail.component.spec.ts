@@ -1,10 +1,9 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core'
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing'
 import { Location } from '@angular/common'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { provideRouter, Router } from '@angular/router'
-import { of, throwError } from 'rxjs'
+import { BehaviorSubject, of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { ConfigurationService, PortalMessageService, UserService } from '@onecx/angular-integration-interface'
@@ -12,7 +11,9 @@ import { ConfigurationService, PortalMessageService, UserService } from '@onecx/
 import { ProductDetailComponent } from './product-detail.component'
 import { ProductPropertyComponent } from './product-props/product-props.component'
 import { ProductInternComponent } from './product-intern/product-intern.component'
-import { Product, ProductsAPIService } from 'src/app/shared/generated'
+import { Product, ProductsAPIService, ImagesInternalAPIService } from 'src/app/shared/generated'
+import { provideNoopAnimations } from '@angular/platform-browser/animations'
+import { PermissionService } from '@onecx/angular-utils'
 
 const productProps: Product = {
   id: 'id',
@@ -33,13 +34,11 @@ class MockProductPropertyComponent {
   public onSave(): Partial<Product> {
     return productProps
   }
-  public ngOnChanges(): void {}
 }
 class MockProductInternComponent {
   public onSave(): Partial<Product> {
     return productInternals
   }
-  public ngOnChanges(): void {}
 }
 
 describe('ProductDetailComponent', () => {
@@ -53,7 +52,8 @@ describe('ProductDetailComponent', () => {
     createProduct: jasmine.createSpy('createProduct').and.returnValue(of({})),
     updateProduct: jasmine.createSpy('updateProduct').and.returnValue(of({})),
     deleteProduct: jasmine.createSpy('deleteProduct').and.returnValue(of({})),
-    getProductByName: jasmine.createSpy('getProductByName').and.returnValue(of({}))
+    getProductByName: jasmine.createSpy('getProductByName').and.returnValue(of({})),
+    getProductSearchCriteria: jasmine.createSpy('getProductSearchCriteria').and.returnValue(of({}))
   }
   const locationSpy = jasmine.createSpyObj<Location>('Location', ['back'])
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error'])
@@ -68,18 +68,23 @@ describe('ProductDetailComponent', () => {
     lang: 'en'
   }
   const mockUserService = {
-    lang$: {
-      getValue: jasmine.createSpy('getValue').and.returnValue('en')
-    },
+    lang$: new BehaviorSubject<string>('en'),
     hasPermission: jasmine.createSpy('hasPermission').and.callFake((permission) => {
       return ['PRODUCT#CREATE', 'PRODUCT#EDIT', 'PRODUCT#VIEW'].includes(permission)
     })
   }
 
+  const imageApiSpy = {
+    getImage: jasmine.createSpy('getImage').and.returnValue(of({})),
+    uploadImage: jasmine.createSpy('uploadImage').and.returnValue(of({})),
+    deleteImage: jasmine.createSpy('deleteImage').and.returnValue(of({})),
+    configuration: { basePath: 'basepath' }
+  }
+
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ProductDetailComponent],
       imports: [
+        ProductDetailComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
@@ -88,15 +93,33 @@ describe('ProductDetailComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideNoopAnimations(),
         provideRouter([{ path: '', component: ProductDetailComponent }]),
-        { provide: ProductsAPIService, useValue: productApiSpy },
-        { provide: PortalMessageService, useValue: msgServiceSpy },
-        { provide: ConfigurationService, useValue: configServiceSpy },
-        { provide: UserService, useValue: mockUserService },
         { provide: Location, useValue: locationSpy }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents()
+      ]
+    })
+      .overrideComponent(ProductDetailComponent, {
+        add: {
+          providers: [
+            { provide: PermissionService, useValue: { hasPermission: () => of(true) } },
+            { provide: ProductsAPIService, useValue: productApiSpy },
+            { provide: ImagesInternalAPIService, useValue: imageApiSpy },
+            { provide: PortalMessageService, useValue: msgServiceSpy },
+            { provide: ConfigurationService, useValue: configServiceSpy },
+            { provide: UserService, useValue: mockUserService }
+          ]
+        }
+      })
+      .overrideComponent(ProductPropertyComponent, {
+        add: {
+          providers: [
+            { provide: ProductsAPIService, useValue: productApiSpy },
+            { provide: ImagesInternalAPIService, useValue: imageApiSpy },
+            { provide: PortalMessageService, useValue: msgServiceSpy }
+          ]
+        }
+      })
+      .compileComponents()
   }))
 
   beforeEach(() => {
@@ -113,6 +136,7 @@ describe('ProductDetailComponent', () => {
     productApiSpy.createProduct.calls.reset()
     productApiSpy.updateProduct.calls.reset()
     productApiSpy.deleteProduct.calls.reset()
+    productApiSpy.getProductSearchCriteria.calls.reset()
   })
 
   it('should create', () => {
@@ -136,39 +160,29 @@ describe('ProductDetailComponent', () => {
       expect(component.changeMode).toEqual('CREATE')
     })
 
-    it('should get product onInit - successful: found', (done) => {
+    it('should get product onInit - successful: found', fakeAsync(() => {
       productApiSpy.getProductByName.and.returnValue(of(product))
       component.productName = product.name
 
       component.ngOnInit()
+      tick()
 
-      component.product$.subscribe({
-        next: (data) => {
-          expect(data?.id).toBe(product.id)
-          done()
-        },
-        error: done.fail
-      })
-    })
+      expect(component.product?.id).toBe(product.id)
+    }))
 
-    it('should get product onInit - failed: not found', (done) => {
+    it('should get product onInit - failed: not found', fakeAsync(() => {
       const errorResponse = { status: 404, statusText: 'Not Found' }
       productApiSpy.getProductByName.and.returnValue(throwError(() => errorResponse))
       component.productName = 'unknown'
       spyOn(console, 'error')
 
       component.ngOnInit()
+      tick()
 
-      component.product$.subscribe({
-        next: (result) => {
-          expect(result).toBeUndefined()
-          expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PRODUCT')
-          expect(console.error).toHaveBeenCalledWith('getProductByName', errorResponse)
-          done()
-        },
-        error: done.fail
-      })
-    })
+      expect(component.product).toBeUndefined()
+      expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PRODUCT')
+      expect(console.error).toHaveBeenCalledWith('getProductByName', errorResponse)
+    }))
   })
 
   describe('changes', () => {
@@ -291,7 +305,7 @@ describe('ProductDetailComponent', () => {
 
   describe('language', () => {
     it('should call this.user.lang$ from the constructor and set this.dateFormat to default format if user.lang$ is de', () => {
-      mockUserService.lang$.getValue.and.returnValue('de')
+      mockUserService.lang$.next('de')
       fixture = TestBed.createComponent(ProductDetailComponent)
       component = fixture.componentInstance
       fixture.detectChanges()
@@ -304,29 +318,32 @@ describe('ProductDetailComponent', () => {
       component.uriFragment = 'apps'
       component['goToTab'](product)
 
-      expect(component.selectedTabIndex).toEqual(1)
-      expect(component.product_for_apps).toEqual(product)
+      expect(component.selectedTabIndex).toEqual('1')
+    })
+
+    it('should go to props TAB if there is no URI fragment', () => {
+      component.uriFragment = null
+      component['goToTab'](product)
+
+      expect(component.selectedTabIndex).toEqual('0')
     })
 
     it('should behave correctly onTabChange: 1', () => {
       component.onTabChange(1, product)
 
-      expect(component.selectedTabIndex).toEqual(1)
-      expect(component.product_for_apps).toEqual(product)
+      expect(component.selectedTabIndex).toEqual('1')
     })
 
     it('should behave correctly onTabChange: string index', () => {
       component.onTabChange('1', product)
 
-      expect(component.selectedTabIndex).toEqual(1)
+      expect(component.selectedTabIndex).toEqual('1')
     })
 
-    it('should behave correctly onTabChange: undefined index', () => {
-      component.selectedTabIndex = 2
+    it('should behave correctly onTabChange: string index', () => {
+      component.onTabChange('1')
 
-      component.onTabChange(undefined, product)
-
-      expect(component.selectedTabIndex).toEqual(2)
+      expect(component.selectedTabIndex).toEqual('0')
     })
   })
 

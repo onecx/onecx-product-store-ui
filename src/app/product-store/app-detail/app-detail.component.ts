@@ -1,9 +1,23 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core'
-import { FormControl, FormGroup, Validators } from '@angular/forms'
-import { TranslateService } from '@ngx-translate/core'
+import { Component, DestroyRef, EventEmitter, inject, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core'
+import { NgClass } from '@angular/common'
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { finalize, map } from 'rxjs'
+
 import { SelectItem } from 'primeng/api'
-import { Table } from 'primeng/table'
+import { DialogModule } from 'primeng/dialog'
+import { DropdownModule } from 'primeng/dropdown'
+import { ButtonModule } from 'primeng/button'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { InputTextModule } from 'primeng/inputtext'
+import { MessageModule } from 'primeng/message'
+import { MultiSelectModule } from 'primeng/multiselect'
+import { Table, TableModule } from 'primeng/table'
+import { TabsModule } from 'primeng/tabs'
+import { TextareaModule } from 'primeng/textarea'
+import { TooltipModule } from 'primeng/tooltip'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 
@@ -26,6 +40,7 @@ import {
 import { ChangeMode } from '../product-detail/product-detail.component'
 import { AppAbstract } from '../app-search/app-search.component'
 import { AppInternComponent } from './app-intern/app-intern.component'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 
 export interface MfeForm {
   appId: FormControl<string | null>
@@ -56,11 +71,34 @@ export interface MsForm {
 
 @Component({
   selector: 'app-app-detail',
-  standalone: false,
+  standalone: true,
+  imports: [
+    NgClass,
+    ButtonModule,
+    DialogModule,
+    DropdownModule,
+    FloatLabelModule,
+    FormsModule,
+    InputGroupModule,
+    InputGroupAddonModule,
+    InputTextModule,
+    MessageModule,
+    MultiSelectModule,
+    ReactiveFormsModule,
+    TableModule,
+    TabsModule,
+    TextareaModule,
+    TooltipModule,
+    TranslateModule,
+    // components
+    AppInternComponent
+  ],
   templateUrl: './app-detail.component.html',
   styleUrls: ['./app-detail.component.scss']
 })
 export class AppDetailComponent implements OnInit, OnChanges {
+  private readonly destroyRef = inject(DestroyRef)
+
   @Input() appAbstract: AppAbstract | undefined
   @Input() dateFormat = 'medium'
   @Input() changeMode: ChangeMode = 'VIEW'
@@ -74,7 +112,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
   public ms: Microservice | undefined
   public formGroupMfe: FormGroup
   public formGroupMs: FormGroup
-  public selectedTabIndex = 0
+  public selectedTabIndex = '0' // have to be a string, number does not work
   public dialogTitleKey: string | undefined = undefined
   public loading = false
   public hasCreatePermission = false
@@ -142,7 +180,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     if (this.displayDialog) {
-      this.selectedTabIndex = 0
+      this.selectedTabIndex = '0'
       this.dialogTitleKey = undefined
       this.ms = undefined
       this.mfe = undefined
@@ -193,7 +231,8 @@ export class AppDetailComponent implements OnInit, OnChanges {
         .getMicrofrontend({ id: this.appAbstract.id })
         .pipe(
           map((data: Microfrontend) => this.getMfeData(data)),
-          finalize(() => (this.loading = false))
+          finalize(() => (this.loading = false)),
+          takeUntilDestroyed(this.destroyRef)
         )
         .subscribe()
   }
@@ -226,7 +265,10 @@ export class AppDetailComponent implements OnInit, OnChanges {
     this.loading = true
     this.msApi
       .getMicroservice({ id: this.appAbstract?.id } as GetMicroserviceRequestParams)
-      .pipe(finalize(() => (this.loading = false)))
+      .pipe(
+        finalize(() => (this.loading = false)),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe({
         next: (data: any) => {
           if (data) {
@@ -283,6 +325,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
    * UI Actions
    */
   public onDialogHide() {
+    this.displayDialog = false
     this.mfe = undefined
     this.ms = undefined
     this.appChanged.emit(false)
@@ -301,8 +344,8 @@ export class AppDetailComponent implements OnInit, OnChanges {
     if (this.ms) this.ms.undeployed = val
   }
 
-  public onTabChange(index: string | number) {
-    this.selectedTabIndex = typeof index === 'number' ? index : Number(index)
+  public onTabChange(tabValue: string | number) {
+    this.selectedTabIndex = typeof tabValue === 'number' ? tabValue.toString() : tabValue
   }
 
   public onSave() {

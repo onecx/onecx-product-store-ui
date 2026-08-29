@@ -1,15 +1,13 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { provideHttpClient } from '@angular/common/http'
-import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
 import { PortalMessageService } from '@onecx/angular-integration-interface'
 
 import { Slot, SlotsAPIService } from 'src/app/shared/generated'
-import { SlotDeleteComponent } from './slot-delete.component'
+
 import { SlotData } from '../slot-search/slot-search.component'
+import { SlotDeleteComponent } from './slot-delete.component'
 
 describe('SlotDeleteComponent', () => {
   let component: SlotDeleteComponent
@@ -27,21 +25,23 @@ describe('SlotDeleteComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [SlotDeleteComponent],
       imports: [
+        SlotDeleteComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
-      ],
-      providers: [
-        provideHttpClientTesting(),
-        provideHttpClient(),
-        { provide: SlotsAPIService, useValue: apiSlotServiceSpy },
-        { provide: PortalMessageService, useValue: msgServiceSpy }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents()
+      ]
+    })
+      .overrideComponent(SlotDeleteComponent, {
+        add: {
+          providers: [
+            { provide: SlotsAPIService, useValue: apiSlotServiceSpy },
+            { provide: PortalMessageService, useValue: msgServiceSpy }
+          ]
+        }
+      })
+      .compileComponents()
   }))
 
   beforeEach(() => {

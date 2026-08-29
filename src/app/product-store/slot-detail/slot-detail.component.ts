@@ -1,8 +1,18 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core'
-import { FormControl, FormGroup, Validators } from '@angular/forms'
-import { TranslateService } from '@ngx-translate/core'
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { finalize, map } from 'rxjs'
+
+import { ButtonModule } from 'primeng/button'
+import { DialogModule } from 'primeng/dialog'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputTextModule } from 'primeng/inputtext'
+import { MessageModule } from 'primeng/message'
 import { Table } from 'primeng/table'
+import { TabsModule } from 'primeng/tabs'
+import { TooltipModule } from 'primeng/tooltip'
 
 import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
 
@@ -22,7 +32,21 @@ export interface SlotForm {
 
 @Component({
   selector: 'app-slot-detail',
-  standalone: false,
+  standalone: true,
+  imports: [
+    SlotInternComponent,
+    ButtonModule,
+    DialogModule,
+    FloatLabelModule,
+    InputGroupAddonModule,
+    InputGroupModule,
+    InputTextModule,
+    MessageModule,
+    ReactiveFormsModule,
+    TabsModule,
+    TooltipModule,
+    TranslateModule
+  ],
   templateUrl: './slot-detail.component.html',
   styleUrls: ['./slot-detail.component.scss']
 })
@@ -37,7 +61,7 @@ export class SlotDetailComponent implements OnInit, OnChanges {
   @ViewChild(SlotInternComponent, { static: false }) appInternComponent!: SlotInternComponent
 
   public formGroupSlot: FormGroup
-  public selectedTabIndex = 0
+  public selectedTabIndex = '0'
   public dialogTitleKey: string | undefined = undefined
   public loading = false
   public hasCreatePermission = false
@@ -71,7 +95,7 @@ export class SlotDetailComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     if (this.displayDialog && this.slot) {
-      this.selectedTabIndex = 0
+      this.selectedTabIndex = '0'
       this.dialogTitleKey = undefined
       this.formGroupSlot.reset()
       this.formGroupSlot.disable()
@@ -165,8 +189,8 @@ export class SlotDetailComponent implements OnInit, OnChanges {
     if (this.slot) this.slot.undeployed = val
   }
 
-  public onTabChange(index: string | number) {
-    this.selectedTabIndex = typeof index === 'number' ? index : Number(index)
+  public onTabChange(tabValue: string | number) {
+    this.selectedTabIndex = typeof tabValue === 'number' ? tabValue.toString() : tabValue
   }
 
   public onSave() {

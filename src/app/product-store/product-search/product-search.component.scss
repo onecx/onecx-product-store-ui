@@ -1,32 +1,23 @@
-@import '/src/app/_ps-mixins.scss';
+@use '/src/app/_ps-mixins.scss' as *;
 
-@include correct-data-view-control;
-@include correct-search-criteria;
-@include correct-select-button;
-@include displaying-text-responsive;
-@include correct-ocx-interactive-data-view;
 @include card-badges;
 @include danger-action;
+@include ocx-p-message;
+@include ocx-text-responsive;
+@include ocx-interactive-data-view-fixes;
+@include dataview-list-flex-zebra-rows;
 
 :host ::ng-deep {
-  .correct-min-size .p-multiselect-label-container {
-    min-width: 9rem;
+  .ocx-content > div {
+    margin-bottom: 0 !important;
+    padding: 0.75rem 0.5rem !important;
   }
-  .card-badge-right {
-    right: 3px;
-  }
-  .card-badge-left {
-    left: 3px;
-  }
-  .p-dataview-grid .p-dataview-content .grid {
-    gap: 0 !important;
-  }
-  .p-dataview-grid .p-dataview-content .grid .card {
-    box-shadow:
-      0 2px 1px -1px rgba(0, 0, 0, 0.2),
-      0 1px 1px 0 rgba(0, 0, 0, 0.14),
-      0 1px 3px 0 rgba(0, 0, 0, 0.12);
-  }
+
+  /* fixes for p-card */
+  --onecx-product-store-onecx-product-store-ui-card-body-padding: 0.5rem;
+  --onecx-product-store-onecx-product-store-ui-card-border-radius: 4px;
+  --onecx-product-store-onecx-product-store-ui-card-shadow:
+    rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
 }
 
 @media screen and (min-width: 768px) {

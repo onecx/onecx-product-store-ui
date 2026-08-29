@@ -1,9 +1,6 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { provideHttpClient } from '@angular/common/http'
-import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
-import { of, throwError } from 'rxjs'
+import { BehaviorSubject, of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
 import { ConfigurationService, PortalMessageService, UserService } from '@onecx/angular-integration-interface'
@@ -47,9 +44,7 @@ describe('SlotDetailComponent', () => {
     })
   }
   const mockUserService = {
-    lang$: {
-      getValue: jasmine.createSpy('getValue').and.returnValue('en')
-    },
+    lang$: new BehaviorSubject<string>('en'),
     hasPermission: jasmine.createSpy('hasPermission').and.callFake((permission: string) => {
       return ['APP#CREATE', 'APP#DELETE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
     })
@@ -57,23 +52,28 @@ describe('SlotDetailComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [SlotDetailComponent],
+      declarations: [],
       imports: [
+        SlotDetailComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
       providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        { provide: SlotsAPIService, useValue: slotsAPIService },
-        { provide: PortalMessageService, useValue: msgServiceSpy },
         { provide: ConfigurationService, useValue: configServiceSpy },
         { provide: UserService, useValue: mockUserService }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents()
+      ]
+    })
+      .overrideComponent(SlotDetailComponent, {
+        add: {
+          providers: [
+            { provide: PortalMessageService, useValue: msgServiceSpy },
+            { provide: SlotsAPIService, useValue: slotsAPIService }
+          ]
+        }
+      })
+      .compileComponents()
   }))
 
   beforeEach(() => {
@@ -327,10 +327,10 @@ describe('SlotDetailComponent', () => {
   describe('on tab change', () => {
     it('should set selectedTabIndex onTabChange', () => {
       component.onTabChange(1)
-      expect(component.selectedTabIndex).toBe(1)
+      expect(component.selectedTabIndex).toBe('1')
 
       component.onTabChange('2')
-      expect(component.selectedTabIndex).toBe(2)
+      expect(component.selectedTabIndex).toBe('2')
     })
   })
 

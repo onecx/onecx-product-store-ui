@@ -217,8 +217,12 @@
       "SUBHEADER": "Application Details"
     },
     "DATAVIEW": {
-      "FILTER": "Filter",
-      "FILTER_OF": "Filter for ",
+      "FILTER": {
+        "LABEL": "Filter",
+        "OF": "Filter of ",
+        "CLEAR": "Clear Filter",
+        "PLACEHOLDER": "Filter"
+      },
       "SORT_BY": "Sort By",
       "SORT_DIRECTION_ASC": "ascending",
       "SORT_DIRECTION_DESC": "descending",
@@ -282,11 +286,6 @@
     }
   },
   "SEARCH": {
-    "FILTER": {
-      "LABEL": "Filter",
-      "TOOLTIP": "Filter by Display Name, Provider, Classification or Version",
-      "CLEAR": "Clear filter"
-    },
     "ENDPOINT": {
       "FILTER": {
         "LABEL": "Filter",

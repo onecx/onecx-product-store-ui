@@ -1,10 +1,32 @@
-import { Component, OnInit } from '@angular/core'
-import { ActivatedRoute, Router } from '@angular/router'
-import { FormControl, FormGroup } from '@angular/forms'
-import { BehaviorSubject, finalize, map, of, Observable, catchError } from 'rxjs'
-import { TranslateService } from '@ngx-translate/core'
+import { Component, DestroyRef, inject, OnInit } from '@angular/core'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
+import { AsyncPipe } from '@angular/common'
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { ActivatedRoute, Router, RouterModule } from '@angular/router'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
+import { BehaviorSubject, finalize, map, of, Observable, catchError, switchMap } from 'rxjs'
 
-import { Action, ColumnType, DataSortDirection, DataTableColumn, Filter, Sort } from '@onecx/angular-accelerator'
+import { ButtonModule } from 'primeng/button'
+import { CardModule } from 'primeng/card'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { InputTextModule } from 'primeng/inputtext'
+import { MessageModule } from 'primeng/message'
+import { MultiSelectModule } from 'primeng/multiselect'
+import { TooltipModule } from 'primeng/tooltip'
+
+import {
+  Action,
+  AngularAcceleratorModule,
+  ColumnType,
+  DataSortDirection,
+  DataTableColumn,
+  Filter,
+  RowListGridData,
+  Sort
+} from '@onecx/angular-accelerator'
+import { PortalPageComponent } from '@onecx/angular-utils'
 
 import {
   ImagesInternalAPIService,
@@ -16,6 +38,7 @@ import {
   RefType
 } from 'src/app/shared/generated'
 import { Utils } from 'src/app/shared/utils'
+import { ImageContainerComponent } from 'src/app/shared/image-container/image-container.component'
 
 export interface ProductSearchCriteriaControls {
   name: FormControl<string | null>
@@ -26,30 +49,59 @@ export interface ProductSearchCriteriaControls {
 type ProductAbstractExtended = ProductAbstract & { classes?: string }
 
 @Component({
-  standalone: false,
+  standalone: true,
+  imports: [
+    AngularAcceleratorModule,
+    AsyncPipe,
+    ButtonModule,
+    CardModule,
+    FloatLabelModule,
+    InputGroupAddonModule,
+    InputGroupModule,
+    InputTextModule,
+    MessageModule,
+    MultiSelectModule,
+    ReactiveFormsModule,
+    RouterModule,
+    TooltipModule,
+    TranslateModule,
+    // components
+    PortalPageComponent,
+    ImageContainerComponent
+  ],
   templateUrl: './product-search.component.html',
   styleUrls: ['./product-search.component.scss']
 })
 export class ProductSearchComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef)
+  private readonly route = inject(ActivatedRoute)
+  private readonly router = inject(Router)
+  private readonly productApi = inject(ProductsAPIService)
+  private readonly imageApi = inject(ImagesInternalAPIService)
+  private readonly translate = inject(TranslateService)
   // dialog
   public loading = false
-  public exceptionKey: string | undefined
+  public exceptionKey: string | undefined = undefined
   public actions$: Observable<Action[]> | undefined
   public viewMode: 'grid' | 'list' = 'grid'
   // data
   public products$!: Observable<ProductAbstractExtended[]>
-  public criteria$!: Observable<ProductCriteria>
+  public productSearchCriterias$!: Observable<ProductCriteria>
   public filteredData$ = new BehaviorSubject<ProductAbstractExtended[]>([])
-  public resultData$ = new BehaviorSubject<ProductAbstractExtended[]>([])
-  public searchCriteria!: FormGroup<ProductSearchCriteriaControls>
-  public filter: string | undefined
-  public interactiveFilters: Filter[] = []
-  public sortDirection: DataSortDirection = DataSortDirection.ASCENDING
-  public sortField = 'displayName'
-  public sortOrder = 1
+  public readonly resultData$ = new BehaviorSubject<ProductAbstractExtended[]>([])
+  private readonly searchCriteria$ = new BehaviorSubject<ProductSearchCriteria>({})
+  public searchCriteriaForm = new FormGroup<ProductSearchCriteriaControls>({
+    name: new FormControl<string | null>(null),
+    providers: new FormControl<string[] | null>(null),
+    classifications: new FormControl<string[] | null>(null)
+  })
   public quickFilterItems: string[] = []
-  private filterData = ''
-  public dataViewColumns: DataTableColumn[] = [
+  public globalFilterValue = ''
+  public interactiveFilters: Filter[] = []
+  public interactiveSortDirection: DataSortDirection = DataSortDirection.ASCENDING
+  public interactiveSortField = 'displayName'
+  public interactiveSortOrder = 1
+  public interactiveColumns: DataTableColumn[] = [
     {
       id: 'displayName',
       nameKey: 'PRODUCT.DISPLAY_NAME',
@@ -69,83 +121,70 @@ export class ProductSearchComponent implements OnInit {
     { id: 'undeployed', nameKey: 'PRODUCT.UNDEPLOYED', columnType: ColumnType.STRING, filterable: true },
     { id: 'multitenancy', nameKey: 'INTERNAL.MULTITENANCY', columnType: ColumnType.STRING, filterable: true }
   ]
-  public displayedColumnKeys: string[] = this.dataViewColumns.map((column) => column.id)
-
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly translate: TranslateService,
-    private readonly productApi: ProductsAPIService,
-    private readonly imageApi: ImagesInternalAPIService
-  ) {
-    this.searchCriteria = new FormGroup<ProductSearchCriteriaControls>({
-      name: new FormControl<string | null>(null),
-      providers: new FormControl<string[] | null>(null),
-      classifications: new FormControl<string[] | null>(null)
-    })
-  }
+  public displayedColumnKeys: string[] = this.interactiveColumns.map((column) => column.id)
 
   ngOnInit(): void {
     this.preparePageActions()
-    this.initGlobalFilter()
-    this.searchProducts()
-    this.getCriteria()
+    this.getProductSearchCriterias()
+    this.onSearch()
   }
 
-  private initGlobalFilter(): void {
-    this.resultData$
-      .pipe(map((products) => (this.filterData.trim() ? this.stringFilter(this.filterData, products) : products)))
-      .subscribe({
-        next: (filteredData) => this.filteredData$.next(filteredData)
-      })
-  }
+  private prepareSearchCriteria(): void {
+    const name = this.searchCriteriaForm.controls['name'].value ?? undefined
+    const providers = this.searchCriteriaForm.controls['providers'].value ?? undefined
+    const classifications = this.searchCriteriaForm.controls['classifications'].value ?? undefined
 
-  private stringFilter(filter: string, products: ProductAbstractExtended[]): ProductAbstractExtended[] {
-    const lowerCaseFilter = filter.toLowerCase()
-    return products.filter((product) => {
-      return ['displayName', 'name', 'provider', 'classes', 'version'].some((key: string) => {
-        const value = Utils.toSearchableText(product[key as keyof ProductAbstractExtended])
-        return value?.toLowerCase().includes(lowerCaseFilter)
-      })
+    this.searchCriteria$.next({
+      ...(name ? { names: [name] } : {}),
+      ...(providers ? { providers: providers } : {}),
+      ...(classifications ? { classifications: classifications } : {}),
+      pageSize: 1000
     })
   }
 
-  private searchProducts(): void {
-    this.loading = true
-    const criteria: ProductSearchCriteria = {
-      names: this.searchCriteria.controls['name'].value ? [this.searchCriteria.controls['name'].value] : undefined,
-      providers: this.searchCriteria.controls['providers'].value ?? undefined,
-      classifications: this.searchCriteria.controls['classifications'].value ?? undefined,
-      pageSize: 1000
-    }
-    this.products$ = this.productApi.searchProducts({ productSearchCriteria: criteria }).pipe(
-      map((data: ProductPageResult) => {
-        const products: ProductAbstractExtended[] = []
-        if (data.stream)
-          for (const p of data.stream) {
-            products.push({ ...p, classes: p.classifications?.join(', ') })
-            if (p.classifications)
-              for (const c of p.classifications) if (!this.quickFilterItems.includes(c)) this.quickFilterItems.push(c)
-          }
-        return products.sort(this.sortProductsByDisplayName)
-      }),
-      catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
-        console.error('searchProducts', err)
-        return of([])
-      }),
-      finalize(() => (this.loading = false))
+  public onSearch(): void {
+    this.prepareSearchCriteria()
+    this.products$ = this.searchCriteria$.pipe(
+      switchMap((productSearchCriterias) => {
+        this.loading = true
+        this.exceptionKey = undefined
+
+        return this.productApi.searchProducts({ productSearchCriteria: productSearchCriterias }).pipe(
+          map((data: ProductPageResult) => {
+            const products: ProductAbstractExtended[] = []
+            if (data.stream)
+              for (const p of data.stream) {
+                products.push({ ...p, classes: p.classifications?.join(', ') })
+                if (p.classifications)
+                  for (const c of p.classifications)
+                    if (!this.quickFilterItems.includes(c)) this.quickFilterItems.push(c)
+              }
+            return products.sort(this.sortProductsByDisplayName)
+          }),
+          catchError((err) => {
+            this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+            console.error('searchProducts', err)
+            return of([])
+          }),
+          finalize(() => (this.loading = false)),
+          takeUntilDestroyed(this.destroyRef)
+        )
+      })
     )
     this.products$.subscribe({
-      next: (products) => this.resultData$.next(products)
+      next: (products) => {
+        this.resultData$.next(products)
+        this.filteredData$.next(products)
+      }
     })
   }
+
   public sortProductsByDisplayName(a: ProductAbstract, b: ProductAbstract): number {
-    return (a.displayName as string).toUpperCase().localeCompare((b.displayName as string).toUpperCase())
+    return (a.displayName ?? '').toUpperCase().localeCompare((b.displayName ?? '').toUpperCase())
   }
 
-  private getCriteria(): void {
-    this.criteria$ = this.productApi.getProductSearchCriteria().pipe(
+  private getProductSearchCriterias(): void {
+    this.productSearchCriterias$ = this.productApi.getProductSearchCriteria().pipe(
       catchError((err) => {
         console.error('getProductSearchCriteria', err)
         return of({ providers: [], classifications: [] })
@@ -211,35 +250,57 @@ export class ProductSearchComponent implements OnInit {
   /**
    * UI EVENTS
    */
+  public onGlobalFilter(val: string): void {
+    this.globalFilterValue = val.trim().toLowerCase()
+    this.resultData$.asObservable().subscribe((data) => {
+      if (this.globalFilterValue === '') {
+        this.filteredData$.next(data)
+        return
+      }
+      const fd = this.stringFilter(this.globalFilterValue, data)
+      this.filteredData$.next(fd)
+    })
+  }
+
+  private stringFilter(filter: string, endpoints: ProductAbstractExtended[]): ProductAbstractExtended[] {
+    const lowerCaseFilter = filter.toLowerCase()
+    return endpoints.filter((endpoint) => {
+      return ['displayName', 'name'].some((key: string) => {
+        // Get a searchable text representation of column value, ignore empty values
+        const searchableText = Utils.toSearchableText(endpoint[key as keyof ProductAbstractExtended])
+        if (!searchableText) return false
+        return searchableText.toLowerCase().includes(lowerCaseFilter)
+      })
+    })
+  }
+
   public onLayoutChange(viewMode: 'grid' | 'list' | 'table'): void {
     if (viewMode !== 'table') this.viewMode = viewMode
   }
-  public onFilterChange(filter: string): void {
-    this.filter = filter
-    this.filterData = filter
-    this.resultData$.next(this.resultData$.value)
-  }
+
   public onSortChange(field: string): void {
-    this.sortField = field
+    this.interactiveSortField = field
   }
   public onSortDirChange(asc: boolean): void {
-    this.sortOrder = asc ? -1 : 1
-    this.sortDirection = asc ? DataSortDirection.DESCENDING : DataSortDirection.ASCENDING
+    this.interactiveSortOrder = asc ? -1 : 1
+    this.interactiveSortDirection = asc ? DataSortDirection.DESCENDING : DataSortDirection.ASCENDING
   }
   public onInteractiveFiltersChange(filters: Filter[]): void {
     this.interactiveFilters = filters
   }
   public onInteractiveSorted(sort: Sort): void {
-    this.sortField = sort.sortColumn
-    this.sortDirection = sort.sortDirection
-    this.sortOrder = sort.sortDirection === DataSortDirection.DESCENDING ? -1 : 1
+    this.interactiveSortField = sort.sortColumn
+    this.interactiveSortDirection = sort.sortDirection
+    this.interactiveSortOrder = sort.sortDirection === DataSortDirection.DESCENDING ? -1 : 1
   }
 
-  public onSearch() {
-    this.searchProducts()
+  public onAppClick(item: RowListGridData): void {
+    const product = item as unknown as ProductAbstract
+    if (!product?.name) return
+    this.router.navigate(['./', product.name], { relativeTo: this.route })
   }
   public onSearchReset() {
-    this.searchCriteria.reset()
+    this.searchCriteriaForm.reset()
   }
   public onAppSearch() {
     this.router.navigate(['./apps'], { relativeTo: this.route })

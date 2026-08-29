@@ -7,8 +7,8 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <div id="ps_endpoint_search_criteria" [formGroup]="searchCriteria" class="flex flex-row flex-wrap gap-3">
-      <p-float-label variant="on">
+    <div id="ps_endpoint_search_criteria" [formGroup]="searchCriteriaForm" class="flex flex-row flex-wrap gap-3">
+      <p-floatlabel variant="on">
         <input
           id="ps_endpoint_search_criteria_product_name"
           pInputText
@@ -23,29 +23,30 @@
           tooltipEvent="hover"
         />
         <label for="ps_endpoint_search_criteria_product_name">{{ 'APP.PRODUCT_NAME' | translate }}</label>
-      </p-float-label>
+      </p-floatlabel>
     </div>
   </ocx-search-header>
 
-  <ocx-content>
-    <p-message
-      *ngIf="loading"
-      id="ps_endpoint_search_loading_message"
-      severity="info"
-      styleClass="m-3 p-2"
-      [text]="'ACTIONS.LOADING' | translate"
-    ></p-message>
-    <p-message
-      *ngIf="!loading && exceptionKey"
-      id="ps_endpoint_search_error_message"
-      severity="error"
-      styleClass="m-3 p-2"
-      [text]="exceptionKey | translate"
-    ></p-message>
-
+  @let data = $any((filteredData$ | async) ?? []);
+  <ocx-content class="ocx-content">
+    @if (loading) {
+      <p-message
+        id="ps_endpoint_search_loading_message"
+        severity="info"
+        styleClass="m-3 p-2"
+        [text]="'ACTIONS.LOADING' | translate"
+      ></p-message>
+    } @else if (exceptionKey) {
+      <p-message
+        id="ps_endpoint_search_error_message"
+        severity="error"
+        styleClass="m-3 p-2"
+        [text]="exceptionKey | translate"
+      ></p-message>
+    }
     <ocx-interactive-data-view
       id="ps_endpoint_search_table"
-      [data]="$any((filteredData$ | async) ?? [])"
+      [data]="data"
       [supportedViewLayouts]="['table']"
       [layout]="'table'"
       [columns]="interactiveColumns"
@@ -67,39 +68,39 @@
       (dataViewLayoutChange)="onLayoutChange($event)"
     >
       <ng-template #topCenter>
-        <p-inputgroup class="w-auto tm-filter-group">
+        <p-inputgroup class="w-auto">
           <p-inputgroup-addon>
-            <i class="pi pi-filter"></i>
+            <i class="pi pi-filter" aria-hidden="true"></i>
           </p-inputgroup-addon>
-          <p-float-label variant="on">
+          <p-floatlabel variant="on">
             <input
-              #filterInput
-              id="tm_search_filter"
+              #globalFilterInput
+              id="ps_endpoint_search_filter"
               type="text"
-              class="tm-filter-input"
               pInputText
-              [value]="tableFilter"
-              [tooltipPosition]="'bottom'"
+              [value]="globalFilterValue"
+              (input)="onGlobalFilter(globalFilterInput.value)"
               [pTooltip]="'SEARCH.ENDPOINT.FILTER.TOOLTIP' | translate"
+              tooltipPosition="top"
               tooltipEvent="hover"
-              (input)="onFilterChange(filterInput.value)"
             />
-            <label for="tm_search_filter" aria-hidden="true"> {{ 'SEARCH.ENDPOINT.FILTER.LABEL' | translate }}</label>
-          </p-float-label>
+            <label for="ps_endpoint_search_filter" aria-hidden="true">
+              {{ 'SEARCH.ENDPOINT.FILTER.LABEL' | translate }}</label
+            >
+          </p-floatlabel>
           <p-button
-            id="tm_search_filter_clear"
+            id="ps_endpoint_search_filter_clear"
             icon="pi pi-filter-slash"
-            styleClass="tm-filter-clear"
-            [disabled]="!tableFilter"
+            (onClick)="onGlobalFilter('')"
+            [disabled]="!globalFilterValue"
             [ariaLabel]="'SEARCH.ENDPOINT.FILTER.CLEAR' | translate"
             [pTooltip]="'SEARCH.ENDPOINT.FILTER.CLEAR' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
-            (click)="onFilterChange('')"
-            (keydown.enter)="onFilterChange('')"
           />
         </p-inputgroup>
       </ng-template>
+
       <ng-template pTemplate="appNameIdTableCell" let-rowObject="rowObject" let-column="column">
         <a
           tabindex="0"

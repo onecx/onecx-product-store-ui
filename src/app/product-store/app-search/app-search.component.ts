@@ -1,13 +1,27 @@
-import { Component, OnInit, OnDestroy } from '@angular/core'
-import { FormControl, FormGroup } from '@angular/forms'
+import { Component, OnInit, inject, DestroyRef } from '@angular/core'
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
+import { AsyncPipe, NgClass } from '@angular/common'
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
-import { TranslateService } from '@ngx-translate/core'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
+import { combineLatest, finalize, map, of, Observable, catchError, BehaviorSubject } from 'rxjs'
+
+import { ButtonModule } from 'primeng/button'
+import { CardModule } from 'primeng/card'
+import { DialogModule } from 'primeng/dialog'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
+import { InputGroupModule } from 'primeng/inputgroup'
+import { InputTextModule } from 'primeng/inputtext'
+import { MessageModule } from 'primeng/message'
+import { SelectButtonModule } from 'primeng/selectbutton'
 import { SelectItem } from 'primeng/api'
-import { combineLatest, finalize, map, of, Observable, Subject, catchError, BehaviorSubject } from 'rxjs'
+import { TooltipModule } from 'primeng/tooltip'
 
 import { UserService } from '@onecx/angular-integration-interface'
 import {
   Action,
+  AngularAcceleratorModule,
   ColumnType,
   DataSortDirection,
   DataTableColumn,
@@ -15,9 +29,9 @@ import {
   FilterType,
   Sort
 } from '@onecx/angular-accelerator'
-import { ChangeMode } from '../product-detail/product-detail.component'
-import { Utils } from 'src/app/shared/utils'
+import { PortalPageComponent } from '@onecx/angular-utils'
 
+import { Utils } from 'src/app/shared/utils'
 import {
   MicrofrontendPageResult,
   MicrofrontendsAPIService,
@@ -26,6 +40,9 @@ import {
   MicroservicePageResult,
   MicroservicesAPIService
 } from 'src/app/shared/generated'
+import { ChangeMode } from '../product-detail/product-detail.component'
+import { AppDetailComponent } from '../app-detail/app-detail.component'
+import { AppDeleteComponent } from '../app-delete/app-delete.component'
 
 export interface AppSearchCriteria {
   appName: FormControl<string | null>
@@ -38,16 +55,40 @@ export type AppFilterType = 'ALL' | AppType
 export type AppAbstract = Microservice & { appType: AppType; appTypeKey?: string; mfeType?: MicrofrontendType }
 
 @Component({
-  standalone: false,
+  standalone: true,
+  imports: [
+    AngularAcceleratorModule,
+    AsyncPipe,
+    NgClass,
+    ButtonModule,
+    CardModule,
+    DialogModule,
+    FloatLabelModule,
+    FormsModule,
+    InputGroupAddonModule,
+    InputGroupModule,
+    InputTextModule,
+    MessageModule,
+    ReactiveFormsModule,
+    SelectButtonModule,
+    TooltipModule,
+    TranslateModule,
+    // components
+    PortalPageComponent,
+    AppDetailComponent,
+    AppDeleteComponent
+  ],
   templateUrl: './app-search.component.html',
   styleUrls: ['./app-search.component.scss']
 })
-export class AppSearchComponent implements OnInit, OnDestroy {
-  private readonly destroy$ = new Subject()
+export class AppSearchComponent implements OnInit {
+  private readonly destroyRef = inject(DestroyRef)
+  // dialog
   public exceptionKey: string | undefined
   public loading = true
   public actions$: Observable<Action[]> | undefined
   public dateFormat = 'medium'
+  // data
   public apps$!: Observable<AppAbstract[]>
   public filteredData$ = new BehaviorSubject<AppAbstract[]>([])
   public resultData$ = new BehaviorSubject<AppAbstract[]>([])
@@ -55,7 +96,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public mss$!: Observable<MicroservicePageResult>
   private filterData = ''
   public app: AppAbstract | undefined
-  public appSearchCriteriaGroup!: FormGroup<AppSearchCriteria>
+  public appSearchCriteriaForm!: FormGroup<AppSearchCriteria>
   public viewMode: 'grid' | 'list' = 'grid'
   public changeMode: ChangeMode = 'VIEW'
   public appTypeItems: SelectItem[]
@@ -66,13 +107,12 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public filterValue: string | undefined
   public filterValueDefault = 'appId,appName,appType,appVersion,productName,classifications'
   public filterBy = this.filterValueDefault
-  public filter: string | undefined
+  public globalFilterValue: string | undefined
   public tableFilter = ''
   public interactiveFilters: Filter[] = []
   public sortDirection: DataSortDirection = DataSortDirection.ASCENDING
   public sortField = 'appId'
   public sortOrder = 1
-  public searchInProgress = false
   public displayDetailDialog = false
   public displayDeleteDialog = false
   public hasCreatePermission = false
@@ -109,12 +149,12 @@ export class AppSearchComponent implements OnInit, OnDestroy {
       { label: 'ACTIONS.SEARCH.APP.QUICK_FILTER.MFE', value: 'MFE' },
       { label: 'ACTIONS.SEARCH.APP.QUICK_FILTER.MS', value: 'MS' }
     ]
-    this.appSearchCriteriaGroup = new FormGroup<AppSearchCriteria>({
+    this.appSearchCriteriaForm = new FormGroup<AppSearchCriteria>({
       appName: new FormControl<string | null>(null),
       appType: new FormControl<AppFilterType | null>('ALL'),
       productName: new FormControl<string | null>(null)
     })
-    this.appSearchCriteriaGroup.controls['appType'].setValue('ALL') // default: all app types
+    this.appSearchCriteriaForm.controls['appType'].setValue('ALL') // default: all app types
     // quick filter
     this.quickFilterItems = [
       { label: 'ACTIONS.SEARCH.APP.QUICK_FILTER.ALL', value: 'ALL' },
@@ -134,10 +174,6 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     this.hasCreatePermission = await this.user.hasPermission('APP#CREATE')
     this.hasDeletePermission = await this.user.hasPermission('APP#DELETE')
     this.hasEditPermission = await this.user.hasPermission('APP#EDIT')
-  }
-  public ngOnDestroy(): void {
-    this.destroy$.next(undefined)
-    this.destroy$.complete()
   }
 
   /**
@@ -168,8 +204,8 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     this.mfes$ = this.mfeApi
       .searchMicrofrontends({
         mfeAndMsSearchCriteria: {
-          appName: this.appSearchCriteriaGroup.controls['appName'].value,
-          productName: this.appSearchCriteriaGroup.controls['productName'].value,
+          appName: this.appSearchCriteriaForm.controls['appName'].value,
+          productName: this.appSearchCriteriaForm.controls['productName'].value,
           pageSize: 1000
         }
       })
@@ -179,15 +215,16 @@ export class AppSearchComponent implements OnInit, OnDestroy {
           console.error('searchMicrofrontends', err)
           return of({})
         }),
-        finalize(() => (this.searchInProgress = false))
+        finalize(() => (this.loading = false)),
+        takeUntilDestroyed(this.destroyRef)
       )
   }
   private declareMsObservable(): void {
     this.mss$ = this.msApi
       .searchMicroservice({
         mfeAndMsSearchCriteria: {
-          appName: this.appSearchCriteriaGroup.controls['appName'].value,
-          productName: this.appSearchCriteriaGroup.controls['productName'].value,
+          appName: this.appSearchCriteriaForm.controls['appName'].value,
+          productName: this.appSearchCriteriaForm.controls['productName'].value,
           pageSize: 1000
         }
       })
@@ -197,7 +234,8 @@ export class AppSearchComponent implements OnInit, OnDestroy {
           console.error('searchMicroservice', err)
           return of({})
         }),
-        finalize(() => (this.searchInProgress = false))
+        finalize(() => (this.loading = false)),
+        takeUntilDestroyed(this.destroyRef)
       )
   }
 
@@ -234,9 +272,9 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   }
 
   public searchApps(): void {
-    this.searchInProgress = true
+    this.loading = true
     this.exceptionKey = undefined
-    switch (this.appSearchCriteriaGroup.controls['appType'].value) {
+    switch (this.appSearchCriteriaForm.controls['appType'].value) {
       case 'ALL':
         this.apps$ = combineLatest([this.searchMfes(), this.searchMss()]).pipe(
           map(([mfes, mss]) => mfes.concat(mss).sort(this.sortAppsByAppId))
@@ -331,32 +369,32 @@ export class AppSearchComponent implements OnInit, OnDestroy {
   public onAppTypeFilterChange(ev: any): void {
     if (ev.value) this.appTypeFilterValue = ev.value
   }
-  public onQuickFilterChange(ev: any): void {
+  public onQuickFilterChange(val: string): void {
     // handle PrimeNG bug - start (each 2nd click removes the value)
-    if (ev.value) this.quickFilterValueOld = this.quickFilterValue
-    if (!ev.value) this.quickFilterValue = this.quickFilterValueOld
+    if (val) this.quickFilterValueOld = this.quickFilterValue
+    if (!val) this.quickFilterValue = this.quickFilterValueOld
     // handle PrimeNG bug - end
-    if (ev.value === 'ALL') {
+    if (val === 'ALL') {
       this.filterBy = this.filterValueDefault
       this.filterValue = ''
       this.interactiveFilters = this.interactiveFilters.filter((f) => f.columnId !== 'appType')
     } else {
       this.filterBy = 'appType'
-      if (ev.value) {
-        this.filterValue = ev.value
+      if (val) {
+        this.filterValue = val
         this.interactiveFilters = [
           ...this.interactiveFilters.filter((f) => f.columnId !== 'appType'),
           {
             columnId: 'appType',
-            value: ev.value,
+            value: val,
             filterType: FilterType.EQUALS
           }
         ]
       }
     }
   }
-  public onFilterChange(filter: string): void {
-    this.filter = filter
+  public onGlobalFilter(filter: string): void {
+    this.globalFilterValue = filter
     this.filterData = filter
     this.resultData$.next(this.resultData$.value)
   }
@@ -381,7 +419,7 @@ export class AppSearchComponent implements OnInit, OnDestroy {
     this.searchApps()
   }
   public onSearchReset() {
-    this.appSearchCriteriaGroup.reset({ appType: 'ALL' })
+    this.appSearchCriteriaForm.reset({ appType: 'ALL' })
   }
   public onGotoProduct(ev: any, product: string) {
     ev.stopPropagation()

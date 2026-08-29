@@ -7,8 +7,8 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <div id="ps_product_search_criteria" [formGroup]="searchCriteria" class="flex flex-row flex-wrap gap-3">
-      <p-float-label variant="on">
+    <div id="ps_product_search_criteria" [formGroup]="searchCriteriaForm" class="flex flex-row flex-wrap gap-3">
+      <p-floatlabel variant="on">
         <input
           id="ps_product_search_criteria_name"
           pInputText
@@ -21,73 +21,74 @@
           tooltipEvent="hover"
         />
         <label for="ps_product_search_criteria_name" aria-hidden="true">{{ 'PRODUCT.NAME' | translate }}</label>
-      </p-float-label>
-      <ng-container *ngIf="criteria$ | async as criteria">
-        <p-float-label variant="on">
-          <p-multiSelect
-            id="ps_product_search_criteria_providers"
-            formControlName="providers"
-            styleClass="text-responsive"
-            [options]="criteria.providers"
-            appendTo="body"
-            display="chip"
-            [maxSelectedLabels]="2"
-            [emptyMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
-            [ariaLabel]="'PRODUCT.PROVIDER' | translate"
-            [pTooltip]="'PRODUCT.CRITERIA.PROVIDER' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          />
-          <label for="ps_product_search_criteria_providers" aria-hidden="true">
-            {{ 'PRODUCT.PROVIDER' | translate }}
-          </label>
-        </p-float-label>
-        <p-float-label variant="on">
-          <p-multiSelect
-            id="ps_product_search_criteria_classifications"
-            formControlName="classifications"
-            styleClass="correct-min-size text-responsive"
-            [options]="criteria.classifications"
-            appendTo="body"
-            display="chip"
-            [maxSelectedLabels]="2"
-            [emptyMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
-            [ariaLabel]="'PRODUCT.CLASSIFICATIONS' | translate"
-            [pTooltip]="'PRODUCT.CRITERIA.CLASSIFICATIONS' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          />
-          <label for="ps_product_search_criteria_classifications" aria-hidden="true">
-            {{ 'PRODUCT.CLASSIFICATIONS' | translate }}
-          </label>
-        </p-float-label>
-      </ng-container>
+      </p-floatlabel>
+
+      @let criteria = productSearchCriterias$ | async;
+      <p-floatlabel variant="on">
+        <p-multiSelect
+          id="ps_product_search_criteria_providers"
+          styleClass="text-responsive w-11rem sm:w-15rem"
+          appendTo="body"
+          display="chip"
+          formControlName="providers"
+          [options]="criteria?.providers"
+          [maxSelectedLabels]="2"
+          [emptyMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
+          [ariaLabel]="'PRODUCT.PROVIDER' | translate"
+          [pTooltip]="'PRODUCT.CRITERIA.PROVIDER' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        />
+        <label for="ps_product_search_criteria_providers" aria-hidden="true">
+          {{ 'PRODUCT.PROVIDER' | translate }}
+        </label>
+      </p-floatlabel>
+      <p-floatlabel variant="on">
+        <p-multiSelect
+          id="ps_product_search_criteria_classifications"
+          styleClass="text-responsive w-11rem sm:w-15rem"
+          appendTo="body"
+          display="chip"
+          formControlName="classifications"
+          [options]="criteria?.classifications"
+          [maxSelectedLabels]="2"
+          [emptyMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
+          [ariaLabel]="'PRODUCT.CLASSIFICATIONS' | translate"
+          [pTooltip]="'PRODUCT.CRITERIA.CLASSIFICATIONS' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        />
+        <label for="ps_product_search_criteria_classifications" aria-hidden="true">
+          {{ 'PRODUCT.CLASSIFICATIONS' | translate }}
+        </label>
+      </p-floatlabel>
     </div>
   </ocx-search-header>
 
-  <ocx-content *ngIf="products$ | async as products">
-    <p-message
-      *ngIf="loading && !exceptionKey"
-      id="ps_product_search_loading_message"
-      severity="info"
-      styleClass="m-3"
-      [text]="'ACTIONS.LOADING' | translate"
-    ></p-message>
-    <p-message
-      *ngIf="exceptionKey"
-      id="ps_product_search_error_message"
-      severity="error"
-      styleClass="m-3"
-      [text]="exceptionKey | translate"
-    ></p-message>
-
+  @let data = $any((filteredData$ | async) ?? []);
+  <ocx-content class="ocx-content">
+    @if (loading) {
+      <p-message
+        id="ps_product_search_loading_message"
+        severity="info"
+        styleClass="m-1"
+        [text]="'ACTIONS.LOADING' | translate"
+      ></p-message>
+    } @else if (exceptionKey) {
+      <p-message
+        id="ps_product_search_error_message"
+        severity="error"
+        styleClass="m-1"
+        [text]="exceptionKey | translate"
+      ></p-message>
+    }
     <ocx-interactive-data-view
-      *ngIf="!loading && !exceptionKey"
       id="ps_product_search_dataview"
-      [data]="$any((filteredData$ | async) ?? [])"
+      styleClass="p-0"
+      [data]="data"
       [supportedViewLayouts]="['grid', 'list']"
       [layout]="viewMode"
-      [columns]="dataViewColumns"
+      [columns]="interactiveColumns"
       [displayedColumnKeys]="displayedColumnKeys"
       [listGridPaginator]="true"
       [tablePaginator]="false"
@@ -97,158 +98,177 @@
       [disableFilterView]="true"
       [clientSideFiltering]="true"
       [clientSideSorting]="true"
-      [sortField]="sortField"
-      [sortDirection]="sortDirection"
+      [sortField]="interactiveSortField"
+      [sortDirection]="interactiveSortDirection"
       [actionColumnPosition]="'left'"
       (sorted)="onInteractiveSorted($event)"
       (dataViewLayoutChange)="onLayoutChange($event)"
     >
       <ng-template #topCenter>
-        <p-inputgroup class="w-auto tm-filter-group">
+        <!-- GLOBAL Filter -->
+        <p-inputgroup class="w-auto">
           <p-inputgroup-addon>
-            <i class="pi pi-filter"></i>
+            <i class="pi pi-filter" aria-hidden="true"></i>
           </p-inputgroup-addon>
-          <p-float-label variant="on">
+          <p-floatlabel variant="on">
             <input
-              #filterInput
-              id="tm_search_filter"
+              #globalFilterInput
               type="text"
-              class="tm-filter-input"
               pInputText
-              [value]="filter ?? ''"
-              [tooltipPosition]="'bottom'"
-              [pTooltip]="'SEARCH.FILTER.TOOLTIP' | translate"
+              id="ps_product_search_filter"
+              class="text-responsive"
+              [value]="globalFilterValue"
+              (input)="onGlobalFilter(globalFilterInput.value)"
+              [ariaLabel]="'DIALOG.DATAVIEW.FILTER.LABEL' | translate"
+              [pTooltip]="
+                ('DIALOG.DATAVIEW.FILTER.OF' | translate) +
+                ('PRODUCT.DISPLAY_NAME' | translate) +
+                ', ' +
+                ('PRODUCT.NAME' | translate) +
+                ', ' +
+                ('PRODUCT.PROVIDER' | translate) +
+                ', ' +
+                ('PRODUCT.CLASSIFICATIONS' | translate) +
+                ', ' +
+                ('PRODUCT.VERSION' | translate)
+              "
+              tooltipPosition="top"
               tooltipEvent="hover"
-              (input)="onFilterChange(filterInput.value)"
             />
-            <label for="tm_search_filter" aria-hidden="true"> {{ 'SEARCH.FILTER.LABEL' | translate }}</label>
-          </p-float-label>
+            <label for="ps_product_search_filter" aria-hidden="true">
+              {{ 'DIALOG.DATAVIEW.FILTER.LABEL' | translate }}</label
+            >
+          </p-floatlabel>
           <p-button
-            id="tm_search_filter_clear"
+            id="ps_product_search_filter_clear"
             icon="pi pi-filter-slash"
-            styleClass="tm-filter-clear"
-            [disabled]="!filter"
-            [ariaLabel]="'SEARCH.FILTER.CLEAR' | translate"
-            [pTooltip]="'SEARCH.FILTER.CLEAR' | translate"
+            (onClick)="onGlobalFilter('')"
+            [disabled]="globalFilterInput.value === ''"
+            [ariaLabel]="'DIALOG.DATAVIEW.FILTER.CLEAR' | translate"
+            [pTooltip]="'DIALOG.DATAVIEW.FILTER.CLEAR' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
-            (click)="onFilterChange('')"
-            (keydown.enter)="onFilterChange('')"
           />
         </p-inputgroup>
       </ng-template>
 
-      <ng-template #listItem let-product>
+      <ng-template #listItem let-item>
         <article class="col-12 md:col-6">
           <div
-            [id]="'ps_product_search_data_list_row_' + product.name"
+            [id]="'ps_product_search_data_list_row_' + item.name"
             class="flex flex-row flex-nowrap justify-content-start align-items-center column-gap-3 py-1 px-1 sm:px-2 hover:bg-gray-200 cursor-pointer"
-            [routerLink]="['./' + product.name]"
+            [routerLink]="['./' + item.name]"
           >
             <div class="p-0 col-3 text-center">
               <app-image-container
-                [id]="'ps_product_search_data_list_row_' + product.name + '_image'"
+                [id]="'ps_product_search_data_list_row_' + item.name + '_image'"
                 styleClass="max-h-3rem sm:max-h-4rem max-w-4rem sm:max-w-6rem border-round-sm"
-                [imageUrl]="getLogoUrl(product)"
+                [imageUrl]="getLogoUrl(item)"
               ></app-image-container>
             </div>
             <div
               class="p-0 col-9 h-4rem sm:h-5rem max-h-4rem sm:max-h-5rem flex flex-column justify-content-center gap-1"
             >
               <div
-                [id]="'ps_product_search_data_list_row_' + product.name + '_product_display_name'"
+                [id]="'ps_product_search_data_list_row_' + item.name + '_product_display_name'"
                 class="font-bold text-sm md:text-base md:text-lg text-responsive"
-                [class.danger-action-text]="product.undeployed"
+                [class.danger-action-text]="item.undeployed"
               >
-                {{ product.displayName }}
+                {{ item.displayName }}
               </div>
               <div
                 class="hidden sm:block text-xs sm:text-sm text-responsive"
-                [id]="'ps_product_search_data_list_row_' + product.name + '_classifications'"
+                [id]="'ps_product_search_data_list_row_' + item.name + '_classifications'"
               >
-                {{ product.classes }}
+                {{ item.classes }}
               </div>
               <div class="flex flex-row column-gap-2 align-items-center">
-                <span *ngIf="product.provider" class="pi pi-users"></span>
+                @if (item.provider) {
+                  <span class="pi pi-users"></span>
+                }
                 <span
-                  [id]="'ps_product_search_data_list_row_' + product.name + '_provider'"
+                  [id]="'ps_product_search_data_list_row_' + item.name + '_provider'"
                   class="text-xs sm:text-sm md:text-base text-responsive"
-                  [attr.aria-label]="product.provider"
+                  [attr.aria-label]="item.provider"
                   [pTooltip]="'PRODUCT.PROVIDER' | translate"
                   tooltipPosition="top"
                   tooltipEvent="hover"
                 >
-                  {{ product.provider }}
+                  {{ item.provider }}
                 </span>
               </div>
               <div
                 class="text-xs sm:text-sm text-responsive"
-                [id]="'ps_product_search_data_list_row_' + product.name + '_version'"
+                [id]="'ps_product_search_data_list_row_' + item.name + '_version'"
               >
-                Version: {{ product.version }}
+                Version: {{ item.version }}
               </div>
             </div>
           </div>
         </article>
       </ng-template>
 
-      <ng-template #gridItem let-product>
-        <div class="col-6 md:col-4 xl:col-3 p-2 md:px-3" [attr.aria-label]="product.displayName">
-          <a
-            [id]="'ps_product_search_data_grid_row_' + product.name"
-            class="card relative p-1 sm:p-2 sm:px-3 flex flex-column gap-1 lg:gap-2 justify-content-between text-center hover:bg-gray-200 cursor-pointer"
-            routerLinkActive="active"
-            [routerLink]="['./', product.name]"
-            [attr.aria-label]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
-            role="link"
+      <ng-template #gridItem let-item>
+        <div class="col-6 md:col-4 lg:col-4 xl:col-3 p-2" [attr.aria-label]="item.displayName">
+          <p-card
+            [id]="'ps_product_search_data_grid_row_' + item.name"
+            [style]="{ margin: '0rem;' }"
+            styleClass="relative cursor-pointer hover:bg-gray-200 text-center m-2 p-1"
+            [attr.aria-label]="('ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate) + ' ' + item.displayName"
+            (click)="onAppClick(item)"
+            (keydown.enter)="onAppClick(item)"
+            role="button"
+            tabindex="0"
           >
             <!-- BADGES -->
-            <div
-              *ngIf="!product?.multitenancy"
-              [id]="'ps_product_search_data_grid_row_' + product.name + '_multitenancy'"
-              class="card-badge-left badge-1 p-2 pi pi-user-minus text-xl"
-              [attr.aria-label]="'INTERNAL.TOOLTIPS.MULTITENANCY_SEARCH' | translate"
-              [pTooltip]="'INTERNAL.TOOLTIPS.MULTITENANCY_SEARCH' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-              role="note"
-            ></div>
-            <div
-              *ngIf="product?.undeployed"
-              [id]="'ps_product_search_data_grid_row_' + product.name + '_undeployed'"
-              class="card-badge-right badge-1 p-2 pi pi-ban danger-action-text text-xl"
-              [attr.aria-label]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
-              [pTooltip]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-              role="note"
-            ></div>
+            @if (!item?.multitenancy) {
+              <div
+                [id]="'ps_product_search_data_grid_row_' + item.name + '_multitenancy'"
+                class="card-badge-left badge-1 p-2 pi pi-user-minus text-xl"
+                [attr.aria-label]="'INTERNAL.TOOLTIPS.MULTITENANCY_SEARCH' | translate"
+                [pTooltip]="'INTERNAL.TOOLTIPS.MULTITENANCY_SEARCH' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+                role="note"
+              ></div>
+            }
+            @if (item?.undeployed) {
+              <div
+                [id]="'ps_product_search_data_grid_row_' + item.name + '_undeployed'"
+                class="card-badge-right badge-1 p-2 pi pi-ban danger-action-text text-xl"
+                [attr.aria-label]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
+                [pTooltip]="'PRODUCT.TOOLTIPS.UNDEPLOYED_SEARCH' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+                role="note"
+              ></div>
+            }
             <!-- CONTENT -->
             <div
-              [id]="'ps_product_search_data_grid_row_' + product.name + '_product_display_name'"
+              [id]="'ps_product_search_data_grid_row_' + item.name + '_product_display_name'"
               class="font-bold text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-responsive"
-              [class.danger-action-text]="product.undeployed"
-              [attr.aria-label]="product.displayName"
-              [pTooltip]="product.displayName.length <= 20 ? '' : product.displayName"
+              [class.danger-action-text]="item.undeployed"
+              [attr.aria-label]="item.displayName"
+              [pTooltip]="item.displayName.length <= 20 ? '' : item.displayName"
               tooltipPosition="top"
               tooltipEvent="hover"
               role="note"
             >
-              {{ product.displayName }}
+              {{ item.displayName }}
             </div>
             <div
               class="h-3rem sm:h-4rem md:h-7rem lg:h-9rem flex justify-content-center align-items-center"
               aria-hidden="true"
             >
               <app-image-container
-                [id]="'ps_product_search_data_grid_row_' + product.name + '_image'"
-                styleClass="max-h-3rem sm:max-h-4rem md:max-h-7rem lg:max-h-9rem max-w-6rem sm:max-w-10rem md:max-w-11rem lg:max-w-13rem xl:max-w-14rem"
-                [imageUrl]="getLogoUrl(product)"
+                [id]="'ps_product_search_data_grid_row_' + item.name + '_image'"
+                styleClass="max-h-3rem sm:max-h-4rem md:max-h-7rem lg:max-h-8rem max-w-6rem sm:max-w-10rem md:max-w-11rem lg:max-w-13rem xl:max-w-14rem"
+                [imageUrl]="getLogoUrl(item)"
               ></app-image-container>
             </div>
             <div class="h-2rem sm:h-3rem md:h-4rem flex flex-column justify-content-between text-center">
               <div
-                [id]="'ps_product_search_data_grid_row_' + product.name + '_classification'"
+                [id]="'ps_product_search_data_grid_row_' + item.name + '_classification'"
                 class="hidden sm:block text-xs sm:text-sm md:text-base text-responsive"
                 [attr.aria-label]="'PRODUCT.CLASSIFICATIONS' | translate"
                 [pTooltip]="'PRODUCT.CLASSIFICATIONS' | translate"
@@ -256,12 +276,14 @@
                 tooltipEvent="hover"
                 role="note"
               >
-                {{ product.classes }}
+                {{ item.classes }}
               </div>
               <div class="flex flex-row column-gap-3 justify-content-center align-items-center">
-                <span *ngIf="product.provider" class="pi pi-users"></span>
+                @if (item.provider) {
+                  <span class="pi pi-users"></span>
+                }
                 <span
-                  [id]="'ps_product_search_data_grid_row_' + product.name + '_provider'"
+                  [id]="'ps_product_search_data_grid_row_' + item.name + '_provider'"
                   class="text-xs sm:text-sm md:text-base text-responsive"
                   [attr.aria-label]="'PRODUCT.PROVIDER' | translate"
                   [pTooltip]="'PRODUCT.PROVIDER' | translate"
@@ -269,11 +291,11 @@
                   tooltipEvent="hover"
                   role="note"
                 >
-                  {{ product.provider }}
+                  {{ item.provider }}
                 </span>
               </div>
               <div
-                [id]="'ps_product_search_data_list_row_' + product.name + '_version'"
+                [id]="'ps_product_search_data_list_row_' + item.name + '_version'"
                 class="text-xs sm:text-sm md:text-base text-responsive"
                 [attr.aria-label]="'PRODUCT.VERSION' | translate"
                 [pTooltip]="'PRODUCT.VERSION' | translate"
@@ -281,10 +303,10 @@
                 tooltipEvent="hover"
                 role="note"
               >
-                Version: {{ product.version ?? ('PRODUCT.VERSION.MISSING' | translate) }}
+                Version: {{ item.version ?? ('PRODUCT.VERSION.MISSING' | translate) }}
               </div>
             </div>
-          </a>
+          </p-card>
         </div>
       </ng-template>
     </ocx-interactive-data-view>

@@ -1,13 +1,17 @@
-@import '/src/app/_ps-mixins.scss';
+@use '/src/app/_ps-mixins.scss' as *;
 
+@include card-badges;
 @include danger-action;
-@include displaying-text-responsive;
-@include table-zebra-rows;
-@include table-inline-buttons;
-@include table-responsive-columns;
-@include dialog-footer-buttons;
+@include ocx-p-message;
+@include ocx-text-responsive;
+@include ocx-interactive-data-view-fixes;
 
 :host ::ng-deep {
+  .ocx-content > div {
+    margin-bottom: 0 !important;
+    padding: 0.75rem 0.5rem !important;
+  }
+
   /* special handling for zebra look on table rows */
 
   .p-datatable {
@@ -28,9 +32,8 @@
   .p-datatable-thead > tr > th:first-child,
   .p-datatable-tbody > tr > td:first-child {
     border-right: 1px solid var(--surface-border, #dee2e6);
-    width: 1%;
     white-space: nowrap;
-    text-align: center;
+    text-align: left;
     padding-left: 1.3rem;
     padding-right: 1.3rem;
   }
@@ -42,22 +45,6 @@
     justify-content: flex-start !important;
     gap: 0.35rem;
     height: auto !important;
-  }
-
-  ocx-interactive-data-view .table-header-wrapper > span:first-child {
-    white-space: nowrap;
-  }
-
-  ocx-interactive-data-view .icon-button-header-wrapper,
-  ocx-interactive-data-view .sortButton {
-    display: inline-flex;
-    align-items: center;
-    line-height: 1;
-  }
-
-  /* hide unusable slot extension point */
-  ocx-column-group-selection {
-    display: none;
   }
 
   .max-height-for-2-lines {

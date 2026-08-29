@@ -7,8 +7,8 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <form id="ps_slot_search_criteria" [formGroup]="searchCriteria" class="flex flex-row flex-wrap gap-3 md:px-2">
-      <p-float-label variant="on">
+    <form id="ps_slot_search_criteria" [formGroup]="searchCriteriaForm" class="flex flex-row flex-wrap gap-3 md:px-2">
+      <p-floatlabel variant="on">
         <input
           pInputText
           id="ps_slot_search_criteria_slot_name"
@@ -21,8 +21,8 @@
           tooltipEvent="hover"
         />
         <label for="ps_slot_search_criteria_slot_name" aria-hidden="true">{{ 'SLOT.NAME' | translate }}</label>
-      </p-float-label>
-      <p-float-label variant="on">
+      </p-floatlabel>
+      <p-floatlabel variant="on">
         <input
           pInputText
           id="ps_slot_search_criteria_product_name"
@@ -37,30 +37,31 @@
         <label for="ps_slot_search_criteria_product_name" aria-hidden="true">
           {{ 'SLOT.PRODUCT_NAME' | translate }}
         </label>
-      </p-float-label>
+      </p-floatlabel>
     </form>
   </ocx-search-header>
 
-  <ocx-content>
-    <p-message
-      *ngIf="loading"
-      id="ps_slot_search_loading_message"
-      severity="info"
-      styleClass="m-3 p-2"
-      [text]="'ACTIONS.LOADING' | translate"
-    ></p-message>
-    <p-message
-      *ngIf="!loading && exceptionKey"
-      id="ps_slot_search_error_message"
-      severity="error"
-      styleClass="m-3 p-2"
-      [text]="exceptionKey | translate"
-    ></p-message>
-
+  @let data = (filteredData$ | async) ?? [];
+  <ocx-content class="ocx-content">
+    @if (loading) {
+      <p-message
+        id="ps_slot_search_loading_message"
+        severity="info"
+        styleClass="m-1"
+        [text]="'ACTIONS.LOADING' | translate"
+      ></p-message>
+    } @else if (exceptionKey) {
+      <p-message
+        id="ps_slot_search_error_message"
+        severity="error"
+        styleClass="m-1"
+        [text]="exceptionKey | translate"
+      ></p-message>
+    }
+    <!-- Always display data table to have a calm user experience -->
     <ocx-interactive-data-view
-      *ngIf="!loading"
       id="ps_slot_search_table"
-      [data]="$any((filteredData$ | async) ?? [])"
+      [data]="data"
       [supportedViewLayouts]="['table']"
       [layout]="'table'"
       [columns]="interactiveColumns"
@@ -89,9 +90,9 @@
       <ng-template #topCenter>
         <p-inputgroup class="w-auto tm-filter-group">
           <p-inputgroup-addon>
-            <i class="pi pi-filter"></i>
+            <i class="pi pi-filter" aria-hidden="true"></i>
           </p-inputgroup-addon>
-          <p-float-label variant="on">
+          <p-floatlabel variant="on">
             <input
               #filterInput
               id="tm_search_filter"
@@ -105,7 +106,7 @@
               (input)="onFilterChange(filterInput.value)"
             />
             <label for="tm_search_filter" aria-hidden="true"> {{ 'SEARCH.SLOT.FILTER.LABEL' | translate }}</label>
-          </p-float-label>
+          </p-floatlabel>
           <p-button
             id="tm_search_filter_clear"
             icon="pi pi-filter-slash"

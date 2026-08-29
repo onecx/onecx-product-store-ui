@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing'
-import { CommonModule } from '@angular/common'
+import { AsyncPipe } from '@angular/common'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
-import { NoopAnimationsModule } from '@angular/platform-browser/animations'
+import { provideNoopAnimations } from '@angular/platform-browser/animations'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
@@ -43,14 +43,13 @@ describe('OneCXProductDataComponent', () => {
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
-        }).withDefaultLanguage('en'),
-        NoopAnimationsModule
+        }).withDefaultLanguage('en')
       ],
-      providers: [provideHttpClient(), provideHttpClientTesting()]
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideNoopAnimations()]
     })
       .overrideComponent(OneCXProductDataComponent, {
         set: {
-          imports: [TranslateTestingModule, CommonModule],
+          imports: [TranslateTestingModule, AsyncPipe],
           providers: [{ provide: ProductsAPIService, useValue: productAPISpy }]
         }
       })

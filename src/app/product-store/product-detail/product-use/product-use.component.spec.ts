@@ -1,7 +1,4 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { NO_ERRORS_SCHEMA } from '@angular/core'
-import { provideHttpClient } from '@angular/common/http'
-import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
@@ -17,20 +14,20 @@ describe('ProductUseComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ProductUseComponent],
       imports: [
+        ProductUseComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
-      ],
-      schemas: [NO_ERRORS_SCHEMA],
-      providers: [
-        provideHttpClientTesting(),
-        provideHttpClient(),
-        { provide: WorkspaceService, useValue: workspaceServiceSpy }
       ]
-    }).compileComponents()
+    })
+      .overrideComponent(ProductUseComponent, {
+        add: {
+          providers: [{ provide: WorkspaceService, useValue: workspaceServiceSpy }]
+        }
+      })
+      .compileComponents()
   }))
 
   beforeEach(() => {

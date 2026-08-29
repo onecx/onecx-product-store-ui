@@ -1,40 +1,49 @@
-<ng-container *ngIf="productName">
-  <ocx-slot
-    *ngIf="isComponentDefined$ | async; else SlotNotConfigured"
-    [name]="slotName"
-    [inputs]="{ dataType: 'workspaces', productName: productName, logEnabled: false, logPrefix: 'product-use' }"
-    [outputs]="{ workspaces: slotEmitter }"
-  >
-  </ocx-slot>
-  <div *ngIf="workspaceData$ | async as workspaces" class="sm:pt-2 pb-2 sm:pb-3 px-3">
-    <div *ngIf="workspaces.length === 0; else productUsed">
-      {{ 'PRODUCT.WORKSPACES_USING_PRODUCT.UNUSED' | translate }}
-    </div>
-    <ng-template #productUsed>
-      {{ 'PRODUCT.WORKSPACES_USING_PRODUCT.USED' | translate }}
-      <ul class="ml-0 mt-2">
-        <li *ngFor="let w of workspaces" class="mb-1">
-          @if (workspaceEndpointExist) {
-            <a
-              tabindex="0"
-              id="ws_detail_props_item_theme_link"
-              class="max-w-15rem md:max-w-20rem lg:max-w-30rem xl:max-w-full cursor-pointer font-italic text-primary text-responsive"
-              [routerLink]="[getWorkspaceEndpointUrl$(w.name) | async]"
-              [attr.aria-label]="'ACTIONS.NAVIGATION.LINKS.GOTO.WORKSPACE' | translate"
-              [pTooltip]="'ACTIONS.NAVIGATION.LINKS.GOTO.WORKSPACE' | translate"
-              tooltipPosition="right"
-              tooltipEvent="hover"
-            >
-              {{ w.displayName }}
-            </a>
-          } @else {
-            {{ w.displayName }}
-          }
-        </li>
-      </ul>
-    </ng-template>
-  </div>
-  <ng-template #SlotNotConfigured>
+@if (productName) {
+  @if (isComponentDefined$ | async) {
+    <ocx-slot
+      [name]="slotName"
+      [inputs]="{ dataType: 'workspaces', productName: productName, logEnabled: false, logPrefix: 'product-use' }"
+      [outputs]="{ workspaces: slotEmitter }"
+    >
+    </ocx-slot>
+
+    @let workspaces = workspaceData$ | async;
+    @if (workspaces) {
+      <div class="sm:pt-2 pb-2 sm:pb-3 px-3">
+        @if (workspaces.length === 0) {
+          <p-message
+            severity="info"
+            id="th_detail_use_workspaces_using_theme_unused_message"
+            [text]="'PRODUCT.WORKSPACES_USING_PRODUCT.UNUSED' | translate"
+          ></p-message>
+        } @else {
+          {{ 'PRODUCT.WORKSPACES_USING_PRODUCT.USED' | translate }}
+          <ul class="ml-0 mt-2">
+            @for (w of workspaces; track w.name) {
+              <li class="mb-1">
+                @if (workspaceEndpointExist) {
+                  <a
+                    tabindex="0"
+                    id="ws_detail_props_item_workspace_link"
+                    class="max-w-15rem md:max-w-20rem lg:max-w-30rem xl:max-w-full cursor-pointer font-italic text-primary text-responsive"
+                    [routerLink]="[getWorkspaceEndpointUrl$(w.name) | async]"
+                    [attr.aria-label]="'ACTIONS.NAVIGATION.LINKS.GOTO.WORKSPACE' | translate"
+                    [pTooltip]="'ACTIONS.NAVIGATION.LINKS.GOTO.WORKSPACE' | translate"
+                    tooltipPosition="right"
+                    tooltipEvent="hover"
+                  >
+                    {{ w.displayName }}
+                  </a>
+                } @else {
+                  {{ w.displayName }}
+                }
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    }
+  } @else {
     <div class="sm:pt-2 pb-2 sm:pb-3 px-3">{{ 'PRODUCT.WORKSPACES_USING_PRODUCT.MISSING_COMPONENT' | translate }}</div>
-  </ng-template>
-</ng-container>
+  }
+}

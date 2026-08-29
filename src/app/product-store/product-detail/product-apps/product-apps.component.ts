@@ -1,5 +1,12 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core'
+import { AsyncPipe, NgClass } from '@angular/common'
+import { TranslateModule } from '@ngx-translate/core'
 import { finalize, of, Observable, catchError, Subject, takeUntil, tap } from 'rxjs'
+
+import { CardModule } from 'primeng/card'
+import { FieldsetModule } from 'primeng/fieldset'
+import { MessageModule } from 'primeng/message'
+import { TooltipModule } from 'primeng/tooltip'
 import { SelectItem } from 'primeng/api'
 
 import { UserService } from '@onecx/angular-integration-interface'
@@ -16,10 +23,15 @@ import {
 } from 'src/app/shared/generated'
 import { Utils } from 'src/app/shared/utils'
 import { IconService } from 'src/app/shared/iconservice'
+import { OcxChipComponent } from 'src/app/shared/ocx-chip/ocx-chip.component'
 
 import { ChangeMode } from '../../product-detail/product-detail.component'
 import { AppAbstract } from '../../app-search/app-search.component'
 import { SlotData } from '../../slot-search/slot-search.component'
+import { AppDetailComponent } from '../../app-detail/app-detail.component'
+import { AppDeleteComponent } from '../../app-delete/app-delete.component'
+import { SlotDetailComponent } from '../../slot-detail/slot-detail.component'
+import { SlotDeleteComponent } from '../../slot-delete/slot-delete.component'
 
 export enum AppType {
   MS = 'MS',
@@ -28,7 +40,22 @@ export enum AppType {
 
 @Component({
   selector: 'app-product-apps',
-  standalone: false,
+  standalone: true,
+  imports: [
+    AsyncPipe,
+    NgClass,
+    CardModule,
+    FieldsetModule,
+    MessageModule,
+    TooltipModule,
+    TranslateModule,
+    // components
+    OcxChipComponent,
+    AppDetailComponent,
+    AppDeleteComponent,
+    SlotDetailComponent,
+    SlotDeleteComponent
+  ],
   templateUrl: './product-apps.component.html',
   styleUrls: ['./product-apps.component.scss']
 })
