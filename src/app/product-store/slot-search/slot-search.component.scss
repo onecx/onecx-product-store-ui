@@ -16,15 +16,12 @@
   }
 
   .p-datatable {
-    --table-zebra-first-column-even-bg: inherit;
-
     .p-datatable-thead > tr > th {
       border-bottom-width: 2px;
       &:first-child .table-header-wrapper {
         justify-content: center !important;
       }
     }
-
     .p-datatable-thead > tr > th,
     .p-datatable-tbody > tr > td {
       /* table cell padding is NOT managed by column settings */
@@ -90,6 +87,9 @@
       > span:first-child {
         white-space: nowrap;
       }
+      .p-multiselect {
+        background-color: var(--table-header-bg) !important;
+      }
     }
   }
   .icon-button-header-wrapper {
@@ -98,7 +98,7 @@
     .pi-filter-fill {
       padding: 0.5rem !important;
       border-radius: 50% !important;
-      background-color: transparent !important;
+      background-color: transparent;
       &:hover {
         background-color: var(--table-header-hover-bg, rgba(0, 0, 0, 0.05));
       }
@@ -110,34 +110,22 @@
     display: none;
   }
 
-  /*
-  .p-datatable-tbody > tr > td:first-child button[name='data-table-action-button'],
-  .p-datatable-tbody > tr > td:first-child button[name='data-table-overflow-action-button'] {
-    margin-inline: 0.03rem;
-    padding: 0.25rem !important;
-    width: 1.7rem !important;
-    min-width: 1.7rem !important;
-    height: 1.7rem !important;
+  .bookmark-link {
+    padding: 0rem !important;
+    &:hover {
+      background: var(--tabview-header-hover-bg);
+      border-color: var(--tabview-header-hover-border-color);
+      color: var(--text-secondary-color);
+    }
   }
-  // keep row actions visible in table/list/grid views
-  ocx-interactive-data-view button[name='data-table-action-button'],
-  ocx-interactive-data-view button[name='data-table-overflow-action-button'],
-  ocx-interactive-data-view button[name='data-list-action-button'],
-  ocx-interactive-data-view button[name='data-list-overflow-item-menu-button'] {
-    display: inline-flex;
-  }
-*/
-  .bookmark-link:hover {
-    background: var(--tabview-header-hover-bg);
-    border-color: var(--tabview-header-hover-border-color);
-    color: var(--text-secondary-color);
-  }
+
   .max-height-for-2-lines {
     max-height: 2.5rem;
   }
   .text-ellipsis-2-lines {
     @include displaying-text-ellipsis(2);
   }
+
   .min-w-20rem {
     min-width: 20rem;
   }

@@ -2,9 +2,10 @@
 
 @include card-badges;
 @include danger-action;
-@include ocx-p-message;
 @include ocx-text-responsive;
+@include ocx-p-message;
 @include ocx-interactive-data-view-fixes;
+@include p-table-zebra-rows;
 
 :host ::ng-deep {
   .ocx-content > div {
@@ -12,15 +13,10 @@
     padding: 0.75rem 0.5rem !important;
   }
 
-  /* special handling for zebra look on table rows */
-
   .p-datatable {
-    .p-datatable-thead > tr:nth-child(1) > th {
+    .p-datatable-thead > tr > th {
       border-bottom-width: 2px;
-    }
-    .p-datatable-thead > tr > th,
-    .p-datatable-tbody > tr > td {
-      padding: 0.5rem;
+      padding: 0rem 1rem;
     }
     .p-datatable-tbody {
       tr td.bg-inherit {
@@ -29,22 +25,48 @@
     }
   }
 
-  .p-datatable-thead > tr > th:first-child,
-  .p-datatable-tbody > tr > td:first-child {
-    border-right: 1px solid var(--surface-border, #dee2e6);
-    white-space: nowrap;
-    text-align: left;
-    padding-left: 1.3rem;
-    padding-right: 1.3rem;
+  // keep sortable header title and icon on one line
+  /* keep sortable header title and icon on one line */
+  ocx-interactive-data-view {
+    .table-header-wrapper {
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      gap: 0.35rem;
+      height: auto !important;
+      > span:first-child {
+        white-space: nowrap;
+      }
+      .p-multiselect {
+        background-color: var(--table-header-bg) !important;
+      }
+    }
+  }
+  .icon-button-header-wrapper {
+    .sortButton,
+    .pi-filter,
+    .pi-filter-fill {
+      padding: 0.5rem !important;
+      border-radius: 50% !important;
+      background-color: transparent;
+      &:hover {
+        background-color: var(--table-header-hover-bg, rgba(0, 0, 0, 0.05));
+      }
+    }
   }
 
-  // keep sortable header title and icon on one line
-  ocx-interactive-data-view .table-header-wrapper {
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    gap: 0.35rem;
-    height: auto !important;
+  /* hide unusable slot extension point */
+  ocx-custom-group-column-selector {
+    display: none;
+  }
+
+  .bookmark-link {
+    padding: 0rem !important;
+    &:hover {
+      background: var(--tabview-header-hover-bg);
+      border-color: var(--tabview-header-hover-border-color);
+      color: var(--text-secondary-color);
+    }
   }
 
   .max-height-for-2-lines {
@@ -52,10 +74,5 @@
   }
   .text-ellipsis-2-lines {
     @include displaying-text-ellipsis(2);
-  }
-  .bookmark-link:hover {
-    background: var(--tabview-header-hover-bg);
-    border-color: var(--tabview-header-hover-border-color);
-    color: var(--text-secondary-color);
   }
 }
