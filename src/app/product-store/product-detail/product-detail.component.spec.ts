@@ -3,17 +3,17 @@ import { Location } from '@angular/common'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { provideRouter, Router } from '@angular/router'
-import { BehaviorSubject, of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
+import { BehaviorSubject, of, throwError } from 'rxjs'
 
 import { ConfigurationService, PortalMessageService, UserService } from '@onecx/angular-integration-interface'
+import { provideNoopAnimations } from '@angular/platform-browser/animations'
+import { PermissionService } from '@onecx/angular-utils'
 
+import { Product, ProductsAPIService, ImagesInternalAPIService } from 'src/app/shared/generated'
 import { ProductDetailComponent } from './product-detail.component'
 import { ProductPropertyComponent } from './product-props/product-props.component'
 import { ProductInternComponent } from './product-intern/product-intern.component'
-import { Product, ProductsAPIService, ImagesInternalAPIService } from 'src/app/shared/generated'
-import { provideNoopAnimations } from '@angular/platform-browser/animations'
-import { PermissionService } from '@onecx/angular-utils'
 
 const productProps: Product = {
   id: 'id',

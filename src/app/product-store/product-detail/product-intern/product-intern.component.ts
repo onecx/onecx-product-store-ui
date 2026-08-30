@@ -10,6 +10,7 @@ import { MessageModule } from 'primeng/message'
 import { TooltipModule } from 'primeng/tooltip'
 
 import { Product } from 'src/app/shared/generated'
+import { Utils } from 'src/app/shared/utils'
 
 export interface ProductInternForm {
   operator: FormControl<boolean | null>
@@ -58,9 +59,7 @@ export class ProductInternComponent implements OnChanges {
   }
 
   private setFormData(): void {
-    for (const key of Object.keys(this.formGroup.controls)) {
-      this.formGroup.controls[key as keyof ProductInternForm].setValue((this.product as any)[key])
-    }
+    Utils.setFormControlsValues(this.formGroup.controls, this.product, false)
   }
 
   public onSave(): Partial<Product> {

@@ -11,6 +11,7 @@ import { MessageModule } from 'primeng/message'
 import { TooltipModule } from 'primeng/tooltip'
 
 import { Slot } from 'src/app/shared/generated'
+import { Utils } from 'src/app/shared/utils'
 import { ChangeMode } from '../../product-detail/product-detail.component'
 
 @Component({
@@ -60,8 +61,7 @@ export class SlotInternComponent implements OnChanges {
   }
 
   private setFormData(): void {
-    for (const key of Object.keys(this.slotForm.controls))
-      if (this.slot && (this.slot as any)[key] !== null) this.slotForm.controls[key].setValue((this.slot as any)[key])
+    Utils.setFormControlsValues(this.slotForm.controls, this.slot)
   }
 
   public onChangeUndeployed(ev: any) {

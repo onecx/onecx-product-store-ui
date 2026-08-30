@@ -10,6 +10,7 @@ import { MessageModule } from 'primeng/message'
 import { TooltipModule } from 'primeng/tooltip'
 
 import { Microfrontend, Microservice } from 'src/app/shared/generated'
+import { Utils } from 'src/app/shared/utils'
 import { ChangeMode } from '../../product-detail/product-detail.component'
 
 @Component({
@@ -57,10 +58,8 @@ export class AppInternComponent implements OnChanges {
   }
 
   private setFormData(): void {
-    for (const key of Object.keys(this.appForm.controls)) {
-      if (this.mfe && (this.mfe as any)[key] !== null) this.appForm.controls[key].setValue((this.mfe as any)[key])
-      if (this.ms && (this.ms as any)[key] !== null) this.appForm.controls[key].setValue((this.ms as any)[key])
-    }
+    Utils.setFormControlsValues(this.appForm.controls, this.mfe)
+    Utils.setFormControlsValues(this.appForm.controls, this.ms)
   }
 
   public onChangeUndeployed(ev: any) {
