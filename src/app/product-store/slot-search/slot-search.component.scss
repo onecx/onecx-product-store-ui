@@ -7,6 +7,7 @@
 @include ocx-p-message;
 @include ocx-p-inputgroup;
 @include ocx-interactive-data-view-fixes;
+@include p-table-zebra-rows;
 
 :host ::ng-deep {
   .ocx-content > div {
@@ -15,13 +16,51 @@
   }
 
   .p-datatable {
-    .p-datatable-thead > tr:nth-child(1) > th {
+    --table-zebra-first-column-even-bg: inherit;
+
+    .p-datatable-thead > tr > th {
       border-bottom-width: 2px;
+      &:first-child .table-header-wrapper {
+        justify-content: center !important;
+      }
     }
+
     .p-datatable-thead > tr > th,
     .p-datatable-tbody > tr > td {
-      padding: 0 0.5rem;
-      height: 3rem;
+      /* table cell padding is NOT managed by column settings */
+      padding: 0rem 1rem;
+      /* action column */
+      &:first-child {
+        border-right: 1px solid var(--surface-border, #dee2e6);
+        width: 1rem;
+        white-space: nowrap;
+        text-align: center;
+        padding: 0.25rem 1rem;
+      }
+      /* slot name */
+      &:nth-child(2) {
+        border-right: 1px solid var(--surface-border, #dee2e6);
+      }
+      .icon-button-row-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        column-gap: 0rem;
+        .p-button-icon-only {
+          width: 2rem;
+          height: 2rem;
+        }
+      }
+      button.editTableRowButton {
+        order: 1;
+      }
+      button.copyTableRowButton {
+        order: 2;
+      }
+      button.deleteTableRowButton {
+        order: 3;
+      }
     }
     .p-datatable-tbody {
       tr td.bg-inherit {
@@ -29,16 +68,8 @@
       }
     }
   }
-  .p-dropdown-panel,
-  .p-multiselect-panel {
-    position: fixed;
-  }
-  /* fix positioning of overlays used for column filtering */
-  .p-overlay.p-component {
-    top: 3rem !important;
-    left: unset !important;
-  }
 
+  /* state column */
   .p-datatable-tbody > tr > td:has(.slot-state-icons) {
     text-align: center;
     vertical-align: middle !important;
@@ -48,49 +79,38 @@
     justify-content: center !important;
   }
 
-  // keep sortable header title and icon on one line
-  ocx-interactive-data-view .table-header-wrapper {
-    flex-direction: row !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    gap: 0.35rem;
-    height: auto !important;
+  /* keep sortable header title and icon on one line */
+  ocx-interactive-data-view {
+    .table-header-wrapper {
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      gap: 0.35rem;
+      height: auto !important;
+      > span:first-child {
+        white-space: nowrap;
+      }
+    }
   }
-
-  ocx-interactive-data-view .table-header-wrapper > span:first-child {
-    white-space: nowrap;
-  }
-
-  ocx-interactive-data-view .icon-button-header-wrapper,
-  ocx-interactive-data-view .sortButton {
-    display: inline-flex;
-    align-items: center;
-    line-height: 1;
+  .icon-button-header-wrapper {
+    .sortButton,
+    .pi-filter,
+    .pi-filter-fill {
+      padding: 0.5rem !important;
+      border-radius: 50% !important;
+      background-color: transparent !important;
+      &:hover {
+        background-color: var(--table-header-hover-bg, rgba(0, 0, 0, 0.05));
+      }
+    }
   }
 
   /* hide unusable slot extension point */
-  ocx-column-group-selection {
+  ocx-custom-group-column-selector {
     display: none;
   }
 
-  .p-datatable-thead > tr > th:first-child,
-  .p-datatable-tbody > tr > td:first-child {
-    width: 1%;
-    white-space: nowrap;
-    text-align: center;
-    padding-left: 1.3rem;
-    padding-right: 1.3rem;
-  }
-
-  .p-datatable-thead > tr > th:nth-child(2),
-  .p-datatable-tbody > tr > td:nth-child(2) {
-    border-right: 1px solid var(--surface-border, #dee2e6);
-  }
-
-  .p-datatable-thead > tr > th:first-child .table-header-wrapper {
-    justify-content: center !important;
-  }
-
+  /*
   .p-datatable-tbody > tr > td:first-child button[name='data-table-action-button'],
   .p-datatable-tbody > tr > td:first-child button[name='data-table-overflow-action-button'] {
     margin-inline: 0.03rem;
@@ -106,7 +126,7 @@
   ocx-interactive-data-view button[name='data-list-overflow-item-menu-button'] {
     display: inline-flex;
   }
-
+*/
   .bookmark-link:hover {
     background: var(--tabview-header-hover-bg);
     border-color: var(--tabview-header-hover-border-color);
@@ -123,5 +143,15 @@
   }
   .min-w-16rem {
     min-width: 16rem;
+  }
+
+  .p-dropdown-panel,
+  .p-multiselect-panel {
+    position: fixed;
+  }
+  /* fix positioning of overlays used for column filtering */
+  .p-overlay.p-component {
+    top: 3rem !important;
+    left: unset !important;
   }
 }
