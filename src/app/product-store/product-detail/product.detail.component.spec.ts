@@ -280,26 +280,27 @@ describe('ProductDetailComponent', () => {
       component.onDelete(product)
 
       expect(component.item4Delete).toEqual(product)
+      expect(component.productDeleteVisible).toBe(true)
     })
 
-    it('should delete a product', () => {
-      productApiSpy.deleteProduct
-      component.item4Delete = product
+    it('should navigate away when product was deleted', () => {
+      component.productDeleteVisible = true
       const routerSpy = spyOn(router, 'navigate')
 
-      component.onDeleteConfirmation()
+      component.onProductDeleted(true)
 
-      expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.PRODUCT.OK' })
+      expect(component.productDeleteVisible).toBe(false)
       expect(routerSpy).toHaveBeenCalledWith(['../'], jasmine.any(Object))
     })
 
-    it('should display error message when delete fails', () => {
-      productApiSpy.deleteProduct.and.returnValue(throwError(() => new Error()))
-      component.item4Delete = product
+    it('should not navigate when deletion was cancelled', () => {
+      component.productDeleteVisible = true
+      const routerSpy = spyOn(router, 'navigate')
 
-      component.onDeleteConfirmation()
+      component.onProductDeleted(false)
 
-      expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.PRODUCT.NOK' })
+      expect(component.productDeleteVisible).toBe(false)
+      expect(routerSpy).not.toHaveBeenCalled()
     })
   })
 

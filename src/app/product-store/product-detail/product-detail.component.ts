@@ -5,8 +5,6 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { catchError, Observable, of, finalize, map } from 'rxjs'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 
-import { ButtonModule } from 'primeng/button'
-import { DialogModule } from 'primeng/dialog'
 import { FloatLabelModule } from 'primeng/floatlabel'
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
 import { InputGroupModule } from 'primeng/inputgroup'
@@ -32,6 +30,7 @@ import { ProductAppsComponent } from './product-apps/product-apps.component'
 import { ProductPropertyComponent } from './product-props/product-props.component'
 import { ProductInternComponent } from './product-intern/product-intern.component'
 import { ProductUseComponent } from './product-use/product-use.component'
+import { ProductDeleteComponent } from '../product-delete/product-delete.component'
 
 export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
 
@@ -40,8 +39,6 @@ export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
   imports: [
     AngularAcceleratorModule,
     AsyncPipe,
-    ButtonModule,
-    DialogModule,
     FloatLabelModule,
     InputGroupAddonModule,
     InputGroupModule,
@@ -53,6 +50,7 @@ export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
     // coponents
     PortalPageComponent,
     ProductAppsComponent,
+    ProductDeleteComponent,
     ProductInternComponent,
     ProductPropertyComponent,
     ProductUseComponent
@@ -81,7 +79,6 @@ export class ProductDetailComponent implements OnInit {
   public productId: string | undefined
   public headerImageUrl?: string
   public productDeleteVisible = false
-  public productDeleteMessage = ''
   public selectedTabIndex = '0' // have to be a string, number does not work
   public currentLogoUrl: string | undefined = undefined
   // data
@@ -320,15 +317,10 @@ export class ProductDetailComponent implements OnInit {
     this.item4Delete = product
     this.productDeleteVisible = true
   }
-  public onDeleteConfirmation(): void {
-    if (this.item4Delete?.id) {
-      this.productApi.deleteProduct({ id: this.item4Delete?.id }).subscribe({
-        next: () => {
-          this.msgService.success({ summaryKey: 'ACTIONS.DELETE.PRODUCT.OK' })
-          this.router.navigate(['../'], { relativeTo: this.route })
-        },
-        error: () => this.msgService.error({ summaryKey: 'ACTIONS.DELETE.PRODUCT.NOK' })
-      })
+  public onProductDeleted(deleted: boolean): void {
+    this.productDeleteVisible = false
+    if (deleted) {
+      this.router.navigate(['../'], { relativeTo: this.route })
     }
   }
 
