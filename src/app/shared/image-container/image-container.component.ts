@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core'
+import { ChangeDetectionStrategy, Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core'
 import { AsyncPipe } from '@angular/common'
 import { Observable, map } from 'rxjs'
 
@@ -22,9 +22,12 @@ import { Utils } from 'src/app/shared/utils'
   imports: [AngularAcceleratorModule, AsyncPipe, TooltipModule, TranslateModule],
   styleUrls: ['./image-container.component.scss'],
   templateUrl: './image-container.component.html',
-  host: { hostId: 'this-avoids-component-id-collision' }
+  host: { hostId: 'this-avoids-component-id-collision' },
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageContainerComponent implements OnChanges {
+  private readonly appState = inject(AppStateService)
+
   @Input() public id = 'ps_image_container_logo'
   @Input() public title: string | undefined
   @Input() public imageUrl: string | undefined
@@ -34,8 +37,8 @@ export class ImageContainerComponent implements OnChanges {
   public defaultImageUrl$: Observable<string>
   public displayDefaultLogo = false
 
-  constructor(private readonly appState: AppStateService) {
-    this.defaultImageUrl$ = appState.currentMfe$.pipe(
+  constructor() {
+    this.defaultImageUrl$ = this.appState.currentMfe$.pipe(
       map((mfe) => {
         return Utils.prepareUrlPath(mfe.remoteBaseUrl, environment.DEFAULT_LOGO_PATH)
       })

@@ -1,4 +1,15 @@
-import { Component, DestroyRef, EventEmitter, inject, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core'
 import { NgClass } from '@angular/common'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
@@ -94,10 +105,17 @@ export interface MsForm {
     AppInternComponent
   ],
   templateUrl: './app-detail.component.html',
-  styleUrls: ['./app-detail.component.scss']
+  styleUrls: ['./app-detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppDetailComponent implements OnInit, OnChanges {
   private readonly destroyRef = inject(DestroyRef)
+  private readonly user = inject(UserService)
+  private readonly icon = inject(IconService)
+  private readonly msApi = inject(MicroservicesAPIService)
+  private readonly mfeApi = inject(MicrofrontendsAPIService)
+  private readonly msgService = inject(PortalMessageService)
+  private readonly translate = inject(TranslateService)
 
   @Input() appAbstract: AppAbstract | undefined
   @Input() dateFormat = 'medium'
@@ -127,14 +145,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
   public MicrofrontendType = MicrofrontendType
   public appUndeployedValue: boolean | undefined = undefined
 
-  constructor(
-    private readonly user: UserService,
-    private readonly icon: IconService,
-    private readonly msApi: MicroservicesAPIService,
-    private readonly mfeApi: MicrofrontendsAPIService,
-    private readonly msgService: PortalMessageService,
-    private readonly translate: TranslateService
-  ) {
+  constructor() {
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
     this.iconItems.sort(Utils.dropDownSortItemsByLabel)
 

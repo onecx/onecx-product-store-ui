@@ -1,4 +1,14 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core'
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { finalize, map } from 'rxjs'
@@ -48,9 +58,15 @@ export interface SlotForm {
     TranslateModule
   ],
   templateUrl: './slot-detail.component.html',
-  styleUrls: ['./slot-detail.component.scss']
+  styleUrls: ['./slot-detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SlotDetailComponent implements OnInit, OnChanges {
+  private readonly user = inject(UserService)
+  private readonly slotApi = inject(SlotsAPIService)
+  private readonly msgService = inject(PortalMessageService)
+  private readonly translate = inject(TranslateService)
+
   @Input() slot: Slot | undefined
   @Input() dateFormat = 'medium'
   @Input() changeMode: ChangeMode = 'VIEW'
@@ -60,69 +76,41 @@ export class SlotDetailComponent implements OnInit, OnChanges {
   @ViewChild('endpointTable') endpointTable: Table | undefined
   @ViewChild(SlotInternComponent, { static: false }) appInternComponent!: SlotInternComponent
 
-  public formGroupSlot: FormGroup
   public selectedTabIndex = '0'
   public dialogTitleKey: string | undefined = undefined
   public loading = false
   public hasCreatePermission = false
   public hasEditPermission = false
+  public hasViewPermission = false
   public undeployedValue: boolean | undefined = undefined
-
-  constructor(
-    private readonly user: UserService,
-    private readonly slotApi: SlotsAPIService,
-    private readonly msgService: PortalMessageService,
-    private readonly translate: TranslateService
-  ) {
-    this.formGroupSlot = new FormGroup<SlotForm>({
-      name: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
-      appId: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
-      productName: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
-      description: new FormControl(null, [Validators.maxLength(255)])
-    })
-  }
+  public slotForm = new FormGroup<SlotForm>({
+    name: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
+    appId: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
+    productName: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
+    description: new FormControl(null, [Validators.maxLength(255)])
+  })
 
   ngOnInit() {
     void this.initPermissions()
-    if (this.hasEditPermission && this.changeMode !== 'CREATE') this.changeMode = 'EDIT'
   }
-
   private async initPermissions(): Promise<void> {
     this.hasCreatePermission = await this.user.hasPermission('SLOT#CREATE')
     this.hasEditPermission = await this.user.hasPermission('SLOT#EDIT')
-    if (this.hasEditPermission && this.changeMode !== 'CREATE') this.changeMode = 'EDIT'
+    this.hasViewPermission = await this.user.hasPermission('SLOT#VIEW')
   }
 
   ngOnChanges() {
+    // check and fix changeMode
+    if (!this.hasViewPermission && this.changeMode === 'VIEW') return
+    if (!this.hasEditPermission && this.changeMode === 'EDIT') return
+    if (!this.hasCreatePermission && this.changeMode === 'CREATE') return
+    this.dialogTitleKey = 'ACTIONS.' + this.changeMode + '.SLOT.HEADER'
+
     if (this.displayDialog && this.slot) {
       this.selectedTabIndex = '0'
-      this.dialogTitleKey = undefined
-      this.formGroupSlot.reset()
-      this.formGroupSlot.disable()
-      this.prepareCreate()
+      this.slotForm.reset()
+      this.slotForm.disable()
       this.getSlot()
-    }
-  }
-
-  private prepareCreate() {
-    if (this.changeMode === 'CREATE') {
-      this.enableForms()
-      this.dialogTitleKey = 'ACTIONS.CREATE.SLOT.HEADER'
-    }
-  }
-
-  public allowEditing(): boolean {
-    return (
-      (this.hasEditPermission && this.changeMode === 'EDIT') ||
-      (this.hasCreatePermission && this.changeMode === 'CREATE')
-    )
-  }
-
-  private enableForms(): void {
-    if (this.allowEditing()) {
-      this.formGroupSlot.enable()
-    } else {
-      this.formGroupSlot.disable()
     }
   }
 
@@ -140,7 +128,7 @@ export class SlotDetailComponent implements OnInit, OnChanges {
   private getSlotData(data: Slot) {
     if (data) {
       this.slot = data
-      if (this.slot) this.fillFormSlot(this.slot)
+      this.fillFormSlot(this.slot)
       if (this.changeMode === 'CREATE') {
         if (this.slot?.id) {
           this.slot.id = undefined
@@ -152,16 +140,13 @@ export class SlotDetailComponent implements OnInit, OnChanges {
           this.slot.modificationDate = undefined
           this.slot.modificationUser = undefined
         }
-        this.dialogTitleKey = 'ACTIONS.CREATE.SLOT.HEADER'
-      } else {
-        this.dialogTitleKey = 'ACTIONS.' + (this.hasEditPermission ? 'EDIT' : 'VIEW') + '.SLOT.HEADER'
       }
-      this.enableForms()
+      if (['EDIT', 'CREATE'].includes(this.changeMode)) this.slotForm.enable()
     }
   }
 
+  // fill form with slot data, excluding fields not used in the form
   public fillFormSlot(slot: Slot): void {
-    // build form mfe by excluding not used fields
     const formSlot = (({
       id,
       creationDate,
@@ -174,7 +159,7 @@ export class SlotDetailComponent implements OnInit, OnChanges {
       deprecated,
       ...o
     }) => o)(slot)
-    this.formGroupSlot.setValue(formSlot) // assign
+    this.slotForm.setValue(formSlot)
   }
 
   /**
@@ -194,15 +179,15 @@ export class SlotDetailComponent implements OnInit, OnChanges {
   }
 
   public onSave() {
-    if (!this.formGroupSlot.valid) {
+    if (!this.slotForm.valid) {
       this.msgService.error({ summaryKey: 'VALIDATION.FORM_INVALID' })
       return
     }
     this.slot = {
-      ...this.formGroupSlot.value,
       id: this.slot?.id,
+      ...this.slotForm.value,
       undeployed: this.changeMode === 'EDIT' ? this.slot?.undeployed : undefined
-    }
+    } as Slot
     this.changeMode === 'CREATE' ? this.createSlot() : this.updateSlot()
   }
 

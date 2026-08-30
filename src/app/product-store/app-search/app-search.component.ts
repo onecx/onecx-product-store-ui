@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, DestroyRef } from '@angular/core'
+import { ChangeDetectionStrategy, Component, OnInit, inject, DestroyRef } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { AsyncPipe, NgClass } from '@angular/common'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
@@ -79,10 +79,17 @@ export type AppAbstract = Microservice & { appType: AppType; appTypeKey?: string
     AppDeleteComponent
   ],
   templateUrl: './app-search.component.html',
-  styleUrls: ['./app-search.component.scss']
+  styleUrls: ['./app-search.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppSearchComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef)
+  private readonly route = inject(ActivatedRoute)
+  private readonly router = inject(Router)
+  private readonly user = inject(UserService)
+  private readonly mfeApi = inject(MicrofrontendsAPIService)
+  private readonly msApi = inject(MicroservicesAPIService)
+  private readonly translate = inject(TranslateService)
   // dialog
   public exceptionKey: string | undefined
   public loading = true
@@ -134,14 +141,7 @@ export class AppSearchComponent implements OnInit {
   ]
   public displayedColumnKeys: string[] = this.dataViewColumns.map((column) => column.id)
 
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly user: UserService,
-    private readonly mfeApi: MicrofrontendsAPIService,
-    private readonly msApi: MicroservicesAPIService,
-    private readonly translate: TranslateService
-  ) {
+  constructor() {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     // search criteria
     this.appTypeItems = [

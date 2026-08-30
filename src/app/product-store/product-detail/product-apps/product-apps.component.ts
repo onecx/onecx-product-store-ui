@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, inject, Input, OnChanges, OnDestroy, OnInit } from '@angular/core'
 import { AsyncPipe, NgClass } from '@angular/common'
 import { TranslateModule } from '@ngx-translate/core'
 import { finalize, of, Observable, catchError, Subject, takeUntil, tap } from 'rxjs'
@@ -57,9 +57,14 @@ export enum AppType {
     SlotDeleteComponent
   ],
   templateUrl: './product-apps.component.html',
-  styleUrls: ['./product-apps.component.scss']
+  styleUrls: ['./product-apps.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductAppsComponent implements OnChanges, OnDestroy, OnInit {
+  private readonly icon = inject(IconService)
+  private readonly user = inject(UserService)
+  private readonly productApi = inject(ProductsAPIService)
+
   @Input() product: Product | undefined
   @Input() dateFormat = 'medium'
   @Input() changeMode: ChangeMode = 'VIEW'
@@ -83,11 +88,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy, OnInit {
   public hasDeletePermission = false
   public hasComponents = false
 
-  constructor(
-    private readonly icon: IconService,
-    private readonly user: UserService,
-    private readonly productApi: ProductsAPIService
-  ) {
+  constructor() {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
     this.iconItems.sort(Utils.dropDownSortItemsByLabel)

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 
 import { ButtonModule } from 'primeng/button'
@@ -15,7 +15,8 @@ import { MicrofrontendsAPIService, MicroservicesAPIService } from 'src/app/share
   selector: 'app-app-delete',
   standalone: true,
   imports: [ButtonModule, DialogModule, MessageModule, TooltipModule, TranslateModule],
-  templateUrl: './app-delete.component.html'
+  templateUrl: './app-delete.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppDeleteComponent {
   private readonly msApi = inject(MicroservicesAPIService)

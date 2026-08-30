@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
 import { TooltipModule } from 'primeng/tooltip'
 
 /**
@@ -8,7 +8,8 @@ import { TooltipModule } from 'primeng/tooltip'
   selector: 'app-ocx-chip',
   standalone: true,
   imports: [TooltipModule],
-  templateUrl: './ocx-chip.component.html'
+  templateUrl: './ocx-chip.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OcxChipComponent {
   @Input() public id = 'ocx-chip'

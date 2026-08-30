@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit, ViewChild } from '@angular/core'
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, ViewChild } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { AsyncPipe, Location } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
@@ -62,6 +62,14 @@ export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
 })
 export class ProductDetailComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef)
+  private readonly router = inject(Router)
+  private readonly route = inject(ActivatedRoute)
+  private readonly user = inject(UserService)
+  private readonly location = inject(Location)
+  private readonly productApi = inject(ProductsAPIService)
+  private readonly imageApi = inject(ImagesInternalAPIService)
+  private readonly msgService = inject(PortalMessageService)
+  private readonly translate = inject(TranslateService)
   // dialog
   public exceptionKey: string | undefined
   public loading = false
@@ -84,16 +92,7 @@ export class ProductDetailComponent implements OnInit {
   @ViewChild(ProductPropertyComponent, { static: false }) productPropsComponent!: ProductPropertyComponent
   @ViewChild(ProductInternComponent, { static: false }) productInternComponent!: ProductInternComponent
 
-  constructor(
-    private readonly router: Router,
-    private readonly route: ActivatedRoute,
-    private readonly user: UserService,
-    private readonly location: Location,
-    private readonly productApi: ProductsAPIService,
-    private readonly imageApi: ImagesInternalAPIService,
-    private readonly msgService: PortalMessageService,
-    private readonly translate: TranslateService
-  ) {
+  constructor() {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.productName = this.route.snapshot.paramMap.get('name')
   }

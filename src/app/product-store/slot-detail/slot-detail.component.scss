@@ -9,4 +9,9 @@
 
 :host ::ng-deep {
   --onecx-product-store-onecx-product-store-ui-tabs-tabpanel-padding: 0.75rem;
+
+  .p-dialog .p-dialog-content {
+    padding-top: 0rem;
+    padding-bottom: 0rem;
+  }
 }

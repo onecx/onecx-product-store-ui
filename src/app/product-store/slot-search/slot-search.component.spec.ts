@@ -469,6 +469,14 @@ describe('SlotSearchComponent', () => {
       expect().nothing()
     })
 
+    it('should open slot detail dialog in view mode onViewFromInteractive', () => {
+      component.onViewFromInteractive({ ...slots[0] } as RowListGridData)
+
+      expect(component.item4Detail).toEqual({ ...slots[0] })
+      expect(component.changeMode).toBe('VIEW')
+      expect(component.displaySlotDetailDialog).toBeTrue()
+    })
+
     it('should open slot detail dialog in edit mode onEditFromInteractive', () => {
       component.onEditFromInteractive({ ...slots[0] } as RowListGridData)
 

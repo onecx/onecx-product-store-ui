@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core'
+import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core'
 import { DatePipe } from '@angular/common'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule } from '@ngx-translate/core'
@@ -30,7 +30,8 @@ export interface ProductInternForm {
     TooltipModule,
     TranslateModule
   ],
-  templateUrl: './product-intern.component.html'
+  templateUrl: './product-intern.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductInternComponent implements OnChanges {
   @Input() product: Product | undefined

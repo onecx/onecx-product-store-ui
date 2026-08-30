@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ElementRef, inject, OnInit, ViewChild } from '@angular/core'
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, OnInit, ViewChild } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { AsyncPipe, NgClass } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
@@ -88,10 +88,18 @@ export type FilteredData = SlotData & RowListGridData
     SlotDeleteComponent
   ],
   templateUrl: './slot-search.component.html',
-  styleUrls: ['./slot-search.component.scss']
+  styleUrls: ['./slot-search.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SlotSearchComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef)
+  private readonly route = inject(ActivatedRoute)
+  private readonly router = inject(Router)
+  private readonly user = inject(UserService)
+  private readonly productApi = inject(ProductsAPIService)
+  private readonly slotApi = inject(SlotsAPIService)
+  private readonly translate = inject(TranslateService)
+  private readonly msgService = inject(PortalMessageService)
   // dialog
   public loading = false
   public exceptionKey: string | undefined = undefined
@@ -197,16 +205,10 @@ export class SlotSearchComponent implements OnInit {
       translationPrefix: 'SLOT'
     }
   ]
+  public hasViewPermission = false
+  public hasEditPermission = false
 
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly user: UserService,
-    private readonly productApi: ProductsAPIService,
-    private readonly slotApi: SlotsAPIService,
-    private readonly translate: TranslateService,
-    private readonly msgService: PortalMessageService
-  ) {
+  constructor() {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.filteredColumns = this.columns.filter((a) => a.active === true)
     this.searchCriteriaForm = new FormGroup<SlotSearchCriteriaForm>({
@@ -216,11 +218,17 @@ export class SlotSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.initPermissions()
     this.initGlobalFilter()
     this.prepareActionButtons()
     this.prepareStateValues()
     this.prepareSearchCriteria()
     this.getData()
+  }
+
+  private async initPermissions(): Promise<void> {
+    this.hasViewPermission = await this.user.hasPermission('SLOT#VIEW')
+    this.hasEditPermission = await this.user.hasPermission('SLOT#EDIT')
   }
 
   /****************************************************************************
@@ -453,12 +461,15 @@ export class SlotSearchComponent implements OnInit {
     this.openSlotDetail(mode, data)
   }
   public onEditFromInteractive(data: RowListGridData) {
-    this.openSlotDetail('EDIT', data as unknown as SlotData)
+    this.openSlotDetail('EDIT', data as unknown as Slot)
+  }
+  public onViewFromInteractive(data: RowListGridData) {
+    this.openSlotDetail('VIEW', data as unknown as Slot)
   }
   public onSlotCreate(data: unknown) {
-    this.openSlotDetail('CREATE', data as SlotData)
+    this.openSlotDetail('CREATE', data as Slot)
   }
-  private openSlotDetail(mode: ChangeMode, data: SlotData) {
+  private openSlotDetail(mode: ChangeMode, data: Slot) {
     this.item4Detail = { ...data }
     this.changeMode = mode
     this.displaySlotDetailDialog = true

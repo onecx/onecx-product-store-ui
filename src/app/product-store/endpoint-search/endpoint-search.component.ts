@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { AsyncPipe } from '@angular/common'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
@@ -72,7 +72,8 @@ export interface ProductSearchCriteriaControls {
     AppDetailComponent
   ],
   templateUrl: './endpoint-search.component.html',
-  styleUrls: ['./endpoint-search.component.scss']
+  styleUrls: ['./endpoint-search.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EndpointSearchComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef)

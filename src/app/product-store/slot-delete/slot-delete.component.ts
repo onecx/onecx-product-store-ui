@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output } from '@angular/core'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 
 import { ButtonModule } from 'primeng/button'
@@ -15,18 +15,17 @@ import { SlotData } from '../slot-search/slot-search.component'
   standalone: true,
   imports: [ButtonModule, DialogModule, TooltipModule, TranslateModule],
   templateUrl: './slot-delete.component.html',
-  styleUrls: ['./slot-delete.component.scss']
+  styleUrls: ['./slot-delete.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SlotDeleteComponent {
+  private readonly slotApi = inject(SlotsAPIService)
+  private readonly msgService = inject(PortalMessageService)
+  private readonly translate = inject(TranslateService)
+
   @Input() slot: SlotData | undefined
   @Input() displayDialog = false
   @Output() slotDeleted = new EventEmitter<boolean>()
-
-  constructor(
-    private readonly slotApi: SlotsAPIService,
-    private readonly msgService: PortalMessageService,
-    private readonly translate: TranslateService
-  ) {}
 
   public onDialogHide(): void {
     this.slotDeleted.emit(false)

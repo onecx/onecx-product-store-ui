@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnChanges, Output } from '@angular/core'
 import { AsyncPipe } from '@angular/common'
 import { RouterModule } from '@angular/router'
 import { TranslateModule } from '@ngx-translate/core'
@@ -34,9 +34,13 @@ export type Workspace = {
   selector: 'app-product-use',
   standalone: true,
   imports: [AngularAcceleratorModule, AsyncPipe, MessageModule, RouterModule, TooltipModule, TranslateModule],
-  templateUrl: './product-use.component.html'
+  templateUrl: './product-use.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductUseComponent implements OnChanges {
+  private readonly slotService = inject(SlotService)
+  private readonly workspaceService = inject(WorkspaceService)
+
   @Input() productName: string | undefined
   @Output() used = new EventEmitter<boolean>()
 
@@ -47,10 +51,7 @@ export class ProductUseComponent implements OnChanges {
   public isComponentDefined$: Observable<boolean> | undefined
   public workspaceEndpointExist = false
 
-  constructor(
-    private readonly slotService: SlotService,
-    private readonly workspaceService: WorkspaceService
-  ) {
+  constructor() {
     this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.slotName)
   }
 

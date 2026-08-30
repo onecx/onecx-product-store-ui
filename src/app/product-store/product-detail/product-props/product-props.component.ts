@@ -1,4 +1,13 @@
-import { Component, ElementRef, EventEmitter, inject, Input, OnChanges, Output } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  Output
+} from '@angular/core'
 import { AsyncPipe } from '@angular/common'
 import {
   AbstractControl,
@@ -77,7 +86,8 @@ export function productNameValidator(): ValidatorFn {
     TranslateModule
   ],
   templateUrl: './product-props.component.html',
-  styleUrls: ['./product-props.component.scss']
+  styleUrls: ['./product-props.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductPropertyComponent implements OnChanges {
   private readonly icon = inject(IconService)

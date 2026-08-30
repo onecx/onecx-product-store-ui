@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnChanges, Output } from '@angular/core'
 import { DatePipe } from '@angular/common'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
@@ -27,7 +27,8 @@ import { ChangeMode } from '../../product-detail/product-detail.component'
     TooltipModule,
     TranslateModule
   ],
-  templateUrl: './slot-intern.component.html'
+  templateUrl: './slot-intern.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SlotInternComponent implements OnChanges {
   @Input() slot: Slot | undefined
@@ -35,9 +36,11 @@ export class SlotInternComponent implements OnChanges {
   @Input() changeMode: ChangeMode = 'VIEW'
   @Output() undeployed = new EventEmitter<boolean>()
 
+  private readonly translate = inject(TranslateService)
+
   public slotForm: FormGroup
 
-  constructor(private readonly translate: TranslateService) {
+  constructor() {
     this.slotForm = new FormGroup({
       operator: new FormControl<boolean | null>(null),
       deprecated: new FormControl<boolean | null>(null),

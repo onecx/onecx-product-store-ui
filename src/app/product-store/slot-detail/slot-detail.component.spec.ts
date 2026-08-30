@@ -89,71 +89,84 @@ describe('SlotDetailComponent', () => {
     slotsAPIService.getSlot.calls.reset()
     slotsAPIService.createSlot.calls.reset()
     slotsAPIService.updateSlot.calls.reset()
-    component.formGroupSlot.reset()
+    component.slotForm.reset()
   })
 
   describe('initialize', () => {
     it('should create component', () => {
       expect(component).toBeTruthy()
     })
+  })
 
-    it('should switch to EDIT', () => {
-      component.hasEditPermission = true
+  describe('changeMode', () => {
+    beforeEach(() => {
+      component.hasCreatePermission = false
+      component.hasEditPermission = false
+      component.hasViewPermission = false
+    })
+
+    it('should leave dialog if permissions not granted', () => {
+      component.changeMode = 'VIEW'
+      component.ngOnChanges()
+      expect(component.dialogTitleKey).toBeUndefined()
+
+      component.changeMode = 'EDIT'
+      component.ngOnChanges()
+      expect(component.dialogTitleKey).toBeUndefined()
+
+      component.changeMode = 'CREATE'
+      component.ngOnChanges()
+      expect(component.dialogTitleKey).toBeUndefined()
+    })
+
+    it('should set suitable dialog title key', () => {
+      component.hasViewPermission = true
       component.changeMode = 'VIEW'
 
-      component.ngOnInit()
+      component.ngOnChanges()
 
-      expect(component.changeMode).toBe('EDIT')
-    })
+      expect(component.dialogTitleKey).toBe('ACTIONS.' + component.changeMode + '.SLOT.HEADER')
 
-    it('should not switching to EDIT when creation', () => {
       component.hasEditPermission = true
-      component.changeMode = 'CREATE'
+      component.changeMode = 'EDIT'
 
-      component.ngOnInit()
+      component.ngOnChanges()
 
-      expect(component.changeMode).toBe('CREATE')
-    })
+      expect(component.dialogTitleKey).toBe('ACTIONS.' + component.changeMode + '.SLOT.HEADER')
 
-    it('should allow editing', () => {
       component.hasCreatePermission = true
       component.changeMode = 'CREATE'
 
-      const val = component.allowEditing()
+      component.ngOnChanges()
 
-      expect(val).toBeTrue()
+      expect(component.dialogTitleKey).toBe('ACTIONS.' + component.changeMode + '.SLOT.HEADER')
     })
   })
 
   describe('get data', () => {
     beforeEach(() => {
-      component.formGroupSlot.reset()
+      component.hasCreatePermission = false
+      component.hasEditPermission = false
+      component.hasViewPermission = false
+      component.dialogTitleKey = undefined
+      component.slotForm.reset()
     })
 
-    it('should successful in VIEW mode', () => {
+    it('should successful - VIEW', () => {
       slotsAPIService.getSlot.and.returnValue(of(slot))
+      component.hasViewPermission = true
+      component.changeMode = 'VIEW'
       component.slot = slot
       spyOn(component, 'getSlot')
 
       component.ngOnChanges()
 
-      expect(component.changeMode).toBe('VIEW')
       expect(component.getSlot).toHaveBeenCalled()
-    })
-
-    it('should successful with return data - VIEW', () => {
-      slotsAPIService.getSlot.and.returnValue(of(slot))
-      component.changeMode = 'VIEW'
-      component.hasEditPermission = false
-      component.slot = slot
-
-      component.ngOnChanges()
-
       expect(component.slot).toEqual(slot)
       expect(component.dialogTitleKey).toBe('ACTIONS.VIEW.SLOT.HEADER')
     })
 
-    it('should successful with return data - EDIT', () => {
+    it('should successful - EDIT', () => {
       slotsAPIService.getSlot.and.returnValue(of(slot))
       component.hasEditPermission = true
       component.changeMode = 'EDIT'
@@ -165,12 +178,13 @@ describe('SlotDetailComponent', () => {
       expect(component.dialogTitleKey).toBe('ACTIONS.EDIT.SLOT.HEADER')
     })
 
-    it('should getSlot and prepare copy', () => {
+    it('should successful - CREATE', () => {
       slotsAPIService.getSlot.and.returnValue(of(slot))
+      component.hasCreatePermission = true
       component.changeMode = 'CREATE'
       component.slot = slot
 
-      component.getSlot()
+      component.ngOnChanges()
 
       expect(component.slot).toEqual(slot)
       expect(component.slot?.id).toBeUndefined()
@@ -180,13 +194,13 @@ describe('SlotDetailComponent', () => {
 
   describe('Form', () => {
     beforeEach(() => {
-      component.formGroupSlot.reset()
+      component.slotForm.reset()
     })
 
     it('should display error if slot form is invalid', () => {
       component.slot = slot
-      component.formGroupSlot.reset()
-      component.formGroupSlot.patchValue({ name: 'name', appId: 'a', productName: 'p' })
+      component.slotForm.reset()
+      component.slotForm.patchValue({ name: 'name', appId: 'a', productName: 'p' })
       component.changeMode = 'CREATE'
 
       component.onSave()
@@ -196,25 +210,10 @@ describe('SlotDetailComponent', () => {
   })
 
   describe('Creation', () => {
-    it('should successful reset slot properties', () => {
-      component.slot = {
-        id: 'id',
-        appId: 'appId',
-        name: 'name',
-        productName: 'productName'
-      }
-      component.changeMode = 'CREATE'
-
-      component.ngOnChanges()
-
-      expect(component.dialogTitleKey).toBe('ACTIONS.CREATE.SLOT.HEADER')
-    })
-
     it('should create slot', () => {
       slotsAPIService.createSlot.and.returnValue(of({}))
       component.slot = slot
-      component.formGroupSlot = slotForm
-
+      component.slotForm = slotForm
       component.changeMode = 'CREATE'
 
       component.onSave()
@@ -232,7 +231,7 @@ describe('SlotDetailComponent', () => {
       slotsAPIService.createSlot.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
       component.slot = slot
-      component.formGroupSlot = slotForm
+      component.slotForm = slotForm
       component.changeMode = 'CREATE'
 
       component.onSave()
@@ -250,7 +249,7 @@ describe('SlotDetailComponent', () => {
     it('should call updateApp onSave in edit mode', () => {
       slotsAPIService.updateSlot.and.returnValue(of({}))
       component.slot = slot
-      component.formGroupSlot = slotForm
+      component.slotForm = slotForm
       component.changeMode = 'EDIT'
 
       component.onSave()
@@ -268,7 +267,7 @@ describe('SlotDetailComponent', () => {
       slotsAPIService.updateSlot.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
       component.slot = slot
-      component.formGroupSlot = slotForm
+      component.slotForm = slotForm
       component.changeMode = 'EDIT'
 
       component.onSave()
@@ -291,7 +290,7 @@ describe('SlotDetailComponent', () => {
       slotsAPIService.updateSlot.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
       component.slot = slot
-      component.formGroupSlot = slotForm
+      component.slotForm = slotForm
       component.changeMode = 'EDIT'
 
       component.onSave()
@@ -331,17 +330,6 @@ describe('SlotDetailComponent', () => {
 
       component.onTabChange('2')
       expect(component.selectedTabIndex).toBe('2')
-    })
-  })
-
-  describe('init permissions', () => {
-    it('should switch to EDIT in initPermissions when hasEditPermission', async () => {
-      ;(mockUserService.hasPermission as jasmine.Spy).and.returnValues(false, true)
-      component.changeMode = 'VIEW'
-
-      await component['initPermissions']()
-
-      expect(component.changeMode).toBe('EDIT')
     })
   })
 })

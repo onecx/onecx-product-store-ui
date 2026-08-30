@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { AsyncPipe } from '@angular/common'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
@@ -70,7 +70,8 @@ type ProductAbstractExtended = ProductAbstract & { classes?: string }
     ImageContainerComponent
   ],
   templateUrl: './product-search.component.html',
-  styleUrls: ['./product-search.component.scss']
+  styleUrls: ['./product-search.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductSearchComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef)
