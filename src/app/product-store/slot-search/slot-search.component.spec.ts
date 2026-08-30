@@ -14,6 +14,7 @@ import {
   AngularAcceleratorModule,
   DataSortDirection,
   PageHeaderComponent,
+  RowListGridData,
   SearchHeaderComponent
 } from '@onecx/angular-accelerator'
 
@@ -435,7 +436,7 @@ describe('SlotSearchComponent', () => {
     it('should call onSlotCreate from interactive action callback', () => {
       spyOn(component, 'onSlotCreate')
 
-      component.interactiveActions[0].callback?.({ ...slots[0] })
+      component.interactiveAdditionalActions[0].callback?.({ ...slots[0] })
 
       expect(component.onSlotCreate).toHaveBeenCalledWith({ ...slots[0] })
     })
@@ -468,8 +469,8 @@ describe('SlotSearchComponent', () => {
       expect().nothing()
     })
 
-    it('should open slot detail dialog in edit mode onSlotEdit', () => {
-      component.onSlotEdit({ ...slots[0] } as SlotData)
+    it('should open slot detail dialog in edit mode onEditFromInteractive', () => {
+      component.onEditFromInteractive({ ...slots[0] } as RowListGridData)
 
       expect(component.item4Detail).toEqual({ ...slots[0] })
       expect(component.changeMode).toBe('EDIT')
@@ -503,8 +504,8 @@ describe('SlotSearchComponent', () => {
       expect(component.onSearch).toHaveBeenCalled()
     })
 
-    it('should open delete dialog onSlotDeleteAction', () => {
-      component.onSlotDeleteAction({ ...slots[0] } as SlotData)
+    it('should open delete dialog onDeleteFromInteractive', () => {
+      component.onDeleteFromInteractive({ ...slots[0] } as RowListGridData)
 
       expect(component.item4Delete).toEqual({ ...slots[0] } as SlotData)
       expect(component.displaySlotDeleteDialog).toBeTrue()

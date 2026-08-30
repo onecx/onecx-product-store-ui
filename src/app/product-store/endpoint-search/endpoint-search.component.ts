@@ -96,9 +96,10 @@ export class EndpointSearchComponent implements OnInit {
       id: 'productDisplayName',
       nameKey: 'ENDPOINT.PRODUCT_NAME',
       columnType: ColumnType.STRING,
-      sortable: true
+      sortable: true,
+      filterable: true
     },
-    { id: 'appName', nameKey: 'ENDPOINT.APP_NAME', columnType: ColumnType.STRING },
+    { id: 'appName', nameKey: 'ENDPOINT.APP_NAME', columnType: ColumnType.STRING, sortable: true, filterable: true },
     {
       id: 'endpoint_name',
       nameKey: 'ENDPOINT.NAME.SEARCH',

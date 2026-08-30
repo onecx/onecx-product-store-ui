@@ -123,12 +123,13 @@ export class SlotSearchComponent implements OnInit {
     }
   ]
   public interactiveDisplayedColumnKeys: string[] = this.interactiveColumns.map((column) => column.id)
-  public interactiveActions: DataAction[] = [
+  public interactiveAdditionalActions: DataAction[] = [
     {
       id: 'copy-slot',
+      icon: 'pi pi-copy',
       labelKey: 'ACTIONS.COPY.LABEL',
       permission: 'SLOT#CREATE',
-      icon: 'pi pi-copy',
+      classes: ['copyTableRowButton'],
       callback: (data: unknown) => this.onSlotCreate(data)
     }
   ]
@@ -451,8 +452,8 @@ export class SlotSearchComponent implements OnInit {
     ev.stopPropagation()
     this.openSlotDetail(mode, data)
   }
-  public onSlotEdit(data: unknown) {
-    this.openSlotDetail('EDIT', data as SlotData)
+  public onEditFromInteractive(data: RowListGridData) {
+    this.openSlotDetail('EDIT', data as unknown as SlotData)
   }
   public onSlotCreate(data: unknown) {
     this.openSlotDetail('CREATE', data as SlotData)
@@ -471,8 +472,8 @@ export class SlotSearchComponent implements OnInit {
     ev.stopPropagation()
     this.openSlotDelete(slot)
   }
-  public onSlotDeleteAction(slot: unknown) {
-    this.openSlotDelete(slot as SlotData)
+  public onDeleteFromInteractive(slot: RowListGridData) {
+    this.openSlotDelete(slot as unknown as SlotData)
   }
   private openSlotDelete(slot: SlotData) {
     this.item4Delete = { ...slot }
