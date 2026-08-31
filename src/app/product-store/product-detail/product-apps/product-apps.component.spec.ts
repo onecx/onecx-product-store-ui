@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { provideNoopAnimations } from '@angular/platform-browser/animations'
-import { By } from '@angular/platform-browser'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
@@ -23,7 +22,6 @@ import {
 import { AppAbstract } from '../../app-search/app-search.component'
 import { SlotData } from '../../slot-search/slot-search.component'
 import { AppType, ProductAppsComponent } from './product-apps.component'
-import { AppDetailComponent } from '../../app-detail/app-detail.component'
 
 describe('ProductAppsComponent', () => {
   let component: ProductAppsComponent
@@ -274,7 +272,7 @@ describe('ProductAppsComponent', () => {
       component.onAppDetail(mockEvent, mfeApp, AppType.MFE)
 
       expect(component.app).toEqual(mfeApp)
-      expect(component.changeMode()).toEqual('EDIT')
+      expect(component.currentChangeMode()).toEqual('EDIT')
       expect(component.displayDetailDialog).toBeTrue()
     })
 
@@ -282,7 +280,7 @@ describe('ProductAppsComponent', () => {
       component.onAppDetail(mockEvent, msApp, AppType.MS)
 
       expect(component.app).toEqual(msApp)
-      expect(component.changeMode()).toEqual('EDIT')
+      expect(component.currentChangeMode()).toEqual('EDIT')
       expect(component.displayDetailDialog).toBeTrue()
     })
   })
@@ -293,14 +291,14 @@ describe('ProductAppsComponent', () => {
     component.onCopy(mockEvent, mfeApp, AppType.MFE)
 
     expect(component.app).toEqual(mfeApp)
-    expect(component.changeMode()).toEqual('CREATE')
+    expect(component.currentChangeMode()).toEqual('CREATE')
     expect(component.displayDetailDialog).toBeTrue()
   })
 
   it('should should show create dialog', () => {
     component.onCreate()
 
-    expect(component.changeMode()).toEqual('CREATE')
+    expect(component.currentChangeMode()).toEqual('CREATE')
     expect(component.app).toBeUndefined()
     expect(component.displayDetailDialog).toBeTrue()
   })

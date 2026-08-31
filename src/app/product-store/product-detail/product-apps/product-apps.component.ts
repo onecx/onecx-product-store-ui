@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, OnInit, signal } from '@angular/core'
 import { AsyncPipe, NgClass } from '@angular/common'
 import { TranslateModule } from '@ngx-translate/core'
-import { finalize, of, Observable, catchError, Subject, takeUntil, tap, map } from 'rxjs'
+import { finalize, of, Observable, catchError, tap } from 'rxjs'
 
 import { CardModule } from 'primeng/card'
 import { FieldsetModule } from 'primeng/fieldset'
@@ -66,9 +66,9 @@ export class ProductAppsComponent implements OnInit {
   private readonly productApi = inject(ProductsAPIService)
   // input
   public readonly product = input<Product>()
-  public readonly changeModeInput = input<ChangeMode>('VIEW', { alias: 'changeMode' })
-  // local state derived from changeModeInput, owned by the component to drive the child app/slot dialogs
-  public readonly changeMode = signal<ChangeMode>('VIEW')
+  public readonly changeMode = input<ChangeMode>('VIEW')
+  // local state derived from the changeMode input, owned by the component to drive the child app/slot dialogs
+  public readonly currentChangeMode = signal<ChangeMode>('VIEW')
 
   public exceptionKey: string | undefined = undefined
   public searchInProgress = false
@@ -99,7 +99,7 @@ export class ProductAppsComponent implements OnInit {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
     this.iconItems.sort(Utils.dropDownSortItemsByLabel)
-    this.changeMode.set(this.changeModeInput())
+    this.currentChangeMode.set(this.changeMode())
 
     // replaces ngOnChanges: signal inputs don't trigger it
     effect(() => {
@@ -173,17 +173,17 @@ export class ProductAppsComponent implements OnInit {
   public onAppDetail(ev: any, app: any, appType: AppType) {
     ev.stopPropagation()
     this.app = { ...app, appType: appType, mfeType: app.mfeType ?? app.type } as AppAbstract
-    this.changeMode.set('EDIT')
+    this.currentChangeMode.set('EDIT')
     this.displayDetailDialog = true
   }
   public onCopy(ev: any, app: any, appType: AppType) {
     ev.stopPropagation()
     this.app = { ...app, appType: appType } as AppAbstract
-    this.changeMode.set('CREATE')
+    this.currentChangeMode.set('CREATE')
     this.displayDetailDialog = true
   }
   public onCreate() {
-    this.changeMode.set('CREATE')
+    this.currentChangeMode.set('CREATE')
     this.app = undefined
     this.displayDetailDialog = true
   }

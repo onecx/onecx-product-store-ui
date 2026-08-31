@@ -1,4 +1,4 @@
-@if (displayDialog() && slotInput()) {
+@if (displayDialog() && slot()) {
   <p-dialog
     [visible]="true"
     (visibleChange)="onDialogHide()"
@@ -20,7 +20,7 @@
         } @else {
           <div class="w-full flex flex-row justify-content-between align-items-center">
             <div class="p-dialog-title">{{ dialogTitleKey | translate }}</div>
-            @if (slot?.undeployed) {
+            @if (currentSlot?.undeployed) {
               <div
                 id="ps_app_detail_header_field_undeployed"
                 class="p-dialog-title danger-action-text pi pi-ban"
@@ -29,7 +29,7 @@
                 tooltipPosition="top"
                 tooltipEvent="hover"
               ></div>
-            } @else if (slot?.deprecated) {
+            } @else if (currentSlot?.deprecated) {
               <div
                 id="ps_app_detail_header_field_deprecated"
                 class="p-dialog-title danger-action-text pi pi-exclamation-circle"
@@ -58,7 +58,7 @@
 
         <p-tab
           value="1"
-          [disabled]="changeMode() === 'CREATE'"
+          [disabled]="currentChangeMode() === 'CREATE'"
           [ariaLabel]="'DIALOG.TABS.INTERN' | translate"
           [pTooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate"
           tooltipPosition="top"
@@ -151,8 +151,8 @@
 
         <p-tabpanel value="1">
           <app-slot-intern
-            [slot]="slot"
-            [changeMode]="changeMode()"
+            [slot]="currentSlot"
+            [changeMode]="currentChangeMode()"
             (undeployed)="onChangeUndeployedValue($event)"
           ></app-slot-intern>
         </p-tabpanel>
@@ -161,7 +161,7 @@
 
     <ng-template pTemplate="footer">
       <div class="flex flex-wrap justify-content-end gap-2 mb-1">
-        @if (changeMode() === 'VIEW') {
+        @if (currentChangeMode() === 'VIEW') {
           <p-button
             id="ps_app_detail_action_close"
             icon="pi pi-times"

@@ -121,15 +121,15 @@ export class AppDetailComponent implements OnInit {
 
   public readonly appAbstract = input<AppAbstract>()
   public readonly dateFormat = input('medium')
-  public readonly changeModeInput = input<ChangeMode>('VIEW', { alias: 'changeMode' })
+  public readonly changeMode = input<ChangeMode>('VIEW')
   public readonly displayDialog = input(false)
   public readonly appChanged = output<boolean>()
 
   public readonly endpointTable = viewChild<Table>('endpointTable')
   public readonly appInternComponent = viewChild(AppInternComponent)
 
-  // local state derived from changeModeInput, owned by the component once the dialog is open
-  public readonly changeMode = signal<ChangeMode>('VIEW')
+  // local state derived from the changeMode input, owned by the component once the dialog is open
+  public readonly currentChangeMode = signal<ChangeMode>('VIEW')
 
   public mfe: Microfrontend | undefined
   public ms: Microservice | undefined
@@ -184,7 +184,7 @@ export class AppDetailComponent implements OnInit {
     // replaces ngOnChanges: signal inputs don't trigger it, so reset/reload state whenever the dialog (re)opens
     effect(() => {
       if (this.displayDialog()) {
-        this.changeMode.set(this.changeModeInput())
+        this.currentChangeMode.set(this.changeMode())
         this.selectedTabIndex = '0'
         this.dialogTitleKey = undefined
         this.ms = undefined
@@ -205,18 +205,18 @@ export class AppDetailComponent implements OnInit {
 
   ngOnInit() {
     void this.initPermissions()
-    if (this.hasEditPermission && this.changeMode() === 'VIEW') this.changeMode.set('EDIT')
+    if (this.hasEditPermission && this.currentChangeMode() === 'VIEW') this.currentChangeMode.set('EDIT')
     this.getDropdownTranslations()
   }
 
   private async initPermissions(): Promise<void> {
     this.hasCreatePermission = await this.user.hasPermission('APP#CREATE')
     this.hasEditPermission = await this.user.hasPermission('APP#EDIT')
-    if (this.hasEditPermission && this.changeMode() === 'VIEW') this.changeMode.set('EDIT')
+    if (this.hasEditPermission && this.currentChangeMode() === 'VIEW') this.currentChangeMode.set('EDIT')
   }
 
   private prepareCreate() {
-    if (this.changeMode() === 'CREATE') {
+    if (this.currentChangeMode() === 'CREATE') {
       this.enableForms()
       if (this.appAbstract()?.appType === 'MFE') {
         this.formGroupMfe.controls['type'].setValue('MODULE')
@@ -228,8 +228,8 @@ export class AppDetailComponent implements OnInit {
 
   public allowEditing(): boolean {
     return (
-      (this.hasEditPermission && this.changeMode() === 'EDIT') ||
-      (this.hasCreatePermission && this.changeMode() === 'CREATE')
+      (this.hasEditPermission && this.currentChangeMode() === 'EDIT') ||
+      (this.hasCreatePermission && this.currentChangeMode() === 'CREATE')
     )
   }
 
@@ -266,7 +266,7 @@ export class AppDetailComponent implements OnInit {
       if (this.mfe) this.fillFormMfe(this.mfe)
       this.endpoints = this.mfe?.endpoints ?? []
       if (this.endpoints.length === 0) this.onAddEndpointRow()
-      if (this.changeMode() === 'CREATE') {
+      if (this.currentChangeMode() === 'CREATE') {
         if (this.mfe?.id) {
           this.mfe.id = undefined
           this.mfe.operator = false
@@ -302,7 +302,7 @@ export class AppDetailComponent implements OnInit {
           if (data) {
             this.ms = data
             if (this.ms) this.fillFormMs(this.ms)
-            if (this.changeMode() === 'CREATE') {
+            if (this.currentChangeMode() === 'CREATE') {
               if (this.ms?.id) {
                 this.ms.id = undefined
                 this.ms.operator = false
@@ -400,21 +400,21 @@ export class AppDetailComponent implements OnInit {
     this.mfe = {
       ...this.formGroupMfe.value,
       id: this.mfe?.id,
-      undeployed: this.changeMode() === 'EDIT' ? this.mfe?.undeployed : undefined
+      undeployed: this.currentChangeMode() === 'EDIT' ? this.mfe?.undeployed : undefined
     }
     if (this.mfe) {
       this.mfe.classifications = Utils.convertToUniqueStringArray(this.formGroupMfe.controls['classifications'].value)
       this.mfe.endpoints = this.endpoints.filter((endpoint) => !(endpoint.name === '' && endpoint.path === ''))
     }
-    this.changeMode() === 'CREATE' ? this.createMfe() : this.updateMfe()
+    this.currentChangeMode() === 'CREATE' ? this.createMfe() : this.updateMfe()
   }
   private saveMs() {
     this.ms = {
       ...this.formGroupMs.value,
       id: this.ms?.id,
-      undeployed: this.changeMode() === 'EDIT' ? this.ms?.undeployed : undefined
+      undeployed: this.currentChangeMode() === 'EDIT' ? this.ms?.undeployed : undefined
     }
-    this.changeMode() === 'CREATE' ? this.createMs() : this.updateMs()
+    this.currentChangeMode() === 'CREATE' ? this.createMs() : this.updateMs()
   }
   private createMfe() {
     this.mfeApi.createMicrofrontend({ createMicrofrontendRequest: this.mfe as CreateMicrofrontendRequest }).subscribe({
@@ -480,7 +480,7 @@ export class AppDetailComponent implements OnInit {
         : key
 
     this.msgService.error({
-      summaryKey: 'ACTIONS.' + this.changeMode() + '.APP.NOK',
+      summaryKey: 'ACTIONS.' + this.currentChangeMode() + '.APP.NOK',
       detailKey:
         err?.error?.errorCode && err?.error?.errorCode === 'PERSIST_ENTITY_FAILED'
           ? key

@@ -228,7 +228,7 @@ describe('AppDetailComponent', () => {
 
       it('should getMfe and prepare copy', () => {
         mfeApiServiceSpy.getMicrofrontend.and.returnValue(of(mfe))
-        component.changeMode.set('CREATE')
+        component.currentChangeMode.set('CREATE')
         component.formGroupMfe = mfeForm
         fixture.componentRef.setInput('appAbstract', mfeAbstract)
 
@@ -281,7 +281,7 @@ describe('AppDetailComponent', () => {
       it('should getMs', () => {
         msApiServiceSpy.getMicroservice.and.returnValue(of(ms))
         component.formGroupMs = msForm
-        component.changeMode.set('CREATE')
+        component.currentChangeMode.set('CREATE')
         fixture.componentRef.setInput('appAbstract', msAbstract)
 
         component.getMs()
@@ -315,7 +315,7 @@ describe('AppDetailComponent', () => {
         iconName: new FormControl(''),
         note: new FormControl('')
       })
-      component.changeMode.set('CREATE')
+      component.currentChangeMode.set('CREATE')
 
       component.onSave()
 
@@ -331,7 +331,7 @@ describe('AppDetailComponent', () => {
         productName: new FormControl(''),
         description: new FormControl('')
       })
-      component.changeMode.set('CREATE')
+      component.currentChangeMode.set('CREATE')
 
       component.onSave()
 
@@ -362,7 +362,7 @@ describe('AppDetailComponent', () => {
         mfeApiServiceSpy.createMicrofrontend.and.returnValue(of({}))
         fixture.componentRef.setInput('appAbstract', appMfe)
         component.formGroupMfe = mfeForm
-        component.changeMode.set('CREATE')
+        component.currentChangeMode.set('CREATE')
         component.endpoints = [
           { name: 'name', path: 'path' },
           { name: '', path: 'path' }
@@ -384,7 +384,7 @@ describe('AppDetailComponent', () => {
         spyOn(console, 'error')
         fixture.componentRef.setInput('appAbstract', appMfe)
         component.formGroupMfe = mfeForm
-        component.changeMode.set('CREATE')
+        component.currentChangeMode.set('CREATE')
 
         component.onSave()
 
@@ -419,7 +419,7 @@ describe('AppDetailComponent', () => {
         msApiServiceSpy.createMicroservice.and.returnValue(of({}))
         fixture.componentRef.setInput('appAbstract', appMs)
         component.formGroupMs = msForm
-        component.changeMode.set('CREATE')
+        component.currentChangeMode.set('CREATE')
 
         component.onSave()
 
@@ -438,7 +438,7 @@ describe('AppDetailComponent', () => {
         spyOn(console, 'error')
         fixture.componentRef.setInput('appAbstract', appMs)
         component.formGroupMs = msForm
-        component.changeMode.set('CREATE')
+        component.currentChangeMode.set('CREATE')
 
         component.onSave()
 
@@ -458,7 +458,7 @@ describe('AppDetailComponent', () => {
         mfeApiServiceSpy.updateMicrofrontend.and.returnValue(of({}))
         fixture.componentRef.setInput('appAbstract', appMfe)
         component.formGroupMfe = mfeForm
-        component.changeMode.set('EDIT')
+        component.currentChangeMode.set('EDIT')
 
         component.onSave()
 
@@ -476,7 +476,7 @@ describe('AppDetailComponent', () => {
         spyOn(console, 'error')
         fixture.componentRef.setInput('appAbstract', appMfe)
         component.formGroupMfe = mfeForm
-        component.changeMode.set('EDIT')
+        component.currentChangeMode.set('EDIT')
 
         component.onSave()
 
@@ -499,7 +499,7 @@ describe('AppDetailComponent', () => {
         spyOn(console, 'error')
         fixture.componentRef.setInput('appAbstract', appMfe)
         component.formGroupMfe = mfeForm
-        component.changeMode.set('EDIT')
+        component.currentChangeMode.set('EDIT')
 
         component.onSave()
 
@@ -522,7 +522,7 @@ describe('AppDetailComponent', () => {
         spyOn(console, 'error')
         fixture.componentRef.setInput('appAbstract', appMfe)
         component.formGroupMfe = mfeForm
-        component.changeMode.set('EDIT')
+        component.currentChangeMode.set('EDIT')
 
         component.onSave()
 
@@ -540,7 +540,7 @@ describe('AppDetailComponent', () => {
         msApiServiceSpy.updateMicroservice.and.returnValue(of({}))
         fixture.componentRef.setInput('appAbstract', appMs)
         component.formGroupMs = msForm
-        component.changeMode.set('EDIT')
+        component.currentChangeMode.set('EDIT')
 
         component.onSave()
 
@@ -558,7 +558,7 @@ describe('AppDetailComponent', () => {
         spyOn(console, 'error')
         fixture.componentRef.setInput('appAbstract', appMs)
         component.formGroupMs = msForm
-        component.changeMode.set('EDIT')
+        component.currentChangeMode.set('EDIT')
 
         component.onSave()
 
@@ -624,11 +624,11 @@ describe('AppDetailComponent', () => {
   describe('on init', () => {
     it('should switch to EDIT on ngOnInit when hasEditPermission', () => {
       component.hasEditPermission = true
-      component.changeMode.set('VIEW')
+      component.currentChangeMode.set('VIEW')
 
       component.ngOnInit()
 
-      expect(component.changeMode()).toBe('EDIT')
+      expect(component.currentChangeMode()).toBe('EDIT')
     })
   })
 })

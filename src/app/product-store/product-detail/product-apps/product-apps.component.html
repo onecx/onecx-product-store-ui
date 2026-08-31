@@ -315,7 +315,7 @@
   [displayDialog]="displayDetailDialog"
   [appAbstract]="app"
   [dateFormat]="dateFormat"
-  [changeMode]="changeMode()"
+  [changeMode]="currentChangeMode()"
   (appChanged)="appChanged($event)"
 ></app-app-detail>
 
@@ -335,6 +335,6 @@
   [displayDialog]="displaySlotDetailDialog"
   [slot]="slotForDetail"
   [dateFormat]="dateFormat"
-  [changeMode]="changeMode()"
+  [changeMode]="currentChangeMode()"
   (changed)="appChanged($event)"
 ></app-slot-detail>

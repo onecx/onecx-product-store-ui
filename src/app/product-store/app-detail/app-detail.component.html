@@ -51,7 +51,7 @@
         >
           {{ 'DIALOG.TABS.LOCAL' | translate }}
         </p-tab>
-        @if (mfe || changeMode() === 'CREATE') {
+        @if (mfe || currentChangeMode() === 'CREATE') {
           <p-tab
             value="1"
             [ariaLabel]="'DIALOG.TABS.REMOTE' | translate"
@@ -75,7 +75,7 @@
         }
         <p-tab
           value="3"
-          [disabled]="changeMode() === 'CREATE'"
+          [disabled]="currentChangeMode() === 'CREATE'"
           [ariaLabel]="'DIALOG.TABS.INTERN' | translate"
           [pTooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate"
           tooltipPosition="top"
@@ -265,7 +265,7 @@
           @if (!loading && appAbstract()?.appType === 'MS') {
             <form [formGroup]="formGroupMs" errorTailor>
               <ng-template pTemplate="header">
-                <span>{{ 'ACTIONS.' + changeMode() + '.MS.HEADER' | translate }}</span>
+                <span>{{ 'ACTIONS.' + currentChangeMode() + '.MS.HEADER' | translate }}</span>
               </ng-template>
               <div class="flex flex-column row-gap-4">
                 <!-- row 1 -->
@@ -603,7 +603,7 @@
           <app-app-intern
             [mfe]="mfe"
             [ms]="ms"
-            [changeMode]="changeMode()"
+            [changeMode]="currentChangeMode()"
             (undeployed)="onChangeUndeployedValue($event)"
           ></app-app-intern>
         </p-tabpanel>
