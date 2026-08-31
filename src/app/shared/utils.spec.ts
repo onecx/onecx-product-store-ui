@@ -1,4 +1,5 @@
 import { SelectItem } from 'primeng/api'
+import { FormControl, FormGroup } from '@angular/forms'
 import { of, throwError } from 'rxjs'
 
 import { Utils } from './utils'
@@ -119,6 +120,47 @@ describe('utils', () => {
       const sortedArray = Utils.convertToUniqueStringArray(s) ?? []
 
       expect(sortedArray[0]).toEqual('a')
+    })
+  })
+
+  describe('setFormControlsValues', () => {
+    let form: FormGroup
+
+    beforeEach(() => {
+      form = new FormGroup({
+        operator: new FormControl<boolean | null>(null),
+        undeployed: new FormControl<boolean | null>(null)
+      })
+    })
+
+    it('should do nothing if source is undefined', () => {
+      Utils.setFormControlsValues(form.controls, undefined)
+
+      expect(form.get('operator')?.value).toBeNull()
+      expect(form.get('undeployed')?.value).toBeNull()
+    })
+
+    it('should skip null values by default', () => {
+      Utils.setFormControlsValues(form.controls, { operator: null, undeployed: true })
+
+      expect(form.get('operator')?.value).toBeNull()
+      expect(form.get('undeployed')?.value).toBeTrue()
+    })
+
+    it('should set null values when skipNullValues is false', () => {
+      form.get('operator')?.setValue(true)
+
+      Utils.setFormControlsValues(form.controls, { operator: null, undeployed: true }, false)
+
+      expect(form.get('operator')?.value).toBeNull()
+      expect(form.get('undeployed')?.value).toBeTrue()
+    })
+
+    it('should set undefined values when a key is missing from source', () => {
+      Utils.setFormControlsValues(form.controls, { operator: true }, false)
+
+      expect(form.get('operator')?.value).toBeTrue()
+      expect(form.get('undeployed')?.value).toBeUndefined()
     })
   })
 

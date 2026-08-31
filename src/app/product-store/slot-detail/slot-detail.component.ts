@@ -1,4 +1,14 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+  input,
+  OnInit,
+  output,
+  signal,
+  viewChild
+} from '@angular/core'
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { finalize, map } from 'rxjs'
@@ -48,89 +58,79 @@ export interface SlotForm {
     TranslateModule
   ],
   templateUrl: './slot-detail.component.html',
-  styleUrls: ['./slot-detail.component.scss']
+  styleUrls: ['./slot-detail.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SlotDetailComponent implements OnInit, OnChanges {
-  @Input() slot: Slot | undefined
-  @Input() dateFormat = 'medium'
-  @Input() changeMode: ChangeMode = 'VIEW'
-  @Input() displayDialog = false
-  @Output() changed = new EventEmitter<boolean>()
+export class SlotDetailComponent implements OnInit {
+  private readonly user = inject(UserService)
+  private readonly slotApi = inject(SlotsAPIService)
+  private readonly msgService = inject(PortalMessageService)
+  private readonly translate = inject(TranslateService)
 
-  @ViewChild('endpointTable') endpointTable: Table | undefined
-  @ViewChild(SlotInternComponent, { static: false }) appInternComponent!: SlotInternComponent
+  public readonly slot = input<Slot>()
+  public readonly dateFormat = input('medium')
+  public readonly changeMode = input<ChangeMode>('VIEW')
+  public readonly displayDialog = input(false)
+  public readonly changed = output<boolean>()
 
-  public formGroupSlot: FormGroup
+  public readonly endpointTable = viewChild<Table>('endpointTable')
+  public readonly appInternComponent = viewChild(SlotInternComponent)
+
+  // local state derived from the changeMode input, owned by the component once the dialog is open
+  public readonly currentChangeMode = signal<ChangeMode>('VIEW')
+
+  // full slot data, loaded once the dialog opens; distinct from the slot identity input
+  public currentSlot: Slot | undefined
   public selectedTabIndex = '0'
   public dialogTitleKey: string | undefined = undefined
   public loading = false
   public hasCreatePermission = false
   public hasEditPermission = false
+  public hasViewPermission = false
   public undeployedValue: boolean | undefined = undefined
+  public slotForm = new FormGroup<SlotForm>({
+    name: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
+    appId: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
+    productName: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
+    description: new FormControl(null, [Validators.maxLength(255)])
+  })
 
-  constructor(
-    private readonly user: UserService,
-    private readonly slotApi: SlotsAPIService,
-    private readonly msgService: PortalMessageService,
-    private readonly translate: TranslateService
-  ) {
-    this.formGroupSlot = new FormGroup<SlotForm>({
-      name: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
-      appId: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
-      productName: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
-      description: new FormControl(null, [Validators.maxLength(255)])
+  constructor() {
+    // replaces ngOnChanges: signal inputs don't trigger it, so reset/reload state whenever the dialog (re)opens
+    effect(() => {
+      if (this.displayDialog()) {
+        this.currentChangeMode.set(this.changeMode())
+        // check and fix changeMode
+        if (!this.hasViewPermission && this.currentChangeMode() === 'VIEW') return
+        if (!this.hasEditPermission && this.currentChangeMode() === 'EDIT') return
+        if (!this.hasCreatePermission && this.currentChangeMode() === 'CREATE') return
+        this.dialogTitleKey = 'ACTIONS.' + this.currentChangeMode() + '.SLOT.HEADER'
+
+        if (this.slot()) {
+          this.selectedTabIndex = '0'
+          this.slotForm.reset()
+          this.slotForm.disable()
+          this.getSlot()
+        }
+      }
     })
   }
 
   ngOnInit() {
     void this.initPermissions()
-    if (this.hasEditPermission && this.changeMode !== 'CREATE') this.changeMode = 'EDIT'
   }
-
   private async initPermissions(): Promise<void> {
     this.hasCreatePermission = await this.user.hasPermission('SLOT#CREATE')
     this.hasEditPermission = await this.user.hasPermission('SLOT#EDIT')
-    if (this.hasEditPermission && this.changeMode !== 'CREATE') this.changeMode = 'EDIT'
-  }
-
-  ngOnChanges() {
-    if (this.displayDialog && this.slot) {
-      this.selectedTabIndex = '0'
-      this.dialogTitleKey = undefined
-      this.formGroupSlot.reset()
-      this.formGroupSlot.disable()
-      this.prepareCreate()
-      this.getSlot()
-    }
-  }
-
-  private prepareCreate() {
-    if (this.changeMode === 'CREATE') {
-      this.enableForms()
-      this.dialogTitleKey = 'ACTIONS.CREATE.SLOT.HEADER'
-    }
-  }
-
-  public allowEditing(): boolean {
-    return (
-      (this.hasEditPermission && this.changeMode === 'EDIT') ||
-      (this.hasCreatePermission && this.changeMode === 'CREATE')
-    )
-  }
-
-  private enableForms(): void {
-    if (this.allowEditing()) {
-      this.formGroupSlot.enable()
-    } else {
-      this.formGroupSlot.disable()
-    }
+    this.hasViewPermission = await this.user.hasPermission('SLOT#VIEW')
   }
 
   public getSlot() {
     this.loading = true
-    if (this.slot?.id)
+    const slotIdentity = this.slot()
+    if (slotIdentity?.id)
       this.slotApi
-        .getSlot({ id: this.slot.id })
+        .getSlot({ id: slotIdentity.id })
         .pipe(
           map((data: Slot) => this.getSlotData(data)),
           finalize(() => (this.loading = false))
@@ -139,29 +139,26 @@ export class SlotDetailComponent implements OnInit, OnChanges {
   }
   private getSlotData(data: Slot) {
     if (data) {
-      this.slot = data
-      if (this.slot) this.fillFormSlot(this.slot)
-      if (this.changeMode === 'CREATE') {
-        if (this.slot?.id) {
-          this.slot.id = undefined
-          this.slot.operator = false
-          this.slot.undeployed = false
-          this.slot.deprecated = false
-          this.slot.creationDate = undefined
-          this.slot.creationUser = undefined
-          this.slot.modificationDate = undefined
-          this.slot.modificationUser = undefined
+      this.currentSlot = data
+      this.fillFormSlot(this.currentSlot)
+      if (this.currentChangeMode() === 'CREATE') {
+        if (this.currentSlot?.id) {
+          this.currentSlot.id = undefined
+          this.currentSlot.operator = false
+          this.currentSlot.undeployed = false
+          this.currentSlot.deprecated = false
+          this.currentSlot.creationDate = undefined
+          this.currentSlot.creationUser = undefined
+          this.currentSlot.modificationDate = undefined
+          this.currentSlot.modificationUser = undefined
         }
-        this.dialogTitleKey = 'ACTIONS.CREATE.SLOT.HEADER'
-      } else {
-        this.dialogTitleKey = 'ACTIONS.' + (this.hasEditPermission ? 'EDIT' : 'VIEW') + '.SLOT.HEADER'
       }
-      this.enableForms()
+      if (['EDIT', 'CREATE'].includes(this.currentChangeMode())) this.slotForm.enable()
     }
   }
 
+  // fill form with slot data, excluding fields not used in the form
   public fillFormSlot(slot: Slot): void {
-    // build form mfe by excluding not used fields
     const formSlot = (({
       id,
       creationDate,
@@ -174,19 +171,19 @@ export class SlotDetailComponent implements OnInit, OnChanges {
       deprecated,
       ...o
     }) => o)(slot)
-    this.formGroupSlot.setValue(formSlot) // assign
+    this.slotForm.setValue(formSlot)
   }
 
   /**
    * UI Actions
    */
   public onDialogHide() {
-    this.slot = undefined
+    this.currentSlot = undefined
     this.changed.emit(false)
   }
 
   public onChangeUndeployedValue(val: boolean) {
-    if (this.slot) this.slot.undeployed = val
+    if (this.currentSlot) this.currentSlot.undeployed = val
   }
 
   public onTabChange(tabValue: string | number) {
@@ -194,23 +191,23 @@ export class SlotDetailComponent implements OnInit, OnChanges {
   }
 
   public onSave() {
-    if (!this.formGroupSlot.valid) {
+    if (!this.slotForm.valid) {
       this.msgService.error({ summaryKey: 'VALIDATION.FORM_INVALID' })
       return
     }
-    this.slot = {
-      ...this.formGroupSlot.value,
-      id: this.slot?.id,
-      undeployed: this.changeMode === 'EDIT' ? this.slot?.undeployed : undefined
-    }
-    this.changeMode === 'CREATE' ? this.createSlot() : this.updateSlot()
+    this.currentSlot = {
+      id: this.currentSlot?.id,
+      ...this.slotForm.value,
+      undeployed: this.currentChangeMode() === 'EDIT' ? this.currentSlot?.undeployed : undefined
+    } as Slot
+    this.currentChangeMode() === 'CREATE' ? this.createSlot() : this.updateSlot()
   }
 
   /**
    * DATA
    */
   private createSlot() {
-    this.slotApi.createSlot({ createSlotRequest: this.slot as CreateSlotRequest }).subscribe({
+    this.slotApi.createSlot({ createSlotRequest: this.currentSlot as CreateSlotRequest }).subscribe({
       next: () => {
         this.msgService.success({ summaryKey: 'ACTIONS.CREATE.SLOT.OK' })
         this.changed.emit(true)
@@ -223,8 +220,8 @@ export class SlotDetailComponent implements OnInit, OnChanges {
   private updateSlot() {
     this.slotApi
       .updateSlot({
-        id: this.slot?.id ?? '',
-        updateSlotRequest: this.slot as UpdateSlotRequest
+        id: this.currentSlot?.id ?? '',
+        updateSlotRequest: this.currentSlot as UpdateSlotRequest
       })
       .subscribe({
         next: () => {
@@ -241,7 +238,7 @@ export class SlotDetailComponent implements OnInit, OnChanges {
     const key = err?.error?.detail.indexOf('slot_name') > 0 ? 'VALIDATION.SLOT.UNIQUE_CONSTRAINT.SLOT_NAME' : ''
 
     this.msgService.error({
-      summaryKey: 'ACTIONS.' + this.changeMode + '.SLOT.NOK',
+      summaryKey: 'ACTIONS.' + this.currentChangeMode() + '.SLOT.NOK',
       detailKey:
         err?.error?.errorCode && err?.error?.errorCode === 'PERSIST_ENTITY_FAILED'
           ? key

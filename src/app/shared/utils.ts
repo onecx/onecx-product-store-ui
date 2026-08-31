@@ -1,5 +1,6 @@
 import { SelectItem } from 'primeng/api'
 import { Location } from '@angular/common'
+import { AbstractControl } from '@angular/forms'
 import { catchError, first, of, tap } from 'rxjs'
 
 import { WorkspaceService } from '@onecx/angular-integration-interface'
@@ -44,6 +45,22 @@ const Utils = {
     const ar: Array<string> = []
     for (const s of unsorted.toString().split(',')) ar?.push(s.trim())
     return ar.sort(this.sortByLocale)
+  },
+
+  /**
+   * Forms
+   */
+  // fills form controls with values from a source object, matching control keys to source properties
+  setFormControlsValues(controls: object, source: object | undefined, skipNullValues = true): void {
+    if (!source) return
+    const controlsRecord = controls as Record<string, AbstractControl>
+    const sourceRecord = source as Record<string, unknown>
+    for (const key of Object.keys(controlsRecord)) {
+      const value = sourceRecord[key]
+      if (!skipNullValues || value !== null) {
+        controlsRecord[key].setValue(value)
+      }
+    }
   },
 
   /**

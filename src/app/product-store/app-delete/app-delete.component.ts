@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 
 import { ButtonModule } from 'primeng/button'
@@ -15,7 +15,8 @@ import { MicrofrontendsAPIService, MicroservicesAPIService } from 'src/app/share
   selector: 'app-app-delete',
   standalone: true,
   imports: [ButtonModule, DialogModule, MessageModule, TooltipModule, TranslateModule],
-  templateUrl: './app-delete.component.html'
+  templateUrl: './app-delete.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppDeleteComponent {
   private readonly msApi = inject(MicroservicesAPIService)
@@ -23,18 +24,19 @@ export class AppDeleteComponent {
   private readonly msgService = inject(PortalMessageService)
   private readonly translate = inject(TranslateService)
 
-  @Input() appAbstract: AppAbstract | undefined
-  @Input() displayDialog = false
-  @Output() appDeleted = new EventEmitter<boolean>()
+  public readonly appAbstract = input<AppAbstract>()
+  public readonly displayDialog = input(false)
+  public readonly appDeleted = output<boolean>()
 
   public onDialogHide(): void {
     this.appDeleted.emit(false)
   }
 
   public onConfirmDeletion(): void {
-    if (this.appAbstract?.id) {
-      if (this.appAbstract?.appType === 'MFE') {
-        this.mfeApi.deleteMicrofrontend({ id: this.appAbstract?.id }).subscribe({
+    const appAbstract = this.appAbstract()
+    if (appAbstract?.id) {
+      if (appAbstract.appType === 'MFE') {
+        this.mfeApi.deleteMicrofrontend({ id: appAbstract.id }).subscribe({
           next: () => {
             this.msgService.success({ summaryKey: 'ACTIONS.DELETE.APP.OK' })
             this.appDeleted.emit(true)
@@ -42,8 +44,8 @@ export class AppDeleteComponent {
           error: () => this.msgService.error({ summaryKey: 'ACTIONS.DELETE.APP.NOK' })
         })
       }
-      if (this.appAbstract?.appType === 'MS') {
-        this.msApi.deleteMicroservice({ id: this.appAbstract?.id }).subscribe({
+      if (appAbstract.appType === 'MS') {
+        this.msApi.deleteMicroservice({ id: appAbstract.id }).subscribe({
           next: () => {
             this.msgService.success({ summaryKey: 'ACTIONS.DELETE.APP.OK' })
             this.appDeleted.emit(true)

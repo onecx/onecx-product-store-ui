@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core'
 import { DatePipe } from '@angular/common'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
@@ -11,6 +11,7 @@ import { MessageModule } from 'primeng/message'
 import { TooltipModule } from 'primeng/tooltip'
 
 import { Slot } from 'src/app/shared/generated'
+import { Utils } from 'src/app/shared/utils'
 import { ChangeMode } from '../../product-detail/product-detail.component'
 
 @Component({
@@ -27,38 +28,41 @@ import { ChangeMode } from '../../product-detail/product-detail.component'
     TooltipModule,
     TranslateModule
   ],
-  templateUrl: './slot-intern.component.html'
+  templateUrl: './slot-intern.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SlotInternComponent implements OnChanges {
-  @Input() slot: Slot | undefined
-  @Input() dateFormat = 'medium'
-  @Input() changeMode: ChangeMode = 'VIEW'
-  @Output() undeployed = new EventEmitter<boolean>()
+export class SlotInternComponent {
+  public readonly slot = input<Slot>()
+  public readonly dateFormat = input('medium')
+  public readonly changeMode = input<ChangeMode>('VIEW')
+  public readonly undeployed = output<boolean>()
+
+  private readonly translate = inject(TranslateService)
 
   public slotForm: FormGroup
 
-  constructor(private readonly translate: TranslateService) {
+  constructor() {
     this.slotForm = new FormGroup({
       operator: new FormControl<boolean | null>(null),
       deprecated: new FormControl<boolean | null>(null),
       undeployed: new FormControl<boolean | null>(null)
     })
-  }
 
-  public ngOnChanges(): void {
-    this.slotForm.reset()
-    this.slotForm.disable()
-    if (this.slot) {
-      this.setFormData()
-      this.changeMode === 'EDIT'
-        ? this.slotForm.get('undeployed')?.enable()
-        : this.slotForm.get('undeployed')?.disable()
-    }
+    // replaces ngOnChanges: signal inputs don't trigger it
+    effect(() => {
+      this.slotForm.reset()
+      this.slotForm.disable()
+      if (this.slot()) {
+        this.setFormData()
+        this.changeMode() === 'EDIT'
+          ? this.slotForm.get('undeployed')?.enable()
+          : this.slotForm.get('undeployed')?.disable()
+      }
+    })
   }
 
   private setFormData(): void {
-    for (const key of Object.keys(this.slotForm.controls))
-      if (this.slot && (this.slot as any)[key] !== null) this.slotForm.controls[key].setValue((this.slot as any)[key])
+    Utils.setFormControlsValues(this.slotForm.controls, this.slot())
   }
 
   public onChangeUndeployed(ev: any) {

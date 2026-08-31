@@ -106,8 +106,8 @@
         <p-floatlabel variant="on" class="flex-1">
           <p-autoComplete
             id="ps_product_detail_form_field_classifications"
-            [styleClass]="'w-full' + (changeMode === 'VIEW' ? ' hide-item-decoration' : '')"
-            [inputStyleClass]="changeMode === 'VIEW' ? 'hidden' : ''"
+            [styleClass]="'w-full' + (changeMode() === 'VIEW' ? ' hide-item-decoration' : '')"
+            [inputStyleClass]="changeMode() === 'VIEW' ? 'hidden' : ''"
             [panelStyleClass]="'w-full'"
             [dropdown]="true"
             [multiple]="true"
@@ -154,7 +154,7 @@
     <!-- row 4 -->
     <div class="flex flex-row flex-wrap sm:flex-nowrap align-items-center row-gap-2 column-gap-4">
       <input hidden type="file" accept="image/*" #selectedFileInputLogo (change)="onFileUpload($event)" />
-      @if (product && fetchingImageUrl && !onImageLoadError) {
+      @if (product() && fetchingImageUrl && !onImageLoadError) {
         <img
           [alt]="'logo'"
           [ocxSrc]="fetchingImageUrl"
@@ -167,7 +167,7 @@
         id="ps_product_detail_remove_logo"
         icon="pi pi-times"
         (onClick)="onRemoveLogo()"
-        [disabled]="onImageLoadError || (changeMode === 'VIEW' && product?.imageUrl)"
+        [disabled]="onImageLoadError || (changeMode() === 'VIEW' && product()?.imageUrl)"
         [ariaLabel]="'IMAGE.TOOLTIPS.REMOVE' | translate"
         [pTooltip]="'IMAGE.TOOLTIPS.REMOVE' | translate"
         tooltipPosition="top"
@@ -193,8 +193,8 @@
             class="w-full text-responsive"
             id="ps_product_detail_form_field_image_url"
             formControlName="imageUrl"
-            (paste)="onInputChange(product, $event)"
-            (change)="onInputChange(product, $event)"
+            (paste)="onInputChange(product(), $event)"
+            (change)="onInputChange(product(), $event)"
             [attr.aria-label]="'IMAGE.TOOLTIPS.URL' | translate"
             [pTooltip]="'IMAGE.TOOLTIPS.URL' | translate"
             tooltipPosition="top"
@@ -202,7 +202,7 @@
           />
           <label for="ps_product_detail_form_field_image_url">{{ 'PRODUCT.IMAGE_URL' | translate }}</label>
         </p-floatlabel>
-        @if (changeMode === 'EDIT') {
+        @if (changeMode() === 'EDIT') {
           <label class="absolute mt-1 text-xs block" for="workspace_detail_form_logo_url">
             {{ ('VALIDATION.HINTS.FORMAT_URL' | translate) + externUrlPattern }}
           </label>

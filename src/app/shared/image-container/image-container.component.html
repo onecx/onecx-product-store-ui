@@ -1,21 +1,21 @@
 @if (displayDefaultLogo) {
   <img
-    [id]="id"
-    [class]="'border-round-sm image-object ' + (styleClass ? styleClass : '')"
+    [id]="id()"
+    [class]="'border-round-sm image-object ' + (styleClass() ? styleClass() : '')"
     [src]="defaultImageUrl$ | async"
     [alt]="'DIALOG.LOGO.PLACEHOLDER' | translate"
-    [pTooltip]="title"
+    [pTooltip]="title()"
     tooltipPosition="top"
     tooltipEvent="hover"
   />
 } @else {
   <img
-    [id]="id"
-    [class]="'border-round-sm image-object ' + (styleClass ? styleClass : '')"
+    [id]="id()"
+    [class]="'border-round-sm image-object ' + (styleClass() ? styleClass() : '')"
     [ocxSrc]="displayImageUrl"
     (error)="onImageError()"
     [alt]="'DIALOG.LOGO.LABEL' | translate"
-    [pTooltip]="title"
+    [pTooltip]="title()"
     tooltipPosition="top"
     tooltipEvent="hover"
   />

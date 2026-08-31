@@ -1,5 +1,12 @@
 @let details = productDetails$ | async;
-@if (details) {
+@if (exceptionKey) {
+  <p-message
+    id="ps_product_apps_exception"
+    severity="error"
+    styleClass="m-2"
+    [text]="exceptionKey | translate"
+  ></p-message>
+} @else if (details) {
   <div class="mb-1 mx-1">
     @if (!hasComponents) {
       <p-message
@@ -21,14 +28,23 @@
             <p-card
               tabindex="0"
               [id]="'ps_product_apps_components_mfe_' + mfe.id + '_' + mfe.appId"
-              styleClass="relative w-full sm:w-21rem m-0 pt-2 pb-1 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
-              (click)="onAppDetail($event, mfe, AppType.MFE)"
-              (keydown.enter)="onAppDetail($event, mfe, AppType.MFE)"
-              (keydown.space)="onAppDetail($event, mfe, AppType.MFE)"
+              [styleClass]="
+                'relative w-full sm:w-21rem m-0 pt-2 pb-1 px-5 flex flex-column justify-content-center ' +
+                (hasAppViewPermission || hasAppEditPermission
+                  ? 'hover:bg-gray-200 hover:text-color cursor-pointer'
+                  : '')
+              "
+              (click)="hasAppViewPermission || hasAppEditPermission ? onAppDetail($event, mfe, AppType.MFE) : null"
+              (keydown.enter)="
+                hasAppViewPermission || hasAppEditPermission ? onAppDetail($event, mfe, AppType.MFE) : null
+              "
+              (keydown.space)="
+                hasAppViewPermission || hasAppEditPermission ? onAppDetail($event, mfe, AppType.MFE) : null
+              "
               [ariaLabel]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
             >
               <!-- BADGES -->
-              @if (hasCreatePermission) {
+              @if (hasAppCreatePermission) {
                 <a
                   tabindex="0"
                   [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_copy_app'"
@@ -44,7 +60,7 @@
                   <span class="pi pi-copy" aria-hidden="true"></span>
                 </a>
               }
-              @if (hasDeletePermission) {
+              @if (hasAppDeletePermission) {
                 <a
                   tabindex="0"
                   [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_delete'"
@@ -134,14 +150,19 @@
             <p-card
               tabindex="0"
               [id]="'ps_product_apps_components_slot_' + slot.name"
-              styleClass="relative w-full sm:w-21rem m-0 pt-2 pb-1 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
-              (click)="onSlotDetail($event, slot)"
-              (keydown.enter)="onSlotDetail($event, slot)"
-              (keydown.space)="onSlotDetail($event, slot)"
+              [styleClass]="
+                'relative w-full sm:w-21rem m-0 pt-2 pb-1 px-5 flex flex-column justify-content-center ' +
+                (hasSlotViewPermission || hasSlotEditPermission
+                  ? 'hover:bg-gray-200 hover:text-color cursor-pointer'
+                  : '')
+              "
+              (click)="hasSlotViewPermission || hasSlotEditPermission ? onSlotDetail($event, slot) : null"
+              (keydown.enter)="hasSlotViewPermission || hasSlotEditPermission ? onSlotDetail($event, slot) : null"
+              (keydown.space)="hasSlotViewPermission || hasSlotEditPermission ? onSlotDetail($event, slot) : null"
               [ariaLabel]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
             >
               <!-- BADGES -->
-              @if (hasDeletePermission) {
+              @if (hasSlotDeletePermission) {
                 <a
                   tabindex="0"
                   [id]="'ps_product_apps_components_slot_' + slot.appId + '_delete'"
@@ -210,14 +231,23 @@
             <p-card
               tabindex="0"
               [id]="'ps_product_apps_components_mms_' + ms.id + '_' + ms.appId"
-              styleClass="relative w-full sm:w-21rem m-0 py-2 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
-              (click)="onAppDetail($event, ms, AppType.MS)"
-              (keydown.enter)="onAppDetail($event, ms, AppType.MS)"
-              (keydown.space)="onAppDetail($event, ms, AppType.MS)"
+              [styleClass]="
+                'relative w-full sm:w-21rem m-0 py-2 px-5 flex flex-column justify-content-center ' +
+                (hasAppViewPermission || hasAppEditPermission
+                  ? 'hover:bg-gray-200 hover:text-color cursor-pointer'
+                  : '')
+              "
+              (click)="hasAppViewPermission || hasAppEditPermission ? onAppDetail($event, ms, AppType.MS) : null"
+              (keydown.enter)="
+                hasAppViewPermission || hasAppEditPermission ? onAppDetail($event, ms, AppType.MS) : null
+              "
+              (keydown.space)="
+                hasAppViewPermission || hasAppEditPermission ? onAppDetail($event, ms, AppType.MS) : null
+              "
               [ariaLabel]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
             >
               <!-- BADGES -->
-              @if (hasCreatePermission) {
+              @if (hasAppCreatePermission) {
                 <a
                   tabindex="0"
                   [id]="'ps_product_apps_components_ms_' + ms.appId + '_copy_app'"
@@ -231,7 +261,7 @@
                   <span class="pi pi-copy" aria-hidden="true"></span>
                 </a>
               }
-              @if (hasDeletePermission) {
+              @if (hasAppDeletePermission) {
                 <a
                   tabindex="0"
                   [id]="'ps_product_apps_components_ms_' + ms.appId + '_delete'"
@@ -285,7 +315,7 @@
   [displayDialog]="displayDetailDialog"
   [appAbstract]="app"
   [dateFormat]="dateFormat"
-  [changeMode]="changeMode"
+  [changeMode]="currentChangeMode()"
   (appChanged)="appChanged($event)"
 ></app-app-detail>
 
@@ -305,6 +335,6 @@
   [displayDialog]="displaySlotDetailDialog"
   [slot]="slotForDetail"
   [dateFormat]="dateFormat"
-  [changeMode]="changeMode"
+  [changeMode]="currentChangeMode()"
   (changed)="appChanged($event)"
 ></app-slot-detail>

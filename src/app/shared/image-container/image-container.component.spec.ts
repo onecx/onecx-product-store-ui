@@ -56,31 +56,18 @@ describe('ImageContainerComponent', () => {
     })
   })
 
-  describe('ngOnChanges', () => {
+  describe('imageUrl effect', () => {
     it('should not modify imageUrl if it starts with http/https', () => {
       const testUrl = 'http://path/to/image.jpg'
-      component.imageUrl = testUrl
-      component.ngOnChanges({
-        imageUrl: {
-          currentValue: testUrl,
-          previousValue: null,
-          firstChange: true,
-          isFirstChange: () => true
-        }
-      })
+      fixture.componentRef.setInput('imageUrl', testUrl)
+      fixture.detectChanges()
 
-      expect(component.imageUrl).toBe(testUrl)
+      expect(component.imageUrl()).toBe(testUrl)
     })
 
     it('should set defaultLogoUrl if component imageUrl is undefined', () => {
-      component.ngOnChanges({
-        imageUrl: {
-          currentValue: '',
-          previousValue: null,
-          firstChange: true,
-          isFirstChange: () => true
-        }
-      })
+      fixture.componentRef.setInput('imageUrl', '')
+      fixture.detectChanges()
 
       expect(component.displayDefaultLogo).toBeTrue()
     })

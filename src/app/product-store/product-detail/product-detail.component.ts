@@ -1,12 +1,10 @@
-import { Component, DestroyRef, inject, OnInit, ViewChild } from '@angular/core'
+import { Component, DestroyRef, inject, OnInit, viewChild } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { AsyncPipe, Location } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
 import { catchError, Observable, of, finalize, map } from 'rxjs'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 
-import { ButtonModule } from 'primeng/button'
-import { DialogModule } from 'primeng/dialog'
 import { FloatLabelModule } from 'primeng/floatlabel'
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
 import { InputGroupModule } from 'primeng/inputgroup'
@@ -32,6 +30,7 @@ import { ProductAppsComponent } from './product-apps/product-apps.component'
 import { ProductPropertyComponent } from './product-props/product-props.component'
 import { ProductInternComponent } from './product-intern/product-intern.component'
 import { ProductUseComponent } from './product-use/product-use.component'
+import { ProductDeleteComponent } from '../product-delete/product-delete.component'
 
 export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
 
@@ -40,8 +39,6 @@ export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
   imports: [
     AngularAcceleratorModule,
     AsyncPipe,
-    ButtonModule,
-    DialogModule,
     FloatLabelModule,
     InputGroupAddonModule,
     InputGroupModule,
@@ -53,6 +50,7 @@ export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
     // coponents
     PortalPageComponent,
     ProductAppsComponent,
+    ProductDeleteComponent,
     ProductInternComponent,
     ProductPropertyComponent,
     ProductUseComponent
@@ -62,6 +60,14 @@ export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
 })
 export class ProductDetailComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef)
+  private readonly router = inject(Router)
+  private readonly route = inject(ActivatedRoute)
+  private readonly user = inject(UserService)
+  private readonly location = inject(Location)
+  private readonly productApi = inject(ProductsAPIService)
+  private readonly imageApi = inject(ImagesInternalAPIService)
+  private readonly msgService = inject(PortalMessageService)
+  private readonly translate = inject(TranslateService)
   // dialog
   public exceptionKey: string | undefined
   public loading = false
@@ -73,7 +79,6 @@ export class ProductDetailComponent implements OnInit {
   public productId: string | undefined
   public headerImageUrl?: string
   public productDeleteVisible = false
-  public productDeleteMessage = ''
   public selectedTabIndex = '0' // have to be a string, number does not work
   public currentLogoUrl: string | undefined = undefined
   // data
@@ -81,19 +86,10 @@ export class ProductDetailComponent implements OnInit {
   public product: Product | undefined = undefined
   public item4Delete: Product | undefined
 
-  @ViewChild(ProductPropertyComponent, { static: false }) productPropsComponent!: ProductPropertyComponent
-  @ViewChild(ProductInternComponent, { static: false }) productInternComponent!: ProductInternComponent
+  public readonly productPropsComponent = viewChild(ProductPropertyComponent)
+  public readonly productInternComponent = viewChild(ProductInternComponent)
 
-  constructor(
-    private readonly router: Router,
-    private readonly route: ActivatedRoute,
-    private readonly user: UserService,
-    private readonly location: Location,
-    private readonly productApi: ProductsAPIService,
-    private readonly imageApi: ImagesInternalAPIService,
-    private readonly msgService: PortalMessageService,
-    private readonly translate: TranslateService
-  ) {
+  constructor() {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.productName = this.route.snapshot.paramMap.get('name')
   }
@@ -258,8 +254,8 @@ export class ProductDetailComponent implements OnInit {
     if (['COPY', 'CREATE'].includes(this.changeMode)) this.onClose()
   }
   public onSaveProduct() {
-    const internals = this.productInternComponent.onSave()
-    const props = this.productPropsComponent.onSave()
+    const internals = this.productInternComponent()?.onSave()
+    const props = this.productPropsComponent()?.onSave()
     if (props && internals)
       this.changeMode === 'EDIT' ? this.updateProduct(props, internals) : this.createProduct(props, internals)
   }
@@ -321,15 +317,10 @@ export class ProductDetailComponent implements OnInit {
     this.item4Delete = product
     this.productDeleteVisible = true
   }
-  public onDeleteConfirmation(): void {
-    if (this.item4Delete?.id) {
-      this.productApi.deleteProduct({ id: this.item4Delete?.id }).subscribe({
-        next: () => {
-          this.msgService.success({ summaryKey: 'ACTIONS.DELETE.PRODUCT.OK' })
-          this.router.navigate(['../'], { relativeTo: this.route })
-        },
-        error: () => this.msgService.error({ summaryKey: 'ACTIONS.DELETE.PRODUCT.NOK' })
-      })
+  public onProductDeleted(deleted: boolean): void {
+    this.productDeleteVisible = false
+    if (deleted) {
+      this.router.navigate(['../'], { relativeTo: this.route })
     }
   }
 

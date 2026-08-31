@@ -1,7 +1,7 @@
-@if (displayDialog && slot && dialogTitleKey) {
+@if (displayDialog() && slot()) {
   <p-dialog
     [visible]="true"
-    (onVisibleChange)="onDialogHide()"
+    (visibleChange)="onDialogHide()"
     [modal]="true"
     [closable]="true"
     [resizable]="true"
@@ -13,34 +13,36 @@
       '600px': '100vw'
     }"
   >
-    <ng-template pTemplate="header">
-      @if (loading) {
-        <div class="pi pi-spinner"></div>
-      } @else {
-        <div class="mr-2 w-full flex flex-row justify-content-between align-items-center">
-          <div class="p-dialog-title">{{ dialogTitleKey | translate }}</div>
-          @if (slot.undeployed) {
-            <div
-              id="ps_app_detail_header_field_undeployed"
-              class="p-dialog-title danger-action-text pi pi-ban"
-              [attr.aria-label]="'SLOT.UNDEPLOYED_SEARCH' | translate"
-              [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            ></div>
-          } @else if (slot.deprecated) {
-            <div
-              id="ps_app_detail_header_field_deprecated"
-              class="p-dialog-title danger-action-text pi pi-exclamation-circle"
-              [attr.aria-label]="'SLOT.DEPRECATED_SEARCH' | translate"
-              [pTooltip]="'SLOT.DEPRECATED_SEARCH' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            ></div>
-          }
-        </div>
-      }
-    </ng-template>
+    @if (dialogTitleKey) {
+      <ng-template pTemplate="header">
+        @if (loading) {
+          <div class="pi pi-spinner"></div>
+        } @else {
+          <div class="w-full flex flex-row justify-content-between align-items-center">
+            <div class="p-dialog-title">{{ dialogTitleKey | translate }}</div>
+            @if (currentSlot?.undeployed) {
+              <div
+                id="ps_app_detail_header_field_undeployed"
+                class="p-dialog-title danger-action-text pi pi-ban"
+                [attr.aria-label]="'SLOT.UNDEPLOYED_SEARCH' | translate"
+                [pTooltip]="'SLOT.UNDEPLOYED_SEARCH' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              ></div>
+            } @else if (currentSlot?.deprecated) {
+              <div
+                id="ps_app_detail_header_field_deprecated"
+                class="p-dialog-title danger-action-text pi pi-exclamation-circle"
+                [attr.aria-label]="'SLOT.DEPRECATED_SEARCH' | translate"
+                [pTooltip]="'SLOT.DEPRECATED_SEARCH' | translate"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              ></div>
+            }
+          </div>
+        }
+      </ng-template>
+    }
 
     <p-tabs [value]="selectedTabIndex" (valueChange)="onTabChange($event)">
       <p-tablist>
@@ -56,7 +58,7 @@
 
         <p-tab
           value="1"
-          [disabled]="changeMode === 'CREATE'"
+          [disabled]="currentChangeMode() === 'CREATE'"
           [ariaLabel]="'DIALOG.TABS.INTERN' | translate"
           [pTooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate"
           tooltipPosition="top"
@@ -68,7 +70,7 @@
 
       <p-tabpanels>
         <p-tabpanel value="0">
-          <form [formGroup]="formGroupSlot" class="mt-3" errorTailor>
+          <form [formGroup]="slotForm" class="mt-3" errorTailor>
             <div class="flex flex-column row-gap-4">
               <!-- row 1 -->
               <div class="flex flex-row flex-wrap gap-4">
@@ -149,8 +151,8 @@
 
         <p-tabpanel value="1">
           <app-slot-intern
-            [slot]="slot"
-            [changeMode]="changeMode"
+            [slot]="currentSlot"
+            [changeMode]="currentChangeMode()"
             (undeployed)="onChangeUndeployedValue($event)"
           ></app-slot-intern>
         </p-tabpanel>
@@ -159,7 +161,18 @@
 
     <ng-template pTemplate="footer">
       <div class="flex flex-wrap justify-content-end gap-2 mb-1">
-        @if (allowEditing()) {
+        @if (currentChangeMode() === 'VIEW') {
+          <p-button
+            id="ps_app_detail_action_close"
+            icon="pi pi-times"
+            (onClick)="onDialogHide()"
+            [label]="'ACTIONS.NAVIGATION.CLOSE' | translate"
+            [ariaLabel]="'ACTIONS.NAVIGATION.CLOSE' | translate"
+            [pTooltip]="'ACTIONS.NAVIGATION.CLOSE.TOOLTIP' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          ></p-button>
+        } @else {
           <p-button
             id="ps_app_detail_action_cancel"
             icon="pi pi-times"
@@ -174,21 +187,10 @@
             id="ps_app_detail_action_save"
             icon="pi pi-save"
             (onClick)="onSave()"
-            [disabled]="!formGroupSlot.valid"
+            [disabled]="!slotForm.valid"
             [label]="'ACTIONS.SAVE' | translate"
             [ariaLabel]="'ACTIONS.SAVE' | translate"
             [pTooltip]="'ACTIONS.TOOLTIPS.SAVE_AND_CLOSE' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          ></p-button>
-        } @else {
-          <p-button
-            id="ps_app_detail_action_close"
-            icon="pi pi-times"
-            (onClick)="onDialogHide()"
-            [label]="'ACTIONS.NAVIGATION.CLOSE' | translate"
-            [ariaLabel]="'ACTIONS.NAVIGATION.CLOSE' | translate"
-            [pTooltip]="'ACTIONS.NAVIGATION.CLOSE.TOOLTIP' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
           ></p-button>

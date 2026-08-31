@@ -83,7 +83,9 @@ describe('ProductSearchComponent', () => {
   })
 
   afterEach(() => {
+    apiProductServiceSpy.getProductSearchCriteria.calls.reset()
     apiProductServiceSpy.getProductSearchCriteria.and.returnValue(of({}))
+    apiProductServiceSpy.searchProducts.calls.reset()
     apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [] }))
   })
 
@@ -307,7 +309,7 @@ describe('ProductSearchComponent', () => {
     })
 
     it('should search products - failed', (done) => {
-      const errorResponse = { status: 4012, statusText: 'Not authorized' }
+      const errorResponse = { status: 401, statusText: 'Not authorized' }
       apiProductServiceSpy.searchProducts.and.returnValue(throwError(() => errorResponse))
       spyOn(console, 'error')
 

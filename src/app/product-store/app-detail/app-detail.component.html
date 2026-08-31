@@ -1,7 +1,7 @@
-@if (displayDialog && appAbstract && dialogTitleKey) {
+@if (displayDialog() && appAbstract() && dialogTitleKey) {
   <p-dialog
     [visible]="true"
-    (onVisibleChange)="onDialogHide()"
+    (visibleChange)="onDialogHide()"
     [modal]="true"
     [closable]="true"
     [resizable]="true"
@@ -51,7 +51,7 @@
         >
           {{ 'DIALOG.TABS.LOCAL' | translate }}
         </p-tab>
-        @if (mfe || changeMode === 'CREATE') {
+        @if (mfe || currentChangeMode() === 'CREATE') {
           <p-tab
             value="1"
             [ariaLabel]="'DIALOG.TABS.REMOTE' | translate"
@@ -75,7 +75,7 @@
         }
         <p-tab
           value="3"
-          [disabled]="changeMode === 'CREATE'"
+          [disabled]="currentChangeMode() === 'CREATE'"
           [ariaLabel]="'DIALOG.TABS.INTERN' | translate"
           [pTooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate"
           tooltipPosition="top"
@@ -87,7 +87,7 @@
 
       <p-tabpanels>
         <p-tabpanel value="0">
-          @if (!loading && appAbstract.appType === 'MFE') {
+          @if (!loading && appAbstract()?.appType === 'MFE') {
             <form [formGroup]="formGroupMfe" errorTailor>
               <div class="flex flex-column row-gap-4">
                 <!-- row 1 -->
@@ -145,7 +145,7 @@
                     </label>
                   </p-floatlabel>
                   <p-floatlabel variant="on" class="flex-grow-1" controlErrorAnchor>
-                    <p-dropdown
+                    <p-select
                       id="ps_app_detail_form_mfe_field_icon_name"
                       styleClass="w-full min-w-min input-field-correction"
                       formControlName="iconName"
@@ -169,7 +169,7 @@
                           <span>{{ ico.label }}</span>
                         </div>
                       </ng-template>
-                    </p-dropdown>
+                    </p-select>
                     <label for="ps_app_detail_form_mfe_field_icon_name"> {{ 'APP.ICON_NAME' | translate }} </label>
                   </p-floatlabel>
                 </div>
@@ -262,10 +262,10 @@
             </form>
           }
 
-          @if (!loading && appAbstract.appType === 'MS') {
+          @if (!loading && appAbstract()?.appType === 'MS') {
             <form [formGroup]="formGroupMs" errorTailor>
               <ng-template pTemplate="header">
-                <span>{{ 'ACTIONS.' + this.changeMode + '.MS.HEADER' | translate }}</span>
+                <span>{{ 'ACTIONS.' + currentChangeMode() + '.MS.HEADER' | translate }}</span>
               </ng-template>
               <div class="flex flex-column row-gap-4">
                 <!-- row 1 -->
@@ -366,7 +366,7 @@
               <!-- row 1 -->
               <div class="flex flex-row flex-wrap gap-4">
                 <p-floatlabel variant="on" class="flex-grow-1 sm:flex-grow-0" controlErrorAnchor>
-                  <p-dropdown
+                  <p-select
                     id="ps_app_detail_form_mfe_field_type"
                     styleClass="w-full"
                     formControlName="type"
@@ -376,13 +376,13 @@
                     tooltipPosition="top"
                     tooltipEvent="hover"
                   >
-                  </p-dropdown>
+                  </p-select>
                   <label class="ocx-required-label" for="ps_app_detail_form_mfe_field_type">
                     {{ 'APP.TYPE' | translate }}
                   </label>
                 </p-floatlabel>
                 <p-floatlabel variant="on" class="flex-grow-1" controlErrorAnchor>
-                  <p-dropdown
+                  <p-select
                     id="ps_app_detail_form_mfe_field_technology"
                     styleClass="w-full"
                     formControlName="technology"
@@ -392,7 +392,7 @@
                     tooltipPosition="top"
                     tooltipEvent="hover"
                   >
-                  </p-dropdown>
+                  </p-select>
                   <label class="ocx-required-label" for="ps_app_detail_form_mfe_field_technology">
                     {{ 'APP.TECHNOLOGY' | translate }}
                   </label>
@@ -603,7 +603,7 @@
           <app-app-intern
             [mfe]="mfe"
             [ms]="ms"
-            [changeMode]="changeMode"
+            [changeMode]="currentChangeMode()"
             (undeployed)="onChangeUndeployedValue($event)"
           ></app-app-intern>
         </p-tabpanel>

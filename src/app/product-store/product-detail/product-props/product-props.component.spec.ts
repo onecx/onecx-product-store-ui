@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing'
+import { provideHttpClient } from '@angular/common/http'
+import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
@@ -74,7 +76,7 @@ describe('ProductPropertyComponent', () => {
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
-      providers: []
+      providers: [provideHttpClient(), provideHttpClientTesting()]
     })
       .overrideComponent(ProductPropertyComponent, {
         add: {
@@ -97,8 +99,15 @@ describe('ProductPropertyComponent', () => {
   afterEach(() => {
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
+    //
     productApiSpy.createProduct.calls.reset()
     productApiSpy.updateProduct.calls.reset()
+    productApiSpy.createProduct.and.returnValue(of({}))
+    productApiSpy.updateProduct.and.returnValue(of({}))
+    //
+    productApiSpy.getProductSearchCriteria.calls.reset()
+    productApiSpy.getProductSearchCriteria.and.returnValue(of({}))
+    //
     imageApiSpy.getImage.calls.reset()
     imageApiSpy.deleteImage.calls.reset()
     imageApiSpy.uploadImage.calls.reset()
@@ -126,9 +135,8 @@ describe('ProductPropertyComponent', () => {
   describe('search criteria', () => {
     it('should init successfully', (done) => {
       productApiSpy.getProductSearchCriteria.and.returnValue(of(criteria))
-      component.changeMode = 'CREATE'
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('changeMode', 'CREATE')
+      fixture.detectChanges()
 
       component.criteria$.subscribe({
         next: (result) => {
@@ -143,10 +151,9 @@ describe('ProductPropertyComponent', () => {
     it('should init failed', (done) => {
       const errorResponse = { status: 401, statusText: 'Not authorized' }
       productApiSpy.getProductSearchCriteria.and.returnValue(throwError(() => errorResponse))
-      component.changeMode = 'CREATE'
       spyOn(console, 'error')
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('changeMode', 'CREATE')
+      fixture.detectChanges()
 
       component.criteria$.subscribe({
         next: (result) => {
@@ -163,34 +170,31 @@ describe('ProductPropertyComponent', () => {
   describe('init image URL', () => {
     it('should patchValue in propsForm with product - no image URL', () => {
       const p = { ...product, imageUrl: undefined }
-      component.product = p
-      component.changeMode = 'VIEW'
       spyOn(component.propsForm, 'patchValue')
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('product', p)
+      fixture.componentRef.setInput('changeMode', 'VIEW')
+      fixture.detectChanges()
 
       expect(component.propsForm.patchValue).toHaveBeenCalledWith(p)
       expect(component.propsForm.disabled).toBeTrue()
-      expect(component.product.name).toEqual(p.name)
+      expect(component.product()?.name).toEqual(p.name)
       expect(component.fetchingImageUrl).toEqual('basepath/images/name/logo')
     })
 
     it('should patchValue in propsForm with product - empty image URL', () => {
       const p = { ...product, imageUrl: '' }
-      component.product = p
-      component.changeMode = 'VIEW'
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('product', p)
+      fixture.componentRef.setInput('changeMode', 'VIEW')
+      fixture.detectChanges()
 
       expect(component.fetchingImageUrl).toEqual('basepath/images/name/logo')
     })
 
     it('should patchValue in propsForm with product - with image URL', () => {
       const p = { ...product, imageUrl: 'https://host/assets/images/logo.svg' }
-      component.product = p
-      component.changeMode = 'VIEW'
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('product', p)
+      fixture.componentRef.setInput('changeMode', 'VIEW')
+      fixture.detectChanges()
 
       expect(component.fetchingImageUrl).toEqual(p.imageUrl)
     })
@@ -360,19 +364,17 @@ describe('ProductPropertyComponent', () => {
 
   describe('form', () => {
     it('should fill form correctly - VIEW mode', () => {
-      component.product = productProps
-      component.changeMode = 'VIEW'
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('product', productProps)
+      fixture.componentRef.setInput('changeMode', 'VIEW')
+      fixture.detectChanges()
 
       expect(component.propsForm.enabled).toBeFalse()
     })
 
     it('should fill form correctly - EDIT mode', () => {
-      component.product = productProps
-      component.changeMode = 'EDIT'
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('product', productProps)
+      fixture.componentRef.setInput('changeMode', 'EDIT')
+      fixture.detectChanges()
 
       const form: any = component.onSave()
 
@@ -384,10 +386,9 @@ describe('ProductPropertyComponent', () => {
     })
 
     it('should enable clean form - CREATE mode', () => {
-      component.product = undefined
-      component.changeMode = 'CREATE'
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('product', undefined)
+      fixture.componentRef.setInput('changeMode', 'CREATE')
+      fixture.detectChanges()
 
       expect(component.propsForm.enabled).toBeTrue()
       expect(component.propsForm.valid).toBeFalse()
@@ -399,19 +400,21 @@ describe('ProductPropertyComponent', () => {
         name: 'name',
         basePath: 'path'
       }
-      component.product = product
       spyOn(component.propsForm, 'patchValue')
-      component.changeMode = 'COPY'
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('product', product)
+      fixture.componentRef.setInput('changeMode', 'COPY')
+      fixture.detectChanges()
 
       expect(component.productId).toBeUndefined()
     })
 
     it('should reset propsForm onChanges if no product', () => {
+      fixture.componentRef.setInput('product', productProps)
+      fixture.detectChanges()
       spyOn(component.propsForm, 'reset')
 
-      component.ngOnChanges()
+      fixture.componentRef.setInput('product', undefined)
+      fixture.detectChanges()
 
       expect(component.propsForm.reset).toHaveBeenCalled()
     })
@@ -429,12 +432,12 @@ describe('ProductPropertyComponent', () => {
     })
 
     it('should display error and set focus to first invalid field if form is invalid', () => {
-      component.product = undefined
-      component.changeMode = 'CREATE'
       const focusSpy = jasmine.createSpy('focus')
       spyOn((component as any).elements.nativeElement, 'querySelector').and.returnValue({ focus: focusSpy })
+      fixture.componentRef.setInput('product', undefined)
+      fixture.componentRef.setInput('changeMode', 'CREATE')
+      fixture.detectChanges()
 
-      component.ngOnChanges()
       component.onSave()
 
       expect(component.propsForm.valid).toBeFalse()

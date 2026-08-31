@@ -196,10 +196,13 @@
           <p-card
             tabindex="0"
             [id]="'ps_app_search_data_' + app.appId"
-            styleClass="relative p-1 px-5 flex flex-column justify-content-center hover:bg-gray-200 hover:text-color cursor-pointer"
-            (click)="onAppDetail($event, app)"
-            (keydown.enter)="onAppDetail($event, app)"
-            (keydown.space)="onAppDetail($event, app)"
+            [styleClass]="
+              'relative p-1 px-5 flex flex-column justify-content-center ' +
+              (hasViewPermission || hasEditPermission ? 'hover:bg-gray-200 hover:text-color cursor-pointer' : '')
+            "
+            (click)="hasViewPermission || hasEditPermission ? onAppDetail($event, app) : null"
+            (keydown.enter)="hasViewPermission || hasEditPermission ? onAppDetail($event, app) : null"
+            (keydown.space)="hasViewPermission || hasEditPermission ? onAppDetail($event, app) : null"
             [ariaLabel]="'ACTIONS.NAVIGATION.DETAILS.TOOLTIP' | translate"
             role="link"
           >

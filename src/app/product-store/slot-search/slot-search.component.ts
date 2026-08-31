@@ -1,4 +1,4 @@
-import { Component, DestroyRef, ElementRef, inject, OnInit, ViewChild } from '@angular/core'
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, OnInit, viewChild } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { AsyncPipe, NgClass } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
@@ -88,10 +88,18 @@ export type FilteredData = SlotData & RowListGridData
     SlotDeleteComponent
   ],
   templateUrl: './slot-search.component.html',
-  styleUrls: ['./slot-search.component.scss']
+  styleUrls: ['./slot-search.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SlotSearchComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef)
+  private readonly route = inject(ActivatedRoute)
+  private readonly router = inject(Router)
+  private readonly user = inject(UserService)
+  private readonly productApi = inject(ProductsAPIService)
+  private readonly slotApi = inject(SlotsAPIService)
+  private readonly translate = inject(TranslateService)
+  private readonly msgService = inject(PortalMessageService)
   // dialog
   public loading = false
   public exceptionKey: string | undefined = undefined
@@ -165,11 +173,11 @@ export class SlotSearchComponent implements OnInit {
   public filterPanelProductVisible = false
 
   // filter icons
-  @ViewChild('headerFilterIconSlotName', { static: false }) headerFilterIconSlotName: ElementRef | undefined
-  @ViewChild('headerFilterIconSlotState', { static: false }) headerFilterIconSlotState: ElementRef | undefined
-  @ViewChild('headerFilterIconProduct', { static: false }) headerFilterIconProduct: ElementRef | undefined
+  public readonly headerFilterIconSlotName = viewChild<ElementRef>('headerFilterIconSlotName')
+  public readonly headerFilterIconSlotState = viewChild<ElementRef>('headerFilterIconSlotState')
+  public readonly headerFilterIconProduct = viewChild<ElementRef>('headerFilterIconProduct')
 
-  @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
+  public readonly dataTable = viewChild<Table>('dataTable')
 
   public columns: ExtendedColumn[] = [
     {
@@ -197,16 +205,10 @@ export class SlotSearchComponent implements OnInit {
       translationPrefix: 'SLOT'
     }
   ]
+  public hasViewPermission = false
+  public hasEditPermission = false
 
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly user: UserService,
-    private readonly productApi: ProductsAPIService,
-    private readonly slotApi: SlotsAPIService,
-    private readonly translate: TranslateService,
-    private readonly msgService: PortalMessageService
-  ) {
+  constructor() {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.filteredColumns = this.columns.filter((a) => a.active === true)
     this.searchCriteriaForm = new FormGroup<SlotSearchCriteriaForm>({
@@ -216,11 +218,17 @@ export class SlotSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.initPermissions()
     this.initGlobalFilter()
     this.prepareActionButtons()
     this.prepareStateValues()
     this.prepareSearchCriteria()
     this.getData()
+  }
+
+  private async initPermissions(): Promise<void> {
+    this.hasViewPermission = await this.user.hasPermission('SLOT#VIEW')
+    this.hasEditPermission = await this.user.hasPermission('SLOT#EDIT')
   }
 
   /****************************************************************************
@@ -413,7 +421,7 @@ export class SlotSearchComponent implements OnInit {
     this.filterPanelSlotStateVisible = false
     this.filterPanelProductVisible = false
     this.onResetFilterIcons('not empty', ['slotName', 'slotState', 'product'])
-    this.dataTable?.clear()
+    this.dataTable()?.clear()
   }
 
   /**
@@ -453,12 +461,15 @@ export class SlotSearchComponent implements OnInit {
     this.openSlotDetail(mode, data)
   }
   public onEditFromInteractive(data: RowListGridData) {
-    this.openSlotDetail('EDIT', data as unknown as SlotData)
+    this.openSlotDetail('EDIT', data as unknown as Slot)
+  }
+  public onViewFromInteractive(data: RowListGridData) {
+    this.openSlotDetail('VIEW', data as unknown as Slot)
   }
   public onSlotCreate(data: unknown) {
-    this.openSlotDetail('CREATE', data as SlotData)
+    this.openSlotDetail('CREATE', data as Slot)
   }
-  private openSlotDetail(mode: ChangeMode, data: SlotData) {
+  private openSlotDetail(mode: ChangeMode, data: Slot) {
     this.item4Detail = { ...data }
     this.changeMode = mode
     this.displaySlotDetailDialog = true
@@ -591,14 +602,14 @@ export class SlotSearchComponent implements OnInit {
   }
   public onResetFilterIcons(val: string, fields: string[]) {
     if (val) {
-      if (fields?.includes('slotState') && this.headerFilterIconSlotState) {
-        this.headerFilterIconSlotState.nativeElement.className = 'pi pi-filter'
+      if (fields?.includes('slotState') && this.headerFilterIconSlotState()) {
+        this.headerFilterIconSlotState()!.nativeElement.className = 'pi pi-filter'
         this.filterStateValue = []
       }
-      if (fields?.includes('slotName') && this.headerFilterIconSlotName)
-        this.headerFilterIconSlotName.nativeElement.className = 'pi pi-filter'
-      if (fields?.includes('product') && this.headerFilterIconProduct)
-        this.headerFilterIconProduct.nativeElement.className = 'pi pi-filter'
+      if (fields?.includes('slotName') && this.headerFilterIconSlotName())
+        this.headerFilterIconSlotName()!.nativeElement.className = 'pi pi-filter'
+      if (fields?.includes('product') && this.headerFilterIconProduct())
+        this.headerFilterIconProduct()!.nativeElement.className = 'pi pi-filter'
     }
   }
 
@@ -608,15 +619,15 @@ export class SlotSearchComponent implements OnInit {
   public onSortColumn(ev: MouseEvent, field: string, icon: HTMLElement) {
     ev.stopPropagation()
     const className = { up: 'pi pi-sort-amount-up-alt', down: 'pi pi-sort-amount-down' }
-    this.dataTable?.clear()
+    this.dataTable()?.clear()
     switch (icon.className) {
       case className.down:
         icon.className = className.up
-        this.dataTable?._value.sort((a, b) => this.compareValues(field, a, b))
+        this.dataTable()?._value.sort((a, b) => this.compareValues(field, a, b))
         break
       case className.up:
         icon.className = className.down
-        this.dataTable?._value.sort((c, d) => this.compareValues(field, d, c))
+        this.dataTable()?._value.sort((c, d) => this.compareValues(field, d, c))
         break
     }
   }

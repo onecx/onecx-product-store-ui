@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, effect, inject, input, output } from '@angular/core'
 import { AsyncPipe } from '@angular/common'
 import { RouterModule } from '@angular/router'
 import { TranslateModule } from '@ngx-translate/core'
@@ -34,11 +34,15 @@ export type Workspace = {
   selector: 'app-product-use',
   standalone: true,
   imports: [AngularAcceleratorModule, AsyncPipe, MessageModule, RouterModule, TooltipModule, TranslateModule],
-  templateUrl: './product-use.component.html'
+  templateUrl: './product-use.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProductUseComponent implements OnChanges {
-  @Input() productName: string | undefined
-  @Output() used = new EventEmitter<boolean>()
+export class ProductUseComponent {
+  private readonly slotService = inject(SlotService)
+  private readonly workspaceService = inject(WorkspaceService)
+
+  public readonly productName = input<string>()
+  public readonly used = output<boolean>()
 
   // receive the slot output
   public slotName = 'onecx-workspace-data'
@@ -47,27 +51,25 @@ export class ProductUseComponent implements OnChanges {
   public isComponentDefined$: Observable<boolean> | undefined
   public workspaceEndpointExist = false
 
-  constructor(
-    private readonly slotService: SlotService,
-    private readonly workspaceService: WorkspaceService
-  ) {
+  constructor() {
     this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.slotName)
-  }
 
-  public ngOnChanges(): void {
-    if (this.productName) {
-      this.slotEmitter.subscribe((res) => {
-        this.workspaceData$.next(res)
-        if (res.length > 0) this.used.emit(true)
-      })
-      // check endpoint exists
-      this.workspaceEndpointExist = Utils.doesEndpointExist(
-        this.workspaceService,
-        'onecx-workspace',
-        'onecx-workspace-ui',
-        'workspace-detail'
-      )
-    }
+    // replaces ngOnChanges: signal inputs don't trigger it
+    effect(() => {
+      if (this.productName()) {
+        this.slotEmitter.subscribe((res) => {
+          this.workspaceData$.next(res)
+          if (res.length > 0) this.used.emit(true)
+        })
+        // check endpoint exists
+        this.workspaceEndpointExist = Utils.doesEndpointExist(
+          this.workspaceService,
+          'onecx-workspace',
+          'onecx-workspace-ui',
+          'workspace-detail'
+        )
+      }
+    })
   }
 
   public getWorkspaceEndpointUrl$(name?: string): Observable<string | undefined> {

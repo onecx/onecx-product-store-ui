@@ -77,19 +77,20 @@
       [filters]="interactiveFilters"
       [sortField]="interactiveSortField"
       [sortDirection]="interactiveSortDirection"
-      [viewPermission]="'SLOT#VIEW'"
+      [viewPermission]="hasViewPermission && !hasEditPermission ? 'SLOT#VIEW' : undefined"
       [editPermission]="'SLOT#EDIT'"
       [deletePermission]="'SLOT#DELETE'"
       [additionalActions]="interactiveAdditionalActions"
       [actionColumnPosition]="'left'"
       (filtered)="onInteractiveFiltersChange($event)"
       (sorted)="onInteractiveSorted($event)"
+      (viewItem)="onViewFromInteractive($event)"
       (editItem)="onEditFromInteractive($event)"
       (deleteItem)="onDeleteFromInteractive($event)"
       (dataViewLayoutChange)="onLayoutChange($event)"
     >
       <ng-template #topCenter>
-        <p-inputgroup class="w-auto tm-filter-group">
+        <p-inputgroup class="w-auto">
           <p-inputgroup-addon>
             <i class="pi pi-filter" aria-hidden="true"></i>
           </p-inputgroup-addon>
@@ -98,7 +99,6 @@
               #filterInput
               id="tm_search_filter"
               type="text"
-              class="tm-filter-input"
               pInputText
               [value]="filter"
               [tooltipPosition]="'bottom'"
@@ -111,7 +111,6 @@
           <p-button
             id="tm_search_filter_clear"
             icon="pi pi-filter-slash"
-            styleClass="tm-filter-clear"
             [disabled]="!filter"
             [ariaLabel]="'SEARCH.SLOT.FILTER.CLEAR' | translate"
             [pTooltip]="'SEARCH.SLOT.FILTER.CLEAR' | translate"

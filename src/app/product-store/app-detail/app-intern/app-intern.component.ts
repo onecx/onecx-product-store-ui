@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core'
 import { DatePipe } from '@angular/common'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
@@ -10,6 +10,7 @@ import { MessageModule } from 'primeng/message'
 import { TooltipModule } from 'primeng/tooltip'
 
 import { Microfrontend, Microservice } from 'src/app/shared/generated'
+import { Utils } from 'src/app/shared/utils'
 import { ChangeMode } from '../../product-detail/product-detail.component'
 
 @Component({
@@ -25,39 +26,43 @@ import { ChangeMode } from '../../product-detail/product-detail.component'
     TooltipModule,
     TranslateModule
   ],
-  templateUrl: './app-intern.component.html'
+  templateUrl: './app-intern.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppInternComponent implements OnChanges {
-  @Input() mfe: Microfrontend | undefined
-  @Input() ms: Microservice | undefined
-  @Input() dateFormat = 'medium'
-  @Input() changeMode: ChangeMode = 'VIEW'
-  @Output() undeployed = new EventEmitter<boolean>()
+export class AppInternComponent {
+  public readonly mfe = input<Microfrontend>()
+  public readonly ms = input<Microservice>()
+  public readonly dateFormat = input('medium')
+  public readonly changeMode = input<ChangeMode>('VIEW')
+  public readonly undeployed = output<boolean>()
+
+  private readonly translate = inject(TranslateService)
 
   public appForm: FormGroup
 
-  constructor(private readonly translate: TranslateService) {
+  constructor() {
     this.appForm = new FormGroup({
       operator: new FormControl<boolean | null>(null),
       deprecated: new FormControl<boolean | null>(null),
       undeployed: new FormControl<boolean | null>(null)
     })
-  }
 
-  public ngOnChanges(): void {
-    this.appForm.reset()
-    this.appForm.disable()
-    if (this.mfe || this.ms) {
-      this.setFormData()
-      this.changeMode === 'EDIT' ? this.appForm.get('undeployed')?.enable() : this.appForm.get('undeployed')?.disable()
-    }
+    // replaces ngOnChanges: signal inputs don't trigger it
+    effect(() => {
+      this.appForm.reset()
+      this.appForm.disable()
+      if (this.mfe() || this.ms()) {
+        this.setFormData()
+        this.changeMode() === 'EDIT'
+          ? this.appForm.get('undeployed')?.enable()
+          : this.appForm.get('undeployed')?.disable()
+      }
+    })
   }
 
   private setFormData(): void {
-    for (const key of Object.keys(this.appForm.controls)) {
-      if (this.mfe && (this.mfe as any)[key] !== null) this.appForm.controls[key].setValue((this.mfe as any)[key])
-      if (this.ms && (this.ms as any)[key] !== null) this.appForm.controls[key].setValue((this.ms as any)[key])
-    }
+    Utils.setFormControlsValues(this.appForm.controls, this.mfe())
+    Utils.setFormControlsValues(this.appForm.controls, this.ms())
   }
 
   public onChangeUndeployed(ev: any) {

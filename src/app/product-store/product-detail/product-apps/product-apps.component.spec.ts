@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
+import { provideNoopAnimations } from '@angular/platform-browser/animations'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
@@ -76,7 +77,7 @@ describe('ProductAppsComponent', () => {
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
-      providers: [provideHttpClient(), provideHttpClientTesting()]
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideNoopAnimations()]
     })
       .overrideComponent(ProductAppsComponent, {
         add: {
@@ -96,7 +97,7 @@ describe('ProductAppsComponent', () => {
     fixture.detectChanges()
     // reset
     productServiceSpy.getProductDetailsByCriteria.and.returnValue(of({} as MicrofrontendPageResult))
-    component.product = product
+    fixture.componentRef.setInput('product', product)
     component.exceptionKey = ''
   })
 
@@ -112,10 +113,10 @@ describe('ProductAppsComponent', () => {
   })
 
   it('should call searchApps onChanges if product exists', () => {
-    component.product = product
     spyOn<any>(component, 'getProductDetails')
 
-    component.ngOnChanges()
+    fixture.componentRef.setInput('product', product)
+    fixture.detectChanges()
 
     expect(component['getProductDetails']).toHaveBeenCalled()
   })
@@ -125,12 +126,12 @@ describe('ProductAppsComponent', () => {
    */
   describe('get product details', () => {
     it('should get microfrontends and microservices', (done) => {
-      component.product = product
       productServiceSpy.getProductDetailsByCriteria.and.returnValue(
         of({ microfrontends: [mfe], microservices: [ms], slots: [] } as ProductDetails)
       )
 
-      component.ngOnChanges()
+      fixture.componentRef.setInput('product', product)
+      fixture.detectChanges()
 
       component.productDetails$.subscribe({
         next: (result) => {
@@ -145,7 +146,6 @@ describe('ProductAppsComponent', () => {
     })
 
     it('should handle if nothing exists', (done) => {
-      component.product = product
       productServiceSpy.getProductDetailsByCriteria.and.returnValue(
         of({ microfrontends: [], microservices: [], slots: [] } as ProductDetails)
       )
@@ -272,7 +272,7 @@ describe('ProductAppsComponent', () => {
       component.onAppDetail(mockEvent, mfeApp, AppType.MFE)
 
       expect(component.app).toEqual(mfeApp)
-      expect(component.changeMode).toEqual('EDIT')
+      expect(component.currentChangeMode()).toEqual('EDIT')
       expect(component.displayDetailDialog).toBeTrue()
     })
 
@@ -280,7 +280,7 @@ describe('ProductAppsComponent', () => {
       component.onAppDetail(mockEvent, msApp, AppType.MS)
 
       expect(component.app).toEqual(msApp)
-      expect(component.changeMode).toEqual('EDIT')
+      expect(component.currentChangeMode()).toEqual('EDIT')
       expect(component.displayDetailDialog).toBeTrue()
     })
   })
@@ -291,14 +291,14 @@ describe('ProductAppsComponent', () => {
     component.onCopy(mockEvent, mfeApp, AppType.MFE)
 
     expect(component.app).toEqual(mfeApp)
-    expect(component.changeMode).toEqual('CREATE')
+    expect(component.currentChangeMode()).toEqual('CREATE')
     expect(component.displayDetailDialog).toBeTrue()
   })
 
   it('should should show create dialog', () => {
     component.onCreate()
 
-    expect(component.changeMode).toEqual('CREATE')
+    expect(component.currentChangeMode()).toEqual('CREATE')
     expect(component.app).toBeUndefined()
     expect(component.displayDetailDialog).toBeTrue()
   })

@@ -3,17 +3,17 @@ import { Location } from '@angular/common'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { provideRouter, Router } from '@angular/router'
-import { BehaviorSubject, of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
+import { BehaviorSubject, of, throwError } from 'rxjs'
 
 import { ConfigurationService, PortalMessageService, UserService } from '@onecx/angular-integration-interface'
+import { provideNoopAnimations } from '@angular/platform-browser/animations'
+import { PermissionService } from '@onecx/angular-utils'
 
+import { Product, ProductsAPIService, ImagesInternalAPIService } from 'src/app/shared/generated'
 import { ProductDetailComponent } from './product-detail.component'
 import { ProductPropertyComponent } from './product-props/product-props.component'
 import { ProductInternComponent } from './product-intern/product-intern.component'
-import { Product, ProductsAPIService, ImagesInternalAPIService } from 'src/app/shared/generated'
-import { provideNoopAnimations } from '@angular/platform-browser/animations'
-import { PermissionService } from '@onecx/angular-utils'
 
 const productProps: Product = {
   id: 'id',
@@ -136,7 +136,14 @@ describe('ProductDetailComponent', () => {
     productApiSpy.createProduct.calls.reset()
     productApiSpy.updateProduct.calls.reset()
     productApiSpy.deleteProduct.calls.reset()
+    //
+    productApiSpy.getProductByName.and.returnValue(of({}))
+    productApiSpy.createProduct.and.returnValue(of({}))
+    productApiSpy.updateProduct.and.returnValue(of({}))
+    productApiSpy.deleteProduct.and.returnValue(of({}))
+    //
     productApiSpy.getProductSearchCriteria.calls.reset()
+    productApiSpy.getProductSearchCriteria.and.returnValue(of({}))
   })
 
   it('should create', () => {
@@ -187,8 +194,9 @@ describe('ProductDetailComponent', () => {
 
   describe('changes', () => {
     beforeEach(() => {
-      component.productPropsComponent = mockPropsComponent as unknown as ProductPropertyComponent
-      component.productInternComponent = mockInternComponent as unknown as ProductInternComponent
+      // productPropsComponent/productInternComponent are viewChild() signals; override the getter for the test
+      ;(component as any).productPropsComponent = () => mockPropsComponent as unknown as ProductPropertyComponent
+      ;(component as any).productInternComponent = () => mockInternComponent as unknown as ProductInternComponent
       component.productName = product.name
       component.productId = product.id
     })
@@ -280,26 +288,27 @@ describe('ProductDetailComponent', () => {
       component.onDelete(product)
 
       expect(component.item4Delete).toEqual(product)
+      expect(component.productDeleteVisible).toBe(true)
     })
 
-    it('should delete a product', () => {
-      productApiSpy.deleteProduct
-      component.item4Delete = product
+    it('should navigate away when product was deleted', () => {
+      component.productDeleteVisible = true
       const routerSpy = spyOn(router, 'navigate')
 
-      component.onDeleteConfirmation()
+      component.onProductDeleted(true)
 
-      expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.PRODUCT.OK' })
+      expect(component.productDeleteVisible).toBe(false)
       expect(routerSpy).toHaveBeenCalledWith(['../'], jasmine.any(Object))
     })
 
-    it('should display error message when delete fails', () => {
-      productApiSpy.deleteProduct.and.returnValue(throwError(() => new Error()))
-      component.item4Delete = product
+    it('should not navigate when deletion was cancelled', () => {
+      component.productDeleteVisible = true
+      const routerSpy = spyOn(router, 'navigate')
 
-      component.onDeleteConfirmation()
+      component.onProductDeleted(false)
 
-      expect(msgServiceSpy.error).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.DELETE.PRODUCT.NOK' })
+      expect(component.productDeleteVisible).toBe(false)
+      expect(routerSpy).not.toHaveBeenCalled()
     })
   })
 
