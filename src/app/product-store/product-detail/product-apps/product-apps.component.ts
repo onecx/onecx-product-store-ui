@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, Input, OnChanges, OnDestroy, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, Component, effect, inject, input, OnInit, signal } from '@angular/core'
 import { AsyncPipe, NgClass } from '@angular/common'
 import { TranslateModule } from '@ngx-translate/core'
-import { finalize, of, Observable, catchError, Subject, takeUntil, tap } from 'rxjs'
+import { finalize, of, Observable, catchError, Subject, takeUntil, tap, map } from 'rxjs'
 
 import { CardModule } from 'primeng/card'
 import { FieldsetModule } from 'primeng/fieldset'
@@ -56,22 +56,24 @@ export enum AppType {
     SlotDetailComponent,
     SlotDeleteComponent
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './product-apps.component.html',
-  styleUrls: ['./product-apps.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./product-apps.component.scss']
 })
-export class ProductAppsComponent implements OnChanges, OnDestroy, OnInit {
+export class ProductAppsComponent implements OnInit {
   private readonly icon = inject(IconService)
   private readonly user = inject(UserService)
   private readonly productApi = inject(ProductsAPIService)
+  // input
+  public readonly product = input<Product>()
+  public readonly changeModeInput = input<ChangeMode>('VIEW', { alias: 'changeMode' })
+  // local state derived from changeModeInput, owned by the component to drive the child app/slot dialogs
+  public readonly changeMode = signal<ChangeMode>('VIEW')
 
-  @Input() product: Product | undefined
-  @Input() dateFormat = 'medium'
-  @Input() changeMode: ChangeMode = 'VIEW'
-
-  private readonly destroy$ = new Subject()
-  public exceptionKey = ''
+  public exceptionKey: string | undefined = undefined
   public searchInProgress = false
+  // computed internally: never actually bound by callers, so it stays a plain property
+  public dateFormat = 'medium'
 
   public AppType = AppType
   public productDetails$!: Observable<ProductDetails>
@@ -84,18 +86,25 @@ export class ProductAppsComponent implements OnChanges, OnDestroy, OnInit {
   public displayDeleteDialog = false
   public displaySlotDeleteDialog = false
   public displaySlotDetailDialog = false
-  public hasCreatePermission = false
-  public hasDeletePermission = false
+  public hasAppCreatePermission = false
+  public hasAppDeletePermission = false
+  public hasAppViewPermission = false
+  public hasAppEditPermission = false
+  public hasSlotDeletePermission = false
+  public hasSlotEditPermission = false
+  public hasSlotViewPermission = false
   public hasComponents = false
 
   constructor() {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
     this.iconItems.sort(Utils.dropDownSortItemsByLabel)
-  }
+    this.changeMode.set(this.changeModeInput())
 
-  public ngOnChanges(): void {
-    if (this.product) this.getProductDetails()
+    // replaces ngOnChanges: signal inputs don't trigger it
+    effect(() => {
+      if (this.product()) this.getProductDetails()
+    })
   }
 
   public ngOnInit(): void {
@@ -103,13 +112,13 @@ export class ProductAppsComponent implements OnChanges, OnDestroy, OnInit {
   }
 
   private async initPermissions(): Promise<void> {
-    this.hasCreatePermission = await this.user.hasPermission('APP#CREATE')
-    this.hasDeletePermission = await this.user.hasPermission('APP#DELETE')
-  }
-
-  public ngOnDestroy(): void {
-    this.destroy$.next(undefined)
-    this.destroy$.complete()
+    this.hasAppViewPermission = await this.user.hasPermission('APP#VIEW')
+    this.hasAppCreatePermission = await this.user.hasPermission('APP#CREATE')
+    this.hasAppDeletePermission = await this.user.hasPermission('APP#DELETE')
+    this.hasAppEditPermission = await this.user.hasPermission('APP#EDIT')
+    this.hasSlotDeletePermission = await this.user.hasPermission('SLOT#DELETE')
+    this.hasSlotEditPermission = await this.user.hasPermission('SLOT#EDIT')
+    this.hasSlotViewPermission = await this.user.hasPermission('SLOT#VIEW')
   }
 
   /**
@@ -119,11 +128,10 @@ export class ProductAppsComponent implements OnChanges, OnDestroy, OnInit {
     this.app = undefined
     this.slot = undefined
     const criteria: ProductDetailsCriteria = {
-      name: this.product?.name,
+      name: this.product()?.name,
       pageSize: 1000 // page size of the children
     }
     this.productDetails$ = this.productApi.getProductDetailsByCriteria({ productDetailsCriteria: criteria }).pipe(
-      takeUntil(this.destroy$),
       tap((details) => {
         if (details) {
           if (
@@ -165,17 +173,17 @@ export class ProductAppsComponent implements OnChanges, OnDestroy, OnInit {
   public onAppDetail(ev: any, app: any, appType: AppType) {
     ev.stopPropagation()
     this.app = { ...app, appType: appType, mfeType: app.mfeType ?? app.type } as AppAbstract
-    this.changeMode = 'EDIT'
+    this.changeMode.set('EDIT')
     this.displayDetailDialog = true
   }
   public onCopy(ev: any, app: any, appType: AppType) {
     ev.stopPropagation()
     this.app = { ...app, appType: appType } as AppAbstract
-    this.changeMode = 'CREATE'
+    this.changeMode.set('CREATE')
     this.displayDetailDialog = true
   }
   public onCreate() {
-    this.changeMode = 'CREATE'
+    this.changeMode.set('CREATE')
     this.app = undefined
     this.displayDetailDialog = true
   }

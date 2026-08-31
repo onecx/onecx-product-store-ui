@@ -157,6 +157,7 @@ describe('SlotSearchComponent', () => {
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
     msgServiceSpy.info.calls.reset()
+
     apiProductsServiceSpy.searchProducts.calls.reset()
     apiSlotsServiceSpy.searchSlots.calls.reset()
     translateServiceSpy.get.calls.reset()
@@ -703,15 +704,15 @@ describe('SlotSearchComponent', () => {
       const elemRef1 = { nativeElement: { className: 'test' } }
       const elemRef2 = { nativeElement: { className: 'test' } }
       const elemRef3 = { nativeElement: { className: 'test' } }
-      component.headerFilterIconSlotName = elemRef1
-      component.headerFilterIconSlotState = elemRef2
-      component.headerFilterIconProduct = elemRef3
+      spyOn(component, 'headerFilterIconSlotName').and.returnValue(elemRef1 as any)
+      spyOn(component, 'headerFilterIconSlotState').and.returnValue(elemRef2 as any)
+      spyOn(component, 'headerFilterIconProduct').and.returnValue(elemRef3 as any)
 
       component.onResetFilterIcons('filter value', ['slotName', 'slotState', 'product'])
 
-      expect(component.headerFilterIconSlotName.nativeElement.className).toBe(defaultIcon)
-      expect(component.headerFilterIconSlotState.nativeElement.className).toBe(defaultIcon)
-      expect(component.headerFilterIconProduct.nativeElement.className).toBe(defaultIcon)
+      expect(elemRef1.nativeElement.className).toBe(defaultIcon)
+      expect(elemRef2.nativeElement.className).toBe(defaultIcon)
+      expect(elemRef3.nativeElement.className).toBe(defaultIcon)
     })
   })
 
@@ -720,11 +721,11 @@ describe('SlotSearchComponent', () => {
    */
   describe('table column sorting', () => {
     beforeEach(() => {
-      component.dataTable = {
+      spyOn(component, 'dataTable').and.returnValue({
         clear: () => {},
         _value: slotData,
         filterGlobal: jasmine.createSpy()
-      } as unknown as Table
+      } as unknown as Table)
     })
 
     it('should sort slot states - up', () => {

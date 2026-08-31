@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnChanges, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core'
 import { DatePipe } from '@angular/common'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
@@ -31,11 +31,11 @@ import { ChangeMode } from '../../product-detail/product-detail.component'
   templateUrl: './slot-intern.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SlotInternComponent implements OnChanges {
-  @Input() slot: Slot | undefined
-  @Input() dateFormat = 'medium'
-  @Input() changeMode: ChangeMode = 'VIEW'
-  @Output() undeployed = new EventEmitter<boolean>()
+export class SlotInternComponent {
+  public readonly slot = input<Slot>()
+  public readonly dateFormat = input('medium')
+  public readonly changeMode = input<ChangeMode>('VIEW')
+  public readonly undeployed = output<boolean>()
 
   private readonly translate = inject(TranslateService)
 
@@ -47,21 +47,22 @@ export class SlotInternComponent implements OnChanges {
       deprecated: new FormControl<boolean | null>(null),
       undeployed: new FormControl<boolean | null>(null)
     })
-  }
 
-  public ngOnChanges(): void {
-    this.slotForm.reset()
-    this.slotForm.disable()
-    if (this.slot) {
-      this.setFormData()
-      this.changeMode === 'EDIT'
-        ? this.slotForm.get('undeployed')?.enable()
-        : this.slotForm.get('undeployed')?.disable()
-    }
+    // replaces ngOnChanges: signal inputs don't trigger it
+    effect(() => {
+      this.slotForm.reset()
+      this.slotForm.disable()
+      if (this.slot()) {
+        this.setFormData()
+        this.changeMode() === 'EDIT'
+          ? this.slotForm.get('undeployed')?.enable()
+          : this.slotForm.get('undeployed')?.disable()
+      }
+    })
   }
 
   private setFormData(): void {
-    Utils.setFormControlsValues(this.slotForm.controls, this.slot)
+    Utils.setFormControlsValues(this.slotForm.controls, this.slot())
   }
 
   public onChangeUndeployed(ev: any) {

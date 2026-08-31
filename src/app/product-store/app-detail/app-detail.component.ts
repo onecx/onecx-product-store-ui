@@ -1,14 +1,15 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   DestroyRef,
-  EventEmitter,
+  effect,
   inject,
-  Input,
-  OnChanges,
+  input,
   OnInit,
-  Output,
-  ViewChild
+  output,
+  signal,
+  viewChild
 } from '@angular/core'
 import { NgClass } from '@angular/common'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms'
@@ -17,7 +18,6 @@ import { finalize, map } from 'rxjs'
 
 import { SelectItem } from 'primeng/api'
 import { DialogModule } from 'primeng/dialog'
-import { DropdownModule } from 'primeng/dropdown'
 import { ButtonModule } from 'primeng/button'
 import { FloatLabelModule } from 'primeng/floatlabel'
 import { InputGroupModule } from 'primeng/inputgroup'
@@ -25,6 +25,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
 import { InputTextModule } from 'primeng/inputtext'
 import { MessageModule } from 'primeng/message'
 import { MultiSelectModule } from 'primeng/multiselect'
+import { SelectModule } from 'primeng/select'
 import { Table, TableModule } from 'primeng/table'
 import { TabsModule } from 'primeng/tabs'
 import { TextareaModule } from 'primeng/textarea'
@@ -87,7 +88,6 @@ export interface MsForm {
     NgClass,
     ButtonModule,
     DialogModule,
-    DropdownModule,
     FloatLabelModule,
     FormsModule,
     InputGroupModule,
@@ -96,6 +96,7 @@ export interface MsForm {
     MessageModule,
     MultiSelectModule,
     ReactiveFormsModule,
+    SelectModule,
     TableModule,
     TabsModule,
     TextareaModule,
@@ -108,8 +109,9 @@ export interface MsForm {
   styleUrls: ['./app-detail.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppDetailComponent implements OnInit, OnChanges {
+export class AppDetailComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef)
+  private readonly cd = inject(ChangeDetectorRef)
   private readonly user = inject(UserService)
   private readonly icon = inject(IconService)
   private readonly msApi = inject(MicroservicesAPIService)
@@ -117,14 +119,17 @@ export class AppDetailComponent implements OnInit, OnChanges {
   private readonly msgService = inject(PortalMessageService)
   private readonly translate = inject(TranslateService)
 
-  @Input() appAbstract: AppAbstract | undefined
-  @Input() dateFormat = 'medium'
-  @Input() changeMode: ChangeMode = 'VIEW'
-  @Input() displayDialog = false
-  @Output() appChanged = new EventEmitter<boolean>()
+  public readonly appAbstract = input<AppAbstract>()
+  public readonly dateFormat = input('medium')
+  public readonly changeModeInput = input<ChangeMode>('VIEW', { alias: 'changeMode' })
+  public readonly displayDialog = input(false)
+  public readonly appChanged = output<boolean>()
 
-  @ViewChild('endpointTable') endpointTable: Table | undefined
-  @ViewChild(AppInternComponent, { static: false }) appInternComponent!: AppInternComponent
+  public readonly endpointTable = viewChild<Table>('endpointTable')
+  public readonly appInternComponent = viewChild(AppInternComponent)
+
+  // local state derived from changeModeInput, owned by the component once the dialog is open
+  public readonly changeMode = signal<ChangeMode>('VIEW')
 
   public mfe: Microfrontend | undefined
   public ms: Microservice | undefined
@@ -175,53 +180,56 @@ export class AppDetailComponent implements OnInit, OnChanges {
       productName: new FormControl(null, [Validators.required, Validators.minLength(2), Validators.maxLength(255)]),
       description: new FormControl(null, [Validators.maxLength(255)])
     })
+
+    // replaces ngOnChanges: signal inputs don't trigger it, so reset/reload state whenever the dialog (re)opens
+    effect(() => {
+      if (this.displayDialog()) {
+        this.changeMode.set(this.changeModeInput())
+        this.selectedTabIndex = '0'
+        this.dialogTitleKey = undefined
+        this.ms = undefined
+        this.mfe = undefined
+        this.formGroupMs.reset()
+        this.formGroupMfe.reset()
+        this.formGroupMs.disable()
+        this.formGroupMfe.disable()
+        this.prepareCreate()
+        const appAbstract = this.appAbstract()
+        if (appAbstract?.id) {
+          if (appAbstract.appType === 'MFE') this.getMfe()
+          if (appAbstract.appType === 'MS') this.getMs()
+        }
+      }
+    })
   }
 
   ngOnInit() {
     void this.initPermissions()
-    if (this.hasEditPermission && this.changeMode === 'VIEW') this.changeMode = 'EDIT'
+    if (this.hasEditPermission && this.changeMode() === 'VIEW') this.changeMode.set('EDIT')
     this.getDropdownTranslations()
   }
 
   private async initPermissions(): Promise<void> {
     this.hasCreatePermission = await this.user.hasPermission('APP#CREATE')
     this.hasEditPermission = await this.user.hasPermission('APP#EDIT')
-    if (this.hasEditPermission && this.changeMode === 'VIEW') this.changeMode = 'EDIT'
-  }
-
-  ngOnChanges() {
-    if (this.displayDialog) {
-      this.selectedTabIndex = '0'
-      this.dialogTitleKey = undefined
-      this.ms = undefined
-      this.mfe = undefined
-      this.formGroupMs.reset()
-      this.formGroupMfe.reset()
-      this.formGroupMs.disable()
-      this.formGroupMfe.disable()
-      this.prepareCreate()
-      if (this.appAbstract?.id) {
-        if (this.appAbstract.appType === 'MFE') this.getMfe()
-        if (this.appAbstract.appType === 'MS') this.getMs()
-      }
-    }
+    if (this.hasEditPermission && this.changeMode() === 'VIEW') this.changeMode.set('EDIT')
   }
 
   private prepareCreate() {
-    if (this.changeMode === 'CREATE') {
+    if (this.changeMode() === 'CREATE') {
       this.enableForms()
-      if (this.appAbstract?.appType === 'MFE') {
+      if (this.appAbstract()?.appType === 'MFE') {
         this.formGroupMfe.controls['type'].setValue('MODULE')
         this.formGroupMfe.controls['technology'].setValue('ANGULAR')
       }
-      this.dialogTitleKey = 'ACTIONS.CREATE.' + this.appAbstract?.appType + '.HEADER'
+      this.dialogTitleKey = 'ACTIONS.CREATE.' + this.appAbstract()?.appType + '.HEADER'
     }
   }
 
   public allowEditing(): boolean {
     return (
-      (this.hasEditPermission && this.changeMode === 'EDIT') ||
-      (this.hasCreatePermission && this.changeMode === 'CREATE')
+      (this.hasEditPermission && this.changeMode() === 'EDIT') ||
+      (this.hasCreatePermission && this.changeMode() === 'CREATE')
     )
   }
 
@@ -237,12 +245,17 @@ export class AppDetailComponent implements OnInit, OnChanges {
 
   public getMfe() {
     this.loading = true
-    if (this.appAbstract?.id)
+    const appAbstract = this.appAbstract()
+    if (appAbstract?.id)
       this.mfeApi
-        .getMicrofrontend({ id: this.appAbstract.id })
+        .getMicrofrontend({ id: appAbstract.id })
         .pipe(
           map((data: Microfrontend) => this.getMfeData(data)),
-          finalize(() => (this.loading = false)),
+          // OnPush: subscribe() mutates plain fields (dialogTitleKey, mfe, ...), so mark the view dirty once the async fetch settles
+          finalize(() => {
+            this.loading = false
+            this.cd.markForCheck()
+          }),
           takeUntilDestroyed(this.destroyRef)
         )
         .subscribe()
@@ -253,7 +266,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
       if (this.mfe) this.fillFormMfe(this.mfe)
       this.endpoints = this.mfe?.endpoints ?? []
       if (this.endpoints.length === 0) this.onAddEndpointRow()
-      if (this.changeMode === 'CREATE') {
+      if (this.changeMode() === 'CREATE') {
         if (this.mfe?.id) {
           this.mfe.id = undefined
           this.mfe.operator = false
@@ -275,9 +288,13 @@ export class AppDetailComponent implements OnInit, OnChanges {
   public getMs() {
     this.loading = true
     this.msApi
-      .getMicroservice({ id: this.appAbstract?.id } as GetMicroserviceRequestParams)
+      .getMicroservice({ id: this.appAbstract()?.id } as GetMicroserviceRequestParams)
       .pipe(
-        finalize(() => (this.loading = false)),
+        // OnPush: subscribe() mutates plain fields (dialogTitleKey, ms, ...), so mark the view dirty once the async fetch settles
+        finalize(() => {
+          this.loading = false
+          this.cd.markForCheck()
+        }),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe({
@@ -285,7 +302,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
           if (data) {
             this.ms = data
             if (this.ms) this.fillFormMs(this.ms)
-            if (this.changeMode === 'CREATE') {
+            if (this.changeMode() === 'CREATE') {
               if (this.ms?.id) {
                 this.ms.id = undefined
                 this.ms.operator = false
@@ -336,7 +353,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
    * UI Actions
    */
   public onDialogHide() {
-    this.displayDialog = false
+    // displayDialog is owned by the parent; it will be reset to false via the appChanged callback
     this.mfe = undefined
     this.ms = undefined
     this.appChanged.emit(false)
@@ -360,14 +377,14 @@ export class AppDetailComponent implements OnInit, OnChanges {
   }
 
   public onSave() {
-    if (this.appAbstract?.appType === 'MFE') {
+    if (this.appAbstract()?.appType === 'MFE') {
       if (!this.formGroupMfe.valid) {
         this.msgService.error({ summaryKey: 'VALIDATION.FORM_INVALID' })
         return
       }
       this.saveMfe()
     }
-    if (this.appAbstract?.appType === 'MS') {
+    if (this.appAbstract()?.appType === 'MS') {
       if (!this.formGroupMs.valid) {
         this.msgService.error({ summaryKey: 'VALIDATION.FORM_INVALID' })
         return
@@ -383,21 +400,21 @@ export class AppDetailComponent implements OnInit, OnChanges {
     this.mfe = {
       ...this.formGroupMfe.value,
       id: this.mfe?.id,
-      undeployed: this.changeMode === 'EDIT' ? this.mfe?.undeployed : undefined
+      undeployed: this.changeMode() === 'EDIT' ? this.mfe?.undeployed : undefined
     }
     if (this.mfe) {
       this.mfe.classifications = Utils.convertToUniqueStringArray(this.formGroupMfe.controls['classifications'].value)
       this.mfe.endpoints = this.endpoints.filter((endpoint) => !(endpoint.name === '' && endpoint.path === ''))
     }
-    this.changeMode === 'CREATE' ? this.createMfe() : this.updateMfe()
+    this.changeMode() === 'CREATE' ? this.createMfe() : this.updateMfe()
   }
   private saveMs() {
     this.ms = {
       ...this.formGroupMs.value,
       id: this.ms?.id,
-      undeployed: this.changeMode === 'EDIT' ? this.ms?.undeployed : undefined
+      undeployed: this.changeMode() === 'EDIT' ? this.ms?.undeployed : undefined
     }
-    this.changeMode === 'CREATE' ? this.createMs() : this.updateMs()
+    this.changeMode() === 'CREATE' ? this.createMs() : this.updateMs()
   }
   private createMfe() {
     this.mfeApi.createMicrofrontend({ createMicrofrontendRequest: this.mfe as CreateMicrofrontendRequest }).subscribe({
@@ -463,7 +480,7 @@ export class AppDetailComponent implements OnInit, OnChanges {
         : key
 
     this.msgService.error({
-      summaryKey: 'ACTIONS.' + this.changeMode + '.APP.NOK',
+      summaryKey: 'ACTIONS.' + this.changeMode() + '.APP.NOK',
       detailKey:
         err?.error?.errorCode && err?.error?.errorCode === 'PERSIST_ENTITY_FAILED'
           ? key

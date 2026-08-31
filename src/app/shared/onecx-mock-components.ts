@@ -50,6 +50,7 @@ export class MockInteractiveDataViewComponent {
   @Input() layout: any
   @Input() columns: any
   @Input() displayedColumnKeys: any
+  @Input() viewPermission: any
   @Input() editPermission: any
   @Input() deletePermission: any
   @Input() additionalActions: any

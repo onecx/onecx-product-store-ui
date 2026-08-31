@@ -1,8 +1,8 @@
-@if (displayDialog && appAbstract) {
+@if (displayDialog() && appAbstract()) {
   <p-dialog
     [visible]="true"
-    (onVisibleChange)="onDialogHide()"
-    [header]="appAbstract.appType ? ('ACTIONS.DELETE.' + appAbstract.appType + '.HEADER' | translate) : ''"
+    (visibleChange)="onDialogHide()"
+    [header]="appAbstract()?.appType ? ('ACTIONS.DELETE.' + appAbstract()?.appType + '.HEADER' | translate) : ''"
     [modal]="true"
     [resizable]="false"
     [dismissableMask]="true"
@@ -12,12 +12,14 @@
       <div class="pi pi-question-circle text-3xl danger-action-text"></div>
       <div class="flex flex-column row-gap-2">
         <div id="ps_app_delete_message" class="font-bold">{{ 'ACTIONS.DELETE.APP.MESSAGE' | translate }}</div>
-        <div id="ps_app_delete_app_id" class="font-bold danger-action-text text-center">{{ appAbstract.appId }}</div>
+        <div id="ps_app_delete_app_id" class="font-bold danger-action-text text-center">{{ appAbstract()?.appId }}</div>
         <div class="flex flex-row column-gap-2">
           <div class="text-right font-bold">{{ 'APP.PRODUCT_NAME' | translate }}:</div>
-          <div class="text-left white-space-nowrap" id="ps_app_delete_product_name">{{ appAbstract.productName }}</div>
+          <div class="text-left white-space-nowrap" id="ps_app_delete_product_name">
+            {{ appAbstract()?.productName }}
+          </div>
         </div>
-        @if (appAbstract.operator) {
+        @if (appAbstract()?.operator) {
           <div>{{ 'ACTIONS.DELETE.APP.OPERATOR_TEXT' | translate }}</div>
         }
         <div>{{ 'ACTIONS.DELETE.MESSAGE_INFO' | translate }}</div>

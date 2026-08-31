@@ -42,9 +42,9 @@ describe('ProductUseComponent', () => {
 
   describe('on changes', () => {
     beforeEach(() => {
-      component.productName = 'product'
       workspaceServiceSpy.doesUrlExistFor.and.returnValue(of(true))
-      component.ngOnChanges()
+      fixture.componentRef.setInput('productName', 'product')
+      fixture.detectChanges()
 
       expect().nothing()
     })
@@ -64,7 +64,8 @@ describe('ProductUseComponent', () => {
 
   describe('getWorkspaceEndpointUrl', () => {
     beforeEach(() => {
-      component.productName = 'product'
+      fixture.componentRef.setInput('productName', 'product')
+      fixture.detectChanges()
     })
 
     it('should workspaceEndpointExist - exist', (done) => {

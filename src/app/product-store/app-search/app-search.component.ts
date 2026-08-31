@@ -123,8 +123,9 @@ export class AppSearchComponent implements OnInit {
   public displayDetailDialog = false
   public displayDeleteDialog = false
   public hasCreatePermission = false
-  public hasEditPermission = false
   public hasDeletePermission = false
+  public hasEditPermission = false
+  public hasViewPermission = false
   public dataViewColumns: DataTableColumn[] = [
     { id: 'appId', nameKey: 'APP.APP_ID', columnType: ColumnType.STRING, sortable: true, filterable: true },
     { id: 'appType', nameKey: 'APP.APP_TYPE', columnType: ColumnType.STRING, sortable: true, filterable: true },
@@ -174,6 +175,7 @@ export class AppSearchComponent implements OnInit {
     this.hasCreatePermission = await this.user.hasPermission('APP#CREATE')
     this.hasDeletePermission = await this.user.hasPermission('APP#DELETE')
     this.hasEditPermission = await this.user.hasPermission('APP#EDIT')
+    this.hasViewPermission = await this.user.hasPermission('APP#VIEW')
   }
 
   /**

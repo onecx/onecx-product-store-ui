@@ -69,7 +69,7 @@ describe('SlotDeleteComponent', () => {
 
   it('should delete slot onConfirmDeletion', () => {
     spyOn(component.slotDeleted, 'emit')
-    component.slot = slot as SlotData
+    fixture.componentRef.setInput('slot', slot as SlotData)
 
     component.onConfirmDeletion()
 
@@ -79,7 +79,7 @@ describe('SlotDeleteComponent', () => {
 
   it('should display error if api call fails onConfirmDeletion: mfe', () => {
     apiSlotServiceSpy.deleteSlot.and.returnValue(throwError(() => new Error()))
-    component.slot = slot as SlotData
+    fixture.componentRef.setInput('slot', slot as SlotData)
 
     component.onConfirmDeletion()
 

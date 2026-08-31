@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { provideNoopAnimations } from '@angular/platform-browser/animations'
 import { BehaviorSubject, of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
@@ -61,6 +62,7 @@ describe('SlotDetailComponent', () => {
         }).withDefaultLanguage('en')
       ],
       providers: [
+        provideNoopAnimations(),
         { provide: ConfigurationService, useValue: configServiceSpy },
         { provide: UserService, useValue: mockUserService }
       ]
@@ -79,7 +81,7 @@ describe('SlotDetailComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SlotDetailComponent)
     component = fixture.componentInstance
-    component.displayDialog = true
+    fixture.componentRef.setInput('displayDialog', true)
     fixture.detectChanges()
   })
 
@@ -106,40 +108,46 @@ describe('SlotDetailComponent', () => {
     })
 
     it('should leave dialog if permissions not granted', () => {
-      component.changeMode = 'VIEW'
-      component.ngOnChanges()
+      fixture.componentRef.setInput('changeMode', 'VIEW')
+      fixture.detectChanges()
       expect(component.dialogTitleKey).toBeUndefined()
 
-      component.changeMode = 'EDIT'
-      component.ngOnChanges()
+      fixture.componentRef.setInput('changeMode', 'EDIT')
+      fixture.detectChanges()
       expect(component.dialogTitleKey).toBeUndefined()
 
-      component.changeMode = 'CREATE'
-      component.ngOnChanges()
+      fixture.componentRef.setInput('changeMode', 'CREATE')
+      fixture.detectChanges()
       expect(component.dialogTitleKey).toBeUndefined()
     })
 
     it('should set suitable dialog title key', () => {
       component.hasViewPermission = true
-      component.changeMode = 'VIEW'
+      fixture.componentRef.setInput('displayDialog', false)
+      fixture.componentRef.setInput('changeMode', 'VIEW')
+      fixture.componentRef.setInput('displayDialog', true)
 
-      component.ngOnChanges()
+      fixture.detectChanges()
 
-      expect(component.dialogTitleKey).toBe('ACTIONS.' + component.changeMode + '.SLOT.HEADER')
+      expect(component.dialogTitleKey).toBe('ACTIONS.' + component.changeMode() + '.SLOT.HEADER')
 
       component.hasEditPermission = true
-      component.changeMode = 'EDIT'
+      fixture.componentRef.setInput('displayDialog', false)
+      fixture.componentRef.setInput('changeMode', 'EDIT')
+      fixture.componentRef.setInput('displayDialog', true)
 
-      component.ngOnChanges()
+      fixture.detectChanges()
 
-      expect(component.dialogTitleKey).toBe('ACTIONS.' + component.changeMode + '.SLOT.HEADER')
+      expect(component.dialogTitleKey).toBe('ACTIONS.' + component.changeMode() + '.SLOT.HEADER')
 
       component.hasCreatePermission = true
-      component.changeMode = 'CREATE'
+      fixture.componentRef.setInput('displayDialog', false)
+      fixture.componentRef.setInput('changeMode', 'CREATE')
+      fixture.componentRef.setInput('displayDialog', true)
 
-      component.ngOnChanges()
+      fixture.detectChanges()
 
-      expect(component.dialogTitleKey).toBe('ACTIONS.' + component.changeMode + '.SLOT.HEADER')
+      expect(component.dialogTitleKey).toBe('ACTIONS.' + component.changeMode() + '.SLOT.HEADER')
     })
   })
 
@@ -155,11 +163,14 @@ describe('SlotDetailComponent', () => {
     it('should successful - VIEW', () => {
       slotsAPIService.getSlot.and.returnValue(of(slot))
       component.hasViewPermission = true
-      component.changeMode = 'VIEW'
       component.slot = slot
       spyOn(component, 'getSlot')
+      fixture.componentRef.setInput('displayDialog', false)
+      fixture.componentRef.setInput('changeMode', 'VIEW')
+      fixture.componentRef.setInput('slot', slot)
+      fixture.componentRef.setInput('displayDialog', true)
 
-      component.ngOnChanges()
+      fixture.detectChanges()
 
       expect(component.getSlot).toHaveBeenCalled()
       expect(component.slot).toEqual(slot)
@@ -169,10 +180,10 @@ describe('SlotDetailComponent', () => {
     it('should successful - EDIT', () => {
       slotsAPIService.getSlot.and.returnValue(of(slot))
       component.hasEditPermission = true
-      component.changeMode = 'EDIT'
-      component.slot = slot
+      fixture.componentRef.setInput('changeMode', 'EDIT')
+      fixture.componentRef.setInput('slot', slot)
 
-      component.ngOnChanges()
+      fixture.detectChanges()
 
       expect(component.slot).toEqual(slot)
       expect(component.dialogTitleKey).toBe('ACTIONS.EDIT.SLOT.HEADER')
@@ -181,10 +192,10 @@ describe('SlotDetailComponent', () => {
     it('should successful - CREATE', () => {
       slotsAPIService.getSlot.and.returnValue(of(slot))
       component.hasCreatePermission = true
-      component.changeMode = 'CREATE'
-      component.slot = slot
+      fixture.componentRef.setInput('changeMode', 'CREATE')
+      fixture.componentRef.setInput('slot', slot)
 
-      component.ngOnChanges()
+      fixture.detectChanges()
 
       expect(component.slot).toEqual(slot)
       expect(component.slot?.id).toBeUndefined()
@@ -201,7 +212,7 @@ describe('SlotDetailComponent', () => {
       component.slot = slot
       component.slotForm.reset()
       component.slotForm.patchValue({ name: 'name', appId: 'a', productName: 'p' })
-      component.changeMode = 'CREATE'
+      component.changeMode.set('CREATE')
 
       component.onSave()
 
@@ -214,7 +225,7 @@ describe('SlotDetailComponent', () => {
       slotsAPIService.createSlot.and.returnValue(of({}))
       component.slot = slot
       component.slotForm = slotForm
-      component.changeMode = 'CREATE'
+      component.changeMode.set('CREATE')
 
       component.onSave()
 
@@ -232,7 +243,7 @@ describe('SlotDetailComponent', () => {
       spyOn(console, 'error')
       component.slot = slot
       component.slotForm = slotForm
-      component.changeMode = 'CREATE'
+      component.changeMode.set('CREATE')
 
       component.onSave()
 
@@ -250,7 +261,7 @@ describe('SlotDetailComponent', () => {
       slotsAPIService.updateSlot.and.returnValue(of({}))
       component.slot = slot
       component.slotForm = slotForm
-      component.changeMode = 'EDIT'
+      component.changeMode.set('EDIT')
 
       component.onSave()
 
@@ -268,7 +279,7 @@ describe('SlotDetailComponent', () => {
       spyOn(console, 'error')
       component.slot = slot
       component.slotForm = slotForm
-      component.changeMode = 'EDIT'
+      component.changeMode.set('EDIT')
 
       component.onSave()
 
@@ -291,7 +302,7 @@ describe('SlotDetailComponent', () => {
       spyOn(console, 'error')
       component.slot = slot
       component.slotForm = slotForm
-      component.changeMode = 'EDIT'
+      component.changeMode.set('EDIT')
 
       component.onSave()
 
@@ -319,7 +330,7 @@ describe('SlotDetailComponent', () => {
       component.slot = slot
       component.onChangeUndeployedValue(true)
 
-      expect(component.slot.undeployed).toBeTrue()
+      expect(component.slot?.undeployed).toBeTrue()
     })
   })
 

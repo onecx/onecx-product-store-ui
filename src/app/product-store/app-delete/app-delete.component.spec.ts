@@ -81,7 +81,7 @@ describe('AppDeleteComponent', () => {
 
   it('should delete mfe onConfirmDeletion', () => {
     spyOn(component.appDeleted, 'emit')
-    component.appAbstract = appMfe
+    fixture.componentRef.setInput('appAbstract', appMfe)
 
     component.onConfirmDeletion()
 
@@ -91,7 +91,7 @@ describe('AppDeleteComponent', () => {
 
   it('should display error if api call fails onConfirmDeletion: mfe', () => {
     apiMfeServiceSpy.deleteMicrofrontend.and.returnValue(throwError(() => new Error()))
-    component.appAbstract = appMfe
+    fixture.componentRef.setInput('appAbstract', appMfe)
 
     component.onConfirmDeletion()
 
@@ -100,7 +100,7 @@ describe('AppDeleteComponent', () => {
 
   it('should delete ms onConfirmDeletion', () => {
     apiMsServiceSpy.deleteMicroservice.and.returnValue(of({}))
-    component.appAbstract = appMs
+    fixture.componentRef.setInput('appAbstract', appMs)
 
     component.onConfirmDeletion()
 
@@ -109,7 +109,7 @@ describe('AppDeleteComponent', () => {
 
   it('should display error if api call fails onConfirmDeletion: ms', () => {
     apiMsServiceSpy.deleteMicroservice.and.returnValue(throwError(() => new Error()))
-    component.appAbstract = appMs
+    fixture.componentRef.setInput('appAbstract', appMs)
 
     component.onConfirmDeletion()
 

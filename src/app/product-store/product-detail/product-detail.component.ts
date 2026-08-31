@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit, ViewChild } from '@angular/core'
+import { Component, DestroyRef, inject, OnInit, viewChild } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { AsyncPipe, Location } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
@@ -86,8 +86,8 @@ export class ProductDetailComponent implements OnInit {
   public product: Product | undefined = undefined
   public item4Delete: Product | undefined
 
-  @ViewChild(ProductPropertyComponent, { static: false }) productPropsComponent!: ProductPropertyComponent
-  @ViewChild(ProductInternComponent, { static: false }) productInternComponent!: ProductInternComponent
+  public readonly productPropsComponent = viewChild(ProductPropertyComponent)
+  public readonly productInternComponent = viewChild(ProductInternComponent)
 
   constructor() {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
@@ -254,8 +254,8 @@ export class ProductDetailComponent implements OnInit {
     if (['COPY', 'CREATE'].includes(this.changeMode)) this.onClose()
   }
   public onSaveProduct() {
-    const internals = this.productInternComponent.onSave()
-    const props = this.productPropsComponent.onSave()
+    const internals = this.productInternComponent()?.onSave()
+    const props = this.productPropsComponent()?.onSave()
     if (props && internals)
       this.changeMode === 'EDIT' ? this.updateProduct(props, internals) : this.createProduct(props, internals)
   }

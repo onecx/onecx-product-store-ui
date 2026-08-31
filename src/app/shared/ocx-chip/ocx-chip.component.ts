@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core'
+import { ChangeDetectionStrategy, Component, input } from '@angular/core'
 import { TooltipModule } from 'primeng/tooltip'
 
 /**
@@ -12,11 +12,9 @@ import { TooltipModule } from 'primeng/tooltip'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OcxChipComponent {
-  @Input() public id = 'ocx-chip'
-  @Input() public label: string | undefined
-  @Input() public title: string | undefined
-  @Input() public styleClass: string | undefined
-  @Input() public filled = false
-
-  constructor() {}
+  public readonly id = input('ocx-chip')
+  public readonly label = input<string>()
+  public readonly title = input<string>()
+  public readonly styleClass = input<string>()
+  public readonly filled = input(false)
 }

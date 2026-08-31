@@ -1,13 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  EventEmitter,
-  inject,
-  Input,
-  OnChanges,
-  Output
-} from '@angular/core'
+import { ChangeDetectionStrategy, Component, ElementRef, effect, inject, input, output } from '@angular/core'
 import { AsyncPipe } from '@angular/common'
 import {
   AbstractControl,
@@ -89,16 +80,16 @@ export function productNameValidator(): ValidatorFn {
   styleUrls: ['./product-props.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProductPropertyComponent implements OnChanges {
+export class ProductPropertyComponent {
   private readonly icon = inject(IconService)
   private readonly elements = inject(ElementRef)
   private readonly productApi = inject(ProductsAPIService)
   private readonly imageApi = inject(ImagesInternalAPIService)
   private readonly msgService = inject(PortalMessageService)
   // input
-  @Input() product: Product | undefined = undefined
-  @Input() changeMode: ChangeMode = 'VIEW'
-  @Output() currentLogoUrl = new EventEmitter<string>()
+  public readonly product = input<Product>()
+  public readonly changeMode = input<ChangeMode>('VIEW')
+  public readonly currentLogoUrl = output<string | undefined>()
 
   public criteria$: Observable<ProductCriteria> = of({})
   public propsForm: FormGroup<ProductPropsForm>
@@ -131,27 +122,29 @@ export class ProductPropertyComponent implements OnChanges {
     })
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
     this.iconItems.sort(Utils.dropDownSortItemsByLabel)
-  }
 
-  public ngOnChanges(): void {
-    if (this.product) {
-      this.propsForm.patchValue({ ...this.product })
-      if (this.changeMode === 'COPY') this.productId = undefined
-      this.productName = this.product.name // business key => manage the change!
-      this.fetchingImageUrl = this.product.imageUrl
-      if (!this.fetchingImageUrl || this.fetchingImageUrl === '') this.prepareImageUrl(this.product.name)
-    } else {
-      this.propsForm.reset()
-      this.fetchingImageUrl = undefined
-    }
-    this.currentLogoUrl.emit(this.fetchingImageUrl)
-    // mode & form
-    this.propsForm.disable()
-    if (this.changeMode !== 'VIEW') {
-      this.getCriteria()
-      this.propsForm.enable()
-    }
-    if (this.changeMode === 'EDIT') this.propsForm.controls['name'].disable()
+    // replaces ngOnChanges: signal inputs don't trigger it
+    effect(() => {
+      const product = this.product()
+      if (product) {
+        this.propsForm.patchValue({ ...product })
+        if (this.changeMode() === 'COPY') this.productId = undefined
+        this.productName = product.name // business key => manage the change!
+        this.fetchingImageUrl = product.imageUrl
+        if (!this.fetchingImageUrl || this.fetchingImageUrl === '') this.prepareImageUrl(product.name)
+      } else {
+        this.propsForm.reset()
+        this.fetchingImageUrl = undefined
+      }
+      this.currentLogoUrl.emit(this.fetchingImageUrl)
+      // mode & form
+      this.propsForm.disable()
+      if (this.changeMode() !== 'VIEW') {
+        this.getCriteria()
+        this.propsForm.enable()
+      }
+      if (this.changeMode() === 'EDIT') this.propsForm.controls['name'].disable()
+    })
   }
 
   /** SAVE product - triggered by detail page action

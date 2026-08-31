@@ -39,9 +39,8 @@ describe('SlotInternComponent', () => {
 
   describe('ngOnChanges', () => {
     it('should set relevant values correctly', () => {
-      component.slot = slot
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('slot', slot)
+      fixture.detectChanges()
 
       expect(component.slotForm.get('operator')?.value).toBeTrue()
       expect(component.slotForm.get('undeployed')?.value).toBeTrue()
@@ -49,9 +48,8 @@ describe('SlotInternComponent', () => {
     })
 
     it('should unset all properties when slot is undefined', () => {
-      component.slot = undefined
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('slot', undefined)
+      fixture.detectChanges()
 
       expect(component.slotForm.get('operator')?.value).toBeNull()
       expect(component.slotForm.get('undeployed')?.value).toBeNull()
@@ -63,18 +61,16 @@ describe('SlotInternComponent', () => {
         operator: true,
         undeployed: true
       }
-      component.slot = slotNoDeprecated as Slot
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('slot', slotNoDeprecated as Slot)
+      fixture.detectChanges()
 
       expect(component.slotForm.get('deprecated')?.value).toBeUndefined()
     })
 
     it('should enable undeployed field', () => {
-      component.slot = slot
-      component.changeMode = 'EDIT'
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('slot', slot)
+      fixture.componentRef.setInput('changeMode', 'EDIT')
+      fixture.detectChanges()
 
       expect(component.slotForm.get('undeployed')?.enabled).toBeTrue()
     })
@@ -82,10 +78,9 @@ describe('SlotInternComponent', () => {
 
   describe('additionals', () => {
     it('should emit undeployed value', () => {
-      component.slot = slot
-      component.changeMode = 'EDIT'
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('slot', slot)
+      fixture.componentRef.setInput('changeMode', 'EDIT')
+      fixture.detectChanges()
       component.onChangeUndeployed({ checked: true })
 
       expect().nothing()

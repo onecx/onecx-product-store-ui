@@ -43,8 +43,8 @@
     }
   }
 }
+
 @media screen and (max-width: 768px) {
-  @include tm-filter-group;
   :host ::ng-deep {
     .card-badge-left,
     .card-badge-right {

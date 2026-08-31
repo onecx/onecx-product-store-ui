@@ -2,7 +2,7 @@
   <p-dialog
     [header]="'ACTIONS.DELETE.PRODUCT.HEADER' | translate"
     [visible]="true"
-    (onHide)="onDialogHide()"
+    (visibleChange)="onDialogHide()"
     [modal]="true"
     [closable]="true"
     [draggable]="true"

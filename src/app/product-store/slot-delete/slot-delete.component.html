@@ -1,8 +1,8 @@
-@if (displayDialog && slot) {
+@if (displayDialog() && slot()) {
   <p-dialog
     [header]="'ACTIONS.DELETE.SLOT.HEADER' | translate"
     [visible]="true"
-    (onVisibleChange)="onDialogHide()"
+    (visibleChange)="onDialogHide()"
     [modal]="true"
     [closable]="true"
     [draggable]="true"
@@ -15,14 +15,14 @@
       <div class="flex flex-column row-gap-2">
         <div id="ps_slot_delete_message" class="font-bold">{{ 'ACTIONS.DELETE.SLOT.MESSAGE' | translate }}</div>
         <div class="flex flex-column row-gap-2">
-          <div id="ps_slot_delete_slot_name" class="font-bold danger-action-text text-center">{{ slot.name }}</div>
+          <div id="ps_slot_delete_slot_name" class="font-bold danger-action-text text-center">{{ slot()?.name }}</div>
           <div class="flex flex-row column-gap-2">
             <div class="text-right font-bold">{{ 'SLOT.PRODUCT_NAME' | translate }}:</div>
             <div class="text-left white-space-nowrap" id="ps_slot_delete_product_name">
-              {{ slot.productDisplayName }}
+              {{ slot()?.productDisplayName }}
             </div>
           </div>
-          @if (slot.operator) {
+          @if (slot()?.operator) {
             <div id="ps_slot_delete_operator">
               {{ 'ACTIONS.DELETE.SLOT.OPERATOR_TEXT' | translate }}
             </div>

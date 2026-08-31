@@ -1,4 +1,4 @@
-@if (productName) {
+@if (productName()) {
   @if (isComponentDefined$ | async) {
     <ocx-slot
       [name]="slotName"

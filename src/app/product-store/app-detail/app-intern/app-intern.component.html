@@ -28,7 +28,7 @@
       ></p-checkbox>
       <label for="ps_app_detail_form_field_undeployed">{{ 'APP.UNDEPLOYED' | translate }}</label>
     </div>
-    @if (mfe) {
+    @if (mfe()) {
       <div class="flex align-items-center gap-2">
         <p-checkbox
           type="text"
@@ -46,7 +46,7 @@
   </form>
 
   <!-- row 2 -->
-  @let comp = mfe ?? ms;
+  @let comp = mfe() ?? ms();
   @if (comp) {
     <div class="flex flex-row flex-wrap gap-4">
       <p-floatlabel variant="on" class="flex-grow-1 sm:flex-grow-0">
@@ -55,7 +55,7 @@
           type="text"
           id="ps_app_detail_form_field_creation_date"
           class="w-full sm:w-13rem pt-3 pb-2 text-responsive"
-          [value]="comp?.creationDate ? (comp?.creationDate | date: dateFormat) : ''"
+          [value]="comp?.creationDate ? (comp?.creationDate | date: dateFormat()) : ''"
           [disabled]="true"
           [attr.aria-label]="'INTERNAL.CREATION_DATE' | translate"
           [pTooltip]="'INTERNAL.TOOLTIPS.CREATION_DATE' | translate"
@@ -89,7 +89,7 @@
           type="text"
           id="ps_app_detail_form_field_modification_date"
           class="w-full sm:w-13rem pt-3 pb-2"
-          [value]="comp?.modificationDate ? (comp?.modificationDate | date: dateFormat) : ''"
+          [value]="comp?.modificationDate ? (comp?.modificationDate | date: dateFormat()) : ''"
           [disabled]="true"
           [attr.aria-label]="'INTERNAL.MODIFICATION_DATE' | translate"
           [pTooltip]="'INTERNAL.TOOLTIPS.MODIFICATION_DATE' | translate"

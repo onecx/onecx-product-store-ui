@@ -45,31 +45,31 @@ describe('ProductInternComponent', () => {
 
   describe('form', () => {
     it('should fill form only on view mode', () => {
-      component.product = { ...productProps, ...productInternals }
-      component.editMode = false
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('product', { ...productProps, ...productInternals })
+      fixture.componentRef.setInput('editMode', false)
+      fixture.detectChanges()
 
       expect(component.formGroup.value).toEqual(productInternals)
       expect(component.formGroup.controls['undeployed'].disabled).toBeTrue()
     })
 
     it('should fill form only on edit mode', () => {
-      component.product = { ...productProps, ...productInternals }
-      component.editMode = true
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('product', { ...productProps, ...productInternals })
+      fixture.componentRef.setInput('editMode', true)
+      fixture.detectChanges()
 
       expect(component.formGroup.value).toEqual({ undeployed: true })
       expect(component.formGroup.controls['undeployed'].enabled).toBeTrue()
     })
 
     it('should reset form without a product', () => {
-      component.product = undefined
-      component.editMode = false
+      fixture.componentRef.setInput('product', { ...productProps, ...productInternals })
+      fixture.detectChanges()
       spyOn(component.formGroup, 'reset')
 
-      component.ngOnChanges()
+      fixture.componentRef.setInput('product', undefined)
+      fixture.componentRef.setInput('editMode', false)
+      fixture.detectChanges()
 
       expect(component.formGroup.reset).toHaveBeenCalled()
     })
@@ -77,10 +77,10 @@ describe('ProductInternComponent', () => {
 
   describe('save', () => {
     it('should display error onSave if formGroup invalid', () => {
-      component.product = { ...productProps }
-      component.editMode = true
+      fixture.componentRef.setInput('product', { ...productProps })
+      fixture.componentRef.setInput('editMode', true)
+      fixture.detectChanges()
 
-      component.ngOnChanges()
       const form = component.onSave()
 
       expect(form).toEqual({})
@@ -88,10 +88,10 @@ describe('ProductInternComponent', () => {
     })
 
     it('should fill form correctly - EDIT mode', () => {
-      component.product = { ...productProps, ...productInternals }
-      component.editMode = true
+      fixture.componentRef.setInput('product', { ...productProps, ...productInternals })
+      fixture.componentRef.setInput('editMode', true)
+      fixture.detectChanges()
 
-      component.ngOnChanges()
       const form = component.onSave()
 
       expect(form).toEqual({ undeployed: true })

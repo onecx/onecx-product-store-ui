@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, OnInit, ViewChild } from '@angular/core'
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, OnInit, viewChild } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { AsyncPipe, NgClass } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
@@ -173,11 +173,11 @@ export class SlotSearchComponent implements OnInit {
   public filterPanelProductVisible = false
 
   // filter icons
-  @ViewChild('headerFilterIconSlotName', { static: false }) headerFilterIconSlotName: ElementRef | undefined
-  @ViewChild('headerFilterIconSlotState', { static: false }) headerFilterIconSlotState: ElementRef | undefined
-  @ViewChild('headerFilterIconProduct', { static: false }) headerFilterIconProduct: ElementRef | undefined
+  public readonly headerFilterIconSlotName = viewChild<ElementRef>('headerFilterIconSlotName')
+  public readonly headerFilterIconSlotState = viewChild<ElementRef>('headerFilterIconSlotState')
+  public readonly headerFilterIconProduct = viewChild<ElementRef>('headerFilterIconProduct')
 
-  @ViewChild('dataTable', { static: false }) dataTable: Table | undefined
+  public readonly dataTable = viewChild<Table>('dataTable')
 
   public columns: ExtendedColumn[] = [
     {
@@ -421,7 +421,7 @@ export class SlotSearchComponent implements OnInit {
     this.filterPanelSlotStateVisible = false
     this.filterPanelProductVisible = false
     this.onResetFilterIcons('not empty', ['slotName', 'slotState', 'product'])
-    this.dataTable?.clear()
+    this.dataTable()?.clear()
   }
 
   /**
@@ -602,14 +602,14 @@ export class SlotSearchComponent implements OnInit {
   }
   public onResetFilterIcons(val: string, fields: string[]) {
     if (val) {
-      if (fields?.includes('slotState') && this.headerFilterIconSlotState) {
-        this.headerFilterIconSlotState.nativeElement.className = 'pi pi-filter'
+      if (fields?.includes('slotState') && this.headerFilterIconSlotState()) {
+        this.headerFilterIconSlotState()!.nativeElement.className = 'pi pi-filter'
         this.filterStateValue = []
       }
-      if (fields?.includes('slotName') && this.headerFilterIconSlotName)
-        this.headerFilterIconSlotName.nativeElement.className = 'pi pi-filter'
-      if (fields?.includes('product') && this.headerFilterIconProduct)
-        this.headerFilterIconProduct.nativeElement.className = 'pi pi-filter'
+      if (fields?.includes('slotName') && this.headerFilterIconSlotName())
+        this.headerFilterIconSlotName()!.nativeElement.className = 'pi pi-filter'
+      if (fields?.includes('product') && this.headerFilterIconProduct())
+        this.headerFilterIconProduct()!.nativeElement.className = 'pi pi-filter'
     }
   }
 
@@ -619,15 +619,15 @@ export class SlotSearchComponent implements OnInit {
   public onSortColumn(ev: MouseEvent, field: string, icon: HTMLElement) {
     ev.stopPropagation()
     const className = { up: 'pi pi-sort-amount-up-alt', down: 'pi pi-sort-amount-down' }
-    this.dataTable?.clear()
+    this.dataTable()?.clear()
     switch (icon.className) {
       case className.down:
         icon.className = className.up
-        this.dataTable?._value.sort((a, b) => this.compareValues(field, a, b))
+        this.dataTable()?._value.sort((a, b) => this.compareValues(field, a, b))
         break
       case className.up:
         icon.className = className.down
-        this.dataTable?._value.sort((c, d) => this.compareValues(field, d, c))
+        this.dataTable()?._value.sort((c, d) => this.compareValues(field, d, c))
         break
     }
   }

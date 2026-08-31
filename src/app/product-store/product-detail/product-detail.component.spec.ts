@@ -136,7 +136,14 @@ describe('ProductDetailComponent', () => {
     productApiSpy.createProduct.calls.reset()
     productApiSpy.updateProduct.calls.reset()
     productApiSpy.deleteProduct.calls.reset()
+    //
+    productApiSpy.getProductByName.and.returnValue(of({}))
+    productApiSpy.createProduct.and.returnValue(of({}))
+    productApiSpy.updateProduct.and.returnValue(of({}))
+    productApiSpy.deleteProduct.and.returnValue(of({}))
+    //
     productApiSpy.getProductSearchCriteria.calls.reset()
+    productApiSpy.getProductSearchCriteria.and.returnValue(of({}))
   })
 
   it('should create', () => {
@@ -187,8 +194,9 @@ describe('ProductDetailComponent', () => {
 
   describe('changes', () => {
     beforeEach(() => {
-      component.productPropsComponent = mockPropsComponent as unknown as ProductPropertyComponent
-      component.productInternComponent = mockInternComponent as unknown as ProductInternComponent
+      // productPropsComponent/productInternComponent are viewChild() signals; override the getter for the test
+      ;(component as any).productPropsComponent = () => mockPropsComponent as unknown as ProductPropertyComponent
+      ;(component as any).productInternComponent = () => mockInternComponent as unknown as ProductInternComponent
       component.productName = product.name
       component.productId = product.id
     })

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core'
+import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core'
 import { AsyncPipe } from '@angular/common'
 import { Observable, map } from 'rxjs'
 
@@ -25,13 +25,13 @@ import { Utils } from 'src/app/shared/utils'
   host: { hostId: 'this-avoids-component-id-collision' },
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ImageContainerComponent implements OnChanges {
+export class ImageContainerComponent {
   private readonly appState = inject(AppStateService)
 
-  @Input() public id = 'ps_image_container_logo'
-  @Input() public title: string | undefined
-  @Input() public imageUrl: string | undefined
-  @Input() public styleClass: string | undefined
+  public readonly id = input('ps_image_container_logo')
+  public readonly title = input<string>()
+  public readonly imageUrl = input<string>()
+  public readonly styleClass = input<string>()
 
   public displayImageUrl: string | undefined
   public defaultImageUrl$: Observable<string>
@@ -43,18 +43,17 @@ export class ImageContainerComponent implements OnChanges {
         return Utils.prepareUrlPath(mfe.remoteBaseUrl, environment.DEFAULT_LOGO_PATH)
       })
     )
+
+    // replaces ngOnChanges: signal inputs don't trigger it
+    effect(() => {
+      this.displayDefaultLogo = false
+      if (this.imageUrl()) this.displayImageUrl = this.imageUrl()
+      else this.displayDefaultLogo = true
+    })
   }
 
   public onImageError(): void {
     this.displayDefaultLogo = true
     this.displayImageUrl = undefined
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['imageUrl']) {
-      this.displayDefaultLogo = false
-      if (this.imageUrl) this.displayImageUrl = this.imageUrl
-      else this.displayDefaultLogo = true
-    }
   }
 }

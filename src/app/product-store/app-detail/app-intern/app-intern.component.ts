@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnChanges, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core'
 import { DatePipe } from '@angular/common'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
@@ -29,12 +29,12 @@ import { ChangeMode } from '../../product-detail/product-detail.component'
   templateUrl: './app-intern.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppInternComponent implements OnChanges {
-  @Input() mfe: Microfrontend | undefined
-  @Input() ms: Microservice | undefined
-  @Input() dateFormat = 'medium'
-  @Input() changeMode: ChangeMode = 'VIEW'
-  @Output() undeployed = new EventEmitter<boolean>()
+export class AppInternComponent {
+  public readonly mfe = input<Microfrontend>()
+  public readonly ms = input<Microservice>()
+  public readonly dateFormat = input('medium')
+  public readonly changeMode = input<ChangeMode>('VIEW')
+  public readonly undeployed = output<boolean>()
 
   private readonly translate = inject(TranslateService)
 
@@ -46,20 +46,23 @@ export class AppInternComponent implements OnChanges {
       deprecated: new FormControl<boolean | null>(null),
       undeployed: new FormControl<boolean | null>(null)
     })
-  }
 
-  public ngOnChanges(): void {
-    this.appForm.reset()
-    this.appForm.disable()
-    if (this.mfe || this.ms) {
-      this.setFormData()
-      this.changeMode === 'EDIT' ? this.appForm.get('undeployed')?.enable() : this.appForm.get('undeployed')?.disable()
-    }
+    // replaces ngOnChanges: signal inputs don't trigger it
+    effect(() => {
+      this.appForm.reset()
+      this.appForm.disable()
+      if (this.mfe() || this.ms()) {
+        this.setFormData()
+        this.changeMode() === 'EDIT'
+          ? this.appForm.get('undeployed')?.enable()
+          : this.appForm.get('undeployed')?.disable()
+      }
+    })
   }
 
   private setFormData(): void {
-    Utils.setFormControlsValues(this.appForm.controls, this.mfe)
-    Utils.setFormControlsValues(this.appForm.controls, this.ms)
+    Utils.setFormControlsValues(this.appForm.controls, this.mfe())
+    Utils.setFormControlsValues(this.appForm.controls, this.ms())
   }
 
   public onChangeUndeployed(ev: any) {
