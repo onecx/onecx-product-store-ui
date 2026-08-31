@@ -294,21 +294,26 @@ export class ProductDetailComponent implements OnInit {
   }
 
   private displaySaveError(err: any) {
+    const summaryKey = 'ACTIONS.' + this.changeMode + '.PRODUCT.NOK'
+    const extKeyPart = err.error?.detail.indexOf('ui_product_base_path') > 0 ? 'BASEPATH' : 'NAME'
     if (err.error?.errorCode === 'PERSIST_ENTITY_FAILED') {
       this.msgService.error({
-        summaryKey: 'ACTIONS.' + this.changeMode + '.PRODUCT.NOK',
-        detailKey:
-          'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT.' +
-          (err.error?.detail.indexOf('ui_product_base_path') > 0 ? 'BASEPATH' : 'NAME')
+        summaryKey: summaryKey,
+        detailKey: 'VALIDATION.PRODUCT.UNIQUE_CONSTRAINT.' + extKeyPart
       })
     } else {
-      this.msgService.error({ summaryKey: 'ACTIONS.' + this.changeMode + '.PRODUCT.NOK' })
+      this.msgService.error({ summaryKey: summaryKey })
     }
   }
 
   private cleanupAfterDataChanged(product: Product) {
     this.changeMode = 'VIEW'
-    this.preparePageAction(product)
+    this.productId = product.id
+    this.productName = product.name
+    this.currentLogoUrl = this.getLogoUrl(product)
+    // refresh the bound product so child components (props, apps, intern) display the saved data
+    this.product = { ...product, classifications: product.classifications?.sort(Utils.sortByLocale) }
+    this.preparePageAction(this.product)
     // update observable with response data
     this.product$ = new Observable((sub) => sub.next(product))
   }
