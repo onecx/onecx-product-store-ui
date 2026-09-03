@@ -66,6 +66,9 @@
     }
   }
 
+  .p-datatable-flex-scrollable > .p-datatable-table-container {
+    margin-bottom: 1rem;
+  }
   /* state column */
   .p-datatable-tbody > tr > td:has(.slot-state-icons) {
     text-align: center;
@@ -93,7 +96,8 @@
     }
   }
   .icon-button-header-wrapper {
-    .sortButton,
+    button.sortButton,
+    button,
     .pi-filter,
     .pi-filter-fill {
       padding: 0.5rem !important;

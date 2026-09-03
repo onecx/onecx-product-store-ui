@@ -112,18 +112,78 @@
             id="tm_search_filter_clear"
             icon="pi pi-filter-slash"
             [disabled]="!filter"
+            (click)="onFilterChange('')"
             [ariaLabel]="'SEARCH.SLOT.FILTER.CLEAR' | translate"
             [pTooltip]="'SEARCH.SLOT.FILTER.CLEAR' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
-            (click)="onFilterChange('')"
-            (keydown.enter)="onFilterChange('')"
           />
         </p-inputgroup>
       </ng-template>
 
+      <ng-template
+        pTemplate="stateIdTableHeader"
+        let-rowObject="rowObject"
+        let-column="column"
+        let-labelTemplate="labelTemplate"
+        let-sortTemplate="sortTemplate"
+        let-filterTemplate="filterTemplate"
+      >
+        <div class="flex flex-row justify-content-center align-items-center gap-3">
+          <ng-container
+            [ngTemplateOutlet]="labelTemplate"
+            [ngTemplateOutletContext]="{ column: column }"
+          ></ng-container>
+          <ng-container [ngTemplateOutlet]="sortTemplate" [ngTemplateOutletContext]="{ column: column }"></ng-container>
+          <!-- FILTER -->
+          <div #headerSectionSlotState class="icon-button-header-wrapper">
+            <p-button
+              tabindex="0"
+              id="ps_slot_search_table_header_state_action_filter"
+              styleClass="sortButton"
+              [text]="true"
+              [rounded]="true"
+              [icon]="filterStateValue.length === 0 ? 'pi pi-filter' : 'pi pi-filter-fill'"
+              (onClick)="onToggleFilterSlotState($event, stateFilterOptions)"
+              [ariaLabel]="'SLOT.FILTER.STATE' | translate"
+              [pTooltip]="'SLOT.FILTER.STATE' | translate"
+              tooltipPosition="top"
+              tooltipEvent="hover"
+            />
+            <!-- This is hidden: only the overlay is shown on click -->
+            <p-multiSelect
+              #stateFilterOptions
+              id="ps_slot_search_table_header_filter_state"
+              styleClass="w-full hidden"
+              [appendTo]="headerSectionSlotState"
+              [showClear]="true"
+              [maxSelectedLabels]="1"
+              [showToggleAll]="true"
+              [showHeader]="true"
+              [options]="(filterStateValues$ | async) ?? []"
+              optionLabel="label"
+              optionValue="value"
+              (onChange)="onFilterChange($event.value); onResetFilterIcons($event.value, ['slotName', 'product'])"
+              (onPanelShow)="filterPanelSlotStateVisible = true"
+              (onPanelHide)="filterPanelSlotStateVisible = false"
+              [ngModel]="filterStateValue"
+            >
+              <ng-template let-state pTemplate="item">
+                <div class="ml-2 flex flex-row flex-nowrap align-items-center column-gap-2">
+                  <span
+                    [class]="'pi ' + state.icon"
+                    [ngClass]="{ 'danger-action-text': ['deprecated', 'undeployed'].includes(state.value) }"
+                  ></span>
+                  <div>{{ state.label }}</div>
+                </div>
+              </ng-template>
+            </p-multiSelect>
+          </div>
+        </div>
+      </ng-template>
+
       <ng-template pTemplate="stateIdTableCell" let-rowObject="rowObject" let-column="column">
-        <div class="slot-state-icons inline-flex flex-nowrap align-items-center justify-content-center column-gap-2">
+        <div class="slot-state-icons inline-flex flex-nowrap align-items-center justify-content-center column-gap-3">
           <span
             class="pi pi-cog"
             [ngClass]="{ hidden: !rowObject['operator'] }"
