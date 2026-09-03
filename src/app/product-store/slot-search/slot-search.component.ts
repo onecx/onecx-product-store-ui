@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, OnInit, viewChild } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
-import { AsyncPipe, NgClass, NgTemplateOutlet } from '@angular/common'
+import { AsyncPipe, NgClass, NgStyle, NgTemplateOutlet } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
@@ -73,6 +73,7 @@ export type FilteredData = SlotData & RowListGridData
     AngularAcceleratorModule,
     AsyncPipe,
     NgClass,
+    NgStyle,
     NgTemplateOutlet,
     ButtonModule,
     DialogModule,
