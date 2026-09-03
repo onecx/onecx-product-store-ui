@@ -161,8 +161,9 @@
         #selectedFileInputLogo
         (change)="onFileUpload($event)"
       />
-      <!-- Sonar Fix-->
-      <label for="ps_product_detail_logo_upload" class="hidden"></label>
+      <label class="hidden" for="ps_product_detail_logo_upload" aria-hidden="true">
+        exists only for Sonar report
+      </label>
       @if (product() && fetchingImageUrl && !onImageLoadError) {
         <img
           [alt]="'logo'"
