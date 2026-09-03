@@ -101,10 +101,11 @@
               type="text"
               pInputText
               [value]="filter"
+              (input)="onFilterChange(filterInput.value)"
               [tooltipPosition]="'bottom'"
               [pTooltip]="'SEARCH.SLOT.FILTER.TOOLTIP' | translate"
+              tooltipPosition="top"
               tooltipEvent="hover"
-              (input)="onFilterChange(filterInput.value)"
             />
             <label for="tm_search_filter" aria-hidden="true"> {{ 'SEARCH.SLOT.FILTER.LABEL' | translate }}</label>
           </p-floatlabel>
@@ -112,18 +113,84 @@
             id="tm_search_filter_clear"
             icon="pi pi-filter-slash"
             [disabled]="!filter"
+            (onClick)="onFilterChange('')"
             [ariaLabel]="'SEARCH.SLOT.FILTER.CLEAR' | translate"
             [pTooltip]="'SEARCH.SLOT.FILTER.CLEAR' | translate"
             tooltipPosition="top"
             tooltipEvent="hover"
-            (click)="onFilterChange('')"
-            (keydown.enter)="onFilterChange('')"
           />
         </p-inputgroup>
       </ng-template>
 
+      <ng-template
+        pTemplate="stateIdTableHeader"
+        let-rowObject="rowObject"
+        let-column="column"
+        let-labelTemplate="labelTemplate"
+        let-sortTemplate="sortTemplate"
+        let-filterTemplate="filterTemplate"
+      >
+        <div
+          class="table-header-wrapper flex flex-column justify-content-between align-items-start"
+          style="justify-content: center !important"
+        >
+          <span>
+            <ng-container
+              [ngTemplateOutlet]="labelTemplate"
+              [ngTemplateOutletContext]="{ column: column }"
+            ></ng-container>
+          </span>
+          <span class="flex icon-button-header-wrapper">
+            <ng-container
+              [ngTemplateOutlet]="sortTemplate"
+              [ngTemplateOutletContext]="{ column: column }"
+            ></ng-container>
+            <!-- FILTER -->
+            <p-multiSelect
+              #stateFilterOptions
+              id="ps_slot_search_table_header_filter_state"
+              styleClass=""
+              appendTo="body"
+              [maxSelectedLabels]="1"
+              [showToggleAll]="true"
+              [showHeader]="true"
+              placeholder=" "
+              [displaySelectedLabel]="false"
+              [options]="(filterStateValues$ | async) ?? []"
+              optionLabel="label"
+              optionValue="value"
+              (onChange)="onFilterChange($event.value); onResetFilterIcons($event.value, ['slotName', 'product'])"
+              (onPanelShow)="filterPanelSlotStateVisible = true"
+              (onPanelHide)="filterPanelSlotStateVisible = false"
+              [ngModel]="filterStateValue"
+            >
+              <ng-template #selecteditems let-value>
+                <span
+                  class="pi"
+                  [class.pi-filter]="value.length === 0"
+                  [class.pi-filter-fill]="value.length > 0"
+                ></span>
+              </ng-template>
+              <ng-template let-state pTemplate="item">
+                <div class="ml-2 flex flex-row flex-nowrap align-items-center column-gap-2">
+                  <span
+                    [class]="'pi ' + state.icon"
+                    [ngStyle]="{
+                      color: ['deprecated', 'undeployed'].includes(state.value)
+                        ? 'var(--danger-button-bg-default)'
+                        : 'inherit'
+                    }"
+                  ></span>
+                  <div>{{ state.label }}</div>
+                </div>
+              </ng-template>
+            </p-multiSelect>
+          </span>
+        </div>
+      </ng-template>
+
       <ng-template pTemplate="stateIdTableCell" let-rowObject="rowObject" let-column="column">
-        <div class="slot-state-icons inline-flex flex-nowrap align-items-center justify-content-center column-gap-2">
+        <div class="slot-state-icons inline-flex flex-nowrap align-items-center justify-content-center column-gap-3">
           <span
             class="pi pi-cog"
             [ngClass]="{ hidden: !rowObject['operator'] }"

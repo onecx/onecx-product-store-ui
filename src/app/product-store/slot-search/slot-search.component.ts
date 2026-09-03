@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, OnInit, viewChild } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
-import { AsyncPipe, NgClass } from '@angular/common'
+import { AsyncPipe, NgClass, NgStyle, NgTemplateOutlet } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
 import { BehaviorSubject, catchError, finalize, forkJoin, map, Observable, of, switchMap, tap } from 'rxjs'
 
@@ -13,6 +13,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon'
 import { InputGroupModule } from 'primeng/inputgroup'
 import { InputTextModule } from 'primeng/inputtext'
 import { MessageModule } from 'primeng/message'
+import { MultiSelectModule } from 'primeng/multiselect'
 import { TooltipModule } from 'primeng/tooltip'
 import { Table } from 'primeng/table'
 
@@ -72,13 +73,17 @@ export type FilteredData = SlotData & RowListGridData
     AngularAcceleratorModule,
     AsyncPipe,
     NgClass,
+    NgStyle,
+    NgTemplateOutlet,
     ButtonModule,
     DialogModule,
     FloatLabelModule,
+    FormsModule,
     InputTextModule,
     InputGroupAddonModule,
     InputGroupModule,
     MessageModule,
+    MultiSelectModule,
     ReactiveFormsModule,
     TooltipModule,
     TranslateModule,
