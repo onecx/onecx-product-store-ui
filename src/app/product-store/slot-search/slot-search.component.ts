@@ -280,7 +280,7 @@ export class SlotSearchComponent implements OnInit {
             }),
             map((r) => (r.stream ?? []) as ProductAbstract[]),
             catchError((err) => {
-              this.exceptionKey = this.getHttpExceptionKey(err, 'PRODUCTS')
+              this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + Utils.mapping_error_status(err.status) + '.PRODUCTS'
               console.error('searchProducts', err)
               return of([])
             })
@@ -294,7 +294,7 @@ export class SlotSearchComponent implements OnInit {
               return r.stream as Slot[]
             }),
             catchError((err) => {
-              this.exceptionKey = this.getHttpExceptionKey(err, 'SLOTS')
+              this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + Utils.mapping_error_status(err.status) + '.SLOTS'
               console.error('searchSlots', err)
               return of([] as Slot[])
             })
@@ -340,10 +340,6 @@ export class SlotSearchComponent implements OnInit {
 
   private upperValue(value: string | null | undefined): string {
     return (value ?? '').toUpperCase()
-  }
-
-  private getHttpExceptionKey(err: HttpErrorResponse, domain: 'PRODUCTS' | 'SLOTS'): string {
-    return `EXCEPTIONS.HTTP_STATUS_${Utils.mapping_error_status(err.status)}.${domain}`
   }
 
   private getProductDisplayName(name: string, pas: ProductAbstract[]): string {
