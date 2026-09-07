@@ -135,7 +135,7 @@ export class ProductDetailComponent implements OnInit {
           return { ...data, classifications: data.classifications?.sort(Utils.sortByLocale) }
         }),
         catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCT'
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + Utils.mapping_error_status(err.status) + '.PRODUCT'
           console.error('getProductByName', err)
           return of(undefined)
         }),

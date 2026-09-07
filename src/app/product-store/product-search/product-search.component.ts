@@ -163,7 +163,7 @@ export class ProductSearchComponent implements OnInit {
             return products.sort(this.sortProductsByDisplayName)
           }),
           catchError((err) => {
-            this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.PRODUCTS'
+            this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + Utils.mapping_error_status(err.status) + '.PRODUCTS'
             console.error('searchProducts', err)
             return of([])
           }),

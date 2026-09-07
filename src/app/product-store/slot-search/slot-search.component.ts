@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, OnInit, viewChild } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { AsyncPipe, NgClass, NgStyle, NgTemplateOutlet } from '@angular/common'
+import { HttpErrorResponse } from '@angular/common/http'
 import { ActivatedRoute, Router } from '@angular/router'
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
@@ -341,10 +342,8 @@ export class SlotSearchComponent implements OnInit {
     return (value ?? '').toUpperCase()
   }
 
-  private getHttpExceptionKey(err: unknown, domain: 'PRODUCTS' | 'SLOTS'): string {
-    const maybeStatus = (err as { status?: number })?.status
-    const status = typeof maybeStatus === 'number' ? maybeStatus : 0
-    return `EXCEPTIONS.HTTP_STATUS_${status}.${domain}`
+  private getHttpExceptionKey(err: HttpErrorResponse, domain: 'PRODUCTS' | 'SLOTS'): string {
+    return `EXCEPTIONS.HTTP_STATUS_${Utils.mapping_error_status(err.status)}.${domain}`
   }
 
   private getProductDisplayName(name: string, pas: ProductAbstract[]): string {
