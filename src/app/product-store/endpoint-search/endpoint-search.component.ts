@@ -154,7 +154,7 @@ export class EndpointSearchComponent implements OnInit {
     this.products$ = this.productApi.searchProducts({ productSearchCriteria: criteria.productCriteria }).pipe(
       map((data) => data.stream ?? []),
       catchError((err) => {
-        this.exceptionKey = this.getHttpExceptionKey(err, 'PRODUCTS')
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + Utils.mapping_error_status(err.status) + '.PRODUCTS'
         console.error('searchProducts', err)
         return of([])
       })
@@ -163,7 +163,7 @@ export class EndpointSearchComponent implements OnInit {
     this.mfes$ = this.mfeApi.searchMicrofrontends({ mfeAndMsSearchCriteria: criteria.mfeCriteria }).pipe(
       map((data) => data.stream ?? []),
       catchError((err) => {
-        this.exceptionKey = this.getHttpExceptionKey(err, 'MFES')
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + Utils.mapping_error_status(err.status) + '.MFES'
         console.error('searchMicrofrontends', err)
         return of([])
       })
@@ -185,12 +185,6 @@ export class EndpointSearchComponent implements OnInit {
   private getProductDisplayName(name: string, pas: ProductAbstract[]): string {
     const pf = pas.find((p) => p.name === name)
     return pf?.displayName ?? ''
-  }
-
-  private getHttpExceptionKey(err: unknown, domain: 'PRODUCTS' | 'MFES'): string {
-    const maybeStatus = (err as { status?: number })?.status
-    const status = typeof maybeStatus === 'number' ? maybeStatus : 0
-    return `EXCEPTIONS.HTTP_STATUS_${status}.${domain}`
   }
 
   // complete refresh: getting meta data and trigger search

@@ -213,7 +213,7 @@ export class AppSearchComponent implements OnInit {
       })
       .pipe(
         catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + Utils.mapping_error_status(err.status) + '.APPS'
           console.error('searchMicrofrontends', err)
           return of({})
         }),
@@ -232,7 +232,7 @@ export class AppSearchComponent implements OnInit {
       })
       .pipe(
         catchError((err) => {
-          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
+          this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + Utils.mapping_error_status(err.status) + '.APPS'
           console.error('searchMicroservice', err)
           return of({})
         }),

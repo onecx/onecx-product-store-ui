@@ -143,7 +143,7 @@ export class ProductAppsComponent implements OnInit {
         }
       }),
       catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + Utils.mapping_error_status(err.status) + '.APPS'
         console.error('getProductDetailsByCriteria', err)
         return of({})
       }),
