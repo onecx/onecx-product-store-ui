@@ -217,8 +217,12 @@
       "SUBHEADER": "Application Details"
     },
     "DATAVIEW": {
-      "FILTER": "Filter",
-      "FILTER_OF": "Filter für ",
+      "FILTER": {
+        "LABEL": "Filter",
+        "OF": "Filter für ",
+        "CLEAR": "Filter entfernen",
+        "PLACEHOLDER": "Filter"
+      },
       "SORT_BY": "Sortiert nach",
       "SORT_DIRECTION_ASC": "aufsteigend",
       "SORT_DIRECTION_DESC": "absteigend",
@@ -278,6 +282,22 @@
         "MFE": "UI Komponenten: Module, Remote Components",
         "MS": "Bereitgestellte Backend und Frontend Services",
         "SLOT": "Bereiche in UI Komponenten in denen man spezielle Funktionalität haben möchte. Diese wird bei der Verwendung in Workspaces zugeordnet."
+      }
+    }
+  },
+  "SEARCH": {
+    "ENDPOINT": {
+      "FILTER": {
+        "LABEL": "Filter",
+        "TOOLTIP": "Nach Applikationsname, Microfrontend, Endpunktname oder Pfad filtern",
+        "CLEAR": "Filter löschen"
+      }
+    },
+    "SLOT": {
+      "FILTER": {
+        "LABEL": "Filter",
+        "TOOLTIP": "Nach Slot-Name, Zustand, Microfrontend oder Applikationsname filtern",
+        "CLEAR": "Filter löschen"
       }
     }
   },

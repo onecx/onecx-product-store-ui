@@ -1,17 +1,28 @@
-@import '/src/app/_ps-mixins.scss';
+@use '/src/app/_ps-mixins.scss' as *;
 
-@include card-badges;
 @include danger-action;
+@include card-badges;
 
 :host ::ng-deep {
+  --onecx-product-store-onecx-product-store-ui-card-body-padding: 0.5rem;
+
+  /* fixes for p-card */
+  --onecx-product-store-onecx-product-store-ui-card-body-padding: 0.25rem;
+  --onecx-product-store-onecx-product-store-ui-card-border-radius: 4px;
+  --onecx-product-store-onecx-product-store-ui-card-shadow:
+    rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+
   .p-fieldset {
     &.p-fieldset-toggleable .p-fieldset-legend a,
     .p-fieldset-legend {
       background-color: transparent;
-      padding: 0.3rem 0.4rem;
+      padding: 0.7rem 0.4rem;
     }
     .p-fieldset-content {
-      padding: var(--panel-content-padding) 0.2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 0 1rem 0.2rem;
     }
   }
   .h-2-5rem {
@@ -25,14 +36,14 @@
   */
   .card-badge-right,
   .card-badge-left {
-    &.badge-2 {
-      top: 45px;
+    &.badge-2-mfe {
+      top: 51px;
     }
     &.badge-2-ms {
-      top: 26px;
+      top: 32px;
     }
     &.badge-2-slot {
-      top: 38px;
+      top: 44px;
     }
   }
 }

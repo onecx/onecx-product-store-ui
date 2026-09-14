@@ -1,9 +1,22 @@
 import { SelectItem } from 'primeng/api'
+import { FormControl, FormGroup } from '@angular/forms'
 import { of, throwError } from 'rxjs'
 
 import { Utils } from './utils'
 
 describe('utils', () => {
+  describe('mapping_error_status', () => {
+    it('should map known status', () => {
+      const status = Utils.mapping_error_status(404)
+      expect(status).toEqual(404)
+    })
+
+    it('should map unknown status', () => {
+      const status = Utils.mapping_error_status(405)
+      expect(status).toEqual(0)
+    })
+  })
+
   describe('limitText', () => {
     it('should limit text if text too long', () => {
       const result = Utils.limitText('textData', 4)
@@ -41,7 +54,7 @@ describe('utils', () => {
 
       const sortedItems = items.sort(Utils.dropDownSortItemsByLabel)
 
-      expect(sortedItems[0].label).toEqual(undefined)
+      expect(sortedItems[0].label).toBeUndefined()
     })
   })
 
@@ -119,6 +132,47 @@ describe('utils', () => {
       const sortedArray = Utils.convertToUniqueStringArray(s) ?? []
 
       expect(sortedArray[0]).toEqual('a')
+    })
+  })
+
+  describe('setFormControlsValues', () => {
+    let form: FormGroup
+
+    beforeEach(() => {
+      form = new FormGroup({
+        operator: new FormControl<boolean | null>(null),
+        undeployed: new FormControl<boolean | null>(null)
+      })
+    })
+
+    it('should do nothing if source is undefined', () => {
+      Utils.setFormControlsValues(form.controls, undefined)
+
+      expect(form.get('operator')?.value).toBeNull()
+      expect(form.get('undeployed')?.value).toBeNull()
+    })
+
+    it('should skip null values by default', () => {
+      Utils.setFormControlsValues(form.controls, { operator: null, undeployed: true })
+
+      expect(form.get('operator')?.value).toBeNull()
+      expect(form.get('undeployed')?.value).toBeTrue()
+    })
+
+    it('should set null values when skipNullValues is false', () => {
+      form.get('operator')?.setValue(true)
+
+      Utils.setFormControlsValues(form.controls, { operator: null, undeployed: true }, false)
+
+      expect(form.get('operator')?.value).toBeNull()
+      expect(form.get('undeployed')?.value).toBeTrue()
+    })
+
+    it('should set undefined values when a key is missing from source', () => {
+      Utils.setFormControlsValues(form.controls, { operator: true }, false)
+
+      expect(form.get('operator')?.value).toBeTrue()
+      expect(form.get('undeployed')?.value).toBeUndefined()
     })
   })
 

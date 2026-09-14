@@ -1,0 +1,7 @@
+@use '/src/app/_ps-mixins.scss' as *;
+
+:host ::ng-deep {
+  .p-autocomplete-chip.p-chip {
+    opacity: 0.7;
+  }
+}

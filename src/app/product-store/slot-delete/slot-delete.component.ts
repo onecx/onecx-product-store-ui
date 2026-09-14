@@ -1,33 +1,40 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core'
-import { TranslateService } from '@ngx-translate/core'
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
+
+import { ButtonModule } from 'primeng/button'
+import { DialogModule } from 'primeng/dialog'
+import { TooltipModule } from 'primeng/tooltip'
 
 import { PortalMessageService } from '@onecx/angular-integration-interface'
+
 import { SlotsAPIService } from 'src/app/shared/generated'
 import { SlotData } from '../slot-search/slot-search.component'
 
 @Component({
   selector: 'app-slot-delete',
+  standalone: true,
+  imports: [ButtonModule, DialogModule, TooltipModule, TranslateModule],
   templateUrl: './slot-delete.component.html',
-  styleUrls: ['./slot-delete.component.scss']
+  styleUrls: ['./slot-delete.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SlotDeleteComponent {
-  @Input() slot: SlotData | undefined
-  @Input() displayDialog = false
-  @Output() slotDeleted = new EventEmitter<boolean>()
+  private readonly slotApi = inject(SlotsAPIService)
+  private readonly msgService = inject(PortalMessageService)
+  private readonly translate = inject(TranslateService)
 
-  constructor(
-    private readonly slotApi: SlotsAPIService,
-    private readonly msgService: PortalMessageService,
-    private readonly translate: TranslateService
-  ) {}
+  public readonly slot = input<SlotData>()
+  public readonly displayDialog = input(false)
+  public readonly slotDeleted = output<boolean>()
 
   public onDialogHide(): void {
     this.slotDeleted.emit(false)
   }
 
   public onConfirmDeletion(): void {
-    if (this.slot?.id) {
-      this.slotApi.deleteSlot({ id: this.slot?.id }).subscribe({
+    const id = this.slot()?.id
+    if (id) {
+      this.slotApi.deleteSlot({ id }).subscribe({
         next: () => {
           this.msgService.success({ summaryKey: 'ACTIONS.DELETE.SLOT.OK' })
           this.slotDeleted.emit(true)

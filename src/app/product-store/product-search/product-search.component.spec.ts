@@ -1,12 +1,13 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core'
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { provideRouter, Router } from '@angular/router'
-import { of, throwError } from 'rxjs'
-import { DataViewModule } from 'primeng/dataview'
-import { TranslateService } from '@ngx-translate/core'
+import { BehaviorSubject, of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
+
+import { DataSortDirection, RowListGridData } from '@onecx/angular-accelerator'
+import { UserService } from '@onecx/angular-integration-interface'
+import { PermissionService } from '@onecx/angular-utils'
 
 import {
   Product,
@@ -31,7 +32,7 @@ describe('ProductSearchComponent', () => {
     provider: 'team',
     classifications: ['test']
   }
-  const criteria: ProductCriteria = {
+  const productSearchCriterias: ProductCriteria = {
     providers: ['team'],
     classifications: ['test']
   }
@@ -39,32 +40,53 @@ describe('ProductSearchComponent', () => {
     searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of({ stream: [] })),
     getProductSearchCriteria: jasmine.createSpy('getProductSearchCriteria').and.returnValue(of({}))
   }
+  const mockUserService = {
+    lang$: new BehaviorSubject<string>('en'),
+    hasPermission: jasmine.createSpy('hasPermission').and.returnValue(Promise.resolve(true)),
+    getPermission: jasmine.createSpy('getPermission').and.returnValue(Promise.resolve(true))
+  }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ProductSearchComponent],
       imports: [
-        DataViewModule,
+        ProductSearchComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
       providers: [
-        provideHttpClientTesting(),
         provideHttpClient(),
-        provideRouter([{ path: '', component: ProductSearchComponent }]),
-        { provide: ProductsAPIService, useValue: apiProductServiceSpy }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents()
+        provideHttpClientTesting(),
+        provideRouter([{ path: '', component: ProductSearchComponent }])
+      ]
+    })
+      .overrideComponent(ProductSearchComponent, {
+        add: {
+          providers: [
+            { provide: PermissionService, useValue: { hasPermission: () => of(true) } },
+            { provide: ProductsAPIService, useValue: apiProductServiceSpy },
+            { provide: UserService, useValue: mockUserService }
+          ]
+        }
+      })
+      .compileComponents()
   }))
 
   beforeEach(async () => {
     fixture = TestBed.createComponent(ProductSearchComponent)
     component = fixture.componentInstance
     router = TestBed.inject(Router)
+
+    //fixture.detectChanges() // deactivated due to trouble with OneCX components
     fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
+  })
+
+  afterEach(() => {
+    apiProductServiceSpy.getProductSearchCriteria.calls.reset()
+    apiProductServiceSpy.getProductSearchCriteria.and.returnValue(of({}))
+    apiProductServiceSpy.searchProducts.calls.reset()
+    apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [] }))
   })
 
   describe('initialize', () => {
@@ -72,28 +94,67 @@ describe('ProductSearchComponent', () => {
       expect(component).toBeTruthy()
     })
 
-    it('dataview translations', (done) => {
-      const translationData = {
-        'DIALOG.DATAVIEW.SORT_BY': 'sortBy'
-      }
-      const translateService = TestBed.inject(TranslateService)
-      spyOn(translateService, 'get').and.returnValue(of(translationData))
-
-      component.ngOnInit()
-
-      component.dataViewControlsTranslations$?.subscribe({
-        next: (data) => {
-          if (data) {
-            expect(data.sortDropdownTooltip).toEqual('sortBy')
-          }
-          done()
-        },
-        error: done.fail
-      })
+    it('should expose displayedColumnKeys for all data view columns', () => {
+      expect(component.displayedColumnKeys).toEqual(component.interactiveColumns.map((column) => column.id))
     })
   })
 
-  describe('UI page actions', () => {
+  describe('onGlobalFilter', () => {
+    it('should filter the product list onGlobalFilter - empty filter', fakeAsync(() => {
+      const filter = ''
+      apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product] } as ProductPageResult))
+
+      component.onSearch()
+      component.onGlobalFilter(filter)
+      tick()
+
+      expect(component.globalFilterValue).toEqual(filter)
+      const data = component.filteredData$.value
+      expect(data).toHaveSize(1)
+    }))
+
+    it('should filter the product list onGlobalFilter', fakeAsync(() => {
+      const filter = 'name'
+      apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product] } as ProductPageResult))
+
+      component.onSearch()
+      component.onGlobalFilter(filter)
+      tick()
+
+      expect(component.globalFilterValue).toEqual(filter)
+      const data = component.filteredData$.value
+      expect(data).toHaveSize(1)
+      expect(data[0].name).toBe(product.name)
+    }))
+
+    it('should clear the product list filter onGlobalFilter', fakeAsync(() => {
+      const filter = 'non-existent'
+      apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product] } as ProductPageResult))
+
+      component.onSearch()
+      component.onGlobalFilter(filter)
+      tick()
+
+      const data = component.filteredData$.value
+      expect(data).toHaveSize(0)
+    }))
+
+    it('should filter products - ignore empty column content', fakeAsync(() => {
+      const filter = 'name'
+      // this product should be ignored successfully
+      const product2 = { ...product, name: 'new', displayName: undefined } as ProductAbstract
+      apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product, product2] } as ProductPageResult))
+
+      component.onSearch()
+      component.onGlobalFilter(filter)
+      tick()
+
+      const data = component.filteredData$.value
+      expect(data).toHaveSize(1)
+    }))
+  })
+
+  describe('UI actions', () => {
     it('should prepare action buttons on init', () => {
       spyOn(component, 'onAppSearch')
       spyOn(component, 'onEndpointSearch')
@@ -124,44 +185,56 @@ describe('ProductSearchComponent', () => {
       expect(component.viewMode).toEqual('list')
     })
 
-    it('should set correct values onFilterChange', () => {
-      const filter = 'filter'
-
-      component.onFilterChange(filter)
-
-      expect(component.filter).toEqual(filter)
-    })
-
     it('should set correct value onSortChange', () => {
-      const sortField = 'field'
+      const interactiveSortField = 'field'
 
-      component.onSortChange(sortField)
+      component.onSortChange(interactiveSortField)
 
-      expect(component.sortField).toEqual(sortField)
+      expect(component.interactiveSortField).toEqual(interactiveSortField)
     })
 
     it('should set correct value onSortDirChange', () => {
       let asc = true
       component.onSortDirChange(asc)
-      expect(component.sortOrder).toEqual(-1)
+      expect(component.interactiveSortOrder).toEqual(-1)
 
       asc = false
       component.onSortDirChange(asc)
-      expect(component.sortOrder).toEqual(1)
+      expect(component.interactiveSortOrder).toEqual(1)
+    })
+
+    it('should set interactive filters onInteractiveFiltersChange', () => {
+      const filters = [{ columnId: 'global', value: 'test' }]
+
+      component.onInteractiveFiltersChange(filters)
+
+      expect(component.interactiveFilters).toEqual(filters)
+    })
+
+    it('should set sort values onInteractiveSorted', () => {
+      component.onInteractiveSorted({ sortColumn: 'name', sortDirection: DataSortDirection.DESCENDING })
+
+      expect(component.interactiveSortField).toBe('name')
+      expect(component.interactiveSortDirection).toBe(DataSortDirection.DESCENDING)
+      expect(component.interactiveSortOrder).toBe(-1)
+
+      component.onInteractiveSorted({ sortColumn: 'name', sortDirection: DataSortDirection.ASCENDING })
+
+      expect(component.interactiveSortOrder).toBe(1)
     })
   })
 
   describe('searching', () => {
     it('should search products - on init with success', () => {
       apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product] } as ProductPageResult))
-      apiProductServiceSpy.getProductSearchCriteria.and.returnValue(of(criteria))
-      spyOn<any>(component, 'searchProducts')
-      spyOn<any>(component, 'getCriteria')
+      apiProductServiceSpy.getProductSearchCriteria.and.returnValue(of(productSearchCriterias))
+      spyOn(component, 'onSearch')
+      spyOn<any>(component, 'getProductSearchCriterias')
 
       component.ngOnInit()
 
-      expect(component['searchProducts']).toHaveBeenCalled()
-      expect(component['getCriteria']).toHaveBeenCalled()
+      expect(component.onSearch).toHaveBeenCalled()
+      expect(component['getProductSearchCriterias']).toHaveBeenCalled()
     })
 
     it('should search products - on init failed', (done) => {
@@ -172,7 +245,7 @@ describe('ProductSearchComponent', () => {
 
       component.ngOnInit()
 
-      component.criteria$.subscribe({
+      const sub = component.productSearchCriterias$.subscribe({
         next: (result) => {
           expect(result.providers).toEqual([])
           expect(result.classifications).toEqual([])
@@ -180,18 +253,21 @@ describe('ProductSearchComponent', () => {
         },
         error: done.fail
       })
+      sub.unsubscribe()
       expect(console.error).toHaveBeenCalledWith('getProductSearchCriteria', errorResponse)
     })
 
     it('should search products - successful found', (done) => {
       apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product] } as ProductPageResult))
-      component.searchCriteria.controls['name'].setValue(product.name)
+      component.searchCriteriaForm.controls['name'].setValue(product.name)
+      component.searchCriteriaForm.controls['providers'].setValue([])
+      component.searchCriteriaForm.controls['classifications'].setValue([])
 
       component.onSearch()
 
-      component.products$.subscribe({
+      const sub = component.products$.subscribe({
         next: (result) => {
-          expect(result.length).toBe(1)
+          expect(result).toHaveSize(1)
           result.forEach((product) => {
             expect(product.id).toEqual('id')
           })
@@ -199,6 +275,7 @@ describe('ProductSearchComponent', () => {
         },
         error: done.fail
       })
+      sub.unsubscribe()
     })
 
     it('should search products - successful not found', (done) => {
@@ -206,13 +283,14 @@ describe('ProductSearchComponent', () => {
 
       component.onSearch()
 
-      component.products$.subscribe({
+      const sub = component.products$.subscribe({
         next: (result) => {
-          expect(result.length).toBe(0)
+          expect(result).toHaveSize(0)
           done()
         },
         error: done.fail
       })
+      sub.unsubscribe()
     })
 
     it('should search products - no stream', (done) => {
@@ -220,13 +298,14 @@ describe('ProductSearchComponent', () => {
 
       component.onSearch()
 
-      component.products$.subscribe({
+      const sub = component.products$.subscribe({
         next: (result) => {
-          expect(result.length).toBe(0)
+          expect(result).toHaveSize(0)
           done()
         },
         error: done.fail
       })
+      sub.unsubscribe()
     })
 
     it('should search products - failed', (done) => {
@@ -236,10 +315,10 @@ describe('ProductSearchComponent', () => {
 
       component.onSearch()
 
-      component.products$.subscribe({
+      const sub = component.products$.subscribe({
         next: (result) => {
           if (result) {
-            expect(result.length).toBe(0)
+            expect(result).toHaveSize(0)
             expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PRODUCTS')
             expect(console.error).toHaveBeenCalledWith('searchProducts', errorResponse)
           }
@@ -247,15 +326,16 @@ describe('ProductSearchComponent', () => {
         },
         error: done.fail
       })
+      sub.unsubscribe()
     })
-  })
 
-  it('should reset productSearchCriteriaGroup onSearchReset', () => {
-    spyOn(component.searchCriteria, 'reset')
+    it('should reset productSearchCriteriaGroup onSearchReset', () => {
+      spyOn(component.searchCriteriaForm, 'reset')
 
-    component.onSearchReset()
+      component.onSearchReset()
 
-    expect(component.searchCriteria.reset).toHaveBeenCalled()
+      expect(component.searchCriteriaForm.reset).toHaveBeenCalled()
+    })
   })
 
   describe('navigate', () => {
@@ -290,38 +370,69 @@ describe('ProductSearchComponent', () => {
 
       expect(routerSpy).toHaveBeenCalledWith(['./slots'], jasmine.any(Object))
     })
+
+    it('should navigate to detail page - name exists', () => {
+      const routerSpy = spyOn(router, 'navigate')
+
+      const product = { name: 'product' }
+      component.onAppClick(product as unknown as RowListGridData)
+
+      expect(routerSpy).toHaveBeenCalledWith(['./', product.name], jasmine.any(Object))
+    })
+
+    it('should navigate to detail page - name does not exist', () => {
+      const routerSpy = spyOn(router, 'navigate')
+
+      const product = { displayName: 'product' }
+      component.onAppClick(product as unknown as RowListGridData)
+
+      expect(routerSpy).not.toHaveBeenCalled()
+    })
   })
 
-  it('should sort products by display name', () => {
-    const p1 = { displayName: 'b product' }
-    const p2 = { displayName: 'a product' }
+  describe('sort', () => {
+    it('should sort products by display name', () => {
+      const p1 = { displayName: 'b product' }
+      const p2 = { displayName: 'a product' }
 
-    const result = component.sortProductsByDisplayName(p1 as ProductAbstract, p2 as ProductAbstract)
+      const result = component.sortProductsByDisplayName(p1 as ProductAbstract, p2 as ProductAbstract)
 
-    expect(result).toBe(1)
+      expect(result).toBe(1)
+    })
+
+    it('should sort products by display name - ignore non-existing display names', () => {
+      const p1 = { displayName: 'a product' }
+      const p2 = { name: 'b product' }
+
+      const result = component.sortProductsByDisplayName(p1 as ProductAbstract, p2 as ProductAbstract)
+
+      expect(result).toBe(1)
+    })
   })
 
-  it('should getLogoUrl from existing product', () => {
-    const product = { id: 'id', name: 'product', imageUrl: 'url' }
+  describe('logo', () => {
+    it('should getLogoUrl from existing product', () => {
+      const product = { id: 'id', name: 'product', imageUrl: 'url' }
 
-    const result = component.getLogoUrl(product)
+      const result = component.getLogoUrl(product)
 
-    expect(result).toEqual(product.imageUrl)
-  })
+      expect(result).toEqual(product.imageUrl)
+    })
 
-  it('should getLogoUrl from image api if not from existing product', () => {
-    const product = { id: 'id', name: '' }
+    it('should getLogoUrl from image api if not from existing product', () => {
+      const product = { id: 'id', name: '' }
 
-    const result = component.getLogoUrl(product)
+      const result = component.getLogoUrl(product)
 
-    expect(result).toEqual('')
-  })
+      expect(result).toEqual('')
+    })
 
-  it('should getLogoUrl from image api if not from existing product', () => {
-    const product = undefined
+    it('should getLogoUrl from image api if not from existing product', () => {
+      const product = undefined
 
-    const result = component.getLogoUrl(product)
+      const result = component.getLogoUrl(product)
 
-    expect(result).toBeUndefined()
+      expect(result).toBeUndefined()
+    })
   })
 })

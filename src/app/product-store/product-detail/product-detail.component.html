@@ -1,4 +1,4 @@
-<ocx-portal-page *ngIf="product$ | async as product" permission="PRODUCT#VIEW" helpArticleId="PAGE_PRODUCT_DETAIL">
+<ocx-portal-page permission="PRODUCT#VIEW" helpArticleId="PAGE_PRODUCT_DETAIL">
   <ocx-page-header
     [loading]="loading"
     [header]="product?.displayName"
@@ -9,132 +9,102 @@
   >
   </ocx-page-header>
 
-  <ocx-page-content>
-    <p-message
-      *ngIf="loading && !exceptionKey"
-      id="ps_product_detail_loading_message"
-      severity="info"
-      styleClass="m-3"
-      [text]="'ACTIONS.LOADING' | translate"
-    ></p-message>
-    <p-message
-      *ngIf="exceptionKey"
-      id="ps_product_detail_error_message"
-      severity="error"
-      styleClass="m-3"
-      [text]="exceptionKey | translate"
-    ></p-message>
+  <ocx-content class="ocx-content">
+    @if (loading) {
+      <p-message
+        id="ps_product_detail_loading_message"
+        severity="info"
+        styleClass="m-3"
+        [text]="'ACTIONS.LOADING' | translate"
+      ></p-message>
+    } @else if (exceptionKey) {
+      <p-message
+        id="ps_product_detail_error_message"
+        severity="error"
+        styleClass="m-3"
+        [text]="exceptionKey | translate"
+      ></p-message>
+    }
+    @if (product || changeMode === 'CREATE') {
+      <p-tabs [lazy]="false" [(value)]="selectedTabIndex" (valueChange)="onTabChange($event, product)">
+        <p-tablist>
+          <p-tab
+            value="0"
+            [ariaLabel]="'DIALOG.TABS.PROPERTIES' | translate"
+            [pTooltip]="'DIALOG.TABS.TOOLTIPS.PROPERTIES' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
+            {{ 'DIALOG.TABS.PROPERTIES' | translate }}
+          </p-tab>
+          <p-tab
+            value="1"
+            [disabled]="changeMode !== 'VIEW'"
+            [ariaLabel]="'DIALOG.TABS.APPS' | translate"
+            [pTooltip]="'DIALOG.TABS.TOOLTIPS.APPS' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
+            {{ 'DIALOG.TABS.APPS' | translate }}
+          </p-tab>
+          <p-tab
+            value="2"
+            [disabled]="changeMode !== 'VIEW'"
+            [ariaLabel]="'DIALOG.TABS.USE' | translate"
+            [pTooltip]="'DIALOG.TABS.TOOLTIPS.USE' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
+            {{ 'DIALOG.TABS.USE' | translate }}
+          </p-tab>
+          <p-tab
+            value="3"
+            [disabled]="['CREATE', 'COPY'].includes(changeMode)"
+            [ariaLabel]="'DIALOG.TABS.INTERN' | translate"
+            [pTooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate"
+            tooltipPosition="top"
+            tooltipEvent="hover"
+          >
+            {{ 'DIALOG.TABS.INTERN' | translate }}
+          </p-tab>
+        </p-tablist>
 
-    <p-tabView
-      *ngIf="(product && !exceptionKey) || changeMode === 'CREATE'"
-      (onChange)="onTabChange($event, product)"
-      [activeIndex]="selectedTabIndex"
-    >
-      <p-tabPanel
-        id="ps_product_detail_panel_props"
-        [header]="'DIALOG.TABS.PROPERTIES' | translate"
-        [attr.aria-label]="'DIALOG.TABS.PROPERTIES' | translate"
-        [tooltip]="'DIALOG.TABS.TOOLTIPS.PROPERTIES' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-      >
-        <app-product-props
-          [product]="product"
-          [changeMode]="changeMode"
-          (currentLogoUrl)="currentLogoUrl = $event"
-        ></app-product-props>
-      </p-tabPanel>
+        <p-tabpanels>
+          <p-tabpanel value="0">
+            <app-product-props
+              [product]="product"
+              [changeMode]="changeMode"
+              (currentLogoUrl)="currentLogoUrl = $event"
+            ></app-product-props>
+          </p-tabpanel>
 
-      <p-tabPanel
-        id="ps_product_detail_panel_apps"
-        [disabled]="changeMode !== 'VIEW'"
-        [header]="'DIALOG.TABS.APPS' | translate"
-        [attr.aria-label]="'DIALOG.TABS.APPS' | translate"
-        [tooltip]="'DIALOG.TABS.TOOLTIPS.APPS' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-      >
-        <app-product-apps
-          *ngIf="product && selectedTabIndex === 1"
-          [product]="product_for_apps"
-          [changeMode]="changeMode"
-        ></app-product-apps>
-      </p-tabPanel>
+          <p-tabpanel value="1">
+            @if (selectedTabIndex === '1') {
+              <app-product-apps [product]="product" [changeMode]="changeMode"></app-product-apps>
+            }
+          </p-tabpanel>
 
-      <p-tabPanel
-        id="ps_product_detail_panel_use"
-        [disabled]="changeMode !== 'VIEW'"
-        [header]="'DIALOG.TABS.USE' | translate"
-        [attr.aria-label]="'DIALOG.TABS.USE' | translate"
-        [tooltip]="'DIALOG.TABS.TOOLTIPS.USE' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-      >
-        <app-product-use *ngIf="product && selectedTabIndex === 2" [productName]="product.name"></app-product-use>
-      </p-tabPanel>
+          <p-tabpanel value="2">
+            @if (selectedTabIndex === '2') {
+              <app-product-use [productName]="product?.name"></app-product-use>
+            }
+          </p-tabpanel>
 
-      <p-tabPanel
-        id="ps_product_detail_panel_intern"
-        [disabled]="['CREATE', 'COPY'].includes(changeMode)"
-        [header]="'DIALOG.TABS.INTERN' | translate"
-        [attr.aria-label]="'DIALOG.TABS.INTERN' | translate"
-        [tooltip]="'DIALOG.TABS.TOOLTIPS.INTERN' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-      >
-        <app-product-intern
-          [product]="product"
-          [editMode]="changeMode === 'EDIT'"
-          [dateFormat]="dateFormat"
-        ></app-product-intern>
-      </p-tabPanel>
-    </p-tabView>
-  </ocx-page-content>
+          <p-tabpanel value="3">
+            <app-product-intern
+              [product]="product"
+              [editMode]="changeMode === 'EDIT'"
+              [dateFormat]="dateFormat"
+            ></app-product-intern>
+          </p-tabpanel>
+        </p-tabpanels>
+      </p-tabs>
+    }
+  </ocx-content>
 </ocx-portal-page>
 
-<p-dialog
-  [header]="'ACTIONS.DELETE.PRODUCT.HEADER' | translate"
-  [(visible)]="productDeleteVisible"
-  [modal]="true"
-  [closable]="true"
-  [draggable]="true"
-  [resizable]="false"
-  [dismissableMask]="true"
-  [style]="{ 'max-width': '500px' }"
->
-  <div class="flex column-gap-3 row-gap-1 justify-content-start align-items-center">
-    <div class="pi pi-question-circle text-3xl danger-action-text"></div>
-    <div>
-      <div id="ps_product_delete_message" class="font-bold">{{ 'ACTIONS.DELETE.PRODUCT.MESSAGE' | translate }}</div>
-      <div id="ps_product_delete_product_name" class="my-2 font-bold danger-action-text text-center">
-        {{ item4Delete?.name }}
-      </div>
-      <div *ngIf="item4Delete?.operator">{{ 'ACTIONS.DELETE.PRODUCT.OPERATOR_TEXT' | translate }}</div>
-      <div class="mt-2">{{ 'ACTIONS.DELETE.MESSAGE_INFO' | translate }}</div>
-    </div>
-  </div>
-  <ng-template pTemplate="footer">
-    <div class="flex flex-wrap column-gap-2 row-gap-1 justify-content-end">
-      <p-button
-        id="ps_product_delete_action_no"
-        icon="pi pi-times"
-        (onClick)="productDeleteVisible = false"
-        [label]="'ACTIONS.CONFIRMATION.NO' | translate"
-        [ariaLabel]="'ACTIONS.CONFIRMATION.NO' | translate"
-        [pTooltip]="'ACTIONS.CONFIRMATION.NO.TOOLTIP' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-      ></p-button>
-      <p-button
-        id="ps_product_delete_action_yes"
-        icon="pi pi-check"
-        (onClick)="onDeleteConfirmation()"
-        [label]="'ACTIONS.CONFIRMATION.YES' | translate"
-        [ariaLabel]="'ACTIONS.CONFIRMATION.YES' | translate"
-        [pTooltip]="'ACTIONS.CONFIRMATION.YES.TOOLTIP' | translate"
-        tooltipPosition="top"
-        tooltipEvent="hover"
-      ></p-button>
-    </div>
-  </ng-template>
-</p-dialog>
+<app-product-delete
+  [displayDialog]="productDeleteVisible"
+  [product]="item4Delete"
+  (productDeleted)="onProductDeleted($event)"
+></app-product-delete>

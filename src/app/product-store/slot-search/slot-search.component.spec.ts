@@ -1,19 +1,27 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core'
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { Router, ActivatedRoute } from '@angular/router'
 import { BehaviorSubject, of, throwError } from 'rxjs'
 import { TranslateService } from '@ngx-translate/core'
 import { TranslateTestingModule } from 'ngx-translate-testing'
-import { DataViewModule } from 'primeng/dataview'
 import { Table } from 'primeng/table'
 
-import { UserService } from '@onecx/angular-integration-interface'
-import { PortalMessageService } from '@onecx/angular-integration-interface'
+import { PortalMessageService, UserService } from '@onecx/angular-integration-interface'
+import { PortalPageComponent } from '@onecx/angular-utils'
+import { provideNoopAnimations } from '@angular/platform-browser/animations'
+import {
+  AngularAcceleratorModule,
+  DataSortDirection,
+  PageHeaderComponent,
+  RowListGridData,
+  SearchHeaderComponent
+} from '@onecx/angular-accelerator'
 
 import { Product, ProductsAPIService, SlotsAPIService, SlotPageResult, Slot } from 'src/app/shared/generated'
-import { SlotData, SlotSearchComponent } from './slot-search.component'
+import { ONECX_MOCK_COMPONENTS } from 'src/app/shared/onecx-mock-components'
+
+import { FilteredData, SlotData, SlotSearchComponent } from './slot-search.component'
 
 const products: Product[] = [
   {
@@ -73,63 +81,75 @@ const slots: Slot[] = [
   }
 ]
 const slotData: SlotData[] = [
-  { ...slots[0], productDisplayName: products[0].displayName ?? '' },
-  { ...slots[1], productDisplayName: products[1].displayName ?? '' },
-  { ...slots[2], productDisplayName: products[0].displayName ?? '' },
-  { ...slots[3], productDisplayName: products[1].displayName ?? '' },
-  { ...slots[4], productDisplayName: products[1].displayName ?? '' }
+  { ...slots[0], productDisplayName: products[0].displayName ?? '', state: 'undeployed' },
+  { ...slots[1], productDisplayName: products[1].displayName ?? '', state: 'operator' },
+  { ...slots[2], productDisplayName: products[0].displayName ?? '', state: 'deprecated' },
+  { ...slots[3], productDisplayName: products[1].displayName ?? '', state: 'operator' },
+  { ...slots[4], productDisplayName: products[1].displayName ?? '', state: 'operator' }
 ]
+const defaulResponseObject = { stream: [], totalElements: 0 }
 
 describe('SlotSearchComponent', () => {
   let component: SlotSearchComponent
   let fixture: ComponentFixture<SlotSearchComponent>
   const routerSpy = jasmine.createSpyObj('Router', ['navigate'])
   const routeMock = { snapshot: { paramMap: new Map() } }
-
   const msgServiceSpy = jasmine.createSpyObj<PortalMessageService>('PortalMessageService', ['success', 'error', 'info'])
   const translateServiceSpy = jasmine.createSpyObj('TranslateService', ['get'])
   const apiProductsServiceSpy = {
-    searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of({ stream: [] }))
+    searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of(defaulResponseObject))
   }
   const apiSlotsServiceSpy = {
-    searchSlots: jasmine.createSpy('searchSlots').and.returnValue(of({ stream: [] }))
+    searchSlots: jasmine.createSpy('searchSlots').and.returnValue(of(defaulResponseObject))
   }
   const mockUserService = {
-    lang$: {
-      getValue: jasmine.createSpy('getValue').and.returnValue('de')
-    },
+    lang$: new BehaviorSubject<string>('de'),
     hasPermission: jasmine.createSpy('hasPermission').and.callFake((permission) => {
       return ['APP#CREATE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
-    })
+    }),
+    getPermission: jasmine.createSpy('getPermission').and.returnValue(Promise.resolve(true))
   }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [SlotSearchComponent],
       imports: [
-        DataViewModule,
+        SlotSearchComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
       ],
       providers: [
-        provideHttpClientTesting(),
         provideHttpClient(),
+        provideHttpClientTesting(),
+        provideNoopAnimations(),
         { provide: Router, useValue: routerSpy },
-        { provide: ActivatedRoute, useValue: routeMock },
-        { provide: UserService, useValue: mockUserService },
-        { provide: PortalMessageService, useValue: msgServiceSpy },
-        { provide: ProductsAPIService, useValue: apiProductsServiceSpy },
-        { provide: SlotsAPIService, useValue: apiSlotsServiceSpy }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents()
+        { provide: ActivatedRoute, useValue: routeMock }
+      ]
+    })
+      // replace problematic components with mocks to avoid errors during testing
+      .overrideComponent(SlotSearchComponent, {
+        remove: {
+          imports: [AngularAcceleratorModule, PortalPageComponent, PageHeaderComponent, SearchHeaderComponent]
+        },
+        add: {
+          imports: [...ONECX_MOCK_COMPONENTS],
+          providers: [
+            { provide: UserService, useValue: mockUserService },
+            { provide: PortalMessageService, useValue: msgServiceSpy },
+            { provide: ProductsAPIService, useValue: apiProductsServiceSpy },
+            { provide: SlotsAPIService, useValue: apiSlotsServiceSpy }
+          ]
+        }
+      })
+      .compileComponents()
   }))
 
   beforeEach(async () => {
     fixture = TestBed.createComponent(SlotSearchComponent)
     component = fixture.componentInstance
+    // fixture.detectChanges()
+    //  await fixture.whenStable()
     fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
   })
 
@@ -137,15 +157,20 @@ describe('SlotSearchComponent', () => {
     msgServiceSpy.success.calls.reset()
     msgServiceSpy.error.calls.reset()
     msgServiceSpy.info.calls.reset()
+
     apiProductsServiceSpy.searchProducts.calls.reset()
     apiSlotsServiceSpy.searchSlots.calls.reset()
     translateServiceSpy.get.calls.reset()
+
+    apiProductsServiceSpy.searchProducts.and.returnValue(of(defaulResponseObject))
+    apiSlotsServiceSpy.searchSlots.and.returnValue(of(defaulResponseObject))
   })
 
   describe('initialize', () => {
     it('should create', () => {
       expect(component).toBeTruthy()
     })
+
     it('slot state translations', (done) => {
       const translationData = {
         'INTERNAL.OPERATOR': 'operator',
@@ -155,31 +180,10 @@ describe('SlotSearchComponent', () => {
       const translateService = TestBed.inject(TranslateService)
       spyOn(translateService, 'get').and.returnValue(of(translationData))
 
-      component.ngOnInit()
-
       component.filterStateValues$?.subscribe({
         next: (data) => {
           if (data) {
-            expect(data.length).toBe(3)
-          }
-          done()
-        },
-        error: done.fail
-      })
-    })
-    it('dataview translations', (done) => {
-      const translationData = {
-        'DIALOG.DATAVIEW.SORT_BY': 'sortBy'
-      }
-      const translateService = TestBed.inject(TranslateService)
-      spyOn(translateService, 'get').and.returnValue(of(translationData))
-
-      component.ngOnInit()
-
-      component.dataViewControlsTranslations$?.subscribe({
-        next: (data) => {
-          if (data) {
-            expect(data.sortDropdownTooltip).toEqual('sortBy')
+            expect(data).toHaveSize(3)
           }
           done()
         },
@@ -195,7 +199,7 @@ describe('SlotSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const firstAction = actions[0]
-          firstAction.actionCallback()
+          firstAction.actionCallback?.()
           expect(routerSpy.navigate).toHaveBeenCalledWith(['..'], { relativeTo: routeMock })
         })
       }
@@ -207,7 +211,7 @@ describe('SlotSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const firstAction = actions[1]
-          firstAction.actionCallback()
+          firstAction.actionCallback?.()
           expect(routerSpy.navigate).toHaveBeenCalledWith(['../endpoints'], { relativeTo: routeMock })
         })
       }
@@ -219,139 +223,115 @@ describe('SlotSearchComponent', () => {
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const firstAction = actions[2]
-          firstAction.actionCallback()
+          firstAction.actionCallback?.()
           expect(routerSpy.navigate).toHaveBeenCalledWith(['../apps'], { relativeTo: routeMock })
         })
       }
     })
   })
 
-  describe('search slots', () => {
-    describe('successful', () => {
-      it('should search slots - successful found, no condition', (done) => {
-        apiProductsServiceSpy.searchProducts.and.returnValue(of({ stream: products }))
-        apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: slots }))
+  describe('searching', () => {
+    it('should load slots and products successfully, use cached products when appropriate', fakeAsync(() => {
+      const mockP = [{ id: 'p1', name: 'prod1' }]
+      const mockS = [{ id: 's1' }, { id: 's2' }, { id: 's3' }, { id: 's4' }, { id: 's5', productName: 'prod1' }]
 
-        component.onSearch()
+      apiProductsServiceSpy.searchProducts.and.returnValue(of({ stream: mockP, totalElements: mockP.length }))
+      apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: mockS, totalElements: mockS.length }))
+      // search condition set only to trigger the requests, but does not influence the actual filtering logic
+      component.searchCriteriaForm.controls['productName'].setValue('prod1')
+      component.searchCriteriaForm.controls['slotName'].setValue('s5')
+      component['cachedProducts'] = []
 
-        component.slots$.subscribe({
-          next: (result) => {
-            expect(result.length).toBe(5)
-            done()
-          },
-          error: done.fail
-        })
-      })
+      component.onSearch()
+      tick()
+      //fixture.detectChanges()
 
-      it('should search slots - successful found, with condition', (done) => {
-        apiProductsServiceSpy.searchProducts.and.returnValue(of({ stream: products }))
-        apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: slots }))
-        component.searchCriteria.controls['productName'].setValue(products[0].name)
+      const res = component['resultData$'].getValue()
+      expect(res).toHaveSize(5)
+      expect(component.loading).toBeFalse()
+      expect(component['cachedProducts']).toEqual(mockP)
 
-        component.onSearch()
+      // test caching: if product conddition has not changed, cached products should be reused
+      component.searchCriteriaForm.controls['slotName'].setValue('s4')
 
-        component.slots$.subscribe({
-          next: (result) => {
-            expect(result.length).toBe(5)
-            done()
-          },
-          error: done.fail
-        })
-      })
+      component.onSearch()
+      tick()
 
-      it('should search slots - successful not found', (done) => {
-        apiProductsServiceSpy.searchProducts.and.returnValue(of({ stream: products }))
-        apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: [], totalElements: 0 } as SlotPageResult))
+      const res2 = component['resultData$'].getValue()
+      expect(res2).toHaveSize(5)
+      expect(component.loading).toBeFalse()
+    }))
 
-        component.onSearch()
+    it('should search slots - exceptinal case: no product stream', fakeAsync(() => {
+      // empty response object => result should be []
+      apiProductsServiceSpy.searchProducts.and.returnValue(of({}))
+      apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: slots, totalElements: slots.length }))
+      // search condition set only to trigger the requests, but does not influence the actual filtering logic
+      component.searchCriteriaForm.controls['productName'].setValue(products[1].displayName ?? null)
+      component.searchCriteriaForm.controls['slotName'].setValue('slot-3')
 
-        component.slotData$.subscribe({
-          next: (result) => {
-            expect(result.length).toBe(0)
-            done()
-          },
-          error: done.fail
-        })
-      })
-    })
+      component.onSearch()
+      tick()
 
-    describe('successful without products', () => {
-      it('should get slots - no product stream', (done) => {
-        apiProductsServiceSpy.searchProducts.and.returnValue(of({}))
-        apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: slots }))
+      const res = component['resultData$'].getValue()
+      expect(res).toHaveSize(5)
+      expect(component.loading).toBeFalse()
+    }))
 
-        component.onSearch()
+    it('should search slots - exceptinal case: no slot stream', fakeAsync(() => {
+      apiProductsServiceSpy.searchProducts.and.returnValue(of({ stream: products, totalElements: products.length }))
+      apiSlotsServiceSpy.searchSlots.and.returnValue(of({} as SlotPageResult))
 
-        component.slotData$.subscribe({
-          next: (result) => {
-            expect(result.length).toBe(5)
-            expect(result[0].productName).toBe(result[0].productDisplayName)
-            done()
-          },
-          error: done.fail
-        })
-      })
+      // search condition set only to trigger the requests, but does not influence the actual filtering logic
+      component.searchCriteriaForm.controls['productName'].setValue(products[1].displayName ?? null)
+      component.searchCriteriaForm.controls['slotName'].setValue('slot-3')
 
-      it('should get slots - ignore product error', (done) => {
-        const errorResponse = { status: 401, statusText: 'Not authorized' }
-        apiProductsServiceSpy.searchProducts.and.returnValue(throwError(() => errorResponse))
-        apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: slots }))
-        spyOn(console, 'error')
+      component.onSearch()
+      tick()
 
-        component.onSearch()
+      const res = component['resultData$'].getValue()
+      expect(res).toHaveSize(0)
+      expect(component.loading).toBeFalse()
+    }))
 
-        component.slotData$.subscribe({
-          next: (result) => {
-            expect(result.length).toBe(5)
-            expect(result[0].productName).toBe(result[0].productDisplayName)
-            expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PRODUCTS')
-            expect(console.error).toHaveBeenCalledWith('searchProducts', errorResponse)
-            done()
-          },
-          error: done.fail
-        })
-      })
-    })
+    it('should search slots - exceptinal case: product request exception', fakeAsync(() => {
+      const errorResponse = { status: 401, statusText: 'Not authorized' }
+      apiProductsServiceSpy.searchProducts.and.returnValue(throwError(() => errorResponse))
+      apiSlotsServiceSpy.searchSlots.and.returnValue(of({} as SlotPageResult))
+      // search condition set only to trigger the requests, but does not influence the actual filtering logic
+      component.searchCriteriaForm.controls['productName'].setValue(products[1].displayName ?? null)
+      component.searchCriteriaForm.controls['slotName'].setValue('slot-3')
+      spyOn(console, 'error')
 
-    describe('slot issues', () => {
-      beforeEach(() => {
-        apiProductsServiceSpy.searchProducts.and.returnValue(of({ stream: products }))
-      })
+      component.onSearch()
+      tick()
 
-      it('should manage no slot data', (done) => {
-        apiSlotsServiceSpy.searchSlots.and.returnValue(of({} as SlotPageResult))
+      expect(component.exceptionKey).toBe('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.PRODUCTS')
+      expect(console.error).toHaveBeenCalledWith('searchProducts', errorResponse)
+      const res = component['resultData$'].getValue()
+      expect(res).toHaveSize(0)
+      expect(component.loading).toBeFalse()
+    }))
 
-        component.onSearch()
+    it('should search slots - exceptinal case: slot request exception', fakeAsync(() => {
+      // no status provided in the error response, should default to 0
+      const errorResponse = { statusText: 'Not authorized' }
+      apiProductsServiceSpy.searchProducts.and.returnValue(of({ stream: products }))
+      apiSlotsServiceSpy.searchSlots.and.returnValue(throwError(() => errorResponse))
+      // search condition set only to trigger the requests, but does not influence the actual filtering logic
+      component.searchCriteriaForm.controls['productName'].setValue(products[1].displayName ?? null)
+      component.searchCriteriaForm.controls['slotName'].setValue('slot-3')
+      spyOn(console, 'error')
 
-        component.slotData$.subscribe({
-          next: (result) => {
-            expect(result.length).toBe(0)
-            done()
-          },
-          error: done.fail
-        })
-      })
+      component.onSearch()
+      tick()
 
-      it('should display slot search error', (done) => {
-        const errorResponse = { status: 401, statusText: 'Not authorized for slot search' }
-        apiSlotsServiceSpy.searchSlots.and.returnValue(throwError(() => errorResponse))
-        spyOn(console, 'error')
-
-        component.onSearch()
-
-        component.slotData$.subscribe({
-          next: (result) => {
-            expect(result.length).toBe(0)
-            done()
-          },
-          error: (error) => {
-            expect(component.exceptionKey).toEqual('EXCEPTIONS.HTTP_STATUS_' + errorResponse.status + '.SLOTS')
-            expect(console.error).toHaveBeenCalledWith('searchSlots', errorResponse)
-            done.fail(error)
-          }
-        })
-      })
-    })
+      expect(component.exceptionKey).toBe('EXCEPTIONS.HTTP_STATUS_0.SLOTS')
+      expect(console.error).toHaveBeenCalledWith('searchSlots', errorResponse)
+      const res = component['resultData$'].getValue()
+      expect(res).toHaveSize(0)
+      expect(component.loading).toBeFalse()
+    }))
   })
 
   describe('Helper', () => {
@@ -363,6 +343,25 @@ describe('SlotSearchComponent', () => {
       const n = component['getProductDisplayName']('name-xyz', [products[0]])
       expect(n).toBe('name-xyz')
     })
+    it('should return empty slot state when no state is set', () => {
+      expect(component['getSlotState']({} as Slot)).toBe('')
+    })
+    it('should upperValue handle nullish values', () => {
+      expect(component['upperValue'](null)).toBe('')
+      expect(component['upperValue'](undefined)).toBe('')
+    })
+    it('should compare slot names when appIds are missing', () => {
+      const a = { name: 'same', appId: undefined } as unknown as SlotData
+      const b = { name: 'same', appId: undefined } as unknown as SlotData
+
+      expect(component['compareSlotNames'](a, b)).toBe(0)
+    })
+    it('should compare products when appIds are missing', () => {
+      const a = { productDisplayName: 'same' } as unknown as SlotData
+      const b = { productDisplayName: 'same' } as unknown as SlotData
+
+      expect(component['compareProducts'](a, b)).toBe(0)
+    })
   })
 
   describe('UI actions', () => {
@@ -372,11 +371,11 @@ describe('SlotSearchComponent', () => {
     })
 
     it('should reset search criteria onSearchReset', () => {
-      spyOn(component.searchCriteria, 'reset')
+      spyOn(component.searchCriteriaForm, 'reset')
 
       component.onSearchReset()
 
-      expect(component.searchCriteria.reset).toHaveBeenCalled()
+      expect(component.searchCriteriaForm.reset).toHaveBeenCalled()
     })
 
     it('should navigate back onBack', () => {
@@ -403,6 +402,44 @@ describe('SlotSearchComponent', () => {
       component.onClick(event)
 
       expect(event.stopPropagation).toHaveBeenCalled()
+    })
+
+    it('should set interactive filters and global filter', () => {
+      const filters = [{ columnId: 'global', value: 'test' }]
+
+      component.onInteractiveFiltersChange(filters)
+
+      expect(component.interactiveFilters).toEqual(filters)
+      expect(component.filter).toBe('test')
+    })
+
+    it('should keep the filter if there is no global filter', () => {
+      component.filter = 'test'
+
+      component.onInteractiveFiltersChange([{ columnId: 'someColumn', value: 'someValue' }])
+
+      expect(component.filter).toBe('test')
+    })
+
+    it('should set interactive sort values', () => {
+      component.onInteractiveSorted({ sortColumn: 'slotName', sortDirection: DataSortDirection.DESCENDING })
+
+      expect(component.interactiveSortField).toBe('slotName')
+      expect(component.interactiveSortDirection).toBe(DataSortDirection.DESCENDING)
+    })
+
+    it('should handle layout change', () => {
+      component.onLayoutChange('list')
+
+      expect().nothing()
+    })
+
+    it('should call onSlotCreate from interactive action callback', () => {
+      spyOn(component, 'onSlotCreate')
+
+      component.interactiveAdditionalActions[0].callback?.({ ...slots[0] })
+
+      expect(component.onSlotCreate).toHaveBeenCalledWith({ ...slots[0] })
     })
   })
 
@@ -432,6 +469,30 @@ describe('SlotSearchComponent', () => {
 
       expect().nothing()
     })
+
+    it('should open slot detail dialog in view mode onViewFromInteractive', () => {
+      component.onViewFromInteractive({ ...slots[0] } as RowListGridData)
+
+      expect(component.item4Detail).toEqual({ ...slots[0] })
+      expect(component.changeMode).toBe('VIEW')
+      expect(component.displaySlotDetailDialog).toBeTrue()
+    })
+
+    it('should open slot detail dialog in edit mode onEditFromInteractive', () => {
+      component.onEditFromInteractive({ ...slots[0] } as RowListGridData)
+
+      expect(component.item4Detail).toEqual({ ...slots[0] })
+      expect(component.changeMode).toBe('EDIT')
+      expect(component.displaySlotDetailDialog).toBeTrue()
+    })
+
+    it('should open slot detail dialog in create mode onSlotCreate', () => {
+      component.onSlotCreate({ ...slots[0] } as SlotData)
+
+      expect(component.item4Detail).toEqual({ ...slots[0] })
+      expect(component.changeMode).toBe('CREATE')
+      expect(component.displaySlotDetailDialog).toBeTrue()
+    })
   })
 
   describe('delete', () => {
@@ -451,6 +512,13 @@ describe('SlotSearchComponent', () => {
       expect(component.displaySlotDeleteDialog).toBeFalse()
       expect(component.onSearch).toHaveBeenCalled()
     })
+
+    it('should open delete dialog onDeleteFromInteractive', () => {
+      component.onDeleteFromInteractive({ ...slots[0] } as RowListGridData)
+
+      expect(component.item4Delete).toEqual({ ...slots[0] } as SlotData)
+      expect(component.displaySlotDeleteDialog).toBeTrue()
+    })
   })
 
   /**
@@ -462,7 +530,7 @@ describe('SlotSearchComponent', () => {
     })
 
     it('should set default date format', () => {
-      mockUserService.lang$.getValue.and.returnValue('en')
+      mockUserService.lang$.next('en')
       fixture = TestBed.createComponent(SlotSearchComponent)
       component = fixture.componentInstance
       fixture.detectChanges()
@@ -476,52 +544,48 @@ describe('SlotSearchComponent', () => {
   describe('table filtering', () => {
     describe('global filter', () => {
       it('should filter string data based on filterData', () => {
-        component.resultData$ = new BehaviorSubject(slotData)
-        ;(component as any).filterData = slots[0].name
+        ;(component as any)['resultData$'] = new BehaviorSubject(slotData)
+        component['filterData'] = slots[0].name
+        component.filteredData$ = new BehaviorSubject(slotData as FilteredData[])
 
-        component.filteredData$ = new BehaviorSubject(slotData)
-
-        component.ngOnInit()
+        component['initGlobalFilter']()
 
         component.filteredData$.subscribe((filteredData) => {
-          expect(filteredData.length).toEqual(1)
+          expect(filteredData).toHaveSize(1)
         })
       })
 
       it('should filter object data based on filterData', () => {
-        component.resultData$ = new BehaviorSubject(slotData)
-        ;(component as any).filterData = ['operator', 'undeployed', 'deprecated']
+        ;(component as any)['resultData$'] = new BehaviorSubject(slotData)
+        component['filterData'] = ['operator', 'undeployed', 'deprecated']
+        component.filteredData$ = new BehaviorSubject(slotData as FilteredData[])
 
-        component.filteredData$ = new BehaviorSubject(slotData)
-
-        component.ngOnInit()
+        component['initGlobalFilter']()
 
         component.filteredData$.subscribe((filteredData) => {
-          expect(filteredData.length).toEqual(5)
+          expect(filteredData).toHaveSize(5)
         })
       })
       it('should filter object data based on filterData', () => {
-        component.resultData$ = new BehaviorSubject(slotData)
-        ;(component as any).filterData = ['undeployed']
+        ;(component as any)['resultData$'] = new BehaviorSubject(slotData)
+        component['filterData'] = ['undeployed']
+        component.filteredData$ = new BehaviorSubject(slotData as FilteredData[])
 
-        component.filteredData$ = new BehaviorSubject(slotData)
-
-        component.ngOnInit()
+        component['initGlobalFilter']()
 
         component.filteredData$.subscribe((filteredData) => {
-          expect(filteredData.length).toEqual(4)
+          expect(filteredData).toHaveSize(4)
         })
       })
       it('should filter object data based on filterData', () => {
-        component.resultData$ = new BehaviorSubject(slotData)
-        ;(component as any).filterData = ['deprecated']
+        ;(component as any)['resultData$'] = new BehaviorSubject(slotData)
+        component['filterData'] = ['deprecated']
+        component.filteredData$ = new BehaviorSubject(slotData as FilteredData[])
 
-        component.filteredData$ = new BehaviorSubject(slotData)
-
-        component.ngOnInit()
+        component['initGlobalFilter']()
 
         component.filteredData$.subscribe((filteredData) => {
-          expect(filteredData.length).toEqual(3)
+          expect(filteredData).toHaveSize(3)
         })
       })
     })
@@ -640,15 +704,15 @@ describe('SlotSearchComponent', () => {
       const elemRef1 = { nativeElement: { className: 'test' } }
       const elemRef2 = { nativeElement: { className: 'test' } }
       const elemRef3 = { nativeElement: { className: 'test' } }
-      component.headerFilterIconSlotName = elemRef1
-      component.headerFilterIconSlotState = elemRef2
-      component.headerFilterIconProduct = elemRef3
+      spyOn(component, 'headerFilterIconSlotName').and.returnValue(elemRef1 as any)
+      spyOn(component, 'headerFilterIconSlotState').and.returnValue(elemRef2 as any)
+      spyOn(component, 'headerFilterIconProduct').and.returnValue(elemRef3 as any)
 
       component.onResetFilterIcons('filter value', ['slotName', 'slotState', 'product'])
 
-      expect(component.headerFilterIconSlotName.nativeElement.className).toBe(defaultIcon)
-      expect(component.headerFilterIconSlotState.nativeElement.className).toBe(defaultIcon)
-      expect(component.headerFilterIconProduct.nativeElement.className).toBe(defaultIcon)
+      expect(elemRef1.nativeElement.className).toBe(defaultIcon)
+      expect(elemRef2.nativeElement.className).toBe(defaultIcon)
+      expect(elemRef3.nativeElement.className).toBe(defaultIcon)
     })
   })
 
@@ -657,11 +721,11 @@ describe('SlotSearchComponent', () => {
    */
   describe('table column sorting', () => {
     beforeEach(() => {
-      component.dataTable = {
+      spyOn(component, 'dataTable').and.returnValue({
         clear: () => {},
         _value: slotData,
         filterGlobal: jasmine.createSpy()
-      } as unknown as Table
+      } as unknown as Table)
     })
 
     it('should sort slot states - up', () => {

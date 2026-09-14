@@ -37,6 +37,7 @@
         "semi": ["error", "never"],
         "@angular-eslint/directive-selector": ["error", { "type": "attribute", "prefix": "app", "style": "camelCase" }],
         "@angular-eslint/component-selector": ["warn", { "type": "element", "prefix": "app", "style": "kebab-case" }],
+        "@angular-eslint/prefer-standalone": "off",
         "deprecation/deprecation": "warn",
         "prettier/prettier": ["error", { "singleQuote": true }],
         "no-unused-vars": "off",

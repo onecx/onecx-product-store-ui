@@ -1,7 +1,21 @@
 /* global styles */
-@import 'node_modules/primeicons/primeicons.css';
-@import 'node_modules/primeng/resources/primeng.min.css';
+@use 'primeflex/primeflex.scss';
+@use 'primeicons/primeicons.css';
 
 /* portal core */
-@import 'node_modules/@onecx/portal-layout-styles/src/styles/shell/shell';
-@import 'node_modules/@onecx/portal-layout-styles/src/styles/primeng/theme-light.scss';
+@use 'node_modules/@onecx/angular-accelerator/assets/styles.scss';
+
+.p-multiselect-list p-multiselect-item:nth-child(even) {
+  .p-multiselect-option:not(.p-multiselect-option-selected):not(.p-disabled) {
+    background-color: var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02));
+  }
+}
+
+.bookmark-link {
+  padding: 0rem !important;
+  &:hover {
+    background: var(--tabview-header-hover-bg);
+    border-color: var(--tabview-header-hover-border-color);
+    color: var(--text-secondary-color);
+  }
+}

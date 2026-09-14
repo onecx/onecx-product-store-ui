@@ -2,47 +2,38 @@
  *  FORM - Control Improvements
  * **********************************************/
 
-// displaying text like an input field with floating label
-@mixin float-label-textbox {
-  :host {
-    .p-float-label {
-      display: block;
-      position: relative;
-      .ocx-float-label-textbox {
-        font-family: var(--font-family);
-        font-size: var(--input-text-font-size);
-        color: var(--emphasis-high);
-        background: var(--input-bg);
-        padding: var(--input-padding);
-        border: var(--input-border);
-        transition: var(--form-element-transition);
-        appearance: none;
-        border-radius: var(--border-radius);
-      }
-      .ocx-float-label {
-        position: absolute;
-        left: 0.75rem;
-        top: -0.5rem !important;
-        padding: 2px 4px;
-        margin-left: -4px;
-        margin-top: 0;
-        line-height: 1;
-        font-size: 12px;
-        pointer-events: none;
-        color: var(--emphasis-medium);
-        background-color: var(--input-bg);
-        transition-property: all;
-        transition-timing-function: ease;
-        transition-duration: var(--transition-duration);
+// Manipulate PrimeNG p-floatlabel
+@mixin ocx-p-floatlabel {
+  .p-floatlabel {
+    // Move the label only if embedded input control (input, textarea etc.) is filled or focussed
+    &.p-floatlabel-over {
+      &:has(.p-filled) label,
+      &:has(.p-focus) label {
+        top: -5px !important;
+        background-color: white;
+        padding: 0 0.5rem;
       }
     }
   }
 }
 
-@mixin displaying-text-responsive {
+@mixin ocx-required-label {
+  // Keep a visible required marker even when external theme styles are missing.
   :host ::ng-deep {
-    .text-responsive,
-    .text-responsive input {
+    .p-floatlabel > label.ocx-required-label::after {
+      content: ' *';
+      color: var(--red-500, #ef4444);
+      font-weight: 600;
+    }
+  }
+}
+
+@mixin ocx-text-responsive {
+  :host ::ng-deep {
+    .p-inputtext:disabled {
+      opacity: 0.7;
+    }
+    .text-responsive {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -96,23 +87,20 @@
     }
   }
 }
-
-@mixin prepare-inputgroup {
+@mixin ocx-p-inputgroup {
   :host ::ng-deep {
-    .inputgroup-dropdown-with-link {
-      border-right: none;
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-    .input-field-correction .p-inputtext {
-      padding-top: 1rem !important;
-      padding-bottom: 0.5rem !important;
-    }
-    .pseudo-button:hover {
-      background: var(--button-hover-bg) !important;
-      cursor: pointer;
-      * {
-        background: var(--button-hover-bg) !important;
+    .p-inputgroupaddon {
+      > p-button {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        > .p-button {
+          flex-grow: 1;
+        }
+      }
+      /* Manipulate the addon wrapper depends on button state inside */
+      &:has(.p-button.p-button-primary) {
+        border: none;
       }
     }
   }
@@ -156,10 +144,10 @@
     }
     // clickable icon-only buttons
     .button-icon-only {
-      border-radius: var(--border-radius);
+      border-radius: 4px;
       &:hover {
-        color: var(--primary-color-text);
-        background: var(--button-hover-bg);
+        color: var(--onecx-product-store-onecx-product-store-ui-button-primary-hover-color);
+        background: var(--onecx-product-store-onecx-product-store-ui-button-primary-hover-background);
         cursor: pointer;
       }
     }
@@ -389,40 +377,55 @@
   }
 }
 
-@mixin correct-ocx-interactive-data-view {
+/* **********************************************
+ *  OCX Widgets
+ * **********************************************/
+@mixin ocx-interactive-data-view-fixes {
   :host ::ng-deep {
-    ocx-interactive-data-view {
-      > div {
-        padding: 0 0 0.5rem 0 !important;
-        &.surface-border {
-          border-bottom: var(--table-header-border) !important;
-        }
+    /* fix base layout of interactive data view */
+    ocx-interactive-data-view > {
+      :first-child {
+        padding-top: 0 !important;
       }
-      .icon-button-header-wrapper button.sortButton {
-        padding: 0.5rem !important;
-        border-radius: 50%;
-        border-color: transparent;
-        &:hover {
-          background: rgba(var(--primary-color-rgb), 0.04);
-        }
+      :not(:first-child) {
+        padding: 0.5rem 0 0 0 !important;
       }
-      .p-multiselect-label-container {
-        margin-right: 0 !important;
+    }
+    /* correct header layouting by lib */
+    .table-header-wrapper {
+      flex-direction: row !important;
+      justify-content: flex-start !important;
+      flex-wrap: nowrap !important;
+    }
+    .table-header-wrapper span:first-child {
+      margin-right: 10px !important;
+    }
+
+    /* establish grid-nogutter */
+    .p-dataview .p-dataview-content {
+      margin: 0;
+      padding: 0;
+      border-top: var(--table-header-border);
+      > .grid {
+        gap: 0 !important;
+        padding: 0;
       }
-      .p-multiselect {
-        .p-multiselect-label-container:focus {
-          background: rgba(var(--primary-color-rgb), 0.04);
-        }
-        background-color: transparent;
-        .p-multiselect-label.p-placeholder {
-          padding: 0.5rem !important;
-          border-radius: 50%;
-          border-color: transparent;
-          &:hover,
-          &:focus {
-            background: rgba(var(--primary-color-rgb), 0.04);
-          }
-        }
+    }
+  }
+}
+
+@mixin ocx-search-criteria-fixes {
+  :host ::ng-deep {
+    .search-criteria-container > div {
+      display: flex;
+      flex-wrap: wrap;
+      align-content: center;
+      row-gap: 1rem;
+      column-gap: 3rem;
+      .search-criteria-buttons {
+        flex-wrap: wrap;
+        align-content: center;
+        margin-top: unset;
       }
     }
   }
@@ -433,7 +436,7 @@
   :host ::ng-deep {
     .p-dataview-list .p-dataview-content .p-grid > div {
       &:nth-child(even) {
-        background-color: var(--table-body-row-even-bg);
+        background-color: var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02));
       }
     }
   }
@@ -443,7 +446,7 @@
     .p-dataview-list .p-dataview-content section > article {
       &:nth-child(4n + 1),
       &:nth-child(4n + 2) {
-        background-color: var(--table-body-row-even-bg);
+        background-color: var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02));
       }
     }
   }
@@ -452,7 +455,7 @@
   :host ::ng-deep {
     .p-dataview-list .p-dataview-content section > article {
       &:nth-child(even) {
-        background-color: var(--table-body-row-even-bg);
+        background-color: var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02));
       }
     }
   }
@@ -460,14 +463,14 @@
 @mixin dropdown-zebra-rows {
   :host ::ng-deep {
     .p-dropdown-panel .p-dropdown-items *:nth-child(even) .p-dropdown-item {
-      background-color: var(--table-body-row-even-bg);
+      background-color: var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02));
     }
   }
 }
 @mixin multiselect-zebra-rows {
   :host ::ng-deep {
     .p-multiselect-panel .p-multiselect-items *:nth-child(even) .p-multiselect-item {
-      background-color: var(--table-body-row-even-bg);
+      background-color: var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02));
     }
   }
 }
@@ -475,7 +478,7 @@
   :host ::ng-deep {
     .p-listbox:not(.p-disabled) .p-listbox-item:not(.p-highlight):not(.p-disabled) {
       &:nth-child(even) {
-        background-color: var(--table-body-row-even-bg);
+        background-color: var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02));
       }
     }
   }
@@ -484,16 +487,27 @@
   :host ::ng-deep {
     .p-picklist-list li {
       &:nth-child(even) {
-        background-color: var(--table-body-row-even-bg);
+        background-color: var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02));
       }
     }
   }
 }
-@mixin table-zebra-rows {
+@mixin p-table-zebra-rows {
   :host ::ng-deep {
+    .p-datatable {
+      --table-zebra-even-bg: var(
+        --onecx-product-store-onecx-product-store-ui-datatable-row-even-background,
+        var(--table-body-row-even-bg, rgba(0, 0, 0, 0.02))
+      );
+    }
+
     /* this works only on non-frozen columns (table.p-datatable-striped does not work) */
     .p-datatable .p-datatable-tbody > tr:nth-child(even) > td:not(.p-frozen-column) {
-      background-color: var(--table-body-row-even-bg);
+      background-color: var(--table-zebra-even-bg);
+    }
+
+    .p-datatable .p-datatable-tbody > tr:nth-child(even) > td:first-child:not(.p-frozen-column) {
+      background-color: var(--table-zebra-first-column-even-bg, var(--table-zebra-even-bg));
     }
   }
 }
@@ -508,6 +522,15 @@
       button:nth-child(4) {
         display: none !important;
       }
+    }
+  }
+}
+
+@mixin ocx-p-message {
+  :host ::ng-deep {
+    .p-message {
+      display: inline-grid;
+      min-width: 20rem;
     }
   }
 }
@@ -546,16 +569,25 @@
   }
 }
 
-@mixin tabview-reduce-padding {
+/* **********************************************
+ *  TABs
+ * **********************************************/
+@mixin ocx-p-tabs {
   :host ::ng-deep {
-    .p-tabview .p-tabview-panels {
-      padding: 1.4rem 0 0 0;
+    .p-tabs {
+      .p-tablist {
+        border-bottom: 1px solid var(--surface-300);
+      }
+      .p-tab {
+        padding: 0.75rem 1rem;
+        &.p-tab-active {
+          background-color: rgb(from var(--primary-color) r g b / 0.1);
+        }
+      }
+      .p-tabpanels {
+        padding: 0.75rem;
+      }
     }
-  }
-}
-@mixin tabview-fix-color-selected-tab {
-  :host ::ng-deep {
-    --tabview-header-active-bg: rgb(from var(--primary-color) r g b / 0.12) !important;
   }
 }
 

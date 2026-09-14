@@ -1,5 +1,6 @@
 import { SelectItem } from 'primeng/api'
 import { Location } from '@angular/common'
+import { AbstractControl } from '@angular/forms'
 import { catchError, first, of, tap } from 'rxjs'
 
 import { WorkspaceService } from '@onecx/angular-integration-interface'
@@ -10,6 +11,10 @@ import { RefType } from 'src/app/shared/generated'
 // This object encapsulated function because ...
 //  ...Jasmine has problems to spying direct imported functions
 const Utils = {
+  mapping_error_status(status: number): number {
+    return [400, 401, 403, 404, 500].includes(status) ? status : 0
+  },
+
   limitText(text: string | undefined, limit: number): string {
     if (text) {
       return text.length <= limit ? text : text.substring(0, limit) + '...'
@@ -47,6 +52,22 @@ const Utils = {
   },
 
   /**
+   * Forms
+   */
+  // fills form controls with values from a source object, matching control keys to source properties
+  setFormControlsValues(controls: object, source: object | undefined, skipNullValues = true): void {
+    if (!source) return
+    const controlsRecord = controls as Record<string, AbstractControl>
+    const sourceRecord = source as Record<string, unknown>
+    for (const key of Object.keys(controlsRecord)) {
+      const value = sourceRecord[key]
+      if (!skipNullValues || value !== null) {
+        controlsRecord[key].setValue(value)
+      }
+    }
+  },
+
+  /**
    * URLs
    */
   prepareUrl(url: string | undefined): string | undefined {
@@ -63,6 +84,25 @@ const Utils = {
   },
   bffImageUrl(basePath: string | undefined, name: string | undefined, refType: RefType): string {
     return name ? basePath + '/images/' + name + '/' + refType : ''
+  },
+
+  /**
+   * Filter
+   */
+  toSearchableText(value: unknown): string | undefined {
+    if (value == null) return undefined
+    if (typeof value === 'string') return value
+    if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') {
+      return value.toString()
+    }
+    if (value instanceof Date) return value.toISOString()
+    if (Array.isArray(value)) {
+      const normalizedValues = value
+        .map((entry) => Utils.toSearchableText(entry))
+        .filter((entry): entry is string => entry != null && entry !== '')
+      return normalizedValues.length ? normalizedValues.join(' ') : undefined
+    }
+    return undefined
   },
 
   /**

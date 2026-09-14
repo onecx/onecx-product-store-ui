@@ -1,7 +1,4 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { provideHttpClient } from '@angular/common/http'
-import { provideHttpClientTesting } from '@angular/common/http/testing'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 import { of, throwError } from 'rxjs'
 
@@ -38,22 +35,24 @@ describe('AppDeleteComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [AppDeleteComponent],
       imports: [
+        AppDeleteComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
-      ],
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        { provide: MicrofrontendsAPIService, useValue: apiMfeServiceSpy },
-        { provide: MicroservicesAPIService, useValue: apiMsServiceSpy },
-        { provide: PortalMessageService, useValue: msgServiceSpy }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
-    }).compileComponents()
+      ]
+    })
+      .overrideComponent(AppDeleteComponent, {
+        add: {
+          providers: [
+            { provide: MicrofrontendsAPIService, useValue: apiMfeServiceSpy },
+            { provide: MicroservicesAPIService, useValue: apiMsServiceSpy },
+            { provide: PortalMessageService, useValue: msgServiceSpy }
+          ]
+        }
+      })
+      .compileComponents()
   }))
 
   beforeEach(() => {
@@ -82,7 +81,7 @@ describe('AppDeleteComponent', () => {
 
   it('should delete mfe onConfirmDeletion', () => {
     spyOn(component.appDeleted, 'emit')
-    component.appAbstract = appMfe
+    fixture.componentRef.setInput('appAbstract', appMfe)
 
     component.onConfirmDeletion()
 
@@ -92,7 +91,7 @@ describe('AppDeleteComponent', () => {
 
   it('should display error if api call fails onConfirmDeletion: mfe', () => {
     apiMfeServiceSpy.deleteMicrofrontend.and.returnValue(throwError(() => new Error()))
-    component.appAbstract = appMfe
+    fixture.componentRef.setInput('appAbstract', appMfe)
 
     component.onConfirmDeletion()
 
@@ -101,7 +100,7 @@ describe('AppDeleteComponent', () => {
 
   it('should delete ms onConfirmDeletion', () => {
     apiMsServiceSpy.deleteMicroservice.and.returnValue(of({}))
-    component.appAbstract = appMs
+    fixture.componentRef.setInput('appAbstract', appMs)
 
     component.onConfirmDeletion()
 
@@ -110,7 +109,7 @@ describe('AppDeleteComponent', () => {
 
   it('should display error if api call fails onConfirmDeletion: ms', () => {
     apiMsServiceSpy.deleteMicroservice.and.returnValue(throwError(() => new Error()))
-    component.appAbstract = appMs
+    fixture.componentRef.setInput('appAbstract', appMs)
 
     component.onConfirmDeletion()
 

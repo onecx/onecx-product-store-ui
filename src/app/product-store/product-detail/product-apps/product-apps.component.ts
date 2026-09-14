@@ -1,5 +1,12 @@
-import { Component, Input, OnChanges, OnDestroy } from '@angular/core'
-import { finalize, of, Observable, catchError, Subject, takeUntil, tap } from 'rxjs'
+import { ChangeDetectionStrategy, Component, effect, inject, input, OnInit, signal } from '@angular/core'
+import { AsyncPipe, NgClass } from '@angular/common'
+import { TranslateModule } from '@ngx-translate/core'
+import { finalize, of, Observable, catchError, tap } from 'rxjs'
+
+import { CardModule } from 'primeng/card'
+import { FieldsetModule } from 'primeng/fieldset'
+import { MessageModule } from 'primeng/message'
+import { TooltipModule } from 'primeng/tooltip'
 import { SelectItem } from 'primeng/api'
 
 import { UserService } from '@onecx/angular-integration-interface'
@@ -16,10 +23,15 @@ import {
 } from 'src/app/shared/generated'
 import { Utils } from 'src/app/shared/utils'
 import { IconService } from 'src/app/shared/iconservice'
+import { OcxChipComponent } from 'src/app/shared/ocx-chip/ocx-chip.component'
 
 import { ChangeMode } from '../../product-detail/product-detail.component'
 import { AppAbstract } from '../../app-search/app-search.component'
 import { SlotData } from '../../slot-search/slot-search.component'
+import { AppDetailComponent } from '../../app-detail/app-detail.component'
+import { AppDeleteComponent } from '../../app-delete/app-delete.component'
+import { SlotDetailComponent } from '../../slot-detail/slot-detail.component'
+import { SlotDeleteComponent } from '../../slot-delete/slot-delete.component'
 
 export enum AppType {
   MS = 'MS',
@@ -28,17 +40,40 @@ export enum AppType {
 
 @Component({
   selector: 'app-product-apps',
+  standalone: true,
+  imports: [
+    AsyncPipe,
+    NgClass,
+    CardModule,
+    FieldsetModule,
+    MessageModule,
+    TooltipModule,
+    TranslateModule,
+    // components
+    OcxChipComponent,
+    AppDetailComponent,
+    AppDeleteComponent,
+    SlotDetailComponent,
+    SlotDeleteComponent
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './product-apps.component.html',
   styleUrls: ['./product-apps.component.scss']
 })
-export class ProductAppsComponent implements OnChanges, OnDestroy {
-  @Input() product: Product | undefined
-  @Input() dateFormat = 'medium'
-  @Input() changeMode: ChangeMode = 'VIEW'
+export class ProductAppsComponent implements OnInit {
+  private readonly icon = inject(IconService)
+  private readonly user = inject(UserService)
+  private readonly productApi = inject(ProductsAPIService)
+  // input
+  public readonly product = input<Product>()
+  public readonly changeMode = input<ChangeMode>('VIEW')
+  // local state derived from the changeMode input, owned by the component to drive the child app/slot dialogs
+  public readonly currentChangeMode = signal<ChangeMode>('VIEW')
 
-  private readonly destroy$ = new Subject()
-  public exceptionKey = ''
+  public exceptionKey: string | undefined = undefined
   public searchInProgress = false
+  // computed internally: never actually bound by callers, so it stays a plain property
+  public dateFormat = 'medium'
 
   public AppType = AppType
   public productDetails$!: Observable<ProductDetails>
@@ -51,29 +86,39 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   public displayDeleteDialog = false
   public displaySlotDeleteDialog = false
   public displaySlotDetailDialog = false
-  public hasCreatePermission = false
-  public hasDeletePermission = false
+  public hasAppCreatePermission = false
+  public hasAppDeletePermission = false
+  public hasAppViewPermission = false
+  public hasAppEditPermission = false
+  public hasSlotDeletePermission = false
+  public hasSlotEditPermission = false
+  public hasSlotViewPermission = false
   public hasComponents = false
 
-  constructor(
-    private readonly icon: IconService,
-    private readonly user: UserService,
-    private readonly productApi: ProductsAPIService
-  ) {
+  constructor() {
     this.dateFormat = this.user.lang$.getValue() === 'de' ? 'dd.MM.yyyy HH:mm:ss' : 'M/d/yy, hh:mm:ss a'
-    this.hasCreatePermission = this.user.hasPermission('APP#CREATE')
-    this.hasDeletePermission = this.user.hasPermission('APP#DELETE')
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
     this.iconItems.sort(Utils.dropDownSortItemsByLabel)
+    this.currentChangeMode.set(this.changeMode())
+
+    // replaces ngOnChanges: signal inputs don't trigger it
+    effect(() => {
+      if (this.product()) this.getProductDetails()
+    })
   }
 
-  public ngOnChanges(): void {
-    if (this.product) this.getProductDetails()
+  public ngOnInit(): void {
+    void this.initPermissions()
   }
 
-  public ngOnDestroy(): void {
-    this.destroy$.next(undefined)
-    this.destroy$.complete()
+  private async initPermissions(): Promise<void> {
+    this.hasAppViewPermission = await this.user.hasPermission('APP#VIEW')
+    this.hasAppCreatePermission = await this.user.hasPermission('APP#CREATE')
+    this.hasAppDeletePermission = await this.user.hasPermission('APP#DELETE')
+    this.hasAppEditPermission = await this.user.hasPermission('APP#EDIT')
+    this.hasSlotDeletePermission = await this.user.hasPermission('SLOT#DELETE')
+    this.hasSlotEditPermission = await this.user.hasPermission('SLOT#EDIT')
+    this.hasSlotViewPermission = await this.user.hasPermission('SLOT#VIEW')
   }
 
   /**
@@ -83,11 +128,10 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
     this.app = undefined
     this.slot = undefined
     const criteria: ProductDetailsCriteria = {
-      name: this.product?.name,
+      name: this.product()?.name,
       pageSize: 1000 // page size of the children
     }
     this.productDetails$ = this.productApi.getProductDetailsByCriteria({ productDetailsCriteria: criteria }).pipe(
-      takeUntil(this.destroy$),
       tap((details) => {
         if (details) {
           if (
@@ -99,7 +143,7 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
         }
       }),
       catchError((err) => {
-        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + err.status + '.APPS'
+        this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + Utils.mapping_error_status(err.status) + '.APPS'
         console.error('getProductDetailsByCriteria', err)
         return of({})
       }),
@@ -129,17 +173,17 @@ export class ProductAppsComponent implements OnChanges, OnDestroy {
   public onAppDetail(ev: any, app: any, appType: AppType) {
     ev.stopPropagation()
     this.app = { ...app, appType: appType, mfeType: app.mfeType ?? app.type } as AppAbstract
-    this.changeMode = 'EDIT'
+    this.currentChangeMode.set('EDIT')
     this.displayDetailDialog = true
   }
   public onCopy(ev: any, app: any, appType: AppType) {
     ev.stopPropagation()
     this.app = { ...app, appType: appType } as AppAbstract
-    this.changeMode = 'CREATE'
+    this.currentChangeMode.set('CREATE')
     this.displayDetailDialog = true
   }
   public onCreate() {
-    this.changeMode = 'CREATE'
+    this.currentChangeMode.set('CREATE')
     this.app = undefined
     this.displayDetailDialog = true
   }

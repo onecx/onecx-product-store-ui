@@ -1,12 +1,14 @@
 import { TestBed } from '@angular/core/testing'
+import { provideRouter } from '@angular/router'
+import { TranslateModule } from '@ngx-translate/core'
+
 import { AppComponent } from './app.component'
-import { NO_ERRORS_SCHEMA } from '@angular/core'
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AppComponent],
-      schemas: [NO_ERRORS_SCHEMA]
+      imports: [AppComponent, TranslateModule.forRoot()],
+      providers: [provideRouter([])]
     }).compileComponents()
   })
 
@@ -16,9 +18,9 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy()
   })
 
-  it(`should have as title 'onecx-product-store-ui'`, () => {
+  it(`should have as title 'onecx-ui'`, () => {
     const fixture = TestBed.createComponent(AppComponent)
     const app = fixture.componentInstance
-    expect(app.title).toEqual('onecx-product-store-ui')
+    expect(app.title).toEqual('onecx-ui')
   })
 })

@@ -1,4 +1,3 @@
-import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
@@ -22,14 +21,13 @@ describe('AppInternComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [AppInternComponent],
       imports: [
+        AppInternComponent,
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
         }).withDefaultLanguage('en')
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
+      ]
     }).compileComponents()
   }))
 
@@ -45,9 +43,8 @@ describe('AppInternComponent', () => {
 
   describe('ngOnChanges', () => {
     it('should set relevant values correctly when viewed app is Microfrontend', () => {
-      component.mfe = appMfe
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('mfe', appMfe)
+      fixture.detectChanges()
 
       expect(component.appForm.get('operator')?.value).toBeTrue()
       expect(component.appForm.get('undeployed')?.value).toBeTrue()
@@ -55,9 +52,8 @@ describe('AppInternComponent', () => {
     })
 
     it('should set relevant values to false when viewed app is Microservice', () => {
-      component.ms = appMs
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('ms', appMs)
+      fixture.detectChanges()
 
       expect(component.appForm.get('operator')?.value).toBeTrue()
       expect(component.appForm.get('undeployed')?.value).toBeTrue()
@@ -65,10 +61,9 @@ describe('AppInternComponent', () => {
     })
 
     it('should set all properties to false when app is undefined', () => {
-      component.mfe = undefined
-      component.ms = undefined
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('mfe', undefined)
+      fixture.componentRef.setInput('ms', undefined)
+      fixture.detectChanges()
 
       expect(component.appForm.get('operator')?.value).toBeNull()
       expect(component.appForm.get('undeployed')?.value).toBeNull()
@@ -80,18 +75,16 @@ describe('AppInternComponent', () => {
         operator: true,
         undeployed: true
       }
-      component.mfe = appMfeNoDeprecated as Microfrontend
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('mfe', appMfeNoDeprecated as Microfrontend)
+      fixture.detectChanges()
 
       expect(component.appForm.get('deprecated')?.value).toBeUndefined()
     })
 
     it('should enable undeployed field', () => {
-      component.ms = appMs
-      component.changeMode = 'EDIT'
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('ms', appMs)
+      fixture.componentRef.setInput('changeMode', 'EDIT')
+      fixture.detectChanges()
 
       expect(component.appForm.get('undeployed')?.enabled).toBeTrue()
     })
@@ -99,10 +92,9 @@ describe('AppInternComponent', () => {
 
   describe('additionals', () => {
     it('should emit undeployed value', () => {
-      component.ms = appMs
-      component.changeMode = 'EDIT'
-
-      component.ngOnChanges()
+      fixture.componentRef.setInput('ms', appMs)
+      fixture.componentRef.setInput('changeMode', 'EDIT')
+      fixture.detectChanges()
       component.onChangeUndeployed({ checked: true })
 
       expect().nothing()

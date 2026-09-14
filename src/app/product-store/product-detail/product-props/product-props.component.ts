@@ -1,9 +1,30 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, Output } from '@angular/core'
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms'
-import { SelectItem } from 'primeng/api'
+import { ChangeDetectionStrategy, Component, ElementRef, effect, inject, input, output } from '@angular/core'
+import { AsyncPipe } from '@angular/common'
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from '@angular/forms'
+import { TranslateModule } from '@ngx-translate/core'
 import { map, of, Observable, catchError } from 'rxjs'
 
+import { AutoCompleteModule } from 'primeng/autocomplete'
+import { ButtonModule } from 'primeng/button'
+import { CheckboxModule } from 'primeng/checkbox'
+import { FloatLabelModule } from 'primeng/floatlabel'
+import { InputTextModule } from 'primeng/inputtext'
+import { MessageModule } from 'primeng/message'
+import { SelectItem } from 'primeng/api'
+import { SelectModule } from 'primeng/select'
+import { TextareaModule } from 'primeng/textarea'
+import { TooltipModule } from 'primeng/tooltip'
+
 import { PortalMessageService } from '@onecx/angular-integration-interface'
+import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
 import {
   ImagesInternalAPIService,
@@ -39,15 +60,39 @@ export function productNameValidator(): ValidatorFn {
 
 @Component({
   selector: 'app-product-props',
-  templateUrl: './product-props.component.html'
+  standalone: true,
+  imports: [
+    AngularAcceleratorModule,
+    AsyncPipe,
+    AutoCompleteModule,
+    ButtonModule,
+    CheckboxModule,
+    FloatLabelModule,
+    InputTextModule,
+    MessageModule,
+    ReactiveFormsModule,
+    SelectModule,
+    TextareaModule,
+    TooltipModule,
+    TranslateModule
+  ],
+  templateUrl: './product-props.component.html',
+  styleUrls: ['./product-props.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProductPropertyComponent implements OnChanges {
-  @Input() product: Product | undefined = undefined
-  @Input() changeMode: ChangeMode = 'VIEW'
-  @Output() currentLogoUrl = new EventEmitter<string>()
+export class ProductPropertyComponent {
+  private readonly icon = inject(IconService)
+  private readonly elements = inject(ElementRef)
+  private readonly productApi = inject(ProductsAPIService)
+  private readonly imageApi = inject(ImagesInternalAPIService)
+  private readonly msgService = inject(PortalMessageService)
+  // input
+  public readonly product = input<Product>()
+  public readonly changeMode = input<ChangeMode>('VIEW')
+  public readonly currentLogoUrl = output<string | undefined>()
 
   public criteria$: Observable<ProductCriteria> = of({})
-  public formGroup: FormGroup<ProductPropsForm>
+  public propsForm: FormGroup<ProductPropsForm>
   public productId: string | undefined
   public productName: string | null | undefined
   public fetchingImageUrl: string | undefined
@@ -57,14 +102,8 @@ export class ProductPropertyComponent implements OnChanges {
   public providerFiltered: string[] = []
   public classesFiltered: string[] = []
 
-  constructor(
-    private readonly icon: IconService,
-    private readonly elements: ElementRef,
-    private readonly productApi: ProductsAPIService,
-    private readonly imageApi: ImagesInternalAPIService,
-    private readonly msgService: PortalMessageService
-  ) {
-    this.formGroup = new FormGroup<ProductPropsForm>({
+  constructor() {
+    this.propsForm = new FormGroup<ProductPropsForm>({
       id: new FormControl(null),
       name: new FormControl(null, [
         Validators.required,
@@ -83,44 +122,46 @@ export class ProductPropertyComponent implements OnChanges {
     })
     this.iconItems.push(...this.icon.icons.map((i) => ({ label: i, value: i })))
     this.iconItems.sort(Utils.dropDownSortItemsByLabel)
-  }
 
-  public ngOnChanges(): void {
-    if (this.product) {
-      this.formGroup.patchValue({ ...this.product })
-      if (this.changeMode === 'COPY') this.productId = undefined
-      this.productName = this.product.name // business key => manage the change!
-      this.fetchingImageUrl = this.product.imageUrl
-      if (!this.fetchingImageUrl || this.fetchingImageUrl === '') this.prepareImageUrl(this.product.name)
-    } else {
-      this.formGroup.reset()
-      this.fetchingImageUrl = undefined
-    }
-    this.currentLogoUrl.emit(this.fetchingImageUrl)
-    // mode & form
-    this.formGroup.disable()
-    if (this.changeMode !== 'VIEW') {
-      this.getCriteria()
-      this.formGroup.enable()
-    }
-    if (this.changeMode === 'EDIT') this.formGroup.controls['name'].disable()
+    // replaces ngOnChanges: signal inputs don't trigger it
+    effect(() => {
+      const product = this.product()
+      if (product) {
+        this.propsForm.patchValue({ ...product })
+        if (this.changeMode() === 'COPY') this.productId = undefined
+        this.productName = product.name // business key => manage the change!
+        this.fetchingImageUrl = product.imageUrl
+        if (!this.fetchingImageUrl || this.fetchingImageUrl === '') this.prepareImageUrl(product.name)
+      } else {
+        this.propsForm.reset()
+        this.fetchingImageUrl = undefined
+      }
+      this.currentLogoUrl.emit(this.fetchingImageUrl)
+      // mode & form
+      this.propsForm.disable()
+      if (this.changeMode() !== 'VIEW') {
+        this.getCriteria()
+        this.propsForm.enable()
+      }
+      if (this.changeMode() === 'EDIT') this.propsForm.controls['name'].disable()
+    })
   }
 
   /** SAVE product - triggered by detail page action
    */
   public onSave(): Partial<Product> | undefined {
     let props: Partial<Product> | undefined = undefined
-    if (this.formGroup.valid) {
+    if (this.propsForm.valid) {
       props = {
-        name: this.formGroup.value['name'] ?? undefined, // on create only (enabled form control)
-        version: this.formGroup.value['version']!,
-        description: this.formGroup.value['description'] ?? undefined,
-        displayName: this.formGroup.value['displayName']!,
-        provider: this.formGroup.value['provider'] ?? undefined,
-        basePath: this.formGroup.value['basePath']!,
-        iconName: this.formGroup.value['iconName'] ?? undefined,
-        imageUrl: this.formGroup.controls['imageUrl'].value ?? undefined,
-        classifications: Utils.convertToUniqueStringArray(this.formGroup.value['classifications'])
+        name: this.propsForm.value['name'] ?? undefined, // on create only (enabled form control)
+        version: this.propsForm.value['version']!,
+        description: this.propsForm.value['description'] ?? undefined,
+        displayName: this.propsForm.value['displayName']!,
+        provider: this.propsForm.value['provider'] ?? undefined,
+        basePath: this.propsForm.value['basePath']!,
+        iconName: this.propsForm.value['iconName'] ?? undefined,
+        imageUrl: this.propsForm.controls['imageUrl'].value ?? undefined,
+        classifications: Utils.convertToUniqueStringArray(this.propsForm.value['classifications'])
       }
     } else {
       this.msgService.error({ summaryKey: 'VALIDATION.FORM_INVALID' })
@@ -134,7 +175,7 @@ export class ProductPropertyComponent implements OnChanges {
   /** File Handling
    */
   public onFileUpload(ev: Event): void {
-    const workspaceName = this.formGroup.controls['name'].value
+    const workspaceName = this.propsForm.controls['name'].value
     if (!workspaceName || workspaceName === '') {
       this.msgService.error({
         summaryKey: 'IMAGE.CONSTRAINT_FAILED',
@@ -188,10 +229,10 @@ export class ProductPropertyComponent implements OnChanges {
   }
 
   public onRemoveLogo() {
-    const productName = this.formGroup.controls['name'].value
+    const productName = this.propsForm.controls['name'].value
     if (productName) {
-      if (this.formGroup.get('imageUrl')?.value) {
-        this.formGroup.get('imageUrl')?.setValue(null)
+      if (this.propsForm.get('imageUrl')?.value) {
+        this.propsForm.get('imageUrl')?.setValue(null)
         this.prepareImageUrl(productName)
       } else {
         this.imageApi.deleteImage({ refId: productName, refType: RefType.Logo }).subscribe({
@@ -199,7 +240,7 @@ export class ProductPropertyComponent implements OnChanges {
             this.prepareImageUrl() // reset - important to trigger the change in UI
             this.currentLogoUrl.emit(this.fetchingImageUrl)
             this.msgService.success({ summaryKey: 'IMAGE.REMOVE_SUCCESS' })
-            if (!this.formGroup.get('imageUrl')?.value) this.onImageLoadError = true
+            if (!this.propsForm.get('imageUrl')?.value) this.onImageLoadError = true
           },
           error: (err) => {
             console.error('deleteImage', err)

@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing'
-import { CommonModule } from '@angular/common'
+import { AsyncPipe } from '@angular/common'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
-import { NoopAnimationsModule } from '@angular/platform-browser/animations'
+import { provideNoopAnimations } from '@angular/platform-browser/animations'
 import { TranslateTestingModule } from 'ngx-translate-testing'
-import { of, ReplaySubject, throwError } from 'rxjs'
+import { of, throwError } from 'rxjs'
 
-import { BASE_URL, RemoteComponentConfig } from '@onecx/angular-remote-components'
+import { RemoteComponentConfig } from '@onecx/angular-utils'
 
 import { ProductPageResult, Product, ProductAbstract, ProductsAPIService } from 'src/app/shared/generated'
 import { OneCXProductDataComponent } from './product-data.component'
@@ -25,7 +25,7 @@ const product2: ProductAbstract = {
 const products: ProductAbstract[] = [product1, product2]
 
 describe('OneCXProductDataComponent', () => {
-  const productAPISpy = {
+  const productAPISpy: { searchProducts: jasmine.Spy; configuration?: { basePath: string } } = {
     searchProducts: jasmine.createSpy('searchProducts').and.returnValue(of({}))
   }
 
@@ -36,36 +36,25 @@ describe('OneCXProductDataComponent', () => {
     return { fixture, component }
   }
 
-  let baseUrlSubject: ReplaySubject<any>
   beforeEach(() => {
-    baseUrlSubject = new ReplaySubject<any>(1)
     TestBed.configureTestingModule({
       declarations: [],
       imports: [
         TranslateTestingModule.withTranslations({
           de: require('src/assets/i18n/de.json'),
           en: require('src/assets/i18n/en.json')
-        }).withDefaultLanguage('en'),
-        NoopAnimationsModule
+        }).withDefaultLanguage('en')
       ],
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        {
-          provide: BASE_URL,
-          useValue: baseUrlSubject
-        }
-      ]
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideNoopAnimations()]
     })
       .overrideComponent(OneCXProductDataComponent, {
         set: {
-          imports: [TranslateTestingModule, CommonModule],
+          imports: [TranslateTestingModule, AsyncPipe],
           providers: [{ provide: ProductsAPIService, useValue: productAPISpy }]
         }
       })
       .compileComponents()
 
-    baseUrlSubject.next('base_url_mock')
     productAPISpy.searchProducts.calls.reset()
   })
 
@@ -96,10 +85,8 @@ describe('OneCXProductDataComponent', () => {
 
       component.ocxInitRemoteComponent({ baseUrl: 'base_url' } as RemoteComponentConfig)
 
-      baseUrlSubject.asObservable().subscribe((item) => {
-        expect(item).toEqual('base_url')
-        done()
-      })
+      expect(productAPISpy.configuration?.basePath).toContain('base_url')
+      done()
     })
   })
 
@@ -115,7 +102,7 @@ describe('OneCXProductDataComponent', () => {
       component.products$?.subscribe({
         next: (data) => {
           if (data) {
-            expect(data.length).toBe(2)
+            expect(data).toHaveSize(2)
             expect(data[0]).toEqual(products[0])
           }
           done()
