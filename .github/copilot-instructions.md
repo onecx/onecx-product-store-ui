@@ -3,7 +3,7 @@
 ## Project overview & Context
 - Angular 19 **Module Federation micro-frontend** for a OneCX project.
 - Built with **standalone components**, **OnPush change detection**, and **signal-first** state management.
-  - **Do not convert everything to pure Standalone components.** Follow the existing NgModule bootstrap structure for Module Federation (`app.module.ts`, `*product-store*.module.ts`) as outlined in the architecture diagram.
+  - **Do not convert everything to pure Standalone components.** Follow the existing NgModule bootstrap structure for Module Federation (`app.module.ts`, `*theme*.module.ts`) as outlined in the architecture diagram.
 - The project uses PrimeNG components (p-button, p-select, p-message, etc.).
 - Testing framework: **Karma + Jasmine** — do NOT replace with Jest and do NOT add Jest dependencies.
 
@@ -27,7 +27,7 @@
 
 ```bash
 npm start               # Dev server on localhost:4200 (proxy via proxy.conf.js)
-npm run build           # Production build → dist/onecx-product-store-ui
+npm run build           # Production build → dist/onecx-theme-ui
 npm run test            # Run all Karma/Jasmine tests (watch mode)
 npm run karma           # CI mode: no watch, headless, with coverage → reports/
 npm run lint            # ESLint + Prettier check
@@ -80,6 +80,10 @@ Local (src/app/*)
 | Two-way `@Input()` + `@Output()` | `model<T>()` / `model.required<T>()` |
 | `@ViewChild()` | `viewChild<T>()` |
 | `@ViewChildren()` | `viewChildren<T>()` |
+
+- Always mark signals as `readonly` to indicate they should not be reassigned.
+- Always mark computed signals as `readonly` to indicate they should not be reassigned.
+- Do not use aliases for signals; always refer to them by their declared name.
 
 **Exception:** Remote components that implement `ocxRemoteComponent` / `ocxRemoteWebcomponent` keep `@Input()` as required by the web-component interface contract.
 
@@ -146,4 +150,4 @@ public readonly headers = computed(() => {
 
 ---
 
-For architecture, code-style rules, and project-specific patterns see [coding_standards.md](coding_standards.md).
+For architecture, code-style rules, and project-specific patterns see [coding_standards.md](../coding_standards.md).
