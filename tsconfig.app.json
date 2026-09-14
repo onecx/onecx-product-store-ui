@@ -1,12 +1,6 @@
 {
   "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "composite": false,
-    "declaration": false,
-    "declarationMap": false,
-    "inlineSources": true
-  },
-  "files": ["src/main.ts", "src/polyfills.ts", "src/app/onecx-product-store-remote.module.ts"],
+  "compilerOptions": {},
   "include": ["src/**/*.ts"],
   "exclude": ["src/test.ts", "src/**/*.spec.ts", "src/**/*.harness.ts", "src/app/shared/mocks/**"]
 }
