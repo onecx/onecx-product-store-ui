@@ -1,9 +1,14 @@
 // Karma configuration file, see link for more information
-// https://karma-runner.github.io/1.0/config/configuration-file.html
+// https://karma-runner.github.io/6.4/config/configuration-file.html
 
 module.exports = function (config) {
   config.set({
     basePath: '.',
+    port: 9876,
+    colors: true,
+    autoWatch: true,
+    singleRun: false,
+    restartOnFileChange: true,
     logLevel: config.LOG_INFO,
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
     plugins: [
@@ -15,28 +20,26 @@ module.exports = function (config) {
       require('@angular-devkit/build-angular/plugins/karma')
     ],
     client: {
-      jasmine: {
-        // you can add configuration options for Jasmine here
-        // the possible options are listed at https://jasmine.github.io/api/edge/Configuration.html
-        // for example, you can disable the random execution with `random: false`
-        // or set a specific seed with `seed: 4321`
-        random: false
-      },
-      clearContext: false // leave Jasmine Spec Runner output visible in browser
+      jasmine: { random: false },
+      clearContext: false
     },
+    browsers: ['ChromeHeadlessNoSandbox'],
+    customLaunchers: {
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox', '--disable-web-security']
+      }
+    },
+    browserConsoleLogOptions: {
+      level: 'debug',
+      format: '%b %T: %m',
+      terminal: true
+    },
+    reporters: ['progress', 'coverage', 'sonarqubeUnit'],
     jasmineHtmlReporter: {
-      suppressAll: true // removes the duplicated traces
-    },
-    sonarqubeReporter: {
-      basePath: 'src/app', // test files folder
-      filePattern: '**/*.spec.ts', // test files glob pattern
-      encoding: 'utf-8', // test files encoding
-      outputFolder: 'sonar', // report destination
-      legacyMode: false, // report for Sonarqube < 6.2 (disabled)
-      reportName: 'sonarqube_report.xml'
+      suppressAll: true
     },
     sonarQubeUnitReporter: {
-      sonarQubeVersion: 'LATEST',
       outputFile: 'reports/sonarqube_report.xml',
       testPaths: ['./src/app'],
       testFilePattern: '**/*.spec.ts',
@@ -45,22 +48,8 @@ module.exports = function (config) {
     coverageReporter: {
       includeAllSources: true,
       dir: 'reports',
-      subdir: 'coverage', // common name instaed browser-specific
+      subdir: 'coverage',
       reporters: [{ type: 'text-summary' }, { type: 'lcov' }]
-    },
-    reporters: ['progress', 'kjhtml', 'coverage', 'sonarqubeUnit'],
-    preprocessors: { 'src/**/*.js': ['coverage'] },
-    port: 9876,
-    colors: true,
-    autoWatch: true,
-    singleRun: false,
-    restartOnFileChange: true,
-    browsers: ['HeadlessChrome'],
-    customLaunchers: {
-      HeadlessChrome: {
-        base: 'ChromeHeadless',
-        flags: ['--no-sandbox']
-      }
     }
   })
 }
