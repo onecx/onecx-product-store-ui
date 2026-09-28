@@ -344,8 +344,8 @@ export class ProductSearchComponent implements OnInit {
     if (!paramKeys.length) return false
 
     const name = queryParams['name'] ?? undefined
-    const providers = this.asArray(queryParams['providers'])
-    const classifications = this.asArray(queryParams['classifications'])
+    const providers = Utils.asArray(queryParams['providers'])
+    const classifications = Utils.asArray(queryParams['classifications'])
 
     if (name !== undefined) {
       this.searchCriteriaForm.controls['name'].setValue(name)
@@ -360,14 +360,6 @@ export class ProductSearchComponent implements OnInit {
     this.prepareSearchCriteria()
     this.executeSearch()
     return true
-  }
-
-  private asArray(value: string | string[] | null | undefined): string[] | undefined {
-    if (value == null || value === '') {
-      return undefined
-    }
-
-    return Array.isArray(value) ? value : [value]
   }
 
   public getLogoUrl(product: ProductAbstract | undefined): string | undefined {
