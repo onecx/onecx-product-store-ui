@@ -363,7 +363,11 @@ export class ProductSearchComponent implements OnInit {
   }
 
   private asArray(value: string | string[] | null | undefined): string[] | undefined {
-    return value == null || value === '' ? undefined : Array.isArray(value) ? value : [value]
+    if (value == null || value === '') {
+      return undefined
+    }
+
+    return Array.isArray(value) ? value : [value]
   }
 
   public getLogoUrl(product: ProductAbstract | undefined): string | undefined {
