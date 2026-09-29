@@ -1,7 +1,7 @@
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing'
 import { provideHttpClient } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing'
-import { provideRouter, Router } from '@angular/router'
+import { ActivatedRoute, provideRouter, Router } from '@angular/router'
 import { BehaviorSubject, of, throwError } from 'rxjs'
 import { TranslateTestingModule } from 'ngx-translate-testing'
 
@@ -16,13 +16,13 @@ import {
   ProductPageResult,
   ProductsAPIService
 } from 'src/app/shared/generated'
-
 import { ProductSearchComponent } from './product-search.component'
 
 describe('ProductSearchComponent', () => {
   let component: ProductSearchComponent
   let fixture: ComponentFixture<ProductSearchComponent>
   let router: Router
+  let activatedRoute: ActivatedRoute
 
   const product: Product = {
     id: 'id',
@@ -77,6 +77,7 @@ describe('ProductSearchComponent', () => {
     fixture = TestBed.createComponent(ProductSearchComponent)
     component = fixture.componentInstance
     router = TestBed.inject(Router)
+    activatedRoute = TestBed.inject(ActivatedRoute)
 
     //fixture.detectChanges() // deactivated due to trouble with OneCX components
     fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
@@ -225,6 +226,47 @@ describe('ProductSearchComponent', () => {
   })
 
   describe('searching', () => {
+    it('should restore name providers and classifications from query params on init', () => {
+      spyOn<any>(component, 'executeSearch')
+      const queryParams = {
+        name: 'portal',
+        providers: ['team-a'],
+        classifications: ['internal', 'public']
+      }
+
+      Object.defineProperty(activatedRoute.snapshot, 'queryParams', {
+        configurable: true,
+        value: queryParams
+      })
+
+      component.ngOnInit()
+
+      expect(component.searchCriteriaForm.controls['name'].value).toBe('portal')
+      expect(component.searchCriteriaForm.controls['providers'].value).toEqual(['team-a'])
+      expect(component.searchCriteriaForm.controls['classifications'].value).toEqual(['internal', 'public'])
+      expect(component['executeSearch']).toHaveBeenCalled()
+    })
+
+    it('should keep name empty when query param name is undefined on init', () => {
+      spyOn<any>(component, 'executeSearch')
+      const queryParams = {
+        providers: ['team-a'],
+        classifications: ['internal']
+      }
+
+      Object.defineProperty(activatedRoute.snapshot, 'queryParams', {
+        configurable: true,
+        value: queryParams
+      })
+
+      component.ngOnInit()
+
+      expect(component.searchCriteriaForm.controls['name'].value).toBeNull()
+      expect(component.searchCriteriaForm.controls['providers'].value).toEqual(['team-a'])
+      expect(component.searchCriteriaForm.controls['classifications'].value).toEqual(['internal'])
+      expect(component['executeSearch']).toHaveBeenCalled()
+    })
+
     it('should search products - on init with success', () => {
       apiProductServiceSpy.searchProducts.and.returnValue(of({ stream: [product] } as ProductPageResult))
       apiProductServiceSpy.getProductSearchCriteria.and.returnValue(of(productSearchCriterias))

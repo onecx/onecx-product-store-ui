@@ -51,6 +51,14 @@ const Utils = {
     return ar.sort(this.sortByLocale)
   },
 
+  asArray(value: string | string[] | null | undefined): string[] | undefined {
+    if (value == null || value === '') {
+      return undefined
+    }
+
+    return Array.isArray(value) ? value : [value]
+  },
+
   /**
    * Forms
    */

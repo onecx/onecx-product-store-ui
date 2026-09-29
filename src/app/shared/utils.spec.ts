@@ -135,6 +135,16 @@ describe('utils', () => {
     })
   })
 
+  describe('asArray', () => {
+    it('should return undefined when value is undefined', () => {
+      expect(Utils.asArray(undefined)).toBeUndefined()
+    })
+
+    it('should wrap a single string in an array', () => {
+      expect(Utils.asArray('value')).toEqual(['value'])
+    })
+  })
+
   describe('setFormControlsValues', () => {
     let form: FormGroup
 
