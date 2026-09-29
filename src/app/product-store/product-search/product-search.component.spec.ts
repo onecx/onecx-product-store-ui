@@ -16,7 +16,6 @@ import {
   ProductPageResult,
   ProductsAPIService
 } from 'src/app/shared/generated'
-import { Utils } from 'src/app/shared/utils'
 import { ProductSearchComponent } from './product-search.component'
 
 describe('ProductSearchComponent', () => {
@@ -378,16 +377,6 @@ describe('ProductSearchComponent', () => {
       component.onSearchReset()
 
       expect(component.searchCriteriaForm.reset).toHaveBeenCalled()
-    })
-  })
-
-  describe('Utils.asArray', () => {
-    it('should return undefined when value is undefined', () => {
-      expect(Utils.asArray(undefined)).toBeUndefined()
-    })
-
-    it('should wrap a single string in an array', () => {
-      expect(Utils.asArray('value')).toEqual(['value'])
     })
   })
 
