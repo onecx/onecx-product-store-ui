@@ -223,7 +223,7 @@ export class SlotSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initPermissions()
+    void this.initPermissions()
     this.initGlobalFilter()
     this.prepareActionButtons()
     this.prepareStateValues()
@@ -449,11 +449,11 @@ export class SlotSearchComponent implements OnInit {
   }
 
   public onBack() {
-    this.router.navigate(['../'], { relativeTo: this.route })
+    void this.router.navigate(['../'], { relativeTo: this.route })
   }
   public onGotoProduct(ev: any, data: SlotData) {
     ev.stopPropagation()
-    this.router.navigate(['../', data.productName], { fragment: 'apps', relativeTo: this.route })
+    void this.router.navigate(['../', data.productName], { fragment: 'apps', relativeTo: this.route })
   }
   public onSlotDetail(mode: ChangeMode, ev: MouseEvent, data: SlotData) {
     ev.stopPropagation()

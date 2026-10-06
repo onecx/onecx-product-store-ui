@@ -304,22 +304,22 @@ export class ProductSearchComponent implements OnInit {
   public onAppClick(item: RowListGridData): void {
     const product = item as unknown as ProductAbstract
     if (!product?.name) return
-    this.router.navigate(['./', product.name], { relativeTo: this.route })
+    void this.router.navigate(['./', product.name], { relativeTo: this.route })
   }
   public onSearchReset() {
     this.searchCriteriaForm.reset()
   }
   public onAppSearch() {
-    this.router.navigate(['./apps'], { relativeTo: this.route })
+    void this.router.navigate(['./apps'], { relativeTo: this.route })
   }
   public onEndpointSearch() {
-    this.router.navigate(['./endpoints'], { relativeTo: this.route })
+    void this.router.navigate(['./endpoints'], { relativeTo: this.route })
   }
   public onSlotSearch() {
-    this.router.navigate(['./slots'], { relativeTo: this.route })
+    void this.router.navigate(['./slots'], { relativeTo: this.route })
   }
   public onNewProduct() {
-    this.router.navigate(['./new'], { relativeTo: this.route })
+    void this.router.navigate(['./new'], { relativeTo: this.route })
   }
 
   private updateSearchParamsFromState(): void {
@@ -329,7 +329,7 @@ export class ProductSearchComponent implements OnInit {
       classifications: this.searchCriteriaForm.controls['classifications'].value
     }
 
-    this.router.navigate([], {
+    void this.router.navigate([], {
       relativeTo: this.route,
       queryParams,
       replaceUrl: true,
