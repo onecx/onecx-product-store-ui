@@ -250,7 +250,11 @@
       "SLOTS.LABEL": "Slots",
       "SLOTS.TOOLTIP": "Display Slots",
       "SLOTS.HEADER": "Slots",
-      "SLOTS.SUBHEADER": "Search and manage Slots (UI area with various content) declared by Microfrontends"
+      "SLOTS.SUBHEADER": "Search and manage Slots (UI area with various content) declared by Microfrontends",
+      "RESET_BUTTON_SEARCH_AND_RESULTS": {
+        "ARIA_LABEL": "Reset search criteria and results",
+        "DETAIL": "Reset search criteria and results"
+      }
     },
     "LOGO": {
       "LABEL": "Logo",
