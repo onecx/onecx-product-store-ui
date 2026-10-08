@@ -286,7 +286,7 @@ export class ProductDetailComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.msgService.success({ summaryKey: 'ACTIONS.CREATE.PRODUCT.OK' })
-          void this.router.navigate(['../', data?.name], { relativeTo: this.route })
+          this.router.navigate(['../', data?.name], { relativeTo: this.route }).catch((err) => console.error(err))
           this.cleanupAfterDataChanged(data)
         },
         error: (err) => this.displaySaveError(err)
@@ -325,7 +325,7 @@ export class ProductDetailComponent implements OnInit {
   public onProductDeleted(deleted: boolean): void {
     this.productDeleteVisible = false
     if (deleted) {
-      void this.router.navigate(['../'], { relativeTo: this.route })
+      this.router.navigate(['../'], { relativeTo: this.route }).catch((err) => console.error(err))
     }
   }
 

@@ -19,7 +19,7 @@ import { bootstrapRemoteComponent } from '@onecx/angular-webcomponents'
 import { environment } from 'src/environments/environment'
 import { OneCXProductDataComponent } from './product-data.component'
 
-void bootstrapRemoteComponent(OneCXProductDataComponent, 'ocx-product-data-component', environment.production, [
+bootstrapRemoteComponent(OneCXProductDataComponent, 'ocx-product-data-component', environment.production, [
   provideHttpClient(withInterceptorsFromDi()),
   importProvidersFrom(AngularAcceleratorModule, AngularAuthModule, BrowserAnimationsModule),
   provideAnimations(),
@@ -45,4 +45,4 @@ void bootstrapRemoteComponent(OneCXProductDataComponent, 'ocx-product-data-compo
       children: []
     }
   ])
-])
+]).catch((err) => console.error(err))

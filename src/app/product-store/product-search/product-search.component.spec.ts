@@ -382,39 +382,94 @@ describe('ProductSearchComponent', () => {
 
   describe('navigate', () => {
     it('should navigate to new product onNewProduct', () => {
-      const routerSpy = spyOn(router, 'navigate')
+      const routerSpy = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true))
 
       component.onNewProduct()
 
       expect(routerSpy).toHaveBeenCalledWith(['./new'], jasmine.any(Object))
     })
 
+    it('should log error when navigation rejects onNewProduct', async () => {
+      const error = new Error('navigation failed')
+      spyOn(console, 'error')
+      spyOn(router, 'navigate').and.returnValue(Promise.reject(error))
+
+      component.onNewProduct()
+      await Promise.resolve()
+
+      expect(console.error).toHaveBeenCalledWith(error)
+    })
+
     it('should navigate to apps onAppSearch', () => {
-      const routerSpy = spyOn(router, 'navigate')
+      const routerSpy = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true))
 
       component.onAppSearch()
 
       expect(routerSpy).toHaveBeenCalledWith(['./apps'], jasmine.any(Object))
     })
 
-    it('should navigate to slots onSlotSearch', () => {
-      const routerSpy = spyOn(router, 'navigate')
+    it('should log error when app search navigation rejects onAppSearch', async () => {
+      const error = new Error('navigation failed')
+      spyOn(console, 'error')
+      spyOn(router, 'navigate').and.returnValue(Promise.reject(error))
+
+      component.onAppSearch()
+      await Promise.resolve()
+
+      expect(console.error).toHaveBeenCalledWith(error)
+    })
+
+    it('should navigate to endpoints onEndpointSearch', () => {
+      const routerSpy = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true))
 
       component.onEndpointSearch()
 
       expect(routerSpy).toHaveBeenCalledWith(['./endpoints'], jasmine.any(Object))
     })
 
+    it('should log error when endpoint search navigation rejects onEndpointSearch', async () => {
+      const error = new Error('navigation failed')
+      spyOn(console, 'error')
+      spyOn(router, 'navigate').and.returnValue(Promise.reject(error))
+
+      component.onEndpointSearch()
+      await Promise.resolve()
+
+      expect(console.error).toHaveBeenCalledWith(error)
+    })
+
     it('should navigate to slots onSlotSearch', () => {
-      const routerSpy = spyOn(router, 'navigate')
+      const routerSpy = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true))
 
       component.onSlotSearch()
 
       expect(routerSpy).toHaveBeenCalledWith(['./slots'], jasmine.any(Object))
     })
 
+    it('should log error when slot search navigation rejects onSlotSearch', async () => {
+      const error = new Error('navigation failed')
+      spyOn(console, 'error')
+      spyOn(router, 'navigate').and.returnValue(Promise.reject(error))
+
+      component.onSlotSearch()
+      await Promise.resolve()
+
+      expect(console.error).toHaveBeenCalledWith(error)
+    })
+
+    it('should log error when query param update navigation rejects', async () => {
+      const error = new Error('navigation failed')
+      spyOn(console, 'error')
+      spyOn(router, 'navigate').and.returnValue(Promise.reject(error))
+
+      component['updateSearchParamsFromState']()
+      await Promise.resolve()
+
+      expect(console.error).toHaveBeenCalledWith(error)
+    })
+
     it('should navigate to detail page - name exists', () => {
-      const routerSpy = spyOn(router, 'navigate')
+      const routerSpy = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true))
 
       const product = { name: 'product' }
       component.onAppClick(product as unknown as RowListGridData)
@@ -422,8 +477,20 @@ describe('ProductSearchComponent', () => {
       expect(routerSpy).toHaveBeenCalledWith(['./', product.name], jasmine.any(Object))
     })
 
+    it('should log error when detail navigation rejects onAppClick', async () => {
+      const error = new Error('navigation failed')
+      const product = { name: 'product' }
+      spyOn(console, 'error')
+      spyOn(router, 'navigate').and.returnValue(Promise.reject(error))
+
+      component.onAppClick(product as unknown as RowListGridData)
+      await Promise.resolve()
+
+      expect(console.error).toHaveBeenCalledWith(error)
+    })
+
     it('should navigate to detail page - name does not exist', () => {
-      const routerSpy = spyOn(router, 'navigate')
+      const routerSpy = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true))
 
       const product = { displayName: 'product' }
       component.onAppClick(product as unknown as RowListGridData)

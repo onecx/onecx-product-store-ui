@@ -111,6 +111,7 @@ describe('SlotSearchComponent', () => {
   }
 
   beforeEach(waitForAsync(() => {
+    routerSpy.navigate.and.returnValue(Promise.resolve(true))
     TestBed.configureTestingModule({
       imports: [
         SlotSearchComponent,
@@ -169,6 +170,17 @@ describe('SlotSearchComponent', () => {
   describe('initialize', () => {
     it('should create', () => {
       expect(component).toBeTruthy()
+    })
+
+    it('should log error when initPermissions rejects during ngOnInit', async () => {
+      const error = new Error('permissions failed')
+      spyOn(console, 'error')
+      mockUserService.hasPermission.and.returnValue(Promise.reject(error))
+
+      component.ngOnInit()
+      await Promise.resolve()
+
+      expect(console.error).toHaveBeenCalledWith(error)
     })
 
     it('slot state translations', (done) => {
@@ -384,6 +396,17 @@ describe('SlotSearchComponent', () => {
       expect(routerSpy.navigate).toHaveBeenCalledWith(['../'], { relativeTo: routeMock })
     })
 
+    it('should log error when back navigation rejects onBack', async () => {
+      const error = new Error('navigation failed')
+      spyOn(console, 'error')
+      routerSpy.navigate.and.returnValue(Promise.reject(error))
+
+      component.onBack()
+      await Promise.resolve()
+
+      expect(console.error).toHaveBeenCalledWith(error)
+    })
+
     it('should stop event propagation and navigate to the product onGotoProduct', () => {
       const event = { stopPropagation: jasmine.createSpy() }
 
@@ -394,6 +417,18 @@ describe('SlotSearchComponent', () => {
         fragment: 'apps',
         relativeTo: routeMock
       })
+    })
+
+    it('should log error when product navigation rejects onGotoProduct', async () => {
+      const error = new Error('navigation failed')
+      const event = { stopPropagation: jasmine.createSpy() }
+      spyOn(console, 'error')
+      routerSpy.navigate.and.returnValue(Promise.reject(error))
+
+      component.onGotoProduct(event as any, { ...slots[0] } as SlotData)
+      await Promise.resolve()
+
+      expect(console.error).toHaveBeenCalledWith(error)
     })
 
     it('should stop event propagation on click', () => {

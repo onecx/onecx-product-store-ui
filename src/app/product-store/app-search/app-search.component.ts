@@ -425,7 +425,7 @@ export class AppSearchComponent implements OnInit {
   }
   public onGotoProduct(ev: any, product: string) {
     ev.stopPropagation()
-    void this.router.navigate(['../', product], { relativeTo: this.route })
+    this.router.navigate(['../', product], { relativeTo: this.route }).catch((err) => console.error(err))
   }
 
   public onAppDetail(ev: any, app: AppAbstract) {

@@ -304,22 +304,22 @@ export class ProductSearchComponent implements OnInit {
   public onAppClick(item: RowListGridData): void {
     const product = item as unknown as ProductAbstract
     if (!product?.name) return
-    void this.router.navigate(['./', product.name], { relativeTo: this.route })
+    this.router.navigate(['./', product.name], { relativeTo: this.route }).catch((err) => console.error(err))
   }
   public onSearchReset() {
     this.searchCriteriaForm.reset()
   }
   public onAppSearch() {
-    void this.router.navigate(['./apps'], { relativeTo: this.route })
+    this.router.navigate(['./apps'], { relativeTo: this.route }).catch((err) => console.error(err))
   }
   public onEndpointSearch() {
-    void this.router.navigate(['./endpoints'], { relativeTo: this.route })
+    this.router.navigate(['./endpoints'], { relativeTo: this.route }).catch((err) => console.error(err))
   }
   public onSlotSearch() {
-    void this.router.navigate(['./slots'], { relativeTo: this.route })
+    this.router.navigate(['./slots'], { relativeTo: this.route }).catch((err) => console.error(err))
   }
   public onNewProduct() {
-    void this.router.navigate(['./new'], { relativeTo: this.route })
+    this.router.navigate(['./new'], { relativeTo: this.route }).catch((err) => console.error(err))
   }
 
   private updateSearchParamsFromState(): void {
@@ -329,12 +329,14 @@ export class ProductSearchComponent implements OnInit {
       classifications: this.searchCriteriaForm.controls['classifications'].value
     }
 
-    void this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams,
-      replaceUrl: true,
-      queryParamsHandling: 'merge'
-    })
+    this.router
+      .navigate([], {
+        relativeTo: this.route,
+        queryParams,
+        replaceUrl: true,
+        queryParamsHandling: 'merge'
+      })
+      .catch((err) => console.error(err))
   }
 
   private restoreStateFromQueryParams(): boolean {

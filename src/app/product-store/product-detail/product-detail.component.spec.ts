@@ -225,7 +225,7 @@ describe('ProductDetailComponent', () => {
     it('should save created product - successful', () => {
       productApiSpy.createProduct.and.returnValue(of({ ...product, id: undefined }))
       component.changeMode = 'CREATE'
-      const routerSpy = spyOn(router, 'navigate')
+      const routerSpy = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true))
 
       component.onSaveProduct()
       component.product$.subscribe()
@@ -233,6 +233,19 @@ describe('ProductDetailComponent', () => {
       expect(component.changeMode).toEqual('VIEW')
       expect(msgServiceSpy.success).toHaveBeenCalledWith({ summaryKey: 'ACTIONS.CREATE.PRODUCT.OK' })
       expect(routerSpy).toHaveBeenCalledWith(['../', product.name], jasmine.any(Object))
+    })
+
+    it('should log error when created product navigation fails', async () => {
+      const error = new Error('navigation failed')
+      productApiSpy.createProduct.and.returnValue(of({ ...product, id: undefined, name: product.name }))
+      component.changeMode = 'CREATE'
+      spyOn(console, 'error')
+      spyOn(router, 'navigate').and.returnValue(Promise.reject(error))
+
+      component.onSaveProduct()
+      await Promise.resolve()
+
+      expect(console.error).toHaveBeenCalledWith(error)
     })
 
     it('should save created product - failed', () => {
@@ -293,7 +306,7 @@ describe('ProductDetailComponent', () => {
 
     it('should navigate away when product was deleted', () => {
       component.productDeleteVisible = true
-      const routerSpy = spyOn(router, 'navigate')
+      const routerSpy = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true))
 
       component.onProductDeleted(true)
 
@@ -301,9 +314,21 @@ describe('ProductDetailComponent', () => {
       expect(routerSpy).toHaveBeenCalledWith(['../'], jasmine.any(Object))
     })
 
+    it('should log error when product deletion navigation fails', async () => {
+      const error = new Error('navigation failed')
+      component.productDeleteVisible = true
+      spyOn(console, 'error')
+      spyOn(router, 'navigate').and.returnValue(Promise.reject(error))
+
+      component.onProductDeleted(true)
+      await Promise.resolve()
+
+      expect(console.error).toHaveBeenCalledWith(error)
+    })
+
     it('should not navigate when deletion was cancelled', () => {
       component.productDeleteVisible = true
-      const routerSpy = spyOn(router, 'navigate')
+      const routerSpy = spyOn(router, 'navigate').and.returnValue(Promise.resolve(true))
 
       component.onProductDeleted(false)
 

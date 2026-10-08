@@ -2,4 +2,4 @@ import { environment } from 'src/environments/environment'
 import { OneCXProductStoreModule } from './app/onecx-product-store-remote.module'
 import { bootstrapModule } from '@onecx/angular-webcomponents'
 
-void bootstrapModule(OneCXProductStoreModule, 'microfrontend', environment.production)
+bootstrapModule(OneCXProductStoreModule, 'microfrontend', environment.production).catch((err) => console.error(err))
