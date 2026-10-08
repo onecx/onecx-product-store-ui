@@ -450,6 +450,7 @@ export class SlotSearchComponent implements OnInit {
   public onSearchReset() {
     this.searchCriteriaForm.reset()
     this.onFilterChange('')
+    this.onSearch()
   }
 
   public onBack() {

@@ -314,6 +314,7 @@ export class EndpointSearchComponent implements OnInit {
   public onCriteriaReset() {
     this.searchCriteriaForm.reset()
     this.onGlobalFilter('')
+    this.onSearch()
   }
   public onAppDetail(ev: Event, data: MfeEndpoint) {
     ev.stopPropagation()

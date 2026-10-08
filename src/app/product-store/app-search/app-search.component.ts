@@ -422,6 +422,7 @@ export class AppSearchComponent implements OnInit {
   }
   public onSearchReset() {
     this.appSearchCriteriaForm.reset({ appType: 'ALL' })
+    this.onSearch()
   }
   public onGotoProduct(ev: any, product: string) {
     ev.stopPropagation()

@@ -308,6 +308,7 @@ export class ProductSearchComponent implements OnInit {
   }
   public onSearchReset() {
     this.searchCriteriaForm.reset()
+    this.onSearch()
   }
   public onAppSearch() {
     this.router.navigate(['./apps'], { relativeTo: this.route }).catch((err) => console.error(err))
