@@ -117,7 +117,6 @@ describe('AppSearchComponent', () => {
     routerSpy.navigate.and.returnValue(Promise.resolve(true))
     fixture = TestBed.createComponent(AppSearchComponent)
     component = fixture.componentInstance
-    // fixture.detectChanges()
     fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
     component.hasEditPermission = true
   })
