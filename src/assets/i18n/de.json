@@ -250,7 +250,11 @@
       "SLOTS.LABEL": "Slots",
       "SLOTS.TOOLTIP": "Slots anzeigen",
       "SLOTS.HEADER": "Slots",
-      "SLOTS.SUBHEADER": "Suchen und verwalten von Slots (UI Bereich mit variablem Inhalt)"
+      "SLOTS.SUBHEADER": "Suchen und verwalten von Slots (UI Bereich mit variablem Inhalt)",
+      "RESET_BUTTON": {
+        "ARIA_LABEL": "Suchkriterien und Ergebnisse zurücksetzen",
+        "TOOLTIP": "Suchkriterien und Ergebnisse zurücksetzen"
+      }
     },
     "LOGO": {
       "LABEL": "Logo",

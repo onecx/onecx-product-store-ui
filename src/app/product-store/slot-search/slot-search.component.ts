@@ -232,8 +232,12 @@ export class SlotSearchComponent implements OnInit {
   }
 
   private async initPermissions(): Promise<void> {
-    this.hasViewPermission = await this.user.hasPermission('SLOT#VIEW')
-    this.hasEditPermission = await this.user.hasPermission('SLOT#EDIT')
+    try {
+      this.hasViewPermission = await this.user.hasPermission('SLOT#VIEW')
+      this.hasEditPermission = await this.user.hasPermission('SLOT#EDIT')
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   /****************************************************************************
@@ -446,14 +450,17 @@ export class SlotSearchComponent implements OnInit {
   public onSearchReset() {
     this.searchCriteriaForm.reset()
     this.onFilterChange('')
+    this.onSearch()
   }
 
   public onBack() {
-    this.router.navigate(['../'], { relativeTo: this.route })
+    this.router.navigate(['../'], { relativeTo: this.route }).catch((err) => console.error(err))
   }
   public onGotoProduct(ev: any, data: SlotData) {
     ev.stopPropagation()
-    this.router.navigate(['../', data.productName], { fragment: 'apps', relativeTo: this.route })
+    this.router
+      .navigate(['../', data.productName], { fragment: 'apps', relativeTo: this.route })
+      .catch((err) => console.error(err))
   }
   public onSlotDetail(mode: ChangeMode, ev: MouseEvent, data: SlotData) {
     ev.stopPropagation()

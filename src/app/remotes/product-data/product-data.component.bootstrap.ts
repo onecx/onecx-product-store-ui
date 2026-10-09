@@ -45,4 +45,4 @@ bootstrapRemoteComponent(OneCXProductDataComponent, 'ocx-product-data-component'
       children: []
     }
   ])
-])
+]).catch((err) => console.error(err))

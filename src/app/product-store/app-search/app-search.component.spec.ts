@@ -114,9 +114,9 @@ describe('AppSearchComponent', () => {
   }))
 
   beforeEach(() => {
+    routerSpy.navigate.and.returnValue(Promise.resolve(true))
     fixture = TestBed.createComponent(AppSearchComponent)
     component = fixture.componentInstance
-    // fixture.detectChanges()
     fixture.componentInstance.ngOnInit() // solved ExpressionChangedAfterItHasBeenCheckedError
     component.hasEditPermission = true
   })
@@ -509,6 +509,18 @@ describe('AppSearchComponent', () => {
 
     expect(event.stopPropagation).toHaveBeenCalled()
     expect(routerSpy.navigate).toHaveBeenCalledWith(['../', 'product'], { relativeTo: routeMock })
+  })
+
+  it('should log error when navigation rejects onGotoProduct', async () => {
+    const event = { stopPropagation: jasmine.createSpy() }
+    const error = new Error('navigation failed')
+    spyOn(console, 'error')
+    routerSpy.navigate.and.returnValue(Promise.reject(error))
+
+    component.onGotoProduct(event as any, 'product')
+    await Promise.resolve()
+
+    expect(console.error).toHaveBeenCalledWith(error)
   })
 
   it('should assign app to component property and change to edit mode onAppDetail', () => {

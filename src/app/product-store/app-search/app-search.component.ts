@@ -422,10 +422,11 @@ export class AppSearchComponent implements OnInit {
   }
   public onSearchReset() {
     this.appSearchCriteriaForm.reset({ appType: 'ALL' })
+    this.onSearch()
   }
   public onGotoProduct(ev: any, product: string) {
     ev.stopPropagation()
-    this.router.navigate(['../', product], { relativeTo: this.route })
+    this.router.navigate(['../', product], { relativeTo: this.route }).catch((err) => console.error(err))
   }
 
   public onAppDetail(ev: any, app: AppAbstract) {
