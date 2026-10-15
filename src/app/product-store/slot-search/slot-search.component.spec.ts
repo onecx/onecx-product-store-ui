@@ -250,7 +250,7 @@ describe('SlotSearchComponent', () => {
       apiProductsServiceSpy.searchProducts.and.returnValue(of({ stream: mockP, totalElements: mockP.length }))
       apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: mockS, totalElements: mockS.length }))
       // search condition set only to trigger the requests, but does not influence the actual filtering logic
-      component.searchCriteriaForm.controls['productName'].setValue('prod1')
+      component.searchCriteriaForm.controls['productDisplayName'].setValue('prod1')
       component.searchCriteriaForm.controls['slotName'].setValue('s5')
       component['cachedProducts'] = []
 
@@ -262,6 +262,12 @@ describe('SlotSearchComponent', () => {
       expect(res).toHaveSize(5)
       expect(component.loading).toBeFalse()
       expect(component['cachedProducts']).toEqual(mockP)
+      expect(apiProductsServiceSpy.searchProducts).toHaveBeenCalledWith({
+        productSearchCriteria: { productDisplayName: 'prod1', pageSize: 100 }
+      })
+      expect(apiSlotsServiceSpy.searchSlots).toHaveBeenCalledWith({
+        slotSearchCriteria: { name: 's5', productDisplayName: 'prod1', pageSize: 1000 }
+      })
 
       // test caching: if product conddition has not changed, cached products should be reused
       component.searchCriteriaForm.controls['slotName'].setValue('s4')
@@ -279,7 +285,7 @@ describe('SlotSearchComponent', () => {
       apiProductsServiceSpy.searchProducts.and.returnValue(of({}))
       apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: slots, totalElements: slots.length }))
       // search condition set only to trigger the requests, but does not influence the actual filtering logic
-      component.searchCriteriaForm.controls['productName'].setValue(products[1].displayName ?? null)
+      component.searchCriteriaForm.controls['productDisplayName'].setValue(products[1].displayName ?? null)
       component.searchCriteriaForm.controls['slotName'].setValue('slot-3')
 
       component.onSearch()
@@ -295,7 +301,7 @@ describe('SlotSearchComponent', () => {
       apiSlotsServiceSpy.searchSlots.and.returnValue(of({} as SlotPageResult))
 
       // search condition set only to trigger the requests, but does not influence the actual filtering logic
-      component.searchCriteriaForm.controls['productName'].setValue(products[1].displayName ?? null)
+      component.searchCriteriaForm.controls['productDisplayName'].setValue(products[1].displayName ?? null)
       component.searchCriteriaForm.controls['slotName'].setValue('slot-3')
 
       component.onSearch()
@@ -311,7 +317,7 @@ describe('SlotSearchComponent', () => {
       apiProductsServiceSpy.searchProducts.and.returnValue(throwError(() => errorResponse))
       apiSlotsServiceSpy.searchSlots.and.returnValue(of({} as SlotPageResult))
       // search condition set only to trigger the requests, but does not influence the actual filtering logic
-      component.searchCriteriaForm.controls['productName'].setValue(products[1].displayName ?? null)
+      component.searchCriteriaForm.controls['productDisplayName'].setValue(products[1].displayName ?? null)
       component.searchCriteriaForm.controls['slotName'].setValue('slot-3')
       spyOn(console, 'error')
 
@@ -331,7 +337,7 @@ describe('SlotSearchComponent', () => {
       apiProductsServiceSpy.searchProducts.and.returnValue(of({ stream: products }))
       apiSlotsServiceSpy.searchSlots.and.returnValue(throwError(() => errorResponse))
       // search condition set only to trigger the requests, but does not influence the actual filtering logic
-      component.searchCriteriaForm.controls['productName'].setValue(products[1].displayName ?? null)
+      component.searchCriteriaForm.controls['productDisplayName'].setValue(products[1].displayName ?? null)
       component.searchCriteriaForm.controls['slotName'].setValue('slot-3')
       spyOn(console, 'error')
 

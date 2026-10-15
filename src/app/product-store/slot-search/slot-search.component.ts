@@ -47,7 +47,7 @@ import { SlotDeleteComponent } from '../slot-delete/slot-delete.component'
 
 export interface SlotSearchCriteriaForm {
   slotName: FormControl<string | null>
-  productName: FormControl<string | null>
+  productDisplayName: FormControl<string | null>
 }
 export type SlotData = Slot & { productDisplayName: string; state: string }
 export type SlotState = { label: string; value: string; icon: string }
@@ -218,7 +218,7 @@ export class SlotSearchComponent implements OnInit {
     this.filteredColumns = this.columns.filter((a) => a.active === true)
     this.searchCriteriaForm = new FormGroup<SlotSearchCriteriaForm>({
       slotName: new FormControl<string | null>(null),
-      productName: new FormControl<string | null>(null)
+      productDisplayName: new FormControl<string | null>(null)
     })
   }
 
@@ -245,17 +245,17 @@ export class SlotSearchComponent implements OnInit {
    */
   // Combine search criteria for slots and products (get the product display name)
   private prepareSearchCriteria(): void {
-    const productName = this.searchCriteriaForm.controls['productName'].value ?? undefined
+    const productDisplayName = this.searchCriteriaForm.controls['productDisplayName'].value ?? undefined
     const slotName = this.searchCriteriaForm.controls['slotName'].value ?? undefined
 
     this.searchCriteria$.next({
       productFilters: {
-        ...(productName ? { names: [productName] } : {}),
+        ...(productDisplayName ? { productDisplayName } : {}),
         pageSize: 100
       },
       slotFilters: {
         ...(slotName ? { name: slotName } : {}),
-        ...(productName ? { productName: productName } : {}),
+        ...(productDisplayName ? { productDisplayName } : {}),
         pageSize: 1000
       }
     })
@@ -335,7 +335,7 @@ export class SlotSearchComponent implements OnInit {
   }
   private sortSlots(a: SlotData, b: SlotData): number {
     return (
-      this.upperValue(a.productName).localeCompare(this.upperValue(b.productName)) ||
+      this.upperValue(a.productDisplayName).localeCompare(this.upperValue(b.productDisplayName)) ||
       this.upperValue(a.appId).localeCompare(this.upperValue(b.appId)) ||
       this.upperValue(a.name).localeCompare(this.upperValue(b.name))
     )

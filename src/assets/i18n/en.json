@@ -420,9 +420,9 @@
     }
   },
   "SLOT": {
-    "NAME": "Slot Name",
+    "NAME": "Slot",
     "DESCRIPTION": "Description",
-    "PRODUCT_NAME": "Application name",
+    "PRODUCT_NAME": "Application",
     "APP_ID": "Microfrontend",
     "STATE": "State",
     "TOOLTIPS": {
