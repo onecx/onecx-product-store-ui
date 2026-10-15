@@ -15,6 +15,7 @@ import { MicrofrontendType } from './microfrontendType';
 export interface MfeAndMsSearchCriteria { 
     appName?: string | null;
     productName?: string | null;
+    productDisplayName?: string | null;
     type?: MicrofrontendType;
     /**
      * The number of page.
