@@ -27,6 +27,20 @@
       <p-floatlabel variant="on">
         <input
           pInputText
+          id="ps_slot_search_criteria_app_id"
+          type="text"
+          formControlName="appId"
+          class="w-15rem"
+          [ariaLabel]="'SLOT.APP_ID' | translate"
+          [pTooltip]="('SLOT.TOOLTIPS.APP_ID' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        />
+        <label for="ps_slot_search_criteria_app_id" aria-hidden="true">{{ 'SLOT.APP_ID' | translate }}</label>
+      </p-floatlabel>
+      <p-floatlabel variant="on">
+        <input
+          pInputText
           id="ps_slot_search_criteria_product_display_name"
           type="text"
           formControlName="productDisplayName"

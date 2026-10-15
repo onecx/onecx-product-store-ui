@@ -250,8 +250,9 @@ describe('SlotSearchComponent', () => {
       apiProductsServiceSpy.searchProducts.and.returnValue(of({ stream: mockP, totalElements: mockP.length }))
       apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: mockS, totalElements: mockS.length }))
       // search condition set only to trigger the requests, but does not influence the actual filtering logic
-      component.searchCriteriaForm.controls['productDisplayName'].setValue('prod1')
       component.searchCriteriaForm.controls['slotName'].setValue('s5')
+      component.searchCriteriaForm.controls['appId'].setValue('appId1')
+      component.searchCriteriaForm.controls['productDisplayName'].setValue('prod1')
       component['cachedProducts'] = []
 
       component.onSearch()
@@ -266,7 +267,7 @@ describe('SlotSearchComponent', () => {
         productSearchCriteria: { productDisplayName: 'prod1', pageSize: 100 }
       })
       expect(apiSlotsServiceSpy.searchSlots).toHaveBeenCalledWith({
-        slotSearchCriteria: { name: 's5', productDisplayName: 'prod1', pageSize: 1000 }
+        slotSearchCriteria: { name: 's5', appId: 'appId1', productDisplayName: 'prod1', pageSize: 1000 }
       })
 
       // test caching: if product conddition has not changed, cached products should be reused

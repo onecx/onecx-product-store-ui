@@ -47,6 +47,7 @@ import { SlotDeleteComponent } from '../slot-delete/slot-delete.component'
 
 export interface SlotSearchCriteriaForm {
   slotName: FormControl<string | null>
+  appId: FormControl<string | null>
   productDisplayName: FormControl<string | null>
 }
 export type SlotData = Slot & { productDisplayName: string; state: string }
@@ -218,6 +219,7 @@ export class SlotSearchComponent implements OnInit {
     this.filteredColumns = this.columns.filter((a) => a.active === true)
     this.searchCriteriaForm = new FormGroup<SlotSearchCriteriaForm>({
       slotName: new FormControl<string | null>(null),
+      appId: new FormControl<string | null>(null),
       productDisplayName: new FormControl<string | null>(null)
     })
   }
@@ -246,6 +248,7 @@ export class SlotSearchComponent implements OnInit {
   // Combine search criteria for slots and products (get the product display name)
   private prepareSearchCriteria(): void {
     const productDisplayName = this.searchCriteriaForm.controls['productDisplayName'].value ?? undefined
+    const appId = this.searchCriteriaForm.controls['appId'].value ?? undefined
     const slotName = this.searchCriteriaForm.controls['slotName'].value ?? undefined
 
     this.searchCriteria$.next({
@@ -255,6 +258,7 @@ export class SlotSearchComponent implements OnInit {
       },
       slotFilters: {
         ...(slotName ? { name: slotName } : {}),
+        ...(appId ? { appId } : {}),
         ...(productDisplayName ? { productDisplayName } : {}),
         pageSize: 1000
       }
