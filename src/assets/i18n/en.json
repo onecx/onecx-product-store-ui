@@ -328,8 +328,8 @@
     "DEPRECATED": "Outdated",
     "UNDEPLOYED": "Undeployed",
     "CRITERIA": {
-      "NAME": "ID / Name",
-      "NAME.TOOLTIP": "ID or Name of the App"
+      "NAME": "Application",
+      "NAME.TOOLTIP": "Name of the App"
     },
     "TOOLTIPS": {
       "APP_ID": "Unique ID - base identifier for this App",

@@ -24,20 +24,6 @@
         />
         <label for="ps_app_search_criteria_app_name" aria-hidden="true">{{ 'APP.CRITERIA.NAME' | translate }}</label>
       </p-floatlabel>
-      <p-floatlabel variant="on">
-        <input
-          pInputText
-          type="text"
-          id="ps_app_search_criteria_product_name"
-          class="w-11rem sm:w-15rem text-responsive"
-          formControlName="productName"
-          [ariaLabel]="'APP.PRODUCT_NAME' | translate"
-          [pTooltip]="'APP.TOOLTIPS.PRODUCT_NAME' | translate"
-          tooltipPosition="top"
-          tooltipEvent="hover"
-        />
-        <label for="ps_app_search_criteria_product_name" aria-hidden="true">{{ 'APP.PRODUCT_NAME' | translate }}</label>
-      </p-floatlabel>
       <div class="slim-selectbutton search-criteria-selectbutton">
         <p-selectButton
           inputid="ps_app_search_criteria_app_type"

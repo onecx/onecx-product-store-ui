@@ -24,8 +24,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations'
 
 const form = new FormGroup<AppSearchCriteria>({
   appName: new FormControl<string | null>(null, Validators.minLength(2)),
-  appType: new FormControl<AppType | null>(null),
-  productName: new FormControl<string | null>(null)
+  appType: new FormControl<AppType | null>(null)
 })
 
 describe('AppSearchComponent', () => {

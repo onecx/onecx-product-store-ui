@@ -47,7 +47,6 @@ import { AppDeleteComponent } from '../app-delete/app-delete.component'
 export interface AppSearchCriteria {
   appName: FormControl<string | null>
   appType: FormControl<AppFilterType | null>
-  productName: FormControl<string | null>
 }
 export type AppType = 'MS' | 'MFE'
 export type AppName = 'Microservice' | 'Microfrontend'
@@ -152,8 +151,7 @@ export class AppSearchComponent implements OnInit {
     ]
     this.appSearchCriteriaForm = new FormGroup<AppSearchCriteria>({
       appName: new FormControl<string | null>(null),
-      appType: new FormControl<AppFilterType | null>('ALL'),
-      productName: new FormControl<string | null>(null)
+      appType: new FormControl<AppFilterType | null>('ALL')
     })
     this.appSearchCriteriaForm.controls['appType'].setValue('ALL') // default: all app types
     // quick filter
@@ -207,7 +205,6 @@ export class AppSearchComponent implements OnInit {
       .searchMicrofrontends({
         mfeAndMsSearchCriteria: {
           appName: this.appSearchCriteriaForm.controls['appName'].value,
-          productName: this.appSearchCriteriaForm.controls['productName'].value,
           pageSize: 1000
         }
       })
@@ -226,7 +223,6 @@ export class AppSearchComponent implements OnInit {
       .searchMicroservice({
         mfeAndMsSearchCriteria: {
           appName: this.appSearchCriteriaForm.controls['appName'].value,
-          productName: this.appSearchCriteriaForm.controls['productName'].value,
           pageSize: 1000
         }
       })
