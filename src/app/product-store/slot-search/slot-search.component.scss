@@ -75,7 +75,7 @@
     vertical-align: middle !important;
   }
 
-  .p-datatable-thead > tr > th:has(#state-header-name) .table-header-wrapper {
+  .state-header-wrapper {
     justify-content: center !important;
   }
 
@@ -84,7 +84,7 @@
     .table-header-wrapper {
       flex-direction: row !important;
       align-items: center !important;
-      justify-content: flex-start !important;
+      justify-content: flex-start;
       gap: 0.35rem;
       height: auto !important;
       > span:first-child {
