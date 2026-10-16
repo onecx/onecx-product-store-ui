@@ -381,7 +381,7 @@
     }
   },
   "PRODUCT": {
-    "NAME": "Name",
+    "NAME": "Applikation",
     "VERSION": "Version",
     "VERSION.MISSING": "Version nicht gesetzt",
     "DESCRIPTION": "Beschreibung",
