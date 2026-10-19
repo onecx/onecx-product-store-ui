@@ -76,14 +76,14 @@
   }
 
   .state-header-wrapper {
-    justify-content: center !important;
+    padding-left: 20%;
   }
 
   /* keep sortable header title and icon on one line */
   ocx-interactive-data-view {
     .table-header-wrapper {
       flex-direction: row;
-      align-items: center !important;
+      align-items: center;
       justify-content: flex-start;
       gap: 0.35rem;
       height: auto;
