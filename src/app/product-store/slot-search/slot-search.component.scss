@@ -25,14 +25,13 @@
     .p-datatable-thead > tr > th,
     .p-datatable-tbody > tr > td {
       /* table cell padding is NOT managed by column settings */
-      padding: 0rem 1rem;
+      padding: 0.5rem 1rem;
       /* action column */
       &:first-child {
         border-right: 1px solid var(--surface-border, #dee2e6);
         width: 1rem;
         white-space: nowrap;
         text-align: center;
-        padding: 0.25rem 1rem;
       }
       /* slot name */
       &:nth-child(2) {
@@ -77,36 +76,6 @@
 
   .state-header-wrapper {
     padding-left: 20%;
-  }
-
-  /* keep sortable header title and icon on one line */
-  ocx-interactive-data-view {
-    .table-header-wrapper {
-      flex-direction: row;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 0.35rem;
-      height: auto;
-      > span:first-child {
-        white-space: nowrap;
-      }
-      .p-multiselect {
-        background-color: var(--table-header-bg);
-      }
-    }
-  }
-  .icon-button-header-wrapper {
-    button.sortButton,
-    button,
-    .pi-filter,
-    .pi-filter-fill {
-      padding: 0.5rem;
-      border-radius: 50%;
-      background-color: transparent;
-      &:hover {
-        background-color: var(--table-header-hover-bg, rgba(0, 0, 0, 0.05));
-      }
-    }
   }
 
   /* hide unusable slot extension point */
