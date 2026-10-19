@@ -328,8 +328,8 @@
     "DEPRECATED": "Outdated",
     "UNDEPLOYED": "Undeployed",
     "CRITERIA": {
-      "NAME": "Application",
-      "NAME.TOOLTIP": "Name of the App"
+      "NAME": "App",
+      "PRODUCT": "Application"
     },
     "TOOLTIPS": {
       "APP_ID": "Unique ID - base identifier for this App",
@@ -342,6 +342,8 @@
       "TECHNOLOGY": "Technology",
       "TYPE": "Type of the UI Component",
       "MS": "Microservice",
+      "NAME": "Name of the App",
+      "PRODUCT": "Name of the Application",
       "REMOTE_BASE_URL": "Remote Base URL",
       "REMOTE_ENTRY": "Remote Entry",
       "REMOTE_NAME": "Entry point of JavaScript file used by WebComponents",
