@@ -15,7 +15,6 @@ export interface ProductSearchCriteria {
     names?: Array<string>;
     providers?: Array<string>;
     classifications?: Array<string>;
-    productDisplayName?: string;
     /**
      * The number of page.
      */

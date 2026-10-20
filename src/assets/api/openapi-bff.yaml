@@ -1012,8 +1012,6 @@ components:
           type: array
           items:
             type: string
-        productDisplayName:
-          type: string
         pageNumber:
           format: int32
           description: The number of page.
