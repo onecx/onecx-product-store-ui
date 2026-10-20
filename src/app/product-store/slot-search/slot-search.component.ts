@@ -259,7 +259,7 @@ export class SlotSearchComponent implements OnInit {
       slotFilters: {
         ...(slotName ? { name: slotName } : {}),
         ...(appId ? { appId } : {}),
-        ...(productDisplayName ? { productDisplayName } : {}),
+        ...(productDisplayName ? { productName: productDisplayName, productDisplayName } : {}),
         pageSize: 1000
       }
     })

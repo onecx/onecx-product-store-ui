@@ -142,7 +142,7 @@
       },
       "ENDPOINT": {
         "LABEL": "Endpoint",
-        "PRODUCT_NAME": "Name or display name of Application which provides UI Endpoints",
+        "PRODUCT_NAME": "Name or display name of the Application which provides UI Endpoints",
         "LOAD_ERROR": "Failed to load Microfrontends and their UI Endpoints",
         "NOT_FOUND": "Microfrontends and their UI Endpoints were not found"
       },
@@ -379,7 +379,7 @@
       "NAME.SEARCH": "Name of the UI Endpoint",
       "PATH": "Path to the UI Endpoint",
       "PRODUCT_NAME": "Name of the application where UI endpoints are offered",
-      "APP_NAME": "Name of Microfrontend that provides the UI endpoint"
+      "APP_NAME": "Name of the Microfrontend that provides the UI endpoint"
     }
   },
   "PRODUCT": {
@@ -425,7 +425,8 @@
   "SLOT": {
     "NAME": "Slot",
     "DESCRIPTION": "Description",
-    "PRODUCT_NAME": "Application",
+    "PRODUCT": "Application",
+    "PRODUCT_NAME": "Application name",
     "APP_ID": "Microfrontend",
     "STATE": "State",
     "TOOLTIPS": {
@@ -433,8 +434,8 @@
       "NAME": "Name of the Slot",
       "DESCRIPTION": "Description of the Slot",
       "OPERATOR": "If set, the Slot was created by automation. All changes will be lost during the next deployment.",
-      "PRODUCT_NAME": "Name of the Application which provides the Slot",
-      "APP_ID": "Microfrontend providing the Slot",
+      "PRODUCT_NAME": "Name or display name of the Application which provides the Slot",
+      "APP_ID": "Name of the Microfrontend providing the Slot",
       "STATE": "Availability of the Slot"
     },
     "OPERATOR_SEARCH": "This Slot was created by automation. All changes will be lost during the next deployment.",

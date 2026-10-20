@@ -425,7 +425,8 @@
   "SLOT": {
     "NAME": "Slot",
     "DESCRIPTION": "Beschreibung",
-    "PRODUCT_NAME": "Applikation",
+    "PRODUCT": "Applikation",
+    "PRODUCT_NAME": "Applikationsname",
     "APP_ID": "Microfrontend",
     "STATE": "Zustand",
     "TOOLTIPS": {
@@ -433,8 +434,8 @@
       "NAME": "Name des Slots",
       "DESCRIPTION": "Beschreibung",
       "OPERATOR": "Wenn gesetzt, dann wurde der Slot automatisiert erstellt. Alle Änderungen gehen beim beim nächsten Deployment verloren.",
-      "PRODUCT_NAME": "Name der Applikation die den Slot anbietet",
-      "APP_ID": "Microfrontend das den Slot anbietet",
+      "PRODUCT_NAME": "Name oder Anzeigename der Applikation die den Slot anbietet",
+      "APP_ID": "Name der Microfrontend das den Slot anbietet",
       "STATE": "Verfügbarkeit des Slots"
     },
     "OPERATOR_SEARCH": "Dieser Slot wurde automatisiert erstellt. Alle Änderungen gehen beim beim nächsten Deployment verloren.",

@@ -267,7 +267,13 @@ describe('SlotSearchComponent', () => {
         productSearchCriteria: { productDisplayName: 'prod1', pageSize: 100 }
       })
       expect(apiSlotsServiceSpy.searchSlots).toHaveBeenCalledWith({
-        slotSearchCriteria: { name: 's5', appId: 'appId1', productDisplayName: 'prod1', pageSize: 1000 }
+        slotSearchCriteria: {
+          name: 's5',
+          appId: 'appId1',
+          productName: 'prod1',
+          productDisplayName: 'prod1',
+          pageSize: 1000
+        }
       })
 
       // test caching: if product conddition has not changed, cached products should be reused
