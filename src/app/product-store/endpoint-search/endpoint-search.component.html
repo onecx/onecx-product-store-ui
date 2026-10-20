@@ -12,17 +12,19 @@
     <div id="ps_endpoint_search_criteria" [formGroup]="searchCriteriaForm" class="flex flex-row flex-wrap gap-3">
       <p-floatlabel variant="on">
         <input
-          id="ps_endpoint_search_criteria_application_name"
+          id="ps_endpoint_search_criteria_product_name"
           pInputText
           type="text"
           class="w-11rem sm:w-18rem text-responsive"
-          formControlName="applicationDisplayName"
-          [ariaLabel]="'ENDPOINT.PRODUCT_NAME' | translate"
-          [pTooltip]="('ENDPOINT.PRODUCT_NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
+          formControlName="productDisplayName"
+          [ariaLabel]="'ACTIONS.SEARCH.ENDPOINT.PRODUCT_NAME' | translate"
+          [pTooltip]="
+            ('ACTIONS.SEARCH.ENDPOINT.PRODUCT_NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)
+          "
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="ps_endpoint_search_criteria_application_name">{{ 'ENDPOINT.PRODUCT_NAME' | translate }}</label>
+        <label for="ps_endpoint_search_criteria_product_name">{{ 'ENDPOINT.PRODUCT_NAME' | translate }}</label>
       </p-floatlabel>
 
       <p-floatlabel variant="on">
@@ -33,7 +35,7 @@
           class="w-11rem sm:w-18rem text-responsive"
           formControlName="microfrontendName"
           [ariaLabel]="'ENDPOINT.APP_NAME' | translate"
-          [pTooltip]="('ENDPOINT.APP_NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
+          [pTooltip]="('ENDPOINT.TOOLTIPS.APP_NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
           tooltipPosition="top"
           tooltipEvent="hover"
         />

@@ -208,6 +208,7 @@ export class AppSearchComponent implements OnInit {
         mfeAndMsSearchCriteria: {
           appName: this.appSearchCriteriaForm.controls['appName'].value,
           productName: this.appSearchCriteriaForm.controls['productName'].value,
+          productDisplayName: this.appSearchCriteriaForm.controls['productName'].value,
           pageSize: 1000
         }
       })
@@ -227,6 +228,7 @@ export class AppSearchComponent implements OnInit {
         mfeAndMsSearchCriteria: {
           appName: this.appSearchCriteriaForm.controls['appName'].value,
           productName: this.appSearchCriteriaForm.controls['productName'].value,
+          productDisplayName: this.appSearchCriteriaForm.controls['productName'].value,
           pageSize: 1000
         }
       })

@@ -22,7 +22,7 @@ import { EndpointSearchComponent, MfeEndpoint, ProductSearchCriteriaControls } f
 import { PermissionService } from '@onecx/angular-utils'
 
 const searchCriteriaForm = new FormGroup<ProductSearchCriteriaControls>({
-  applicationDisplayName: new FormControl<string | null>(null),
+  productDisplayName: new FormControl<string | null>(null),
   microfrontendName: new FormControl<string | null>(null)
 })
 
@@ -227,7 +227,7 @@ describe('EndpointSearchComponent', () => {
     it('should search enpoints with search criteria', (done) => {
       productApiServiceSpy.searchProducts.and.returnValue(of({ stream: productResponseData }))
       mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: mfeResponseData }))
-      component.searchCriteriaForm.controls['applicationDisplayName'].setValue(productResponseData[0].name)
+      component.searchCriteriaForm.controls['productDisplayName'].setValue(productResponseData[0].name)
 
       component.onSearch()
 
@@ -241,7 +241,7 @@ describe('EndpointSearchComponent', () => {
     })
 
     it('should include product and microfrontend criteria in the search request', () => {
-      component.searchCriteriaForm.controls['applicationDisplayName'].setValue('Product 1')
+      component.searchCriteriaForm.controls['productDisplayName'].setValue('Product 1')
       component.searchCriteriaForm.controls['microfrontendName'].setValue('MFE 1')
 
       component.onSearch()
@@ -249,10 +249,10 @@ describe('EndpointSearchComponent', () => {
       const productRequest = productApiServiceSpy.searchProducts.calls.mostRecent().args[0]
       const mfeRequest = mfeApiServiceSpy.searchMicrofrontends.calls.mostRecent().args[0]
 
-      expect(productRequest.productSearchCriteria.productDisplayName).toBe('Product 1')
-      expect(productRequest.productSearchCriteria.names).toBeUndefined()
+      expect(productRequest.productSearchCriteria.productDisplayName).toBeUndefined()
+      expect(productRequest.productSearchCriteria.names).toEqual(['Product 1'])
       expect(mfeRequest.mfeAndMsSearchCriteria.appName).toBe('MFE 1')
-      expect(mfeRequest.mfeAndMsSearchCriteria.productName).toBeUndefined()
+      expect(mfeRequest.mfeAndMsSearchCriteria.productName).toBe('Product 1')
       expect(mfeRequest.mfeAndMsSearchCriteria.productDisplayName).toBe('Product 1')
     })
 

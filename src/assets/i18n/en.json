@@ -142,7 +142,7 @@
       },
       "ENDPOINT": {
         "LABEL": "Endpoint",
-        "PRODUCT_NAME": "Name of Application which provides UI Endpoints",
+        "PRODUCT_NAME": "Name or Display Name of Application which provides UI Endpoints",
         "LOAD_ERROR": "Failed to load Microfrontends and their UI Endpoints",
         "NOT_FOUND": "Microfrontends and their UI Endpoints were not found"
       },
@@ -379,7 +379,7 @@
       "NAME.SEARCH": "Name of the UI Endpoint",
       "PATH": "Path to the UI Endpoint",
       "PRODUCT_NAME": "Name of the application where UI endpoints are offered",
-      "APP_NAME": "Microfrontend that provides the UI endpoint"
+      "APP_NAME": "Name of Microfrontend that provides the UI endpoint"
     }
   },
   "PRODUCT": {
