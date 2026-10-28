@@ -225,7 +225,7 @@ export class SlotSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initPermissions()
+    this.initPermissions().catch((err) => console.error(err))
     this.initGlobalFilter()
     this.prepareActionButtons()
     this.prepareStateValues()
