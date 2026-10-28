@@ -128,13 +128,13 @@
         "NOT_FOUND": "The Application does not have an App",
         "FILTER": {
           "LABEL": "App Type",
-          "TOOLTIP": "App Type selection",
+          "TOOLTIP": "Select App Type selection",
           "ALL": "All",
           "MS": "MS",
           "MFE": "UI"
         },
         "QUICK_FILTER": {
-          "TOOLTIP": "Quick Filter for App type",
+          "TOOLTIP": "Select Quick Filter for App type",
           "ALL": "All",
           "MS": "Microservice",
           "MFE": "UI Component"
