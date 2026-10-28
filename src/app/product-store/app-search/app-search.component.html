@@ -9,7 +9,7 @@
     [manualBreadcrumbs]="false"
     [actions]="(actions$ | async) ?? []"
   >
-    <form [formGroup]="appSearchCriteriaForm" class="flex flex-wrap gap-3 md:px-2">
+    <form id="ps_app_search_criteria" [formGroup]="appSearchCriteriaForm" class="flex flex-wrap gap-3 md:px-2">
       <p-floatlabel variant="on">
         <input
           pInputText
