@@ -229,7 +229,15 @@ export class SlotSearchComponent implements OnInit {
     this.initGlobalFilter()
     this.prepareActionButtons()
     this.prepareStateValues()
-    this.prepareSearchCriteria()
+
+    const restored = Utils.restoreFormValuesFromRoute(this.route, this.searchCriteriaForm, [
+      { key: 'slotName' },
+      { key: 'appId' },
+      { key: 'productDisplayName' }
+    ])
+
+    if (!restored) this.prepareSearchCriteria()
+
     this.getData()
   }
 
@@ -450,6 +458,11 @@ export class SlotSearchComponent implements OnInit {
   public onSearch() {
     this.resetFilters()
     this.prepareSearchCriteria()
+    Utils.syncFormValuesWithRoute(this.route, this.router, this.searchCriteriaForm, [
+      { key: 'slotName' },
+      { key: 'appId' },
+      { key: 'productDisplayName' }
+    ])
   }
   public onSearchReset() {
     this.searchCriteriaForm.reset()

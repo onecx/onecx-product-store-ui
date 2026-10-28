@@ -159,6 +159,11 @@ describe('SlotSearchComponent', () => {
     msgServiceSpy.error.calls.reset()
     msgServiceSpy.info.calls.reset()
 
+    mockUserService.hasPermission.and.callFake((permission) => {
+      return ['APP#CREATE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
+    })
+    mockUserService.getPermission.and.returnValue(Promise.resolve(true))
+
     apiProductsServiceSpy.searchProducts.calls.reset()
     apiSlotsServiceSpy.searchSlots.calls.reset()
     translateServiceSpy.get.calls.reset()

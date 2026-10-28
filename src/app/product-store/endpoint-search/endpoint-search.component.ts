@@ -129,7 +129,11 @@ export class EndpointSearchComponent implements OnInit {
 
   public ngOnInit(): void {
     this.preparePageActions()
-    this.onSearch()
+    const restored = Utils.restoreFormValuesFromRoute(this.route, this.searchCriteriaForm, [
+      { key: 'productDisplayName' },
+      { key: 'microfrontendName' }
+    ])
+    if (!restored) this.onSearch()
   }
 
   /****************************************************************************
@@ -317,6 +321,10 @@ export class EndpointSearchComponent implements OnInit {
     this.interactiveSortDirection = sort.sortDirection
   }
   public onSearch() {
+    Utils.syncFormValuesWithRoute(this.route, this.router, this.searchCriteriaForm, [
+      { key: 'productDisplayName' },
+      { key: 'microfrontendName' }
+    ])
     this.declareDataSources()
     this.loadData()
   }
