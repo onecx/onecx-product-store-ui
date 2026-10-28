@@ -48,7 +48,8 @@ export type MfeEndpoint = MicrofrontendAbstract & {
   endpoint_path: string
 }
 export interface ProductSearchCriteriaControls {
-  name: FormControl<string | null>
+  productDisplayName: FormControl<string | null>
+  microfrontendName: FormControl<string | null>
 }
 
 @Component({
@@ -116,7 +117,8 @@ export class EndpointSearchComponent implements OnInit {
 
   // data
   public searchCriteriaForm = new FormGroup<ProductSearchCriteriaControls>({
-    name: new FormControl<string | null>(null)
+    productDisplayName: new FormControl<string | null>(null),
+    microfrontendName: new FormControl<string | null>(null)
   })
   public endpoints$: Observable<MfeEndpoint[]> = of([])
   public mfes$: Observable<MicrofrontendAbstract[]> = of([])
@@ -135,16 +137,23 @@ export class EndpointSearchComponent implements OnInit {
    */
   // Prepare criteria for product and mfe search
   private prepareSearchCriteria(): { productCriteria: {}; mfeCriteria: {} } {
-    const name = this.searchCriteriaForm.controls['name'].value
+    const applicationName = this.searchCriteriaForm.controls['productDisplayName'].value?.trim()
+    const microfrontendName = this.searchCriteriaForm.controls['microfrontendName'].value?.trim()
+
     const productCriteria: ProductSearchCriteria = {
-      ...(name ? { names: [name] } : {}),
       pageSize: 1000
     }
     const mfeCriteria: MfeAndMsSearchCriteria = {
-      ...(name ? { productName: name } : {}),
+      ...(microfrontendName ? { appName: microfrontendName } : {}),
+      ...(applicationName ? { productName: applicationName, productDisplayName: applicationName } : {}),
       type: MicrofrontendType.Module,
       pageSize: 1000
     }
+
+    if (applicationName) {
+      productCriteria.names = [applicationName]
+    }
+
     return { productCriteria, mfeCriteria }
   }
   public declareDataSources(): void {

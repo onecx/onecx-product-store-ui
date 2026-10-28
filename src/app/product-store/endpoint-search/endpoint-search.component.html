@@ -16,7 +16,7 @@
           pInputText
           type="text"
           class="w-11rem sm:w-18rem text-responsive"
-          formControlName="name"
+          formControlName="productDisplayName"
           [ariaLabel]="'ACTIONS.SEARCH.ENDPOINT.PRODUCT_NAME' | translate"
           [pTooltip]="
             ('ACTIONS.SEARCH.ENDPOINT.PRODUCT_NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)
@@ -24,7 +24,22 @@
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="ps_endpoint_search_criteria_product_name">{{ 'APP.PRODUCT_NAME' | translate }}</label>
+        <label for="ps_endpoint_search_criteria_product_name">{{ 'ENDPOINT.PRODUCT_NAME' | translate }}</label>
+      </p-floatlabel>
+
+      <p-floatlabel variant="on">
+        <input
+          id="ps_endpoint_search_criteria_microfrontend_name"
+          pInputText
+          type="text"
+          class="w-11rem sm:w-18rem text-responsive"
+          formControlName="microfrontendName"
+          [ariaLabel]="'ENDPOINT.APP_NAME' | translate"
+          [pTooltip]="('ENDPOINT.TOOLTIPS.APP_NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        />
+        <label for="ps_endpoint_search_criteria_microfrontend_name">{{ 'ENDPOINT.APP_NAME' | translate }}</label>
       </p-floatlabel>
     </div>
   </ocx-search-header>

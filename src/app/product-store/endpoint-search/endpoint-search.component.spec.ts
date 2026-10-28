@@ -22,7 +22,8 @@ import { EndpointSearchComponent, MfeEndpoint, ProductSearchCriteriaControls } f
 import { PermissionService } from '@onecx/angular-utils'
 
 const searchCriteriaForm = new FormGroup<ProductSearchCriteriaControls>({
-  name: new FormControl<string | null>(null)
+  productDisplayName: new FormControl<string | null>(null),
+  microfrontendName: new FormControl<string | null>(null)
 })
 
 const productResponseData: ProductAbstract[] = [
@@ -226,7 +227,7 @@ describe('EndpointSearchComponent', () => {
     it('should search enpoints with search criteria', (done) => {
       productApiServiceSpy.searchProducts.and.returnValue(of({ stream: productResponseData }))
       mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: mfeResponseData }))
-      component.searchCriteriaForm.controls['name'].setValue(productResponseData[0].name)
+      component.searchCriteriaForm.controls['productDisplayName'].setValue(productResponseData[0].name)
 
       component.onSearch()
 
@@ -237,6 +238,22 @@ describe('EndpointSearchComponent', () => {
         },
         error: done.fail
       })
+    })
+
+    it('should include product and microfrontend criteria in the search request', () => {
+      component.searchCriteriaForm.controls['productDisplayName'].setValue('Product 1')
+      component.searchCriteriaForm.controls['microfrontendName'].setValue('MFE 1')
+
+      component.onSearch()
+
+      const productRequest = productApiServiceSpy.searchProducts.calls.mostRecent().args[0]
+      const mfeRequest = mfeApiServiceSpy.searchMicrofrontends.calls.mostRecent().args[0]
+
+      expect(productRequest.productSearchCriteria.productDisplayName).toBeUndefined()
+      expect(productRequest.productSearchCriteria.names).toEqual(['Product 1'])
+      expect(mfeRequest.mfeAndMsSearchCriteria.appName).toBe('MFE 1')
+      expect(mfeRequest.mfeAndMsSearchCriteria.productName).toBe('Product 1')
+      expect(mfeRequest.mfeAndMsSearchCriteria.productDisplayName).toBe('Product 1')
     })
 
     it('should display an info message if there is no result', (done) => {

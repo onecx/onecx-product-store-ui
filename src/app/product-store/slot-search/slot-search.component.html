@@ -27,17 +27,31 @@
       <p-floatlabel variant="on">
         <input
           pInputText
-          id="ps_slot_search_criteria_product_name"
+          id="ps_slot_search_criteria_app_id"
           type="text"
-          formControlName="productName"
+          formControlName="appId"
           class="w-15rem"
-          [ariaLabel]="'SLOT.PRODUCT_NAME' | translate"
+          [ariaLabel]="'SLOT.APP_ID' | translate"
+          [pTooltip]="('SLOT.TOOLTIPS.APP_ID' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        />
+        <label for="ps_slot_search_criteria_app_id" aria-hidden="true">{{ 'SLOT.APP_ID' | translate }}</label>
+      </p-floatlabel>
+      <p-floatlabel variant="on">
+        <input
+          pInputText
+          id="ps_slot_search_criteria_product_display_name"
+          type="text"
+          formControlName="productDisplayName"
+          class="w-15rem"
+          [ariaLabel]="'SLOT.PRODUCT' | translate"
           [pTooltip]="('SLOT.TOOLTIPS.PRODUCT_NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="ps_slot_search_criteria_product_name" aria-hidden="true">
-          {{ 'SLOT.PRODUCT_NAME' | translate }}
+        <label for="ps_slot_search_criteria_product_display_name" aria-hidden="true">
+          {{ 'SLOT.PRODUCT' | translate }}
         </label>
       </p-floatlabel>
     </form>
@@ -132,10 +146,7 @@
         let-sortTemplate="sortTemplate"
         let-filterTemplate="filterTemplate"
       >
-        <div
-          class="table-header-wrapper flex flex-column justify-content-between align-items-start"
-          style="justify-content: center !important"
-        >
+        <div class="state-header-wrapper table-header-wrapper flex flex-column justify-content-between">
           <span>
             <ng-container
               [ngTemplateOutlet]="labelTemplate"

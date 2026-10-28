@@ -17,12 +17,12 @@
           type="text"
           class="w-11rem sm:w-15rem text-responsive"
           formControlName="name"
-          [ariaLabel]="'PRODUCT.NAME' | translate"
+          [ariaLabel]="'PRODUCT.LABEL' | translate"
           [pTooltip]="('PRODUCT.CRITERIA.NAME' | translate) + ('ACTIONS.SEARCH.WILDCARD_SUPPORT' | translate)"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
-        <label for="ps_product_search_criteria_name" aria-hidden="true">{{ 'PRODUCT.NAME' | translate }}</label>
+        <label for="ps_product_search_criteria_name" aria-hidden="true">{{ 'PRODUCT.LABEL' | translate }}</label>
       </p-floatlabel>
 
       @let criteria = productSearchCriterias$ | async;

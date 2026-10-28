@@ -15,6 +15,7 @@ export interface SlotSearchCriteria {
     appId?: string;
     name?: string;
     productName?: string;
+    productDisplayName?: string;
     /**
      * The number of page.
      */

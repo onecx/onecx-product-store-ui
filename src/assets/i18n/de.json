@@ -142,7 +142,7 @@
       },
       "ENDPOINT": {
         "LABEL": "Endpunkt",
-        "PRODUCT_NAME": "Name der Applikation die UI Endpunkte anbietet",
+        "PRODUCT_NAME": "Name oder Anzeigename der Applikation die UI Endpunkte anbietet",
         "LOAD_ERROR": "Microfrontends und deren UI Endpunkte konnten nicht geladen werden",
         "NOT_FOUND": "Microfrontends und deren UI Endpunkte nicht gefunden"
       },
@@ -328,8 +328,8 @@
     "DEPRECATED": "Veraltet",
     "UNDEPLOYED": "Unverfügbar",
     "CRITERIA": {
-      "NAME": "ID / Name",
-      "NAME.TOOLTIP": "ID oder Name der App"
+      "NAME": "App",
+      "PRODUCT": "Applikation"
     },
     "TOOLTIPS": {
       "APP_ID": "Eindeutige ID - Basis Bezeichner der App",
@@ -342,6 +342,8 @@
       "TECHNOLOGY": "Technologie",
       "TYPE": "Typ der UI Komponente",
       "MS": "Microservice",
+      "NAME": "Name der App",
+      "PRODUCT": "Name der Applikation",
       "REMOTE_BASE_URL": "Remote Base URL",
       "REMOTE_ENTRY": "Remote Entry",
       "REMOTE_NAME": "Einstiegspunkt in der JavaScript-Datei bei WebComponents",
@@ -377,11 +379,12 @@
       "NAME.SEARCH": "Name des UI-Endpunkts",
       "PATH": "Pfad zum UI-Endpunkt",
       "PRODUCT_NAME": "Name der Applikation bei der UI Endpunkte angeboten werden",
-      "APP_NAME": "Microfrontend das den UI Endpunkt anbietet"
+      "APP_NAME": "Name des Microfrontend das den UI Endpunkt anbietet"
     }
   },
   "PRODUCT": {
     "NAME": "Name",
+    "LABEL": "Applikation",
     "VERSION": "Version",
     "VERSION.MISSING": "Version nicht gesetzt",
     "DESCRIPTION": "Beschreibung",
@@ -420,8 +423,9 @@
     }
   },
   "SLOT": {
-    "NAME": "Slotname",
+    "NAME": "Slot",
     "DESCRIPTION": "Beschreibung",
+    "PRODUCT": "Applikation",
     "PRODUCT_NAME": "Applikationsname",
     "APP_ID": "Microfrontend",
     "STATE": "Zustand",
@@ -430,8 +434,8 @@
       "NAME": "Name des Slots",
       "DESCRIPTION": "Beschreibung",
       "OPERATOR": "Wenn gesetzt, dann wurde der Slot automatisiert erstellt. Alle Änderungen gehen beim beim nächsten Deployment verloren.",
-      "PRODUCT_NAME": "Name der Applikation die den Slot anbietet",
-      "APP_ID": "Microfrontend das den Slot anbietet",
+      "PRODUCT_NAME": "Name oder Anzeigename der Applikation die den Slot anbietet",
+      "APP_ID": "Name der Microfrontend das den Slot anbietet",
       "STATE": "Verfügbarkeit des Slots"
     },
     "OPERATOR_SEARCH": "Dieser Slot wurde automatisiert erstellt. Alle Änderungen gehen beim beim nächsten Deployment verloren.",

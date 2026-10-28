@@ -11,28 +11,27 @@
 
 :host ::ng-deep {
   .ocx-content > div {
-    margin-bottom: 0 !important;
-    padding: 0.75rem 0.5rem !important;
+    margin-bottom: 0;
+    padding: 0.75rem 0.5rem;
   }
 
   .p-datatable {
     .p-datatable-thead > tr > th {
       border-bottom-width: 2px;
       &:first-child .table-header-wrapper {
-        justify-content: center !important;
+        justify-content: center;
       }
     }
     .p-datatable-thead > tr > th,
     .p-datatable-tbody > tr > td {
       /* table cell padding is NOT managed by column settings */
-      padding: 0rem 1rem;
+      padding: 0.5rem 1rem;
       /* action column */
       &:first-child {
         border-right: 1px solid var(--surface-border, #dee2e6);
         width: 1rem;
         white-space: nowrap;
         text-align: center;
-        padding: 0.25rem 1rem;
       }
       /* slot name */
       &:nth-child(2) {
@@ -61,7 +60,7 @@
     }
     .p-datatable-tbody {
       tr td.bg-inherit {
-        background-color: var(--table-body-row-bg) !important;
+        background-color: var(--table-body-row-bg);
       }
     }
   }
@@ -72,41 +71,11 @@
   /* state column */
   .p-datatable-tbody > tr > td:has(.slot-state-icons) {
     text-align: center;
-    vertical-align: middle !important;
+    vertical-align: middle;
   }
 
-  .p-datatable-thead > tr > th:has(#state-header-name) .table-header-wrapper {
-    justify-content: center !important;
-  }
-
-  /* keep sortable header title and icon on one line */
-  ocx-interactive-data-view {
-    .table-header-wrapper {
-      flex-direction: row !important;
-      align-items: center !important;
-      justify-content: flex-start !important;
-      gap: 0.35rem;
-      height: auto !important;
-      > span:first-child {
-        white-space: nowrap;
-      }
-      .p-multiselect {
-        background-color: var(--table-header-bg) !important;
-      }
-    }
-  }
-  .icon-button-header-wrapper {
-    button.sortButton,
-    button,
-    .pi-filter,
-    .pi-filter-fill {
-      padding: 0.5rem !important;
-      border-radius: 50% !important;
-      background-color: transparent;
-      &:hover {
-        background-color: var(--table-header-hover-bg, rgba(0, 0, 0, 0.05));
-      }
-    }
+  .state-header-wrapper {
+    padding-left: 20%;
   }
 
   /* hide unusable slot extension point */
@@ -115,7 +84,7 @@
   }
 
   .bookmark-link {
-    padding: 0rem !important;
+    padding: 0rem;
     &:hover {
       background: var(--tabview-header-hover-bg);
       border-color: var(--tabview-header-hover-border-color);
@@ -143,7 +112,7 @@
   }
   /* fix positioning of overlays used for column filtering */
   .p-overlay.p-component {
-    top: 3rem !important;
-    left: unset !important;
+    top: 3rem;
+    left: unset;
   }
 }
