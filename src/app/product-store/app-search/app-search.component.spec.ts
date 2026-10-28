@@ -18,7 +18,6 @@ import {
   MicroservicePageResult,
   MicroservicesAPIService
 } from 'src/app/shared/generated'
-import { Utils } from 'src/app/shared/utils'
 import { AppAbstract, AppType, AppSearchComponent, AppSearchCriteria } from './app-search.component'
 import { PermissionService } from '@onecx/angular-utils'
 import { provideNoopAnimations } from '@angular/platform-browser/animations'
@@ -209,15 +208,6 @@ describe('AppSearchComponent', () => {
     component.onSearch()
 
     expect(component.searchApps).toHaveBeenCalled()
-  })
-
-  it('should not immediately search apps when restored route values are present', () => {
-    spyOn(Utils, 'restoreFormValuesFromRoute').and.returnValue(true)
-    spyOn(component, 'searchApps')
-
-    component.ngOnInit()
-
-    expect(component.searchApps).not.toHaveBeenCalled()
   })
 
   it('should search mfes: one mfe', (done) => {

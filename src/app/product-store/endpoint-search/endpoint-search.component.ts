@@ -129,11 +129,11 @@ export class EndpointSearchComponent implements OnInit {
 
   public ngOnInit(): void {
     this.preparePageActions()
-    const restored = Utils.restoreFormValuesFromRoute(this.route, this.searchCriteriaForm, [
+    Utils.restoreFormValuesFromRoute(this.route, this.searchCriteriaForm, [
       { key: 'productDisplayName' },
       { key: 'microfrontendName' }
     ])
-    if (!restored) this.onSearch()
+    this.onSearch()
   }
 
   /****************************************************************************

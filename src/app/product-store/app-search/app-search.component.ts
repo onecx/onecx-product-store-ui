@@ -168,12 +168,12 @@ export class AppSearchComponent implements OnInit {
     void this.initPermissions()
     this.preparePageActions()
     this.initGlobalFilter()
-    const restored = Utils.restoreFormValuesFromRoute(this.route, this.appSearchCriteriaForm, [
+    Utils.restoreFormValuesFromRoute(this.route, this.appSearchCriteriaForm, [
       { key: 'appName' },
       { key: 'appType' },
       { key: 'productName' }
     ])
-    if (!restored) this.searchApps()
+    this.searchApps()
   }
 
   private async initPermissions(): Promise<void> {

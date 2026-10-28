@@ -230,14 +230,13 @@ export class SlotSearchComponent implements OnInit {
     this.prepareActionButtons()
     this.prepareStateValues()
 
-    const restored = Utils.restoreFormValuesFromRoute(this.route, this.searchCriteriaForm, [
+    Utils.restoreFormValuesFromRoute(this.route, this.searchCriteriaForm, [
       { key: 'slotName' },
       { key: 'appId' },
       { key: 'productDisplayName' }
     ])
 
-    if (!restored) this.prepareSearchCriteria()
-
+    this.prepareSearchCriteria()
     this.getData()
   }
 

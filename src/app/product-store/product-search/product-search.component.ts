@@ -127,12 +127,12 @@ export class ProductSearchComponent implements OnInit {
   ngOnInit(): void {
     this.preparePageActions()
     this.getProductSearchCriterias()
-    const restored = Utils.restoreFormValuesFromRoute(this.route, this.searchCriteriaForm, [
+    Utils.restoreFormValuesFromRoute(this.route, this.searchCriteriaForm, [
       { key: 'name' },
       { key: 'providers', array: true },
       { key: 'classifications', array: true }
     ])
-    if (!restored) this.onSearch()
+    this.onSearch()
   }
 
   private prepareSearchCriteria(): void {

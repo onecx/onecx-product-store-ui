@@ -224,15 +224,6 @@ describe('EndpointSearchComponent', () => {
       })
     })
 
-    it('should not immediately search when restored route values are present', () => {
-      spyOn(Utils, 'restoreFormValuesFromRoute').and.returnValue(true)
-      spyOn(component, 'onSearch')
-
-      component.ngOnInit()
-
-      expect(component.onSearch).not.toHaveBeenCalled()
-    })
-
     it('should search enpoints with search criteria', (done) => {
       productApiServiceSpy.searchProducts.and.returnValue(of({ stream: productResponseData }))
       mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: mfeResponseData }))
