@@ -159,6 +159,11 @@ describe('SlotSearchComponent', () => {
     msgServiceSpy.error.calls.reset()
     msgServiceSpy.info.calls.reset()
 
+    mockUserService.hasPermission.and.callFake((permission) => {
+      return ['APP#CREATE', 'APP#EDIT', 'APP#VIEW'].includes(permission)
+    })
+    mockUserService.getPermission.and.returnValue(Promise.resolve(true))
+
     apiProductsServiceSpy.searchProducts.calls.reset()
     apiSlotsServiceSpy.searchSlots.calls.reset()
     translateServiceSpy.get.calls.reset()
@@ -172,7 +177,7 @@ describe('SlotSearchComponent', () => {
       expect(component).toBeTruthy()
     })
 
-    it('should log error when initPermissions rejects during ngOnInit', async () => {
+    it('should log error when initPermissions rejects in the catch handler during ngOnInit', async () => {
       const error = new Error('permissions failed')
       spyOn(console, 'error')
       mockUserService.hasPermission.and.returnValue(Promise.reject(error))
@@ -180,6 +185,18 @@ describe('SlotSearchComponent', () => {
       component.ngOnInit()
       await Promise.resolve()
 
+      expect(console.error).toHaveBeenCalledWith(error)
+    })
+
+    it('should invoke the rejection handler when initPermissions promise is rejected', async () => {
+      const error = new Error('permission promise rejected')
+      const initPermissionsSpy = spyOn(component as any, 'initPermissions').and.returnValue(Promise.reject(error))
+      spyOn(console, 'error')
+
+      component.ngOnInit()
+      await Promise.resolve()
+
+      expect(initPermissionsSpy).toHaveBeenCalled()
       expect(console.error).toHaveBeenCalledWith(error)
     })
 

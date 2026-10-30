@@ -10,8 +10,8 @@
 
 :host ::ng-deep {
   .ocx-content > div {
-    margin-bottom: 0 !important;
-    padding: 0.75rem 0.5rem !important;
+    margin-bottom: 0;
+    padding: 0.75rem 0.5rem;
   }
 
   /* fixes for p-card */
@@ -25,7 +25,7 @@
     div:first-child {
       > div:first-child {
         > div:nth-child(2) {
-          flex: 1 1 0% !important;
+          flex: 1 1 0%;
         }
       }
     }
@@ -35,7 +35,7 @@
     padding: 0rem 0rem 1rem 0rem;
     border-top: var(--table-header-border);
     > .grid {
-      gap: 0 !important;
+      gap: 0;
       padding: 0 0.5rem;
     }
   }

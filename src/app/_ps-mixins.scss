@@ -9,7 +9,7 @@
     &.p-floatlabel-over {
       &:has(.p-filled) label,
       &:has(.p-focus) label {
-        top: -5px !important;
+        top: -5px;
         background-color: white;
         padding: 0 0.5rem;
       }
@@ -56,14 +56,6 @@
     -webkit-box-orient: vertical;
   } @else {
     white-space: nowrap;
-  }
-}
-
-@mixin compact-dropdown-list-items {
-  :host ::ng-deep {
-    .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
-      padding: 0.4rem 1rem !important;
-    }
   }
 }
 
@@ -237,7 +229,7 @@
       }
       &.p-inputtext:hover,
       &.p-dropdown:hover {
-        border-color: rgb(0 0 0 / 30%) !important;
+        border-color: rgb(0 0 0 / 30%);
       }
     }
   }
@@ -249,7 +241,7 @@
     .p-fileupload {
       .p-fileupload-buttonbar,
       .p-fileupload-content {
-        background-color: var(--surface-100) !important;
+        background-color: var(--surface-100);
       }
       .p-fileupload-content {
         padding: 0.5rem;
@@ -339,7 +331,7 @@
   :host ::ng-deep {
     .filter-selectbutton {
       .p-selectbutton .p-button {
-        opacity: 0.9 !important;
+        opacity: 0.9;
         border: var(--toggle-button-border);
         &.p-highlight {
           background: var(--toggle-button-active-bg);
@@ -520,7 +512,7 @@
       button[icon='pi pi-angle-double-right'],
       button:nth-child(2),
       button:nth-child(4) {
-        display: none !important;
+        display: none;
       }
     }
   }
@@ -541,7 +533,7 @@
 @mixin dialog-modal-dialog-content {
   :host ::ng-deep {
     .p-dialog .p-dialog-content {
-      border-radius: unset !important;
+      border-radius: unset;
     }
   }
 }
@@ -549,14 +541,14 @@
   :host ::ng-deep {
     @media (max-width: 991px) {
       .p-dialog.p-dialog {
-        max-height: unset !important;
-        height: unset !important;
+        max-height: unset;
+        height: unset;
       }
     }
     @media (max-width: 576px) {
       .p-dialog.p-dialog {
-        max-height: inherit !important;
-        height: inherit !important;
+        max-height: inherit;
+        height: inherit;
       }
     }
   }
@@ -601,13 +593,13 @@
     td button.p-button {
       &.p-button-icon-only {
         padding: 0.5rem;
-        width: unset !important;
+        width: unset;
       }
       &.p-button-rounded {
-        height: unset !important;
+        height: unset;
       }
       &:disabled {
-        opacity: 0.38 !important;
+        opacity: 0.38;
       }
     }
   }
@@ -626,22 +618,22 @@
     // responsive table result view
     @media screen and (min-width: 576px) {
       .sm\:table-cell {
-        display: table-cell !important;
+        display: table-cell;
       }
     }
     @media screen and (min-width: 768px) {
       .md\:table-cell {
-        display: table-cell !important;
+        display: table-cell;
       }
     }
     @media screen and (min-width: 992px) {
       .lg\:table-cell {
-        display: table-cell !important;
+        display: table-cell;
       }
     }
     @media screen and (min-width: 1200px) {
       .xl\:table-cell {
-        display: table-cell !important;
+        display: table-cell;
       }
     }
   }

@@ -127,8 +127,12 @@ export class ProductSearchComponent implements OnInit {
   ngOnInit(): void {
     this.preparePageActions()
     this.getProductSearchCriterias()
-    const restored = this.restoreStateFromQueryParams()
-    if (!restored) this.onSearch()
+    Utils.restoreFormValuesFromRoute(this.route, this.searchCriteriaForm, [
+      { key: 'name' },
+      { key: 'providers', array: true },
+      { key: 'classifications', array: true }
+    ])
+    this.onSearch()
   }
 
   private prepareSearchCriteria(): void {
@@ -146,7 +150,11 @@ export class ProductSearchComponent implements OnInit {
 
   public onSearch(): void {
     this.prepareSearchCriteria()
-    this.updateSearchParamsFromState()
+    Utils.syncFormValuesWithRoute(this.route, this.router, this.searchCriteriaForm, [
+      { key: 'name' },
+      { key: 'providers', array: true },
+      { key: 'classifications', array: true }
+    ])
     this.executeSearch()
   }
 
@@ -321,48 +329,6 @@ export class ProductSearchComponent implements OnInit {
   }
   public onNewProduct() {
     this.router.navigate(['./new'], { relativeTo: this.route }).catch((err) => console.error(err))
-  }
-
-  private updateSearchParamsFromState(): void {
-    const queryParams = {
-      name: this.searchCriteriaForm.controls['name'].value,
-      providers: this.searchCriteriaForm.controls['providers'].value,
-      classifications: this.searchCriteriaForm.controls['classifications'].value
-    }
-
-    this.router
-      .navigate([], {
-        relativeTo: this.route,
-        queryParams,
-        replaceUrl: true,
-        queryParamsHandling: 'merge'
-      })
-      .catch((err) => console.error(err))
-  }
-
-  private restoreStateFromQueryParams(): boolean {
-    const queryParams = this.route.snapshot.queryParams
-    const paramKeys = Object.keys(queryParams)
-
-    if (!paramKeys.length) return false
-
-    const name = queryParams['name'] ?? undefined
-    const providers = Utils.asArray(queryParams['providers'])
-    const classifications = Utils.asArray(queryParams['classifications'])
-
-    if (name !== undefined) {
-      this.searchCriteriaForm.controls['name'].setValue(name)
-    }
-    if (providers !== undefined) {
-      this.searchCriteriaForm.controls['providers'].setValue(providers)
-    }
-    if (classifications !== undefined) {
-      this.searchCriteriaForm.controls['classifications'].setValue(classifications)
-    }
-
-    this.prepareSearchCriteria()
-    this.executeSearch()
-    return true
   }
 
   public getLogoUrl(product: ProductAbstract | undefined): string | undefined {

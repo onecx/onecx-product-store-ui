@@ -145,6 +145,151 @@ describe('utils', () => {
     })
   })
 
+  describe('search-state helpers', () => {
+    it('should synchronize selected form values with the current route query params', () => {
+      const router = {
+        navigate: jasmine.createSpy('navigate').and.returnValue(Promise.resolve(true))
+      }
+      const route = {
+        snapshot: {
+          queryParams: {}
+        }
+      }
+      const form = new FormGroup({
+        name: new FormControl<string | null>(null),
+        providers: new FormControl<string[] | null>(['team-a']),
+        classifications: new FormControl<string[] | null>([])
+      })
+
+      Utils.syncFormValuesWithRoute(route as any, router as any, form, [
+        { key: 'name' },
+        { key: 'providers', array: true },
+        { key: 'classifications', array: true }
+      ])
+
+      expect(router.navigate).toHaveBeenCalledWith(
+        [],
+        jasmine.objectContaining({
+          relativeTo: route,
+          replaceUrl: true,
+          queryParamsHandling: 'merge',
+          queryParams: {
+            name: null,
+            providers: ['team-a'],
+            classifications: null
+          }
+        })
+      )
+    })
+
+    it('should restore form values from route query params', () => {
+      const route = {
+        snapshot: {
+          queryParams: {
+            name: 'portal',
+            providers: ['team-a'],
+            classifications: ['internal', 'public']
+          }
+        }
+      }
+      const form = new FormGroup({
+        name: new FormControl<string | null>(null),
+        providers: new FormControl<string[] | null>(null),
+        classifications: new FormControl<string[] | null>(null)
+      })
+
+      const restored = Utils.restoreFormValuesFromRoute(route as any, form, [
+        { key: 'name' },
+        { key: 'providers', array: true },
+        { key: 'classifications', array: true }
+      ])
+
+      expect(restored).toBeTrue()
+      expect(form.get('name')?.value).toBe('portal')
+      expect(form.get('providers')?.value).toEqual(['team-a'])
+      expect(form.get('classifications')?.value).toEqual(['internal', 'public'])
+    })
+
+    it('should log navigation errors when router.navigate rejects', async () => {
+      const error = new Error('navigation failed')
+      const router = {
+        navigate: jasmine.createSpy('navigate').and.returnValue(Promise.reject(error))
+      }
+      const route = { snapshot: { queryParams: {} } }
+      const form = new FormGroup({
+        name: new FormControl<string | null>('portal')
+      })
+      const consoleErrorSpy = spyOn(console, 'error')
+
+      Utils.syncFormValuesWithRoute(route as any, router as any, form, [{ key: 'name' }])
+      await Promise.resolve()
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(error)
+    })
+
+    it('should skip route params that are not present for a field while restoring values', () => {
+      const route = {
+        snapshot: {
+          queryParams: {
+            name: 'portal'
+          }
+        }
+      }
+      const form = new FormGroup({
+        name: new FormControl<string | null>(null),
+        other: new FormControl<string | null>(null)
+      })
+
+      const restored = Utils.restoreFormValuesFromRoute(route as any, form, [{ key: 'name' }, { key: 'other' }])
+
+      expect(restored).toBeTrue()
+      expect(form.get('name')?.value).toBe('portal')
+      expect(form.get('other')?.value).toBeNull()
+    })
+
+    it('should clear array query params when clearOn matches the normalized value', () => {
+      const router = {
+        navigate: jasmine.createSpy('navigate').and.returnValue(Promise.resolve(true))
+      }
+      const route = { snapshot: { queryParams: {} } }
+      const form = new FormGroup({
+        appType: new FormControl<string | null>('ALL')
+      })
+
+      Utils.syncFormValuesWithRoute(route as any, router as any, form, [
+        { key: 'appType', array: true, clearOn: ['ALL'] }
+      ])
+
+      expect(router.navigate).toHaveBeenCalledWith(
+        [],
+        jasmine.objectContaining({
+          queryParams: {
+            appType: null
+          }
+        })
+      )
+    })
+
+    it('should ignore route keys without matching form controls while restoring values', () => {
+      const route = {
+        snapshot: {
+          queryParams: {
+            name: 'portal',
+            missing: 'ignored'
+          }
+        }
+      }
+      const form = new FormGroup({
+        name: new FormControl<string | null>(null)
+      })
+
+      const restored = Utils.restoreFormValuesFromRoute(route as any, form, [{ key: 'name' }, { key: 'missing' }])
+
+      expect(restored).toBeTrue()
+      expect(form.get('name')?.value).toBe('portal')
+    })
+  })
+
   describe('setFormControlsValues', () => {
     let form: FormGroup
 

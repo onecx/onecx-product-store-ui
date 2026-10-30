@@ -1,6 +1,7 @@
 import { SelectItem } from 'primeng/api'
 import { Location } from '@angular/common'
-import { AbstractControl } from '@angular/forms'
+import { AbstractControl, FormGroup } from '@angular/forms'
+import { ActivatedRoute, Router } from '@angular/router'
 import { catchError, first, of, tap } from 'rxjs'
 
 import { WorkspaceService } from '@onecx/angular-integration-interface'
@@ -92,6 +93,67 @@ const Utils = {
   },
   bffImageUrl(basePath: string | undefined, name: string | undefined, refType: RefType): string {
     return name ? basePath + '/images/' + name + '/' + refType : ''
+  },
+
+  syncFormValuesWithRoute(
+    route: ActivatedRoute,
+    router: Router,
+    form: FormGroup,
+    fields: Array<{ key: string; array?: boolean; clearOn?: unknown[] }>
+  ): void {
+    const queryParams: Record<string, unknown> = {}
+
+    for (const field of fields) {
+      const control = form.get(field.key)
+      const value = control?.value
+
+      if (field.array) {
+        if (value == null || value === '' || (Array.isArray(value) && value.length === 0)) {
+          queryParams[field.key] = null
+          continue
+        }
+
+        const normalizedValue = Array.isArray(value) ? value : [value]
+        queryParams[field.key] = field.clearOn?.includes(normalizedValue[0]) ? null : normalizedValue
+        continue
+      }
+
+      const shouldClear = value == null || value === '' || field.clearOn?.includes(value)
+      queryParams[field.key] = shouldClear ? null : value
+    }
+
+    const navigation = router.navigate([], {
+      relativeTo: route,
+      queryParams,
+      replaceUrl: true,
+      queryParamsHandling: 'merge'
+    })
+
+    navigation?.catch((err) => console.error(err))
+  },
+
+  restoreFormValuesFromRoute(
+    route: ActivatedRoute,
+    form: FormGroup,
+    fields: Array<{ key: string; array?: boolean }>
+  ): boolean {
+    const queryParams = route.snapshot?.queryParams ?? {}
+    if (Object.keys(queryParams).length === 0) return false
+
+    let restored = false
+
+    for (const field of fields) {
+      const rawValue = queryParams[field.key]
+      if (rawValue === undefined) continue
+
+      const control = form.get(field.key)
+      if (!control) continue
+
+      control.setValue(field.array ? Utils.asArray(rawValue as string | string[] | null | undefined) : rawValue)
+      restored = true
+    }
+
+    return restored
   },
 
   /**

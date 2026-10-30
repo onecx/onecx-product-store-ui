@@ -225,10 +225,17 @@ export class SlotSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initPermissions()
+    this.initPermissions().catch((err) => console.error(err))
     this.initGlobalFilter()
     this.prepareActionButtons()
     this.prepareStateValues()
+
+    Utils.restoreFormValuesFromRoute(this.route, this.searchCriteriaForm, [
+      { key: 'slotName' },
+      { key: 'appId' },
+      { key: 'productDisplayName' }
+    ])
+
     this.prepareSearchCriteria()
     this.getData()
   }
@@ -450,6 +457,11 @@ export class SlotSearchComponent implements OnInit {
   public onSearch() {
     this.resetFilters()
     this.prepareSearchCriteria()
+    Utils.syncFormValuesWithRoute(this.route, this.router, this.searchCriteriaForm, [
+      { key: 'slotName' },
+      { key: 'appId' },
+      { key: 'productDisplayName' }
+    ])
   }
   public onSearchReset() {
     this.searchCriteriaForm.reset()

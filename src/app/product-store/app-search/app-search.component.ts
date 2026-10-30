@@ -168,6 +168,11 @@ export class AppSearchComponent implements OnInit {
     void this.initPermissions()
     this.preparePageActions()
     this.initGlobalFilter()
+    Utils.restoreFormValuesFromRoute(this.route, this.appSearchCriteriaForm, [
+      { key: 'appName' },
+      { key: 'appType' },
+      { key: 'productName' }
+    ])
     this.searchApps()
   }
 
@@ -420,6 +425,11 @@ export class AppSearchComponent implements OnInit {
     this.sortOrder = sort.sortDirection === DataSortDirection.DESCENDING ? -1 : 1
   }
   public onSearch() {
+    Utils.syncFormValuesWithRoute(this.route, this.router, this.appSearchCriteriaForm, [
+      { key: 'appName' },
+      { key: 'appType', clearOn: ['ALL'] },
+      { key: 'productName' }
+    ])
     this.searchApps()
   }
   public onSearchReset() {

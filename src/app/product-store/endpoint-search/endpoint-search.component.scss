@@ -9,8 +9,8 @@
 
 :host ::ng-deep {
   .ocx-content > div {
-    margin-bottom: 0 !important;
-    padding: 0.75rem 0.5rem !important;
+    margin-bottom: 0;
+    padding: 0.75rem 0.5rem;
   }
 
   .p-datatable {
@@ -20,7 +20,7 @@
     }
     .p-datatable-tbody {
       tr td.bg-inherit {
-        background-color: var(--table-body-row-bg) !important;
+        background-color: var(--table-body-row-bg);
       }
     }
   }
@@ -46,8 +46,8 @@
     .sortButton,
     .pi-filter,
     .pi-filter-fill {
-      padding: 0.5rem !important;
-      border-radius: 50% !important;
+      padding: 0.5rem;
+      border-radius: 50%;
       background-color: transparent;
       &:hover {
         background-color: var(--table-header-hover-bg, rgba(0, 0, 0, 0.05));
@@ -61,7 +61,7 @@
   }
 
   .bookmark-link {
-    padding: 0rem !important;
+    padding: 0rem;
     &:hover {
       background: var(--tabview-header-hover-bg);
       border-color: var(--tabview-header-hover-border-color);
