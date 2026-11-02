@@ -111,6 +111,7 @@ export class SlotSearchComponent implements OnInit {
   public exceptionKey: string | undefined = undefined
   public actions$: Observable<Action[]> | undefined
   public dateFormat = 'medium'
+  public displayAppDetailDialog = false
   public displaySlotDetailDialog = false
   public displaySlotDeleteDialog = false
   public changeMode: ChangeMode = 'VIEW'
@@ -407,18 +408,18 @@ export class SlotSearchComponent implements OnInit {
               show: 'always'
             },
             {
-              label: data['DIALOG.SEARCH.ENDPOINTS.LABEL'],
-              title: data['DIALOG.SEARCH.ENDPOINTS.TOOLTIP'],
-              actionCallback: () => this.router.navigate(['../endpoints'], { relativeTo: this.route }),
-              permission: 'ENDPOINT#SEARCH',
-              icon: 'pi pi-th-large',
-              show: 'always'
-            },
-            {
               label: data['DIALOG.SEARCH.APPS.LABEL'],
               title: data['DIALOG.SEARCH.APPS.TOOLTIP'],
               actionCallback: () => this.router.navigate(['../apps'], { relativeTo: this.route }),
               permission: 'APP#SEARCH',
+              icon: 'pi pi-th-large',
+              show: 'always'
+            },
+            {
+              label: data['DIALOG.SEARCH.ENDPOINTS.LABEL'],
+              title: data['DIALOG.SEARCH.ENDPOINTS.TOOLTIP'],
+              actionCallback: () => this.router.navigate(['../endpoints'], { relativeTo: this.route }),
+              permission: 'ENDPOINT#SEARCH',
               icon: 'pi pi-th-large',
               show: 'always'
             }

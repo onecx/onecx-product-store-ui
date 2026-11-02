@@ -146,6 +146,7 @@ describe('EndpointSearchComponent', () => {
   let component: EndpointSearchComponent
   let fixture: ComponentFixture<EndpointSearchComponent>
   const routerSpy = jasmine.createSpyObj('Router', ['navigate'])
+  routerSpy.navigate.and.returnValue(Promise.resolve(true))
   const routeMock = { snapshot: { paramMap: new Map() } }
 
   const mockUserService = {
@@ -194,6 +195,7 @@ describe('EndpointSearchComponent', () => {
   })
 
   afterEach(() => {
+    routerSpy.navigate.and.returnValue(Promise.resolve(true))
     // reset data services
     productApiServiceSpy.searchProducts.calls.reset()
     mfeApiServiceSpy.searchMicrofrontends.calls.reset()
@@ -444,6 +446,32 @@ describe('EndpointSearchComponent', () => {
 
       expect(component.mfeItem4Detail).toBeUndefined()
       expect(component.displayAppDetailDialog).toBeFalse()
+    })
+  })
+
+  describe('onGotoProduct', () => {
+    it('should stop event propagation and navigate to the product onGotoProduct', () => {
+      const event = { stopPropagation: jasmine.createSpy() }
+
+      component.onGotoProduct(event as any, { ...mfeEndpoints[0] })
+
+      expect(event.stopPropagation).toHaveBeenCalled()
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['../', mfeEndpoints[0].productName], {
+        fragment: 'apps',
+        relativeTo: routeMock
+      })
+    })
+
+    it('should log error when product navigation rejects onGotoProduct', async () => {
+      const error = new Error('navigation failed')
+      const event = { stopPropagation: jasmine.createSpy() }
+      spyOn(console, 'error')
+      routerSpy.navigate.and.returnValue(Promise.reject(error))
+
+      component.onGotoProduct(event as any, { ...mfeEndpoints[0] })
+      await Promise.resolve()
+
+      expect(console.error).toHaveBeenCalledWith(error)
     })
   })
 

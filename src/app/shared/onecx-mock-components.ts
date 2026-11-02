@@ -37,6 +37,8 @@ export class MockOcxSearchHeaderComponent {
   @Input() subheader: any
   @Input() searchConfig: any
   @Input() manualBreadcrumbs: any
+  @Input() resetButtonAriaLabel: any
+  @Input() resetButtonTooltip: any
 }
 
 @Component({
