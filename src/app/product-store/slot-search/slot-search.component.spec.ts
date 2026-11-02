@@ -234,26 +234,26 @@ describe('SlotSearchComponent', () => {
       }
     })
 
-    it('should navigate to Endpoints when button clicked and actionCallback executed', () => {
+    it('should navigate to Apps when button clicked and actionCallback executed', () => {
       component.ngOnInit()
 
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const firstAction = actions[1]
           firstAction.actionCallback?.()
-          expect(routerSpy.navigate).toHaveBeenCalledWith(['../endpoints'], { relativeTo: routeMock })
+          expect(routerSpy.navigate).toHaveBeenCalledWith(['../apps'], { relativeTo: routeMock })
         })
       }
     })
 
-    it('should navigate to Apps when button clicked and actionCallback executed', () => {
+    it('should navigate to Endpoints when button clicked and actionCallback executed', () => {
       component.ngOnInit()
 
       if (component.actions$) {
         component.actions$.subscribe((actions) => {
           const firstAction = actions[2]
           firstAction.actionCallback?.()
-          expect(routerSpy.navigate).toHaveBeenCalledWith(['../apps'], { relativeTo: routeMock })
+          expect(routerSpy.navigate).toHaveBeenCalledWith(['../endpoints'], { relativeTo: routeMock })
         })
       }
     })
@@ -437,30 +437,6 @@ describe('SlotSearchComponent', () => {
       expect(console.error).toHaveBeenCalledWith(error)
     })
 
-    it('should stop event propagation and navigate to the product onGotoProduct', () => {
-      const event = { stopPropagation: jasmine.createSpy() }
-
-      component.onGotoProduct(event as any, { ...slots[0] } as SlotData)
-
-      expect(event.stopPropagation).toHaveBeenCalled()
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['../', slots[0].productName], {
-        fragment: 'apps',
-        relativeTo: routeMock
-      })
-    })
-
-    it('should log error when product navigation rejects onGotoProduct', async () => {
-      const error = new Error('navigation failed')
-      const event = { stopPropagation: jasmine.createSpy() }
-      spyOn(console, 'error')
-      routerSpy.navigate.and.returnValue(Promise.reject(error))
-
-      component.onGotoProduct(event as any, { ...slots[0] } as SlotData)
-      await Promise.resolve()
-
-      expect(console.error).toHaveBeenCalledWith(error)
-    })
-
     it('should stop event propagation on click', () => {
       const event: any = { stopPropagation: jasmine.createSpy() }
 
@@ -508,7 +484,33 @@ describe('SlotSearchComponent', () => {
     })
   })
 
-  describe('detail', () => {
+  describe('onGotoProduct', () => {
+    it('should stop event propagation and navigate to the product onGotoProduct', () => {
+      const event = { stopPropagation: jasmine.createSpy() }
+
+      component.onGotoProduct(event as any, { ...slots[0] } as SlotData)
+
+      expect(event.stopPropagation).toHaveBeenCalled()
+      expect(routerSpy.navigate).toHaveBeenCalledWith(['../', slots[0].productName], {
+        fragment: 'apps',
+        relativeTo: routeMock
+      })
+    })
+
+    it('should log error when product navigation rejects onGotoProduct', async () => {
+      const error = new Error('navigation failed')
+      const event = { stopPropagation: jasmine.createSpy() }
+      spyOn(console, 'error')
+      routerSpy.navigate.and.returnValue(Promise.reject(error))
+
+      component.onGotoProduct(event as any, { ...slots[0] } as SlotData)
+      await Promise.resolve()
+
+      expect(console.error).toHaveBeenCalledWith(error)
+    })
+  })
+
+  describe('slot detail', () => {
     it('should stop event propagation and open slot detail in edit mode', () => {
       const event = { stopPropagation: jasmine.createSpy() }
 

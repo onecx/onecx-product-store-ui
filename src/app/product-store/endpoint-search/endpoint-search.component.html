@@ -50,14 +50,14 @@
       <p-message
         id="ps_endpoint_search_loading_message"
         severity="info"
-        styleClass="m-3 p-2"
+        styleClass="m-3 w-fit"
         [text]="'ACTIONS.LOADING' | translate"
       ></p-message>
     } @else if (exceptionKey) {
       <p-message
         id="ps_endpoint_search_error_message"
         severity="error"
-        styleClass="m-3 p-2"
+        styleClass="m-3 w-fit"
         [text]="exceptionKey | translate"
       ></p-message>
     }
@@ -132,6 +132,22 @@
           tooltipEvent="hover"
         >
           {{ rowObject['appName'] }}
+        </a>
+      </ng-template>
+      <ng-template pTemplate="productDisplayNameIdTableCell" let-rowObject="rowObject" let-column="column">
+        <a
+          tabindex="0"
+          [id]="'ps_endpoint_search_table_row_' + rowObject['id'] + '_goto_product'"
+          class="bookmark-link font-italic text-primary cursor-pointer"
+          (click)="onGotoProduct($event, rowObject)"
+          (keydown.enter)="onGotoProduct($event, rowObject)"
+          (keydown.space)="onGotoProduct($event, rowObject)"
+          [attr.aria-label]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
+          [pTooltip]="'ACTIONS.NAVIGATION.LINKS.GOTO.PRODUCT' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        >
+          {{ rowObject['productDisplayName'] }}
         </a>
       </ng-template>
     </ocx-interactive-data-view>

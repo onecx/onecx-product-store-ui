@@ -226,19 +226,19 @@ export class ProductSearchComponent implements OnInit {
         map((data) => {
           return [
             {
-              label: data['DIALOG.SEARCH.ENDPOINTS.LABEL'],
-              title: data['DIALOG.SEARCH.ENDPOINTS.TOOLTIP'],
-              actionCallback: () => this.onEndpointSearch(),
-              permission: 'ENDPOINT#SEARCH',
-              icon: 'pi pi-list',
-              show: 'always'
-            },
-            {
               label: data['DIALOG.SEARCH.APPS.LABEL'],
               title: data['DIALOG.SEARCH.APPS.TOOLTIP'],
               actionCallback: () => this.onAppSearch(),
               permission: 'APP#SEARCH',
               icon: 'pi pi-th-large',
+              show: 'always'
+            },
+            {
+              label: data['DIALOG.SEARCH.ENDPOINTS.LABEL'],
+              title: data['DIALOG.SEARCH.ENDPOINTS.TOOLTIP'],
+              actionCallback: () => this.onEndpointSearch(),
+              permission: 'ENDPOINT#SEARCH',
+              icon: 'pi pi-list',
               show: 'always'
             },
             {

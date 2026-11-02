@@ -73,14 +73,14 @@
       <p-message
         id="ps_product_search_loading_message"
         severity="info"
-        styleClass="m-1"
+        styleClass="m-1 w-fit"
         [text]="'ACTIONS.LOADING' | translate"
       ></p-message>
     } @else if (exceptionKey) {
       <p-message
         id="ps_product_search_error_message"
         severity="error"
-        styleClass="m-1"
+        styleClass="m-1 w-fit"
         [text]="exceptionKey | translate"
       ></p-message>
     }

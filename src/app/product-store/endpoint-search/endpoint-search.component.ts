@@ -95,14 +95,6 @@ export class EndpointSearchComponent implements OnInit {
   public interactiveSortField = 'productDisplayName'
   public interactiveColumns: DataTableColumn[] = [
     {
-      id: 'productDisplayName',
-      nameKey: 'ENDPOINT.PRODUCT_NAME',
-      columnType: ColumnType.STRING,
-      sortable: true,
-      filterable: true
-    },
-    { id: 'appName', nameKey: 'ENDPOINT.APP_NAME', columnType: ColumnType.STRING, sortable: true, filterable: true },
-    {
       id: 'endpoint_name',
       nameKey: 'ENDPOINT.NAME.SEARCH',
       columnType: ColumnType.STRING
@@ -111,6 +103,14 @@ export class EndpointSearchComponent implements OnInit {
       id: 'endpoint_path',
       nameKey: 'ENDPOINT.PATH',
       columnType: ColumnType.STRING
+    },
+    { id: 'appName', nameKey: 'ENDPOINT.APP_NAME', columnType: ColumnType.STRING, sortable: true, filterable: true },
+    {
+      id: 'productDisplayName',
+      nameKey: 'ENDPOINT.PRODUCT_NAME',
+      columnType: ColumnType.STRING,
+      sortable: true,
+      filterable: true
     }
   ]
   public interactiveDisplayedColumnKeys: string[] = this.interactiveColumns.map((column) => column.id)
@@ -333,14 +333,21 @@ export class EndpointSearchComponent implements OnInit {
     this.onGlobalFilter('')
     this.onSearch()
   }
+  public onMfeChanged(changed: any) {
+    this.displayAppDetailDialog = false
+    this.mfeItem4Detail = undefined
+    if (changed) this.loadData()
+  }
+
   public onAppDetail(ev: Event, data: MfeEndpoint) {
     ev.stopPropagation()
     this.mfeItem4Detail = { id: data.mfeId, appType: 'MFE', mfeType: MicrofrontendType.Module }
     this.displayAppDetailDialog = true
   }
-  public onMfeChanged(changed: any) {
-    this.displayAppDetailDialog = false
-    this.mfeItem4Detail = undefined
-    if (changed) this.loadData()
+  public onGotoProduct(ev: any, data: MfeEndpoint) {
+    ev.stopPropagation()
+    this.router
+      .navigate(['../', data.productName], { fragment: 'apps', relativeTo: this.route })
+      .catch((err) => console.error(err))
   }
 }

@@ -63,14 +63,14 @@
       <p-message
         id="ps_slot_search_loading_message"
         severity="info"
-        styleClass="m-1"
+        styleClass="m-1 w-fit"
         [text]="'ACTIONS.LOADING' | translate"
       ></p-message>
     } @else if (exceptionKey) {
       <p-message
         id="ps_slot_search_error_message"
         severity="error"
-        styleClass="m-1"
+        styleClass="m-1 w-fit"
         [text]="exceptionKey | translate"
       ></p-message>
     }
@@ -172,17 +172,21 @@
               [options]="(filterStateValues$ | async) ?? []"
               optionLabel="label"
               optionValue="value"
-              (onChange)="onFilterChange($event.value); onResetFilterIcons($event.value, ['slotName', 'product'])"
+              (onChange)="
+                onFilterChange($event.value); onResetFilterIcons($event.value, ['slotName', 'appId', 'product'])
+              "
               (onPanelShow)="filterPanelSlotStateVisible = true"
               (onPanelHide)="filterPanelSlotStateVisible = false"
               [ngModel]="filterStateValue"
             >
               <ng-template #selecteditems let-value>
-                <span
-                  class="pi"
-                  [class.pi-filter]="value.length === 0"
-                  [class.pi-filter-fill]="value.length > 0"
-                ></span>
+                @if (value) {
+                  <span
+                    class="pi"
+                    [class.pi-filter]="value.length === 0"
+                    [class.pi-filter-fill]="value.length > 0"
+                  ></span>
+                }
               </ng-template>
               <ng-template let-state pTemplate="item">
                 <div class="ml-2 flex flex-row flex-nowrap align-items-center column-gap-2">
