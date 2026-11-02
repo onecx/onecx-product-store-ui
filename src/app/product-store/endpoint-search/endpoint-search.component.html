@@ -50,14 +50,14 @@
       <p-message
         id="ps_endpoint_search_loading_message"
         severity="info"
-        styleClass="m-3 p-2"
+        styleClass="m-3 w-fit"
         [text]="'ACTIONS.LOADING' | translate"
       ></p-message>
     } @else if (exceptionKey) {
       <p-message
         id="ps_endpoint_search_error_message"
         severity="error"
-        styleClass="m-3 p-2"
+        styleClass="m-3 w-fit"
         [text]="exceptionKey | translate"
       ></p-message>
     }

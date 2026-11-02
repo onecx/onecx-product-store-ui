@@ -97,40 +97,40 @@
           @if (loading) {
             <p-message
               id="ps_app_search_criteria_loading_message"
+              styleClass="w-fit"
               severity="info"
               [text]="'ACTIONS.LOADING' | translate"
             ></p-message>
           } @else if (exceptionKey) {
             <p-message
               id="ps_app_search_criteria_error_message"
+              styleClass="w-fit"
               severity="error"
               [text]="exceptionKey | translate"
             ></p-message>
           } @else {
             <!-- QUICK Filter -->
-            <div class="slim-selectbutton search-criteria-selectbutton">
-              <p-selectButton
-                inputid="ps_app_search_quick_filter"
-                [options]="quickFilterItems"
-                [(ngModel)]="quickFilterValue"
-                [allowEmpty]="false"
-                (onChange)="onQuickFilterChange($event.value)"
-                [ariaLabel]="'ACTIONS.SEARCH.APP.QUICK_FILTER.TOOLTIP' | translate"
-                [pTooltip]="'ACTIONS.SEARCH.APP.QUICK_FILTER.TOOLTIP' | translate"
-                tooltipPosition="top"
-              >
-                <ng-template let-item pTemplate="item">
-                  <span
-                    [id]="'ps_app_search_quick_filter_' + item.value"
-                    [pTooltip]="item.label | translate"
-                    tooltipPosition="bottom"
-                    tooltipEvent="hover"
-                  >
-                    {{ item.label | translate }}
-                  </span>
-                </ng-template>
-              </p-selectButton>
-            </div>
+            <p-selectButton
+              inputid="ps_app_search_quick_filter"
+              [options]="quickFilterItems"
+              [(ngModel)]="quickFilterValue"
+              [allowEmpty]="false"
+              (onChange)="onQuickFilterChange($event.value)"
+              [ariaLabel]="'ACTIONS.SEARCH.APP.QUICK_FILTER.TOOLTIP' | translate"
+              [pTooltip]="'ACTIONS.SEARCH.APP.QUICK_FILTER.TOOLTIP' | translate"
+              tooltipPosition="top"
+            >
+              <ng-template let-item pTemplate="item">
+                <span
+                  [id]="'ps_app_search_quick_filter_' + item.value"
+                  [pTooltip]="item.label | translate"
+                  tooltipPosition="bottom"
+                  tooltipEvent="hover"
+                >
+                  {{ item.label | translate }}
+                </span>
+              </ng-template>
+            </p-selectButton>
           }
           <!-- GLOBAL Filter -->
           <p-inputgroup class="w-auto">
