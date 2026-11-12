@@ -50,7 +50,7 @@
         pInputText
         type="text"
         id="ps_slot_detail_form_field_creation_date"
-        class="w-full sm:w-13rem pt-3 pb-2 text-responsive"
+        class="w-full sm:w-13rem text-responsive"
         [value]="slot() ? (slot()!.creationDate | date: dateFormat()) : ''"
         [disabled]="true"
         [ariaLabel]="'INTERNAL.CREATION_DATE' | translate"
@@ -65,7 +65,7 @@
         pInputText
         type="text"
         id="ps_slot_detail_form_field_creation_user"
-        class="w-full pt-3 pb-2 text-responsive"
+        class="w-full text-responsive"
         [value]="slot()?.creationUser"
         [disabled]="true"
         [ariaLabel]="'INTERNAL.CREATION_USER' | translate"
@@ -101,7 +101,7 @@
         pInputText
         type="text"
         id="ps_slot_detail_form_field_modification_user"
-        class="w-full pt-3 pb-2 text-responsive"
+        class="w-full text-responsive"
         [value]="slot()?.modificationUser"
         [disabled]="true"
         [ariaLabel]="'INTERNAL.MODIFICATION_USER' | translate"

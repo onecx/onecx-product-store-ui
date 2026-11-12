@@ -4,11 +4,11 @@
 @include ocx-text-responsive;
 @include ocx-required-label;
 @include ocx-p-inputgroup;
-@include ocx-p-message;
 @include ocx-p-tabs;
 
 :host ::ng-deep {
-  --onecx-product-store-onecx-product-store-ui-tabs-tabpanel-padding: 0.75rem;
+  --onecx-product-store-onecx-product-store-ui-tabs-tabpanel-padding: 0.75rem 0.25rem;
+  --onecx-product-store-onecx-product-store-ui-dialog-content-padding: 0 1rem;
 
   /* tabs with modal dialog */
   .p-tabs .p-tabpanels {
@@ -74,10 +74,10 @@
       min-width: 220px;
     }
     &:not(:has(p-celleditor .p-inputtext)) {
-      padding: var(--table-body-cell-padding, 1rem 1rem);
+      padding: var(--table-body-cell-padding, 0.5rem);
     }
     &:has(p-celleditor .p-inputtext) {
-      padding: 0.4rem;
+      padding: 0 0.5rem;
     }
   }
   /**

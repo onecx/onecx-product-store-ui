@@ -8,10 +8,14 @@
 @include ocx-p-tabs;
 
 :host ::ng-deep {
-  .ocx-content > div {
+  .ocx-content .ocx-card {
     margin-bottom: 0;
     padding: 0;
+    box-shadow:
+      rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+      rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
   }
 
-  --onecx-product-store-onecx-product-store-ui-tabs-tabpanel-padding: 0.75rem;
+  --onecx-product-store-onecx-product-store-ui-tabs-tabpanel-padding: 0.75rem 0.25rem;
+  --onecx-product-store-onecx-product-store-ui-dialog-content-padding: 0 1rem;
 }
