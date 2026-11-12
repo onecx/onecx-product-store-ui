@@ -49,7 +49,7 @@
         pInputText
         type="text"
         id="ps_product_detail_intern_creationDate"
-        class="w-full sm:w-15rem pt-3 pb-2 text-responsive"
+        class="w-full sm:w-15rem text-responsive"
         [value]="product()?.creationDate | date: dateFormat()"
         [disabled]="true"
         [ariaLabel]="'INTERNAL.CREATION_DATE' | translate"
@@ -64,7 +64,7 @@
         pInputText
         type="text"
         id="ps_product_detail_intern_creation_user"
-        class="w-full pt-3 pb-2 text-responsive"
+        class="w-full text-responsive"
         [value]="product()?.creationUser"
         [disabled]="true"
         [ariaLabel]="'INTERNAL.CREATION_USER' | translate"
@@ -83,7 +83,7 @@
         pInputText
         type="text"
         id="ps_product_detail_intern_modification_date"
-        class="w-full sm:w-15rem pt-3 pb-2 text-responsive"
+        class="w-full sm:w-15rem text-responsive"
         [value]="product()?.modificationDate | date: dateFormat()"
         [disabled]="true"
         [ariaLabel]="'INTERNAL.MODIFICATION_DATE' | translate"
@@ -98,7 +98,7 @@
         pInputText
         type="text"
         id="ps_product_detail_intern_modification_user"
-        class="w-full pt-3 pb-2 text-responsive"
+        class="w-full text-responsive"
         [value]="product()?.modificationUser"
         [disabled]="true"
         [ariaLabel]="'INTERNAL.MODIFICATION_USER' | translate"
