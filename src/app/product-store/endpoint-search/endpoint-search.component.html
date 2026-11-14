@@ -80,7 +80,7 @@
               #globalFilterInput
               type="text"
               pInputText
-              id="ps_roles_filter"
+              id="ws_endpoint_search_filter"
               class="text-responsive"
               [value]="globalFilterValue"
               (input)="onGlobalFilter(globalFilterInput.value)"
@@ -98,13 +98,13 @@
               tooltipPosition="top"
               tooltipEvent="hover"
             />
-            <label for="ps_roles_filter" aria-hidden="true">
+            <label for="ws_endpoint_search_filter" aria-hidden="true">
               {{ 'DIALOG.DATAVIEW.FILTER.LABEL' | translate }}
             </label>
           </p-floatlabel>
           <p-inputgroup-addon>
             <p-button
-              id="ps_roles_filter_clear"
+              id="ws_endpoint_search_filter_clear"
               icon="pi pi-filter-slash"
               class="h-full"
               (onClick)="onGlobalFilter('')"
@@ -139,19 +139,17 @@
 
       <!-- DATA -->
       <ocx-data-view
-        #rolesDataView
+        #endpointDataView
         id="ps_endpoint_search_table"
         [columns]="interactiveColumns"
         [data]="data"
         [layout]="'table'"
         [paginator]="true"
         [pageSizes]="[10, 30, 100]"
-        [pageSize]="20"
+        [pageSize]="10"
         [clientSideSorting]="false"
         [clientSideFiltering]="true"
         [emptyResultsMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
-        [clientSideFiltering]="true"
-        [clientSideSorting]="true"
         [filters]="interactiveFilters"
         (filtered)="onInteractiveFiltersChange($event)"
         [sortField]="interactiveSortField"

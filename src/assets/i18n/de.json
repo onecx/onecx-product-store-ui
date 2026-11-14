@@ -103,6 +103,7 @@
       "BACK.TOOLTIP": "Vorherige Seite",
       "DETAILS.TOOLTIP": "Anzeige Details",
       "NEW.TOOLTIP": "Erstelle neuen Eintrag",
+      "RELATED_TOPICS": "Verwandte Themen",
       "LINKS": {
         "GOTO.PRODUCT": "Details der Applikation anzeigen",
         "GOTO.WORKSPACE": "Zum Workspace wechseln"
