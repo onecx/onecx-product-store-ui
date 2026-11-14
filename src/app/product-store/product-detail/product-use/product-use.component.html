@@ -12,8 +12,9 @@
       <div class="sm:pt-2 pb-2 sm:pb-3 px-3">
         @if (workspaces.length === 0) {
           <p-message
-            severity="info"
             id="th_detail_use_workspaces_using_theme_unused_message"
+            styleClass="w-fit"
+            severity="info"
             [text]="'PRODUCT.WORKSPACES_USING_PRODUCT.UNUSED' | translate"
           ></p-message>
         } @else {

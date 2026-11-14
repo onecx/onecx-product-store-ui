@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
-import { AsyncPipe } from '@angular/common'
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common'
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
 import { TranslateModule, TranslateService } from '@ngx-translate/core'
@@ -44,7 +44,7 @@ export type MfeEndpoint = MicrofrontendAbstract & {
   mfeId: string
   unique_id: string
   productDisplayName: string
-  endpoint_name: string
+  endpointName: string
   endpoint_path: string
 }
 export interface ProductSearchCriteriaControls {
@@ -58,6 +58,7 @@ export interface ProductSearchCriteriaControls {
   imports: [
     AngularAcceleratorModule,
     AsyncPipe,
+    NgTemplateOutlet,
     ButtonModule,
     DialogModule,
     FloatLabelModule,
@@ -95,9 +96,11 @@ export class EndpointSearchComponent implements OnInit {
   public interactiveSortField = 'productDisplayName'
   public interactiveColumns: DataTableColumn[] = [
     {
-      id: 'endpoint_name',
+      id: 'endpointName',
       nameKey: 'ENDPOINT.NAME.SEARCH',
-      columnType: ColumnType.STRING
+      columnType: ColumnType.STRING,
+      sortable: true,
+      filterable: true
     },
     {
       id: 'endpoint_path',
@@ -187,7 +190,7 @@ export class EndpointSearchComponent implements OnInit {
     return (
       this.upperValue(a.productName).localeCompare(this.upperValue(b.productName)) ||
       this.upperValue(a.exposedModule).localeCompare(this.upperValue(b.exposedModule)) ||
-      this.upperValue(a.endpoint_name).localeCompare(this.upperValue(b.endpoint_name))
+      this.upperValue(a.endpointName).localeCompare(this.upperValue(b.endpointName))
     )
   }
 
@@ -222,7 +225,7 @@ export class EndpointSearchComponent implements OnInit {
                   exposedModule: mfe.exposedModule,
                   remoteBaseUrl: mfe.remoteBaseUrl,
                   type: mfe.type,
-                  endpoint_name: ep.name,
+                  endpointName: ep.name,
                   endpoint_path: ep.path
                 })
               }
@@ -301,7 +304,7 @@ export class EndpointSearchComponent implements OnInit {
   private stringFilter(filter: string, endpoints: MfeEndpoint[]): MfeEndpoint[] {
     const lowerCaseFilter = filter.toLowerCase()
     return endpoints.filter((endpoint) => {
-      return ['productDisplayName', 'appName', 'endpoint_name', 'endpoint_path'].some((key: string) => {
+      return ['productDisplayName', 'appName', 'endpointName', 'endpoint_path'].some((key: string) => {
         const searchableText = Utils.toSearchableText(endpoint[key as keyof MfeEndpoint])
         if (!searchableText) return false
         return searchableText.toLowerCase().includes(lowerCaseFilter)

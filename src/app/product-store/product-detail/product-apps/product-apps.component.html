@@ -3,7 +3,7 @@
   <p-message
     id="ps_product_apps_exception"
     severity="error"
-    styleClass="m-2"
+    styleClass="m-2 w-fit"
     [text]="exceptionKey | translate"
   ></p-message>
 } @else if (details) {
@@ -12,6 +12,7 @@
       <p-message
         id="ps_product_apps_no_data"
         severity="info"
+        styleClass="w-fit"
         [text]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
       ></p-message>
     }

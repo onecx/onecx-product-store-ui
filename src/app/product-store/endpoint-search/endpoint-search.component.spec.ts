@@ -95,7 +95,7 @@ const mfeEndpoints: MfeEndpoint[] = [
     exposedModule: './expMod_p1_mfe1',
     remoteBaseUrl: '/mfe1/remoteEntry.js',
     type: MicrofrontendType.Module,
-    endpoint_name: 'endpoint_1_1_1',
+    endpointName: 'endpoint_1_1_1',
     endpoint_path: '/{name}'
   },
   {
@@ -109,7 +109,7 @@ const mfeEndpoints: MfeEndpoint[] = [
     exposedModule: './expMod_p1_mfe1',
     remoteBaseUrl: '/mfe1/remoteEntry.js',
     type: MicrofrontendType.Module,
-    endpoint_name: 'endpoint_1_1_2',
+    endpointName: 'endpoint_1_1_2',
     endpoint_path: '/{name}'
   },
   {
@@ -123,7 +123,7 @@ const mfeEndpoints: MfeEndpoint[] = [
     exposedModule: './expMod_p2_mfe1',
     remoteBaseUrl: '/mfe1/remoteEntry.js',
     type: MicrofrontendType.Module,
-    endpoint_name: 'endpoint_2_1_1',
+    endpointName: 'endpoint_2_1_1',
     endpoint_path: '/{name}'
   },
   {
@@ -137,7 +137,7 @@ const mfeEndpoints: MfeEndpoint[] = [
     exposedModule: './expMod_p3_mfe1',
     remoteBaseUrl: '/mfe1/remoteEntry.js',
     type: MicrofrontendType.Module,
-    endpoint_name: 'endpoint_3_1_1',
+    endpointName: 'endpoint_3_1_1',
     endpoint_path: '/{name}'
   }
 ]
@@ -335,7 +335,7 @@ describe('EndpointSearchComponent', () => {
 
       component.filteredData$.subscribe((data) => {
         expect(data).toHaveSize(1)
-        expect(data[0].endpoint_name).toBe('endpoint_1_1_1')
+        expect(data[0].endpointName).toBe('endpoint_1_1_1')
         done()
       })
     })
