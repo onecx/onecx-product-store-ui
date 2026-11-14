@@ -52,7 +52,7 @@
         class="p-3 flex flex-row flex-wrap justify-content-between align-items-center column-gap-4 row-gap-1 border-bottom-1 border-100"
       >
         <!-- INFO -->
-        <div id="ps_roles_messages">
+        <div id="ps_endpoint_search_header-left">
           @if (loading) {
             <p-message
               id="ps_endpoint_search_loading_message"
@@ -118,6 +118,7 @@
         </p-inputgroup>
         <!-- ACTIONS -->
         <nav
+          id="ps_endpoint_search_header-right"
           class="flex flex-wrap align-is-center column-gap-2 row-gap-1"
           [attr.aria-label]="'ACTIONS.NAVIGATION.RELATED_TOPICS' | translate"
         >
@@ -164,7 +165,7 @@
           let-sortTemplate="sortTemplate"
           let-filterTemplate="filterTemplate"
         >
-          <div class="flex flex-row justify-content-start align-items-center column-gap-2">
+          <div class="py-2 flex flex-row justify-content-start align-items-center column-gap-2">
             <div>{{ column.nameKey | translate }}</div>
             <div class="icon-button-header-wrapper">
               <span class="custom-header-sort">
