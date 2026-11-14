@@ -300,12 +300,13 @@
     }
     /* correct header layouting by lib */
     .table-header-wrapper {
-      flex-direction: row !important;
-      justify-content: flex-start !important;
-      flex-wrap: nowrap !important;
+      flex-direction: row;
+      justify-content: flex-start;
+      flex-wrap: nowrap;
+      align-items: center;
     }
     .table-header-wrapper span:first-child {
-      margin-right: 10px !important;
+      margin-right: 10px;
     }
 
     /* establish grid-nogutter */
