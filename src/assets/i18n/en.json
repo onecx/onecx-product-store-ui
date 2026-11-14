@@ -121,6 +121,7 @@
     "SEARCH": {
       "NO_DATA": "No data",
       "NOT_FOUND": "No data found",
+      "RELOAD": "Reload data",
       "WILDCARD_SUPPORT": " Wildcards: ?, *",
       "APP": {
         "NOT_EXISTS": "An App with this name could not be found.",
