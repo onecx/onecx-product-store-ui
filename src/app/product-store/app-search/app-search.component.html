@@ -191,7 +191,7 @@
             tabindex="0"
             [id]="'ps_app_search_data_' + app.appId"
             [styleClass]="
-              'relative p-1 px-5 flex flex-column justify-content-center ' +
+              'relative py-0 px-5 flex flex-column justify-content-center ' +
               (hasViewPermission || hasEditPermission ? 'hover:bg-gray-200 hover:text-color cursor-pointer' : '')
             "
             (click)="hasViewPermission || hasEditPermission ? onAppDetail($event, app) : null"
@@ -279,6 +279,15 @@
             <!-- CONTENT -->
             <div class="h-4rem flex flex-column justify-content-between gap-1 text-center">
               <div
+                [id]="'ps_app_search_data_' + app.appId + '_product_name'"
+                class="text-xs text-responsive"
+                [pTooltip]="('APP.PRODUCT_NAME' | translate) + (app.productName.length <= 25 ? '' : app.productName)"
+                tooltipPosition="top"
+                tooltipEvent="hover"
+              >
+                {{ app.productName }}
+              </div>
+              <div
                 [id]="'ps_app_search_data_' + app.appId + '_app_id'"
                 class="font-bold text-responsive"
                 [pTooltip]="app.appId.length <= 15 ? '' : app.appId"
@@ -311,15 +320,6 @@
                   {{ app.appVersion }}
                 </div>
               }
-              <div
-                [id]="'ps_app_search_data_' + app.appId + '_product_name'"
-                class="text-xs text-responsive"
-                [pTooltip]="('APP.PRODUCT_NAME' | translate) + (app.productName.length <= 25 ? '' : app.productName)"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              >
-                {{ app.productName }}
-              </div>
             </div>
           </p-card>
         </div>

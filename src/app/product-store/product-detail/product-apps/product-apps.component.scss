@@ -5,6 +5,7 @@
 
 :host ::ng-deep {
   --onecx-product-store-onecx-product-store-ui-card-body-padding: 0.5rem;
+  --onecx-product-store-onecx-product-store-ui-togglebutton-content-padding: 0.25rem;
 
   /* fixes for p-card */
   --onecx-product-store-onecx-product-store-ui-card-body-padding: 0.25rem;
@@ -34,16 +35,22 @@
   /**
    * position aligned to card dimensions
   */
+  .card-badge-left {
+    left: 3px;
+  }
   .card-badge-right,
   .card-badge-left {
+    &.badge-1 {
+      top: 5px;
+    }
     &.badge-2-mfe {
-      top: 51px;
+      top: 55px;
     }
     &.badge-2-ms {
-      top: 32px;
+      top: 36px;
     }
     &.badge-2-slot {
-      top: 44px;
+      top: 45px;
     }
   }
 }

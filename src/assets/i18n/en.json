@@ -263,6 +263,7 @@
     "TABS": {
       "APPS": "Components",
       "INTERN": "Internal",
+      "SLOTS": "Slots",
       "USE": "Use",
       "PROPERTIES": "Properties",
       "REMOTE": "Remote Module",
