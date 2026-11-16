@@ -115,6 +115,7 @@ export class SlotSearchComponent implements OnInit {
   public displaySlotDetailDialog = false
   public displaySlotDeleteDialog = false
   public changeMode: ChangeMode = 'VIEW'
+  public globalFilterValue = ''
   public interactiveFilters: Filter[] = []
   public interactiveSortField = 'productDisplayName'
   public interactiveSortDirection: DataSortDirection = DataSortDirection.ASCENDING
@@ -157,7 +158,7 @@ export class SlotSearchComponent implements OnInit {
   public products$: Observable<ProductAbstract[]> = of([])
   public slots$: Observable<Slot[]> = of([])
   public slotData$: Observable<SlotData[]> = of([])
-  public filteredData$ = new BehaviorSubject<FilteredData[]>([])
+  public filteredData$ = new BehaviorSubject<SlotData[]>([])
   public readonly resultData$ = new BehaviorSubject<SlotData[]>([])
   private lastProductFilters = ''
   private cachedProducts: ProductAbstract[] = []
@@ -227,7 +228,6 @@ export class SlotSearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.initPermissions().catch((err) => console.error(err))
-    this.initGlobalFilter()
     this.prepareActionButtons()
     this.prepareStateValues()
 
@@ -324,7 +324,7 @@ export class SlotSearchComponent implements OnInit {
     this.slotData$.subscribe({
       next: (sd) => {
         this.resultData$.next(sd)
-        this.filteredData$.next(sd as FilteredData[])
+        this.filteredData$.next(sd)
       }
     })
   }
@@ -428,31 +428,15 @@ export class SlotSearchComponent implements OnInit {
       )
   }
 
-  public resetFilters() {
-    this.filterData = ''
-    this.filter = ''
-    this.interactiveFilters = []
-    this.filterPanelSlotNameVisible = false
-    this.filterPanelSlotStateVisible = false
-    this.filterPanelProductVisible = false
-    this.onResetFilterIcons('not empty', ['slotName', 'slotState', 'product'])
-    this.dataTable()?.clear()
-  }
-
   /**
    * UI EVENTS
    */
   public onInteractiveFiltersChange(filters: Filter[]): void {
     this.interactiveFilters = filters
-    const globalFilter = filters.find((f) => f.columnId === 'global')
-    if (typeof globalFilter?.value === 'string') this.filter = globalFilter.value
   }
   public onInteractiveSorted(sort: Sort): void {
     this.interactiveSortField = sort.sortColumn
     this.interactiveSortDirection = sort.sortDirection
-  }
-  public onLayoutChange(viewMode: 'grid' | 'list' | 'table'): void {
-    // Layout change handler for interactive data view - table-only component
   }
 
   public onSearch() {
@@ -521,20 +505,27 @@ export class SlotSearchComponent implements OnInit {
   /**
    * FILTER
    */
-  private prepareFilterSlotNames(ss: SlotData[] | undefined) {
-    this.filterSlotNameItems = []
-    if (ss)
-      for (const s of ss)
-        if (s.name && !this.filterSlotNameItems.includes(s.name)) this.filterSlotNameItems.push(s.name)
-    this.filterSlotNameItems.sort(Utils.sortByLocale)
+  public resetFilters() {
+    this.filterData = ''
+    this.filter = ''
+    this.interactiveFilters = []
+    this.filterPanelSlotNameVisible = false
+    this.filterPanelSlotStateVisible = false
+    this.filterPanelProductVisible = false
+    this.onResetFilterIcons('not empty', ['slotName', 'slotState', 'product'])
+    this.dataTable()?.clear()
   }
-  private prepareFilterProductNames(ss: SlotData[] | undefined) {
-    this.filterProductItems = []
-    if (ss)
-      for (const s of ss)
-        if (s.productDisplayName && !this.filterProductItems.includes(s.productDisplayName))
-          this.filterProductItems.push(s.productDisplayName)
-    this.filterProductItems.sort(Utils.sortByLocale)
+
+  public onGlobalFilter(val: string): void {
+    this.globalFilterValue = val.trim().toLowerCase()
+    this.resultData$.asObservable().subscribe((data) => {
+      if (this.globalFilterValue === '') {
+        this.filteredData$.next(data)
+        return
+      }
+      const fd = this.stringFilter(this.globalFilterValue, data)
+      this.filteredData$.next(fd)
+    })
   }
 
   // triggered by the use of global table filter => switching filter icons
@@ -562,27 +553,6 @@ export class SlotSearchComponent implements OnInit {
     }
   }
 
-  private initGlobalFilter() {
-    this.resultData$
-      .pipe(
-        map((slots) => {
-          if (typeof this.filterData === 'string' && this.filterData.trim()) {
-            return this.stringFilter(this.filterData, slots)
-          } else if (typeof this.filterData === 'object' && this.filterData.length > 0) {
-            return this.objectFilter(this.filterData, slots)
-          } else {
-            return slots
-          }
-        })
-      )
-      .subscribe({
-        next: (filteredData) => {
-          this.prepareFilterSlotNames(filteredData)
-          this.prepareFilterProductNames(filteredData)
-          this.filteredData$.next(filteredData as FilteredData[])
-        }
-      })
-  }
   // this is the normal text filter
   private stringFilter(filter: string, slots: SlotData[]): SlotData[] {
     const lowerCaseFilter = filter.toLowerCase()
@@ -592,15 +562,6 @@ export class SlotSearchComponent implements OnInit {
         return value?.toLowerCase().includes(lowerCaseFilter)
       })
     })
-  }
-  // used here for filtereing different slot states (displayed in one column)
-  private objectFilter(filter: string[], slots: SlotData[]): SlotData[] {
-    return slots.filter(
-      (slot: SlotData) =>
-        (slot.operator === true && filter.includes('operator')) ||
-        (slot.undeployed === true && filter.includes('undeployed')) ||
-        (slot.deprecated === true && filter.includes('deprecated'))
-    )
   }
 
   /**

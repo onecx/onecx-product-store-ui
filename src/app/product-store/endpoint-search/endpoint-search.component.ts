@@ -45,7 +45,7 @@ export type MfeEndpoint = MicrofrontendAbstract & {
   unique_id: string
   productDisplayName: string
   endpointName: string
-  endpoint_path: string
+  endpointPath: string
 }
 export interface ProductSearchCriteriaControls {
   productDisplayName: FormControl<string | null>
@@ -103,9 +103,11 @@ export class EndpointSearchComponent implements OnInit {
       filterable: true
     },
     {
-      id: 'endpoint_path',
+      id: 'endpointPath',
       nameKey: 'ENDPOINT.PATH',
-      columnType: ColumnType.STRING
+      columnType: ColumnType.STRING,
+      sortable: true,
+      filterable: true
     },
     { id: 'appName', nameKey: 'ENDPOINT.APP_NAME', columnType: ColumnType.STRING, sortable: true, filterable: true },
     {
@@ -226,7 +228,7 @@ export class EndpointSearchComponent implements OnInit {
                   remoteBaseUrl: mfe.remoteBaseUrl,
                   type: mfe.type,
                   endpointName: ep.name,
-                  endpoint_path: ep.path
+                  endpointPath: ep.path
                 })
               }
           eps.sort((a, b) => this.sortMfes(a, b))
@@ -304,16 +306,12 @@ export class EndpointSearchComponent implements OnInit {
   private stringFilter(filter: string, endpoints: MfeEndpoint[]): MfeEndpoint[] {
     const lowerCaseFilter = filter.toLowerCase()
     return endpoints.filter((endpoint) => {
-      return ['productDisplayName', 'appName', 'endpointName', 'endpoint_path'].some((key: string) => {
+      return ['productDisplayName', 'appName', 'endpointName', 'endpointPath'].some((key: string) => {
         const searchableText = Utils.toSearchableText(endpoint[key as keyof MfeEndpoint])
         if (!searchableText) return false
         return searchableText.toLowerCase().includes(lowerCaseFilter)
       })
     })
-  }
-
-  public onLayoutChange(viewMode: 'grid' | 'list' | 'table'): void {
-    // Layout change handler for interactive data view - table-only component
   }
 
   public onInteractiveFiltersChange(filters: Filter[]): void {
@@ -323,6 +321,7 @@ export class EndpointSearchComponent implements OnInit {
     this.interactiveSortField = sort.sortColumn
     this.interactiveSortDirection = sort.sortDirection
   }
+
   public onSearch() {
     Utils.syncFormValuesWithRoute(this.route, this.router, this.searchCriteriaForm, [
       { key: 'productDisplayName' },
