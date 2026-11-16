@@ -163,16 +163,41 @@
           let-sortTemplate="sortTemplate"
           let-filterTemplate="filterTemplate"
         >
-          <div class="py-2 flex flex-row justify-content-start align-items-center column-gap-2">
+          <div class="flex flex-row justify-content-start align-items-center column-gap-2">
             <div>{{ column.nameKey | translate }}</div>
-            <div class="icon-button-header-wrapper">
-              <span class="custom-header-sort">
+            <div class="header-action-wrapper">
+              <span class="header-action">
                 <ng-container
                   [ngTemplateOutlet]="sortTemplate"
                   [ngTemplateOutletContext]="{ column: column }"
                 ></ng-container>
               </span>
-              <span>
+              <span class="header-action">
+                <ng-container
+                  [ngTemplateOutlet]="filterTemplate"
+                  [ngTemplateOutletContext]="{ column: column }"
+                ></ng-container>
+              </span>
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template
+          pTemplate="endpointPathIdTableHeader"
+          let-column="column"
+          let-sortTemplate="sortTemplate"
+          let-filterTemplate="filterTemplate"
+        >
+          <div class="flex flex-row justify-content-start align-items-center column-gap-2">
+            <div>{{ column.nameKey | translate }}</div>
+            <div class="header-action-wrapper">
+              <span class="header-action">
+                <ng-container
+                  [ngTemplateOutlet]="sortTemplate"
+                  [ngTemplateOutletContext]="{ column: column }"
+                ></ng-container>
+              </span>
+              <span class="header-action">
                 <ng-container
                   [ngTemplateOutlet]="filterTemplate"
                   [ngTemplateOutletContext]="{ column: column }"
@@ -190,14 +215,14 @@
         >
           <div class="flex flex-row justify-content-start align-items-center column-gap-2">
             <div>{{ column.nameKey | translate }}</div>
-            <div class="icon-button-header-wrapper">
-              <span class="custom-header-sort">
+            <div class="header-action-wrapper">
+              <span class="header-action">
                 <ng-container
                   [ngTemplateOutlet]="sortTemplate"
                   [ngTemplateOutletContext]="{ column: column }"
                 ></ng-container>
               </span>
-              <span>
+              <span class="header-action">
                 <ng-container
                   [ngTemplateOutlet]="filterTemplate"
                   [ngTemplateOutletContext]="{ column: column }"
@@ -215,14 +240,14 @@
         >
           <div class="flex flex-row justify-content-start align-items-center column-gap-2">
             <div>{{ column.nameKey | translate }}</div>
-            <div class="icon-button-header-wrapper">
-              <span class="custom-header-sort">
+            <div class="header-action-wrapper">
+              <span class="header-action">
                 <ng-container
                   [ngTemplateOutlet]="sortTemplate"
                   [ngTemplateOutletContext]="{ column: column }"
                 ></ng-container>
               </span>
-              <span>
+              <span class="header-action">
                 <ng-container
                   [ngTemplateOutlet]="filterTemplate"
                   [ngTemplateOutletContext]="{ column: column }"

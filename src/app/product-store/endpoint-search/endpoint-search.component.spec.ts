@@ -96,7 +96,7 @@ const mfeEndpoints: MfeEndpoint[] = [
     remoteBaseUrl: '/mfe1/remoteEntry.js',
     type: MicrofrontendType.Module,
     endpointName: 'endpoint_1_1_1',
-    endpoint_path: '/{name}'
+    endpointPath: '/{name}'
   },
   {
     id: 'id1_1',
@@ -110,7 +110,7 @@ const mfeEndpoints: MfeEndpoint[] = [
     remoteBaseUrl: '/mfe1/remoteEntry.js',
     type: MicrofrontendType.Module,
     endpointName: 'endpoint_1_1_2',
-    endpoint_path: '/{name}'
+    endpointPath: '/{name}'
   },
   {
     id: 'id2_0',
@@ -124,7 +124,7 @@ const mfeEndpoints: MfeEndpoint[] = [
     remoteBaseUrl: '/mfe1/remoteEntry.js',
     type: MicrofrontendType.Module,
     endpointName: 'endpoint_2_1_1',
-    endpoint_path: '/{name}'
+    endpointPath: '/{name}'
   },
   {
     id: 'id3_0',
@@ -138,7 +138,7 @@ const mfeEndpoints: MfeEndpoint[] = [
     remoteBaseUrl: '/mfe1/remoteEntry.js',
     type: MicrofrontendType.Module,
     endpointName: 'endpoint_3_1_1',
-    endpoint_path: '/{name}'
+    endpointPath: '/{name}'
   }
 ]
 
@@ -326,20 +326,6 @@ describe('EndpointSearchComponent', () => {
       })
     })
 
-    it('should filter endpoints based on filterData', (done) => {
-      productApiServiceSpy.searchProducts.and.returnValue(of({ stream: productResponseData }))
-      mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: mfeResponseData }))
-
-      component.ngOnInit()
-      component.onGlobalFilter('endpoint_1_1_1')
-
-      component.filteredData$.subscribe((data) => {
-        expect(data).toHaveSize(1)
-        expect(data[0].endpointName).toBe('endpoint_1_1_1')
-        done()
-      })
-    })
-
     it('should convert values to searchable text', () => {
       expect(Utils.toSearchableText(null)).toBeUndefined()
       expect(Utils.toSearchableText(undefined)).toBeUndefined()
@@ -403,7 +389,21 @@ describe('EndpointSearchComponent', () => {
     })
   })
 
-  describe('interactive filter and sort', () => {
+  describe('filter and sort', () => {
+    it('should filter endpoints based on filterData', (done) => {
+      productApiServiceSpy.searchProducts.and.returnValue(of({ stream: productResponseData }))
+      mfeApiServiceSpy.searchMicrofrontends.and.returnValue(of({ stream: mfeResponseData }))
+
+      component.ngOnInit()
+      component.onGlobalFilter('endpoint_1_1_1')
+
+      component.filteredData$.subscribe((data) => {
+        expect(data).toHaveSize(1)
+        expect(data[0].endpointName).toBe('endpoint_1_1_1')
+        done()
+      })
+    })
+
     it('should set interactive filters', () => {
       const filters = [{ columnId: 'appName', value: 'MFE 1' }]
 
@@ -417,12 +417,6 @@ describe('EndpointSearchComponent', () => {
 
       expect(component.interactiveSortField).toBe('appName')
       expect(component.interactiveSortDirection).toBe(DataSortDirection.DESCENDING)
-    })
-
-    it('should handle layout change', () => {
-      component.onLayoutChange('list')
-
-      expect().nothing()
     })
   })
 

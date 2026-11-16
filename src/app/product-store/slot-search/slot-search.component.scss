@@ -5,13 +5,12 @@
 @include danger-action;
 @include ocx-text-responsive;
 @include ocx-p-inputgroup;
-@include ocx-interactive-data-view-fixes;
 @include p-table-zebra-rows;
 
 :host ::ng-deep {
   .ocx-content .ocx-card {
     margin-bottom: 0;
-    padding: 0.75rem 0.5rem;
+    padding: 0 0 1rem 0.75rem;
     box-shadow:
       rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
       rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
@@ -20,35 +19,42 @@
   .p-datatable {
     .p-datatable-thead > tr > th {
       border-bottom-width: 2px;
-      &:first-child .table-header-wrapper {
-        justify-content: center;
+      &:first-child {
+        border-right: 1px solid var(--surface-border, #dee2e6);
+        text-align: center;
+      }
+      &:nth-child(3) {
+        text-align: center;
       }
     }
-    .p-datatable-thead > tr > th,
     .p-datatable-tbody > tr > td {
-      /* table cell padding is NOT managed by column settings */
-      padding: 0.5rem 1rem;
       /* action column */
       &:first-child {
         border-right: 1px solid var(--surface-border, #dee2e6);
         width: 1rem;
         white-space: nowrap;
         text-align: center;
-      }
-      /* slot name */
-      &:nth-child(2) {
-        border-right: 1px solid var(--surface-border, #dee2e6);
-      }
-      .icon-button-row-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        column-gap: 0rem;
-        .p-button-icon-only {
-          width: 2rem;
-          height: 2rem;
+        padding: 0 1rem;
+        .icon-button-row-wrapper {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          column-gap: 0.25rem;
+          .p-button-icon-only {
+            width: 2rem;
+            height: 2rem;
+          }
         }
+      }
+      /* state column */
+      &:has(.slot-state-icons) {
+        text-align: center;
+        vertical-align: middle;
+      }
+      /* state */
+      &:nth-child(3) {
+        text-align: center;
       }
       button.editTableRowButton {
         order: 1;
@@ -60,29 +66,31 @@
         order: 3;
       }
     }
-    .p-datatable-tbody {
-      tr td.bg-inherit {
-        background-color: var(--table-body-row-bg);
+  }
+
+  /* Adjust header cell because the actions (sort, filter) have extra padding (hover!) */
+  --onecx-product-store-onecx-product-store-ui-datatable-header-cell-padding: 0.4rem 0.5rem;
+  /* Hover header action buttons (sort, filter) correctly*/
+  .header-action-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    .header-action {
+      .pi.sortButton,
+      .pi.pi-filter,
+      .pi.pi-filter-fill {
+        padding: 0.4rem !important;
+        border-radius: 50%;
+        background-color: transparent;
+        &:hover {
+          background-color: var(--table-header-hover-bg, rgba(0, 0, 0, 0.05));
+        }
+      }
+      .p-multiselect {
+        border-radius: 50%;
+        background-color: transparent;
       }
     }
-  }
-
-  .p-datatable-flex-scrollable > .p-datatable-table-container {
-    margin-bottom: 1rem;
-  }
-  /* state column */
-  .p-datatable-tbody > tr > td:has(.slot-state-icons) {
-    text-align: center;
-    vertical-align: middle;
-  }
-
-  .state-header-wrapper {
-    padding-left: 20%;
-  }
-
-  /* hide unusable slot extension point */
-  ocx-custom-group-column-selector {
-    display: none;
   }
 
   .bookmark-link {

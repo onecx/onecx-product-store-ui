@@ -21,7 +21,7 @@ import {
 import { Product, ProductsAPIService, SlotsAPIService, SlotPageResult, Slot } from 'src/app/shared/generated'
 import { ONECX_MOCK_COMPONENTS } from 'src/app/shared/onecx-mock-components'
 
-import { FilteredData, SlotData, SlotSearchComponent } from './slot-search.component'
+import { SlotData, SlotSearchComponent } from './slot-search.component'
 
 const products: Product[] = [
   {
@@ -445,21 +445,56 @@ describe('SlotSearchComponent', () => {
       expect(event.stopPropagation).toHaveBeenCalled()
     })
 
-    it('should set interactive filters and global filter', () => {
-      const filters = [{ columnId: 'global', value: 'test' }]
+    it('should call onSlotCreate from interactive action callback', () => {
+      spyOn(component, 'onSlotCreate')
+
+      component.interactiveAdditionalActions[0].callback?.({ ...slots[0] })
+
+      expect(component.onSlotCreate).toHaveBeenCalledWith({ ...slots[0] })
+    })
+  })
+
+  describe('filter and sort', () => {
+    it('should filter endpoints based on filterData', (done) => {
+      const mockP = [{ id: 'p1', name: 'prod1' }]
+      const mockS = [
+        { id: 's1', name: 'slot_1' },
+        { id: 's2' },
+        { id: 's3' },
+        { id: 's4' },
+        { id: 's5', productName: 'prod1' }
+      ]
+
+      apiProductsServiceSpy.searchProducts.and.returnValue(of({ stream: mockP, totalElements: mockP.length }))
+      apiSlotsServiceSpy.searchSlots.and.returnValue(of({ stream: mockS, totalElements: mockS.length }))
+
+      component.ngOnInit()
+      component.onGlobalFilter('slot')
+
+      component.filteredData$.subscribe((data) => {
+        expect(data).toHaveSize(1)
+        expect(data[0].name).toBe('slot_1')
+        done()
+      })
+    })
+
+    it('should pass through all rows unchanged when the global filter is cleared', () => {
+      const rows = [slotData[0], slotData[1]]
+      component.resultData$.next(rows)
+      const filteredSpy = spyOn(component.filteredData$, 'next')
+
+      component.onGlobalFilter('')
+
+      expect(component.globalFilterValue).toBe('')
+      expect(filteredSpy).toHaveBeenCalledWith(rows)
+    })
+
+    it('should set interactive filters', () => {
+      const filters = [{ columnId: 'slotName', value: 'slot' }]
 
       component.onInteractiveFiltersChange(filters)
 
       expect(component.interactiveFilters).toEqual(filters)
-      expect(component.filter).toBe('test')
-    })
-
-    it('should keep the filter if there is no global filter', () => {
-      component.filter = 'test'
-
-      component.onInteractiveFiltersChange([{ columnId: 'someColumn', value: 'someValue' }])
-
-      expect(component.filter).toBe('test')
     })
 
     it('should set interactive sort values', () => {
@@ -467,20 +502,6 @@ describe('SlotSearchComponent', () => {
 
       expect(component.interactiveSortField).toBe('slotName')
       expect(component.interactiveSortDirection).toBe(DataSortDirection.DESCENDING)
-    })
-
-    it('should handle layout change', () => {
-      component.onLayoutChange('list')
-
-      expect().nothing()
-    })
-
-    it('should call onSlotCreate from interactive action callback', () => {
-      spyOn(component, 'onSlotCreate')
-
-      component.interactiveAdditionalActions[0].callback?.({ ...slots[0] })
-
-      expect(component.onSlotCreate).toHaveBeenCalledWith({ ...slots[0] })
     })
   })
 
@@ -609,54 +630,6 @@ describe('SlotSearchComponent', () => {
    * FILTER Basics
    */
   describe('table filtering', () => {
-    describe('global filter', () => {
-      it('should filter string data based on filterData', () => {
-        ;(component as any)['resultData$'] = new BehaviorSubject(slotData)
-        component['filterData'] = slots[0].name
-        component.filteredData$ = new BehaviorSubject(slotData as FilteredData[])
-
-        component['initGlobalFilter']()
-
-        component.filteredData$.subscribe((filteredData) => {
-          expect(filteredData).toHaveSize(1)
-        })
-      })
-
-      it('should filter object data based on filterData', () => {
-        ;(component as any)['resultData$'] = new BehaviorSubject(slotData)
-        component['filterData'] = ['operator', 'undeployed', 'deprecated']
-        component.filteredData$ = new BehaviorSubject(slotData as FilteredData[])
-
-        component['initGlobalFilter']()
-
-        component.filteredData$.subscribe((filteredData) => {
-          expect(filteredData).toHaveSize(5)
-        })
-      })
-      it('should filter object data based on filterData', () => {
-        ;(component as any)['resultData$'] = new BehaviorSubject(slotData)
-        component['filterData'] = ['undeployed']
-        component.filteredData$ = new BehaviorSubject(slotData as FilteredData[])
-
-        component['initGlobalFilter']()
-
-        component.filteredData$.subscribe((filteredData) => {
-          expect(filteredData).toHaveSize(4)
-        })
-      })
-      it('should filter object data based on filterData', () => {
-        ;(component as any)['resultData$'] = new BehaviorSubject(slotData)
-        component['filterData'] = ['deprecated']
-        component.filteredData$ = new BehaviorSubject(slotData as FilteredData[])
-
-        component['initGlobalFilter']()
-
-        component.filteredData$.subscribe((filteredData) => {
-          expect(filteredData).toHaveSize(3)
-        })
-      })
-    })
-
     describe('column filter with icon toggle', () => {
       it('should use string filter - with/without slash/fill icon', () => {
         let filter = 'newFilter'

@@ -14,13 +14,9 @@
       rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
   }
 
-  .custom-header-sort .pi.sortButton {
-    padding-right: 0;
-  }
   .p-datatable {
     .p-datatable-thead > tr > th {
       border-bottom-width: 2px;
-      padding: 0rem 1rem;
     }
     .p-datatable-tbody {
       tr td.bg-inherit {
@@ -29,32 +25,27 @@
     }
   }
 
-  // keep sortable header title and icon on one line
-  /* keep sortable header title and icon on one line */
-  aocx-interactive-data-view {
-    .table-header-wrapper {
-      flex-direction: row !important;
-      align-items: center !important;
-      justify-content: flex-start !important;
-      gap: 0.35rem;
-      height: auto !important;
-      > span:first-child {
-        white-space: nowrap;
+  /* Adjust header cell because the actions (sort, filter) have extra padding (hover!) */
+  --onecx-product-store-onecx-product-store-ui-datatable-header-cell-padding: 0.4rem 0.5rem;
+  /* Hover header action buttons (sort, filter) correctly*/
+  .header-action-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    .header-action {
+      .pi.sortButton,
+      .pi.pi-filter,
+      .pi.pi-filter-fill {
+        padding: 0.4rem !important;
+        border-radius: 50%;
+        background-color: transparent;
+        &:hover {
+          background-color: var(--table-header-hover-bg, rgba(0, 0, 0, 0.05));
+        }
       }
       .p-multiselect {
-        background-color: var(--table-header-bg) !important;
-      }
-    }
-  }
-  .icon-button-header-wrapper .custom-header-sort {
-    .pi.sortButton,
-    .pi.pi-filter,
-    .pi-filter-fill {
-      padding: 0.5rem !important;
-      border-radius: 50%;
-      background-color: transparent;
-      &:hover {
-        background-color: var(--table-header-hover-bg, rgba(0, 0, 0, 0.05));
+        border-radius: 50%;
+        background-color: transparent;
       }
     }
   }

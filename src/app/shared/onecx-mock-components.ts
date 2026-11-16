@@ -42,11 +42,11 @@ export class MockOcxSearchHeaderComponent {
 }
 
 @Component({
-  selector: 'ocx-interactive-data-view',
+  selector: 'ocx-data-view',
   template: '<ng-content></ng-content>',
   standalone: true
 })
-export class MockInteractiveDataViewComponent {
+export class MockDataViewComponent {
   @Input() data: any
   @Input() supportedViewLayouts: any
   @Input() layout: any
@@ -56,6 +56,7 @@ export class MockInteractiveDataViewComponent {
   @Input() editPermission: any
   @Input() deletePermission: any
   @Input() additionalActions: any
+  @Input() paginator: any
   @Input() listGridPaginator: any
   @Input() tablePaginator: any
   @Input() pageSize: any
@@ -88,5 +89,5 @@ export const ONECX_MOCK_COMPONENTS = [
   MockPageHeaderComponent,
   MockOcxContentComponent,
   MockOcxSearchHeaderComponent,
-  MockInteractiveDataViewComponent
+  MockDataViewComponent
 ]
