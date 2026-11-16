@@ -177,68 +177,6 @@
         [editPermission]="'SLOT#EDIT'"
         [deletePermission]="'SLOT#DELETE'"
       >
-        <!--ocx-interactive-data-view
-        id="ps_slot_search_table"
-        [data]="data"
-        [supportedViewLayouts]="['table']"
-        [layout]="'table'"
-        [columns]="interactiveColumns"
-        [displayedColumnKeys]="interactiveDisplayedColumnKeys"
-        [listGridPaginator]="false"
-        [tablePaginator]="true"
-        [pageSize]="10"
-        [pageSizes]="[10, 30, 100]"
-        [emptyResultsMessage]="'ACTIONS.SEARCH.NO_DATA' | translate"
-        [disableFilterView]="true"
-        [clientSideFiltering]="true"
-        [clientSideSorting]="true"
-        [filters]="interactiveFilters"
-        [sortField]="interactiveSortField"
-        [sortDirection]="interactiveSortDirection"
-        [viewPermission]="hasViewPermission && !hasEditPermission ? 'SLOT#VIEW' : undefined"
-        [editPermission]="'SLOT#EDIT'"
-        [deletePermission]="'SLOT#DELETE'"
-        [additionalActions]="interactiveAdditionalActions"
-        [actionColumnPosition]="'left'"
-        (filtered)="onInteractiveFiltersChange($event)"
-        (sorted)="onInteractiveSorted($event)"
-        (viewItem)="onViewFromInteractive($event)"
-        (editItem)="onEditFromInteractive($event)"
-        (deleteItem)="onDeleteFromInteractive($event)"
-    -->
-        <!--ng-template #topCenter>
-          <p-inputgroup class="w-auto">
-            <p-inputgroup-addon>
-              <i class="pi pi-filter" aria-hidden="true"></i>
-            </p-inputgroup-addon>
-            <p-floatlabel variant="on">
-              <input
-                #filterInput
-                id="tm_search_filter"
-                type="text"
-                pInputText
-                [value]="filter"
-                (input)="onFilterChange(filterInput.value)"
-                [tooltipPosition]="'bottom'"
-                [pTooltip]="'SEARCH.SLOT.FILTER.TOOLTIP' | translate"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              />
-              <label for="tm_search_filter" aria-hidden="true"> {{ 'SEARCH.SLOT.FILTER.LABEL' | translate }}</label>
-            </p-floatlabel>
-            <p-button
-              id="tm_search_filter_clear"
-              icon="pi pi-filter-slash"
-              [disabled]="!filter"
-              (onClick)="onFilterChange('')"
-              [ariaLabel]="'SEARCH.SLOT.FILTER.CLEAR' | translate"
-              [pTooltip]="'SEARCH.SLOT.FILTER.CLEAR' | translate"
-              tooltipPosition="top"
-              tooltipEvent="hover"
-            />
-          </p-inputgroup>
-        </ng-template-->
-
         <!-- HEADER -->
         <ng-template pTemplate="actionsIdTableHeader" let-column="column">
           <div>{{ column.nameKey | translate }}</div>
