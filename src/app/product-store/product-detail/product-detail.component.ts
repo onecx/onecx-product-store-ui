@@ -185,7 +185,8 @@ export class ProductDetailComponent implements OnInit {
           this.productId = data.id
           this.currentLogoUrl = this.getLogoUrl(data)
           this.goToTab(data)
-          return { ...data, classifications: data.classifications?.sort(Utils.sortByLocale) }
+          data.classifications?.sort(Utils.sortByLocale)
+          return { ...data, classifications: data.classifications }
         }),
         catchError((err) => {
           this.exceptionKey = 'EXCEPTIONS.HTTP_STATUS_' + Utils.mapping_error_status(err.status) + '.PRODUCT'
@@ -365,7 +366,8 @@ export class ProductDetailComponent implements OnInit {
     this.productName = product.name
     this.currentLogoUrl = this.getLogoUrl(product)
     // refresh the bound product so child components (props, apps, intern) display the saved data
-    this.product = { ...product, classifications: product.classifications?.sort(Utils.sortByLocale) }
+    product.classifications?.sort(Utils.sortByLocale)
+    this.product = { ...product, classifications: product.classifications }
     this.preparePageAction(this.product)
     // update observable with response data
     this.product$ = new Observable((sub) => sub.next(product))
