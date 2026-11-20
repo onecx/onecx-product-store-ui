@@ -7,6 +7,7 @@ import { TranslateTestingModule } from 'ngx-translate-testing'
 import { BehaviorSubject, of, throwError } from 'rxjs'
 
 import { ConfigurationService, PortalMessageService, UserService } from '@onecx/angular-integration-interface'
+import { SlotService } from '@onecx/angular-remote-components'
 import { provideNoopAnimations } from '@angular/platform-browser/animations'
 import { PermissionService } from '@onecx/angular-utils'
 
@@ -14,6 +15,7 @@ import { Product, ProductsAPIService, ImagesInternalAPIService } from 'src/app/s
 import { ProductDetailComponent } from './product-detail.component'
 import { ProductPropertyComponent } from './product-props/product-props.component'
 import { ProductInternComponent } from './product-intern/product-intern.component'
+import { Workspace } from './product-use/product-use.component'
 
 const productProps: Product = {
   id: 'id',
@@ -74,6 +76,8 @@ describe('ProductDetailComponent', () => {
     })
   }
 
+  const mockSlotService = jasmine.createSpyObj('SlotService', ['init', 'isSomeComponentDefinedForSlot'])
+
   const imageApiSpy = {
     getImage: jasmine.createSpy('getImage').and.returnValue(of({})),
     uploadImage: jasmine.createSpy('uploadImage').and.returnValue(of({})),
@@ -95,7 +99,8 @@ describe('ProductDetailComponent', () => {
         provideHttpClientTesting(),
         provideNoopAnimations(),
         provideRouter([{ path: '', component: ProductDetailComponent }]),
-        { provide: Location, useValue: locationSpy }
+        { provide: Location, useValue: locationSpy },
+        { provide: SlotService, useValue: mockSlotService }
       ]
     })
       .overrideComponent(ProductDetailComponent, {
@@ -123,6 +128,8 @@ describe('ProductDetailComponent', () => {
   }))
 
   beforeEach(() => {
+    mockSlotService.init.and.returnValue(Promise.resolve())
+    mockSlotService.isSomeComponentDefinedForSlot.and.returnValue(of(true))
     fixture = TestBed.createComponent(ProductDetailComponent)
     component = fixture.componentInstance
     router = TestBed.inject(Router)
@@ -148,6 +155,76 @@ describe('ProductDetailComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy()
+  })
+
+  describe('slot service', () => {
+    it('should test if a component is assigned to the slot', () => {
+      expect(mockSlotService.isSomeComponentDefinedForSlot).toHaveBeenCalledWith(component.slotName)
+      expect(component.isComponentDefined()).toBeTrue()
+    })
+  })
+
+  describe('getting product use data', () => {
+    const workspaces = [{ name: 'ws1', displayName: 'Workspace 1' }] as Workspace[]
+
+    it('should start loading when the use tab is selected', () => {
+      component.onTabChange('2', product)
+
+      expect(component.selectedTabIndex).toBe('2')
+      expect(component.productUseLoadingState()).toBe('loading')
+      expect(component.productUsedName()).toBe(product.name)
+    })
+
+    it('should not start loading when another tab is selected', () => {
+      component.onTabChange('1', product)
+
+      expect(component.productUseLoadingState()).toBe('initial')
+      expect(component.productUsedName()).toBeUndefined()
+    })
+
+    it('should not restart loading when already started', () => {
+      component.onTabChange('2', product)
+      component.productUsedName.set(undefined)
+
+      component.onTabChange('2', product)
+
+      expect(component.productUsedName()).toBeUndefined()
+    })
+
+    it('should switch to timeout when no data is received in time', fakeAsync(() => {
+      component.onTabChange('2', product)
+
+      tick(component['MAX_LOADING_TIME'] + 100)
+
+      expect(component.productUseLoadingState()).toBe('timeout')
+    }))
+
+    it('should become ready immediately when min loading time is over', fakeAsync(() => {
+      component.onTabChange('2', product)
+      component['productUseStartTime'] = performance.now() - component['MIN_LOADING_TIME'] - 1
+
+      component.slotEmitter.emit(workspaces)
+
+      expect(component.productUsedByWorkspaces()).toEqual(workspaces)
+      expect(component.productUseLoadingState()).toBe('ready')
+    }))
+
+    it('should become ready after min loading time when data is received too fast', fakeAsync(() => {
+      component.onTabChange('2', product)
+
+      component.slotEmitter.emit(workspaces)
+      expect(component.productUseLoadingState()).toBe('loading')
+      tick(component['MIN_LOADING_TIME'])
+
+      expect(component.productUseLoadingState()).toBe('ready')
+    }))
+
+    it('should not change state when data is received without a started process', () => {
+      component.slotEmitter.emit(workspaces)
+
+      expect(component.productUsedByWorkspaces()).toEqual(workspaces)
+      expect(component.productUseLoadingState()).toBe('initial')
+    })
   })
 
   describe('initialize', () => {

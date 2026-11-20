@@ -2,7 +2,7 @@ import { SelectItem } from 'primeng/api'
 import { Location } from '@angular/common'
 import { AbstractControl, FormGroup } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router'
-import { catchError, first, of, tap } from 'rxjs'
+import { catchError, first, Observable, of, tap } from 'rxjs'
 
 import { WorkspaceService } from '@onecx/angular-integration-interface'
 
@@ -183,24 +183,19 @@ const Utils = {
     productName: string,
     appId: string,
     endpointName: string
-  ): boolean {
-    let exist = false
-    workspaceService
-      .doesUrlExistFor(productName, appId, endpointName)
-      .pipe(
-        first(),
-        tap((exists) => {
-          if (!exists) {
-            console.error(`Routing not possible to workspace for endpoint: ${productName} ${appId} ${endpointName}`)
-          }
-        }),
-        catchError((err) => {
-          console.error('doesUrlExistFor', err)
-          return of(false)
-        })
-      )
-      .subscribe((ex) => (exist = ex))
-    return exist
+  ): Observable<boolean> {
+    return workspaceService.doesUrlExistFor(productName, appId, endpointName).pipe(
+      first(),
+      tap((exists) => {
+        if (!exists) {
+          console.error(`Routing not possible to workspace for endpoint: ${productName} ${appId} ${endpointName}`)
+        }
+      }),
+      catchError((err) => {
+        console.error('doesUrlExistFor', err)
+        return of(false)
+      })
+    )
   }
 }
 

@@ -1,17 +1,16 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, effect, inject, input, output } from '@angular/core'
-import { AsyncPipe } from '@angular/common'
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core'
+import { toObservable, toSignal } from '@angular/core/rxjs-interop'
 import { RouterModule } from '@angular/router'
 import { TranslateModule } from '@ngx-translate/core'
-import { BehaviorSubject, Observable, of } from 'rxjs'
+import { combineLatest, map, Observable, of, switchMap } from 'rxjs'
 
 import { MessageModule } from 'primeng/message'
 import { TooltipModule } from 'primeng/tooltip'
 
-import { SlotService } from '@onecx/angular-remote-components'
 import { WorkspaceService } from '@onecx/angular-integration-interface'
-import { AngularAcceleratorModule } from '@onecx/angular-accelerator'
 
 import { Utils } from 'src/app/shared/utils'
+import { LoadingState } from '../product-detail.component'
 
 export type Workspace = {
   name: string
@@ -30,53 +29,57 @@ export type Workspace = {
   disabled?: boolean
 }
 
+export const WORKSPACE_DETAIL_ENDPOINT = {
+  productName: 'onecx-workspace',
+  appId: 'onecx-workspace-ui',
+  endpointName: 'workspace-detail'
+}
+
 @Component({
   selector: 'app-product-use',
   standalone: true,
-  imports: [AngularAcceleratorModule, AsyncPipe, MessageModule, RouterModule, TooltipModule, TranslateModule],
+  imports: [MessageModule, RouterModule, TooltipModule, TranslateModule],
   templateUrl: './product-use.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductUseComponent {
-  private readonly slotService = inject(SlotService)
   private readonly workspaceService = inject(WorkspaceService)
+  // signals
+  public readonly workspaces = input<Workspace[]>()
+  public readonly isComponentDefined = input<boolean>(false)
+  public readonly useLoadingState = input.required<LoadingState>()
 
-  public readonly productName = input<string>()
-  public readonly used = output<boolean>()
-
-  // receive the slot output
-  public slotName = 'onecx-workspace-data'
-  public slotEmitter = new EventEmitter<Workspace[]>()
-  public workspaceData$ = new BehaviorSubject<Workspace[] | undefined>(undefined)
-  public isComponentDefined$: Observable<boolean> | undefined
-  public workspaceEndpointExist = false
-
-  constructor() {
-    this.isComponentDefined$ = this.slotService.isSomeComponentDefinedForSlot(this.slotName)
-
-    // replaces ngOnChanges: signal inputs don't trigger it
-    effect(() => {
-      if (this.productName()) {
-        this.slotEmitter.subscribe((res) => {
-          this.workspaceData$.next(res)
-          if (res.length > 0) this.used.emit(true)
-        })
-        // check endpoint exists
-        this.workspaceEndpointExist = Utils.doesEndpointExist(
-          this.workspaceService,
-          'onecx-workspace',
-          'onecx-workspace-ui',
-          'workspace-detail'
+  public readonly workspaceEndpointExist = toSignal(
+    Utils.doesEndpointExist(
+      this.workspaceService,
+      WORKSPACE_DETAIL_ENDPOINT.productName,
+      WORKSPACE_DETAIL_ENDPOINT.appId,
+      WORKSPACE_DETAIL_ENDPOINT.endpointName
+    ),
+    { initialValue: false }
+  )
+  // resolved once per workspaces/endpoint change instead of per row in the template
+  private readonly workspaceUrls$: Observable<Map<string, string | undefined>> = combineLatest([
+    toObservable(this.workspaces),
+    toObservable(this.workspaceEndpointExist)
+  ]).pipe(
+    switchMap(([workspaces, exists]) => {
+      if (!exists || !workspaces?.length) return of(new Map<string, string | undefined>())
+      return combineLatest(
+        workspaces.map((workspace) =>
+          this.workspaceService
+            .getUrl(
+              WORKSPACE_DETAIL_ENDPOINT.productName,
+              WORKSPACE_DETAIL_ENDPOINT.appId,
+              WORKSPACE_DETAIL_ENDPOINT.endpointName,
+              { 'workspace-name': workspace.name }
+            )
+            .pipe(map((url) => [workspace.name, url] as const))
         )
-      }
+      ).pipe(map((entries) => new Map(entries)))
     })
-  }
-
-  public getWorkspaceEndpointUrl$(name?: string): Observable<string | undefined> {
-    if (this.workspaceEndpointExist && name)
-      return this.workspaceService.getUrl('onecx-workspace', 'onecx-workspace-ui', 'workspace-detail', {
-        'workspace-name': name
-      })
-    return of(undefined)
-  }
+  )
+  public readonly workspaceUrls = toSignal(this.workspaceUrls$, {
+    initialValue: new Map<string, string | undefined>()
+  })
 }
