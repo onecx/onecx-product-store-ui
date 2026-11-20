@@ -4,14 +4,14 @@
     <p-message
       id="ps_product_apps_loading"
       severity="info"
-      styleClass="w-fit"
+      styleClass="mt-3 w-fit"
       [text]="'ACTIONS.LOADING' | translate"
     ></p-message>
   } @else if (exceptionKey) {
     <p-message
       id="ps_product_apps_exception"
       severity="error"
-      styleClass="w-fit"
+      styleClass="mt-3 w-fit"
       [text]="exceptionKey | translate"
     ></p-message>
   } @else if (details) {
@@ -19,7 +19,7 @@
       <p-message
         id="ps_product_apps_no_data"
         severity="info"
-        styleClass="w-fit"
+        styleClass="mt-3 w-fit"
         [text]="'ACTIONS.SEARCH.NOT_FOUND' | translate"
       ></p-message>
     }
@@ -135,7 +135,7 @@
                   </div>
                   <app-ocx-chip
                     [id]="'ps_product_apps_components_mfe_' + mfe.appId + '_type'"
-                    [styleClass]="mfe.type === 'MODULE' ? 'bg-primary' : ''"
+                    [styleClass]="mfe.type === 'MODULE' ? 'bg-primary' : 'p-button-secondary'"
                     [label]="mfe.type"
                     [title]="'APP.TOOLTIPS.TYPE' | translate"
                   />

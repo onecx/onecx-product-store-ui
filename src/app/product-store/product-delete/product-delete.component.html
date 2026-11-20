@@ -10,12 +10,12 @@
     [dismissableMask]="true"
     [style]="{ 'max-width': '500px' }"
   >
-    <div class="flex column-gap-3 row-gap-1 justify-content-start align-items-center">
-      <div class="pi pi-question-circle text-3xl danger-action-text"></div>
+    <div class="flex column-gap-2 row-gap-1 justify-content-start align-items-center">
+      <div class="w-5rem pi pi-question-circle text-3xl danger-action-text text-center"></div>
       <div>
         <div id="ps_product_delete_message" class="font-bold">{{ 'ACTIONS.DELETE.PRODUCT.MESSAGE' | translate }}</div>
         <div id="ps_product_delete_product_name" class="my-2 font-bold danger-action-text text-center">
-          {{ product()?.name }}
+          {{ product()?.displayName }}
         </div>
         @if (product()?.operator) {
           <div>{{ 'ACTIONS.DELETE.PRODUCT.OPERATOR_TEXT' | translate }}</div>

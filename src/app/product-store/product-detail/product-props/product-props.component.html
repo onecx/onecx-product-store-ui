@@ -194,6 +194,7 @@
     ></p-button>
     <div class="flex-grow-1">
       <p-floatlabel variant="on">
+        @let formatText = '\n' + ('VALIDATION.HINTS.FORMAT_URL' | translate) + externUrlPattern;
         <input
           pInputText
           type="text"
@@ -202,18 +203,14 @@
           formControlName="imageUrl"
           (paste)="onInputChange(product(), $event)"
           (change)="onInputChange(product(), $event)"
-          [ariaLabel]="'IMAGE.TOOLTIPS.URL' | translate"
-          [pTooltip]="'IMAGE.TOOLTIPS.URL' | translate"
+          [escape]="false"
+          [ariaLabel]="('IMAGE.TOOLTIPS.URL' | translate) + formatText"
+          [pTooltip]="('IMAGE.TOOLTIPS.URL' | translate) + formatText"
           tooltipPosition="top"
           tooltipEvent="hover"
         />
         <label for="ps_product_detail_form_field_image_url">{{ 'PRODUCT.IMAGE_URL' | translate }}</label>
       </p-floatlabel>
-      @if (changeMode() === 'EDIT') {
-        <label class="absolute mt-1 text-xs block" for="workspace_detail_form_logo_url">
-          {{ ('VALIDATION.HINTS.FORMAT_URL' | translate) + externUrlPattern }}
-        </label>
-      }
     </div>
   </div>
 
@@ -222,7 +219,7 @@
     <textarea
       pTextarea
       class="w-full"
-      rows="3"
+      rows="4"
       id="ps_product_detail_form_field_description"
       formControlName="description"
       [ariaLabel]="'PRODUCT.DESCRIPTION' | translate"
