@@ -385,16 +385,18 @@ describe('utils', () => {
 
     it('should endpoint exist', () => {
       workspaceServiceMock.doesUrlExistFor.and.returnValue(of(true))
+      let exist: boolean | undefined
 
-      const exist = Utils.doesEndpointExist(workspaceServiceMock, productName, appId, endpointName)
+      Utils.doesEndpointExist(workspaceServiceMock, productName, appId, endpointName).subscribe((ex) => (exist = ex))
 
       expect(exist).toBeTrue()
     })
 
     it('should endpoint NOT exist', () => {
       workspaceServiceMock.doesUrlExistFor.and.returnValue(of(false))
+      let exist: boolean | undefined
 
-      const exist = Utils.doesEndpointExist(workspaceServiceMock, productName, appId, endpointName)
+      Utils.doesEndpointExist(workspaceServiceMock, productName, appId, endpointName).subscribe((ex) => (exist = ex))
 
       expect(exist).toBeFalse()
       expect(console.error).toHaveBeenCalled()
@@ -403,8 +405,9 @@ describe('utils', () => {
     it('should get endpoint failed', () => {
       const errorResponse = { status: 403, statusText: 'No permissions' }
       workspaceServiceMock.doesUrlExistFor.and.returnValue(throwError(() => errorResponse))
+      let exist: boolean | undefined
 
-      const exist = Utils.doesEndpointExist(workspaceServiceMock, productName, appId, endpointName)
+      Utils.doesEndpointExist(workspaceServiceMock, productName, appId, endpointName).subscribe((ex) => (exist = ex))
 
       expect(exist).toBeFalse()
       expect(console.error).toHaveBeenCalledWith('doesUrlExistFor', errorResponse)

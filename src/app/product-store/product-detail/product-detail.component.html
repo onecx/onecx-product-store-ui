@@ -1,6 +1,5 @@
 <ocx-portal-page permission="PRODUCT#VIEW" helpArticleId="PAGE_PRODUCT_DETAIL">
   <ocx-page-header
-    [loading]="loading"
     [header]="product?.displayName"
     [subheader]="('DIALOG.DETAIL.SUBHEADER' | translate) + ': ' + ('ACTIONS.' + changeMode + '.LABEL' | translate)"
     [actions]="(actions$ | async) ?? []"
@@ -10,33 +9,18 @@
   </ocx-page-header>
 
   <ocx-content class="ocx-content">
-    @if (loading) {
-      <p-message
-        id="ps_product_detail_loading_message"
-        severity="info"
-        styleClass="m-3 w-fit"
-        [text]="'ACTIONS.LOADING' | translate"
-      ></p-message>
-    } @else if (exceptionKey) {
-      <p-message
-        id="ps_product_detail_error_message"
-        severity="error"
-        styleClass="m-3 w-fit"
-        [text]="exceptionKey | translate"
-      ></p-message>
-    }
-    @if (product || changeMode === 'CREATE') {
-      <p-tabs [lazy]="false" [(value)]="selectedTabIndex" (valueChange)="onTabChange($event, product)">
-        <p-tablist>
-          <p-tab
-            value="0"
-            [ariaLabel]="'DIALOG.TABS.PROPERTIES' | translate"
-            [pTooltip]="'DIALOG.TABS.TOOLTIPS.PROPERTIES' | translate"
-            tooltipPosition="top"
-            tooltipEvent="hover"
-          >
-            {{ 'DIALOG.TABS.PROPERTIES' | translate }}
-          </p-tab>
+    <p-tabs [lazy]="false" [(value)]="selectedTabIndex" (valueChange)="onTabChange($event, product)">
+      <p-tablist>
+        <p-tab
+          value="0"
+          [ariaLabel]="'DIALOG.TABS.PROPERTIES' | translate"
+          [pTooltip]="'DIALOG.TABS.TOOLTIPS.PROPERTIES' | translate"
+          tooltipPosition="top"
+          tooltipEvent="hover"
+        >
+          {{ 'DIALOG.TABS.PROPERTIES' | translate }}
+        </p-tab>
+        @if (!loading && (product || changeMode === 'CREATE')) {
           <p-tab
             value="1"
             [disabled]="changeMode !== 'VIEW'"
@@ -67,40 +51,71 @@
           >
             {{ 'DIALOG.TABS.INTERN' | translate }}
           </p-tab>
-        </p-tablist>
+        }
+      </p-tablist>
 
-        <p-tabpanels>
-          <p-tabpanel value="0">
-            <app-product-props
-              [product]="product"
-              [changeMode]="changeMode"
-              (currentLogoUrl)="currentLogoUrl = $event"
-            ></app-product-props>
-          </p-tabpanel>
-
-          <p-tabpanel value="1">
-            @if (selectedTabIndex === '1') {
-              <app-product-apps [product]="product" [changeMode]="changeMode"></app-product-apps>
+      <p-tabpanels>
+        <p-tabpanel value="0">
+          <!-- main tab with loading and messages - always shown-->
+          <div class="p-3">
+            @if (loading) {
+              <p-message
+                id="ps_product_detail_loading_message"
+                severity="info"
+                styleClass="w-fit"
+                [text]="'ACTIONS.LOADING' | translate"
+              ></p-message>
+            } @else if (exceptionKey) {
+              <p-message
+                id="ps_product_detail_error_message"
+                severity="error"
+                styleClass="w-fit"
+                [text]="exceptionKey | translate"
+              ></p-message>
+            } @else if (product) {
+              <app-product-props
+                [product]="product"
+                [changeMode]="changeMode"
+                (currentLogoUrl)="currentLogoUrl = $event"
+              ></app-product-props>
             }
-          </p-tabpanel>
+          </div>
+        </p-tabpanel>
 
-          <p-tabpanel value="2">
-            @if (selectedTabIndex === '2') {
-              <app-product-use [productName]="product?.name"></app-product-use>
-            }
-          </p-tabpanel>
+        <!-- optional tabs - only shown when product is loaded and not in create mode -->
+        <p-tabpanel value="1">
+          @if (selectedTabIndex === '1') {
+            <app-product-apps [product]="product" [changeMode]="changeMode"></app-product-apps>
+          }
+        </p-tabpanel>
 
-          <p-tabpanel value="3">
-            <app-product-intern
-              [product]="product"
-              [editMode]="changeMode === 'EDIT'"
-              [dateFormat]="dateFormat"
-            ></app-product-intern>
-          </p-tabpanel>
-        </p-tabpanels>
-      </p-tabs>
-    }
+        <p-tabpanel value="2">
+          <app-product-use
+            [workspaces]="productUsedByWorkspaces()"
+            [isComponentDefined]="isComponentDefined()"
+            [useLoadingState]="productUseLoadingState()"
+          ></app-product-use>
+        </p-tabpanel>
+
+        <p-tabpanel value="3">
+          <app-product-intern
+            [product]="product"
+            [editMode]="changeMode === 'EDIT'"
+            [dateFormat]="dateFormat"
+          ></app-product-intern>
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
   </ocx-content>
+
+  @if (isComponentDefined() && productUsedName() && changeMode === 'VIEW') {
+    <ocx-slot
+      [name]="slotName"
+      [inputs]="{ dataType: 'workspaces', productName: productUsedName(), logEnabled: false, logPrefix: 'product-use' }"
+      [outputs]="{ workspaces: slotEmitter }"
+    >
+    </ocx-slot>
+  }
 </ocx-portal-page>
 
 <app-product-delete

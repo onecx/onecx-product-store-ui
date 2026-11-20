@@ -420,6 +420,8 @@
       "WORKSPACES": "Workspaces, die diese Applikation benutzen"
     },
     "WORKSPACES_USING_PRODUCT": {
+      "LOADING": "Ermittle die Verwendung der Applikation in Workspaces...",
+      "TIMEOUT": "Während der Ermittlung der Verwendung der Applikation in Workspaces ist ein Timeout aufgetreten.",
       "MISSING_COMPONENT": "Informationen zur Verwendung der Applikation in einem Workspace konnten nicht abgerufen werden.",
       "USED": "Die Applikation ist in folgenden Workspaces registriert: ",
       "UNUSED": "Die Applikation wird von keinem Workspace verwendet."

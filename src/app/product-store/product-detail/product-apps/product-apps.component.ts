@@ -71,7 +71,7 @@ export class ProductAppsComponent implements OnInit {
   public readonly currentChangeMode = signal<ChangeMode>('VIEW')
 
   public exceptionKey: string | undefined = undefined
-  public searchInProgress = false
+  public loading = false
   // computed internally: never actually bound by callers, so it stays a plain property
   public dateFormat = 'medium'
 
@@ -127,6 +127,7 @@ export class ProductAppsComponent implements OnInit {
   private getProductDetails(): void {
     this.app = undefined
     this.slot = undefined
+    this.loading = true
     const criteria: ProductDetailsCriteria = {
       name: this.product()?.name,
       pageSize: 1000 // page size of the children
@@ -147,9 +148,8 @@ export class ProductAppsComponent implements OnInit {
         console.error('getProductDetailsByCriteria', err)
         return of({})
       }),
-      finalize(() => (this.searchInProgress = false))
+      finalize(() => (this.loading = false))
     )
-    this.searchInProgress = true
   }
 
   public sortMfesByTypeAndExposedModule(a: MicrofrontendAbstract, b: MicrofrontendAbstract): number {

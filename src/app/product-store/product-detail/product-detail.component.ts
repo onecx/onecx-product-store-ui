@@ -1,5 +1,5 @@
-import { Component, DestroyRef, inject, OnInit, viewChild } from '@angular/core'
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
+import { Component, DestroyRef, EventEmitter, inject, OnInit, signal, viewChild } from '@angular/core'
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop'
 import { AsyncPipe, Location } from '@angular/common'
 import { ActivatedRoute, Router } from '@angular/router'
 import { catchError, Observable, of, finalize, map } from 'rxjs'
@@ -26,13 +26,15 @@ import {
   UpdateProductRequest
 } from 'src/app/shared/generated'
 import { Utils } from 'src/app/shared/utils'
+import { injectInitializedSlotService } from 'src/app/shared/slot.initializer'
 import { ProductAppsComponent } from './product-apps/product-apps.component'
 import { ProductPropertyComponent } from './product-props/product-props.component'
 import { ProductInternComponent } from './product-intern/product-intern.component'
-import { ProductUseComponent } from './product-use/product-use.component'
+import { ProductUseComponent, Workspace } from './product-use/product-use.component'
 import { ProductDeleteComponent } from '../product-delete/product-delete.component'
 
 export type ChangeMode = 'VIEW' | 'CREATE' | 'EDIT' | 'COPY'
+export type LoadingState = 'initial' | 'ready' | 'loading' | 'timeout'
 
 @Component({
   standalone: true,
@@ -68,6 +70,23 @@ export class ProductDetailComponent implements OnInit {
   private readonly imageApi = inject(ImagesInternalAPIService)
   private readonly msgService = inject(PortalMessageService)
   private readonly translate = inject(TranslateService)
+  private readonly slotService = injectInitializedSlotService()
+  // signals
+  public readonly productUsedName = signal<string | undefined>(undefined)
+  public readonly productUsedByWorkspaces = signal<Workspace[]>([])
+  public readonly productUseLoadingState = signal<LoadingState>('initial')
+  // private timer to avoid long waits for getting workspace data
+  private productUseTimeoutTimer: ReturnType<typeof setTimeout> | undefined
+  private productUseStartTime: number | undefined
+  private readonly MIN_LOADING_TIME = 1500 // 1.5 seconds
+  private readonly MAX_LOADING_TIME = 4000 // 4 seconds
+  // receive the slot output
+  public readonly slotName = 'onecx-workspace-data'
+  // EventEmitter is required here because ocx-slot [outputs] expects EventEmitter instances
+  public readonly slotEmitter = new EventEmitter<Workspace[]>()
+  public readonly isComponentDefined = toSignal(this.slotService.isSomeComponentDefinedForSlot(this.slotName), {
+    initialValue: false
+  })
   // dialog
   public exceptionKey: string | undefined
   public loading = false
@@ -95,6 +114,7 @@ export class ProductDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.slotEmitter.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => this.stopGettingProductUseData(res))
     this.item4Delete = undefined
     if (this.productName) {
       this.changeMode = 'VIEW'
@@ -119,7 +139,40 @@ export class ProductDetailComponent implements OnInit {
   public onTabChange(tabValue: string | number, product?: Product): void {
     if (product) {
       this.selectedTabIndex = typeof tabValue === 'number' ? tabValue.toString() : tabValue
+      if (this.selectedTabIndex === '2') this.startGettingProductUseData(product)
     } else this.selectedTabIndex = '0'
+  }
+
+  /**
+   * GETTING PRODUCT USE IN WORKSPACES
+   * Triggered when the user opens the "Use" tab: a request is sent to the workspace service via slot,
+   * the response is received via the slot emitter. The loading indicator is shown for at least MIN_LOADING_TIME;
+   * if no response arrives within MAX_LOADING_TIME the state switches to "timeout".
+   */
+  private startGettingProductUseData(product: Product): void {
+    if (this.productUseLoadingState() !== 'initial') return
+    this.productUseLoadingState.set('loading')
+    this.productUseStartTime = performance.now()
+    clearTimeout(this.productUseTimeoutTimer)
+    this.productUseTimeoutTimer = setTimeout(() => {
+      if (this.productUseLoadingState() === 'loading') this.productUseLoadingState.set('timeout')
+    }, this.MAX_LOADING_TIME)
+    this.productUsedName.set(product.name) // activates the slot
+  }
+
+  private stopGettingProductUseData(workspaces: Workspace[]): void {
+    this.productUsedByWorkspaces.set(workspaces)
+    if (this.productUseStartTime) {
+      // avoid flickering of the loading indicator
+      const rest = this.MIN_LOADING_TIME - (performance.now() - this.productUseStartTime)
+      if (rest > 0) {
+        setTimeout(() => this.productUseLoadingState.set('ready'), rest)
+      } else {
+        this.productUseLoadingState.set('ready')
+      }
+    }
+    clearTimeout(this.productUseTimeoutTimer)
+    this.productUseTimeoutTimer = undefined
   }
 
   /** READ */
