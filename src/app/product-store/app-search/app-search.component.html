@@ -1,5 +1,6 @@
 <ocx-portal-page permission="APP#SEARCH" helpArticleId="PAGE_APP_SEARCH">
   <ocx-search-header
+    [ocxLoadingIndicator]="loading"
     [header]="'DIALOG.SEARCH.APPS.HEADER' | translate"
     [subheader]="'DIALOG.SEARCH.APPS.SUBHEADER' | translate"
     [resetButtonAriaLabel]="'DIALOG.SEARCH.RESET_BUTTON.ARIA_LABEL' | translate"
@@ -94,14 +95,7 @@
     >
       <ng-template #topCenter>
         <div class="flex flex-wrap flex-row justify-content-between align-items-center gap-2">
-          @if (loading) {
-            <p-message
-              id="ps_app_search_criteria_loading_message"
-              styleClass="w-fit"
-              severity="info"
-              [text]="'ACTIONS.LOADING' | translate"
-            ></p-message>
-          } @else if (exceptionKey) {
+          @if (exceptionKey) {
             <p-message
               id="ps_app_search_criteria_error_message"
               styleClass="w-fit"
@@ -267,14 +261,26 @@
               ></span>
             }
             @if (app.appType === 'MFE') {
-              <span
-                [id]="'ps_app_search_data_' + app.appId + '_icon'"
-                class="card-badge-right badge-2 p-2 pi cursor-auto"
-                [ngClass]="'pi-' + app.iconName"
-                [pTooltip]="'Icon'"
-                tooltipPosition="top"
-                tooltipEvent="hover"
-              ></span>
+              @if (app.iconName) {
+                <span
+                  [id]="'ps_app_search_data_' + app.appId + '_icon'"
+                  class="card-badge-right badge-2 p-2 pi cursor-auto"
+                  [ngClass]="'pi-' + app.iconName"
+                  [pTooltip]="'Icon'"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                >
+                </span>
+              } @else if (app.type === 'MODULE') {
+                <span
+                  [id]="'ps_app_search_data_' + app.appId + '_icon'"
+                  class="card-badge-right badge-3 cursor-auto font-bold border-circle bg-primary text-center w-2rem opacity-70"
+                  [pTooltip]="'Icon'"
+                  tooltipPosition="top"
+                  tooltipEvent="hover"
+                  >M
+                </span>
+              }
             }
             <!-- CONTENT -->
             <div class="h-4rem flex flex-column justify-content-between gap-1 text-center">

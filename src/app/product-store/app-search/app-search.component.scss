@@ -32,21 +32,16 @@
       }
     }
   }
-  .p-dataview .p-dataview-content {
-    margin: 0.75rem 0rem 0rem 0rem;
-    padding: 0rem 0rem 1rem 0rem;
-    border-top: var(--table-header-border);
-    > .grid {
-      gap: 0;
-      padding: 0 0.5rem;
-    }
-  }
 
   .card-badge-left,
   .card-badge-right {
     &.badge-2 {
       top: 45px;
     }
+  }
+  .card-badge-right.badge-3 {
+    top: 44px;
+    right: 3px;
   }
 
   .h-3-5rem {

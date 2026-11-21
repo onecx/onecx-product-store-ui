@@ -1,5 +1,6 @@
 <ocx-portal-page permission="ENDPOINT#SEARCH" helpArticleId="PAGE_ENDPOINT_SEARCH">
   <ocx-search-header
+    [ocxLoadingIndicator]="loading"
     [header]="'DIALOG.SEARCH.ENDPOINTS.HEADER' | translate"
     [subheader]="'DIALOG.SEARCH.ENDPOINTS.SUBHEADER' | translate"
     [resetButtonAriaLabel]="'DIALOG.SEARCH.RESET_BUTTON.ARIA_LABEL' | translate"
@@ -53,14 +54,7 @@
       >
         <!-- INFO -->
         <div id="ps_endpoint_search_header-left">
-          @if (loading) {
-            <p-message
-              id="ps_endpoint_search_loading_message"
-              severity="info"
-              styleClass="w-fit"
-              [text]="'ACTIONS.LOADING' | translate"
-            ></p-message>
-          } @else if (exceptionKey) {
+          @if (exceptionKey) {
             <p-message
               id="ps_endpoint_search_error_message"
               severity="error"
